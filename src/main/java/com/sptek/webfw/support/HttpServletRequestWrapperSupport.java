@@ -8,13 +8,13 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
-public class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
+public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper {
 
     private byte[] rawData;
     private HttpServletRequest request;
     private ResettableServletInputStream servletInputStream;
 
-    public MyHttpServletRequestWrapper(HttpServletRequest request) {
+    public HttpServletRequestWrapperSupport(HttpServletRequest request) {
         super(request);
         this.request = request;
         this.servletInputStream = new ResettableServletInputStream();

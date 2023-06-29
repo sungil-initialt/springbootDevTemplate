@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.StringUtils;
 
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 
 @Slf4j
 public class CookieUtil {
+    private static final Logger logger = LoggerFactory.getLogger(CookieUtil.class);
 
     private static final String DEFAULT_COOKIE_PATH = "/";
 

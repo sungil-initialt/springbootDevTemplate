@@ -29,15 +29,13 @@ import java.util.TimeZone;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Configuration
-@EnableWebMvc
-public class MyWebMvcConfig implements WebMvcConfigurer {
+//@EnableWebMvc
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     private ReqInfoLoggingInterceptor reqInfoLoggingInterceptor;
-
     @Autowired
     private UvLoggingInterceptor uvLoggingInterceptor;
-
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -66,9 +64,9 @@ public class MyWebMvcConfig implements WebMvcConfigurer {
         // PathMatcherInterceptor를 로그인 인터셉터인 것처럼 인터셉터로 등록한다.
         return interceptorMatchSupport
                 .excludePathPattern("/**", HttpMethod.GET)
-                .includePathPattern("/members/me/**", HttpMethod.POST)
-                .includePathPattern("/drinks/*/reviews/**", HttpMethod.PUT)
-                .excludePathPattern("/drinks/*/reviews", HttpMethod.DELETE);
+                .includePathPattern("/inserte/**", HttpMethod.POST)
+                .includePathPattern("/update/**", HttpMethod.PUT)
+                .excludePathPattern("/delete/**", HttpMethod.DELETE);
     }
 
 
@@ -77,25 +75,28 @@ public class MyWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 
-        registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
-        registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
-        registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
+        registry.addResourceHandler("/css/**").addResourceLocations("/resources/static/css/");
+        registry.addResourceHandler("/images/**").addResourceLocations("/resources/static/images/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/resources/static/js/");
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/error").setViewName("error");
-        registry.addRedirectViewController("/api/swagger-ui.html", "/swagger-ui.html");
+        //registry.addViewController("/error").setViewName("error");
+        registry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
     }
 
+    // application.yml 에서 thymeleaf로 설정
+    /*
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         registry.jsp("/WEB-INF/views/", ".jsp");
         WebMvcConfigurer.super.configureViewResolvers(registry);
     }
+    */
 
     @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+    public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setLocale(Locale.KOREA);
         objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
@@ -103,14 +104,21 @@ public class MyWebMvcConfig implements WebMvcConfigurer {
         objectMapper.getFactory().setCharacterEscapes(new XssProtectSupport());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+        return objectMapper;
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+
+
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(APPLICATION_JSON);
 
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper);
-        converter.setSupportedMediaTypes(supportedMediaTypes);
-        converter.setPrettyPrint(true);
-        return converter;
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper());
+        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(supportedMediaTypes);
+        mappingJackson2HttpMessageConverter.setPrettyPrint(true);
+        return mappingJackson2HttpMessageConverter;
     }
 
     @Override

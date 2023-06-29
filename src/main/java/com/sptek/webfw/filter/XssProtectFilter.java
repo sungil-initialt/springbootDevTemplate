@@ -1,7 +1,7 @@
 package com.sptek.webfw.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.support.MyHttpServletRequestWrapper;
+import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -23,7 +23,7 @@ public class XssProtectFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        MyHttpServletRequestWrapper wrappedRequest = new MyHttpServletRequestWrapper(request);
+        HttpServletRequestWrapperSupport wrappedRequest = new HttpServletRequestWrapperSupport(request);
         String reqBody = IOUtils.toString(wrappedRequest.getReader());
 
         if (!StringUtils.isEmpty(reqBody)) {

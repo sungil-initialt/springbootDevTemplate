@@ -18,8 +18,12 @@ public class ReqInfoLoggingInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
         String sessionInfo = "session_id=" + session.getId();
         String urlInfo = ReqResUtil.getRequestUrlString(request);
-        String headerInfo = TypeConvertUtil.mapToString(ReqResUtil.getRequestHeaderMap(request), " ");
-        String parameterInfo = TypeConvertUtil.mapToString2(ReqResUtil.getRequestParameterMap(request), " ");
+
+        String headerInfo = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
+        String parameterInfo = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
+        String parameterInfo2 = TypeConvertUtil.objectToJson(ReqResUtil.getRequestHeaderMap(request), false);
+        String parameterInfo3 = TypeConvertUtil.objectToJsonWithRootName(ReqResUtil.getRequestParameterMap(request), true);
+
 
 
         // 로그 출력
@@ -33,8 +37,14 @@ public class ReqInfoLoggingInterceptor implements HandlerInterceptor {
                         "{}" +
                         "================================  PARAMETER  ===================================\n" +
                         "{}" +
+                        "================================  PARAMETER  ===================================\n" +
+                        "{}" +
+                        "================================  PARAMETER  ===================================\n" +
+                        "{}" +
+                        "================================  PARAMETER  ===================================\n" +
+                        "{}" +
                         "##############################   </REQUEST_INFO>   #############################\n",
-                sessionInfo, urlInfo, headerInfo, parameterInfo
+                sessionInfo, urlInfo, headerInfo, parameterInfo, parameterInfo2, parameterInfo3
         );
 
         return true;
