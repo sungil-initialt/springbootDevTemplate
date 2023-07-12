@@ -3,30 +3,57 @@ project-info:
   version: v1
   description : sptek web framework
 
+
 server:
   port: 8080
-
   error:
     include-exception: true
     include-stacktrace: always
     path: error
     whitelabel.enabled: false
 
+
+logging:
+  level:
+    com.zaxxer.hikari.pool.HikariPool: debug
+    org.mybatis.spring: debug
+
+
 spring:
   profiles:
     active: local
-
+  datasource:
+    write:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
+      username: root
+      password: root
+      pool-name: Hikari master Connection Pool
+      maximum-pool-size: 20
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+    read:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
+      username: root
+      password: root
+      pool-name: Hikari slave Connection Pool
+      maximum-pool-size: 20
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/views/
+#      suffix: .jsp
 
   thymeleaf:
-    cache: false
-    prefix: classpath:/templates/thymeleaf/
-    suffix: .html
-    enabled: true
+      cache: false
+      prefix: classpath:/templates/thymeleaf/
+      suffix: .html
+      enabled: true
 
-  mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
 
 
 # Swagger springdoc-ui Configuration
@@ -44,3 +71,4 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+

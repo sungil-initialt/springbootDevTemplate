@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.api.common;
+package com.sptek.webfw.example.web.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
