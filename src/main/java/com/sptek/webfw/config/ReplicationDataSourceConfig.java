@@ -80,9 +80,14 @@ public class ReplicationDataSourceConfig {
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
-        //sessionFactoryBean.setConfigLocation(this.applicationContext.getResource("classpath*:/com/sptek/webfw/config/mybatis-config.xml"));
-        sessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/sqlmap/*Mapper.xml"));
+        sessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*config.xml")[0]);
+        //config 파일에서 설정하는 것으로 변경
+        //org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        //configuration.setMapUnderscoreToCamelCase(true);
+        //configuration.setJdbcTypeForNull(JdbcType.NULL);
+        //sessionFactoryBean.setConfiguration(configuration);
 
+        sessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mapper/*Mapper.xml"));
         return sessionFactoryBean.getObject();
     }
 

@@ -1,16 +1,19 @@
 package com.sptek.webfw.persistence.dao;
 
 
+import com.sptek.webfw.support.MybatisResultHandlerSupport;
+import com.sptek.webfw.support.PageHelperSupport;
+import com.sptek.webfw.support.PageInfoSupport;
 import jakarta.annotation.Nullable;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,18 +22,52 @@ import java.util.Map;
 @Component("myBatisCommonDao")
 public class MyBatisCommonDao {
 
-
     @Autowired
     @Qualifier("sqlSessionTemplate")
     protected SqlSessionTemplate sqlSessionTemplate;
 
-    public <T> T selectOne(String statementId, @Nullable Object parameter, Class<T> clazz) {
-        return clazz.cast(this.sqlSessionTemplate.selectOne(statementId, parameter));
+    final private int DEFAULT_SET_ROWSIZE_PER_PAGE = 5;
+    final private int DEFAULT_SET_BUTTOM_PAGE_NAVIGATION_SIZE = 10;
+
+    public <T> T selectOne(String statementId, @Nullable Object parameter) {
+        return (T)(this.sqlSessionTemplate.selectOne(statementId, parameter));
     }
 
-    public <T> List<T> selectList(String statementId, @Nullable Object parameter, Class<T> clazz) {
-        List<T> list = (List<T>) this.sqlSessionTemplate.selectList(statementId, parameter);
-        return list;
+    public <T> List<T> selectList(String statementId, @Nullable Object parameter) {
+        return  (List<T>) this.sqlSessionTemplate.selectList(statementId, parameter);
+    }
+
+    public <T, R> List<R> selectListWithResultHandler(String statementId, Object parameter,
+                                                      final MybatisResultHandlerSupport<T, R> mybatisResultHandlerSupport) {
+        final List<R> finalHeandledResults = new ArrayList<R>();
+        try {
+            mybatisResultHandlerSupport.open();
+            this.sqlSessionTemplate.select(statementId, parameter, new ResultHandler() {
+                @Override
+                public void handleResult(ResultContext context) {
+                    R HandledResult = mybatisResultHandlerSupport.handleResultRow((T) context.getResultObject());
+                    if (HandledResult != null) finalHeandledResults.add(HandledResult);
+                    if (mybatisResultHandlerSupport.isStop()) context.stop();
+                }
+            });
+
+        } finally {
+            mybatisResultHandlerSupport.close();
+        }
+
+        return finalHeandledResults;
+    }
+
+    public <T> PageInfoSupport<T> selectPaginatedList(String statementId, @Nullable Object parameter,
+                                                      int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
+        currentPageNum = currentPageNum == 0 ? 1 : currentPageNum;
+        setRowSizePerPage = setRowSizePerPage == 0 ? DEFAULT_SET_ROWSIZE_PER_PAGE : setRowSizePerPage;
+        setButtomPageNavigationSize = setButtomPageNavigationSize == 0 ? DEFAULT_SET_BUTTOM_PAGE_NAVIGATION_SIZE : setButtomPageNavigationSize;
+
+        PageHelperSupport.setPageForSelect(currentPageNum, setRowSizePerPage);
+        PageInfoSupport<T> pageInfoSupport = PageHelperSupport.selectPaginatedList((List<T>) this.sqlSessionTemplate.selectList(statementId, parameter), setButtomPageNavigationSize);
+
+        return pageInfoSupport;
     }
 
     public Map<?, ?> selectMap(String statementId, @Nullable Object parameter, String columnNameForMapkey) {

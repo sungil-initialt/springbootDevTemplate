@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TbTest {
+public class TBTest {
     private int c1;
     private int c2;
     private int c3;
