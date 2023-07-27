@@ -1,6 +1,6 @@
 package com.sptek.webfw.config;
 
-import com.sptek.webfw.config.property.PropertyVos;
+import com.sptek.webfw.config.vo.PropertyVos;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

@@ -10,14 +10,14 @@ public enum ApiErrorCode {
     REQUEST_BODY_MISSING_ERROR(HttpStatus.BAD_REQUEST, "GE002", "Required request body is missing"),
     INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "GE003", " Invalid Type Value"),
     MISSING_REQUEST_PARAMETER_ERROR(HttpStatus.BAD_REQUEST, "GE004", "Missing Servlet RequestParameter Exception"),
-    IO_ERROR(HttpStatus.BAD_REQUEST, "GE005", "I/O Exception"),
+    IO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE005", "I/O Exception"),
     JSON_PARSE_ERROR(HttpStatus.BAD_REQUEST, "GE006", "JsonParseException"),
     JACKSON_PROCESS_ERROR(HttpStatus.BAD_REQUEST, "GE007", "com.fasterxml.jackson.core Exception"),
     FORBIDDEN_ERROR(HttpStatus.FORBIDDEN, "GE008", "Forbidden Exception"),
     NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "GE009", "Not Found Exception"),
-    NULL_POINT_ERROR(HttpStatus.NOT_FOUND, "GE010", "Null Point Exception"),
-    NOT_VALID_ERROR(HttpStatus.NOT_FOUND, "GE011", "handle Validation Exception"),
-    NOT_VALID_HEADER_ERROR(HttpStatus.NOT_FOUND, "GE012", "Not Found Specific Header Exception"),
+    NULL_POINT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE010", "Null Point Exception"),
+    NOT_VALID_ERROR(HttpStatus.BAD_REQUEST, "GE011", "handle Validation Exception"),
+    NOT_VALID_HEADER_ERROR(HttpStatus.BAD_REQUEST, "GE012", "Not Found Specific Header Exception"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE999", "Internal Server Error Exception"),
 
 

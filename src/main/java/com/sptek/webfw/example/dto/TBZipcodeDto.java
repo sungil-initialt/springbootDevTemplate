@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.web.page1.dto;
+package com.sptek.webfw.example.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TBZipcode {
+public class TBZipcodeDto {
 
     private String zipNo;
     private String sido;

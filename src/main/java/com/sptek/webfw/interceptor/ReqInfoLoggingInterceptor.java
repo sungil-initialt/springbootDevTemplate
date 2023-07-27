@@ -21,7 +21,7 @@ public class ReqInfoLoggingInterceptor implements HandlerInterceptor {
 
         String headerInfo = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
         String parameterInfo = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
-        String parameterInfo2 = TypeConvertUtil.objectToJson(ReqResUtil.getRequestHeaderMap(request), false);
+        String parameterInfo2 = TypeConvertUtil.objectToJsonWithoutRootName(ReqResUtil.getRequestHeaderMap(request), false);
         String parameterInfo3 = TypeConvertUtil.objectToJsonWithRootName(ReqResUtil.getRequestParameterMap(request), true);
 
 

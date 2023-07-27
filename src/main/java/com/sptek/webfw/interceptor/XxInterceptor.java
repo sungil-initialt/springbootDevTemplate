@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
-public class XxxInterceptor  implements HandlerInterceptor {
+public class XxInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.debug("XxxInterceptor preHandle");
+        log.debug("called XxInterceptor preHandle with {}", request.getMethod());
 
         return true;
     }

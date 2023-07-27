@@ -25,13 +25,13 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-public class ReplicationDataSourceConfig {
+public class DataSourceConfigWithProperty {
     @Autowired
     private ApplicationContext applicationContext;
 
     @Bean(name = "writeDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.write")
-    public DataSource writeDataSource() {
+    public DataSource writeDataSource() throws Exception {
         return DataSourceBuilder
                 .create()
                 .type(HikariDataSource.class)
@@ -40,7 +40,7 @@ public class ReplicationDataSourceConfig {
 
     @Bean(name = "readDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.read")
-    public DataSource readDataSource() {
+    public DataSource readDataSource() throws Exception {
         return DataSourceBuilder
                 .create()
                 .type(HikariDataSource.class)
@@ -68,11 +68,10 @@ public class ReplicationDataSourceConfig {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(
-            @Qualifier("dataSource") DataSource dataSource) {
+    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource);
-        transactionManager.setGlobalRollbackOnParticipationFailure(false); //???
+        transactionManager.setGlobalRollbackOnParticipationFailure(false);
         return transactionManager;
     }
 

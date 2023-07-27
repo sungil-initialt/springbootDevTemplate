@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.AntPathMatcher;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class InterceptorMatchSupport  implements HandlerInterceptor {
 
     private final HandlerInterceptor handlerInterceptor;
@@ -27,12 +29,10 @@ public class InterceptorMatchSupport  implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-        if (matchInfoContainer.notIncludedPath(request)) {
-            return true;
+        if (matchInfoContainer.isMatchedRequest(request)) {
+            return handlerInterceptor.preHandle(request, response, handler);
         }
-
-        return handlerInterceptor.preHandle(request, response, handler);
+        return true;
     }
 
     public InterceptorMatchSupport includePathPattern(String pathPattern, HttpMethod pathMethod) {
@@ -66,13 +66,14 @@ public class InterceptorMatchSupport  implements HandlerInterceptor {
             this.excludeMatchInfos = new ArrayList<>();
         }
 
-        public boolean notIncludedPath(HttpServletRequest request) {
+        public boolean isMatchedRequest(HttpServletRequest request) {
             boolean includeMatchResult = includeMatchInfos.stream()
                     .anyMatch(matchInfo -> anyMatchPathPattern(request, matchInfo));
 
             boolean excludeMatchResult = excludeMatchInfos.stream()
                     .anyMatch(matchInfo -> anyMatchPathPattern(request, matchInfo));
 
+            log.debug("InterceptorMatchSupport includeMatchResult={}, excludeMatchResult={}", includeMatchResult, excludeMatchResult);
             return includeMatchResult || !excludeMatchResult;
         }
 

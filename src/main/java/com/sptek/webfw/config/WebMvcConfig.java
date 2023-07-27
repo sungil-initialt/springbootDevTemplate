@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.interceptor.ReqInfoLoggingInterceptor;
 import com.sptek.webfw.interceptor.UvLoggingInterceptor;
-import com.sptek.webfw.interceptor.XxxInterceptor;
+import com.sptek.webfw.interceptor.XxInterceptor;
 import com.sptek.webfw.support.InterceptorMatchSupport;
 import com.sptek.webfw.support.XssProtectSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,20 +53,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(this.reqInfoLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
         registry.addInterceptor(this.uvLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
-        registry.addInterceptor(xxxInterceptorMatchSupport()).addPathPatterns("/api").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
+        registry.addInterceptor(xxInterceptorMatchSupport()).addPathPatterns("/api/**").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
-    private HandlerInterceptor xxxInterceptorMatchSupport() {
-        final InterceptorMatchSupport interceptorMatchSupport = new InterceptorMatchSupport(new XxxInterceptor());
+    private HandlerInterceptor xxInterceptorMatchSupport() {
+        final InterceptorMatchSupport interceptorMatchSupport = new InterceptorMatchSupport(new XxInterceptor());
 
-        // PathMatcherInterceptor를 로그인 인터셉터인 것처럼 인터셉터로 등록한다.
         return interceptorMatchSupport
-                .excludePathPattern("/**", HttpMethod.GET)
-                .includePathPattern("/inserte/**", HttpMethod.POST)
-                .includePathPattern("/update/**", HttpMethod.PUT)
-                .excludePathPattern("/delete/**", HttpMethod.DELETE);
+                .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.POST)
+                .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.PUT)
+                .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.DELETE)
+                .excludePathPattern("/**/xxInterceptorTest/**", HttpMethod.GET);
     }
 
 
@@ -109,8 +108,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-
-
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(APPLICATION_JSON);
 

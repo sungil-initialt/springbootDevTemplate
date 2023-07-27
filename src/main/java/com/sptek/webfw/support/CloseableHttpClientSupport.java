@@ -71,7 +71,7 @@ public class CloseableHttpClientSupport {
     }
 
     public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable Object requestBodyObject) throws IOException {
-        return requestPost(requestUrl, headers, TypeConvertUtil.objectToJson(requestBodyObject, false));
+        return requestPost(requestUrl, headers, TypeConvertUtil.objectToJsonWithoutRootName(requestBodyObject, false));
     }
 
     public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBodyJson) throws IOException {
@@ -92,7 +92,7 @@ public class CloseableHttpClientSupport {
 
     public HttpEntity requestPut(String requestUrl, @Nullable HttpHeaders headers, @Nullable Object requestBodyObject) throws IOException {
         String bodyStr = "";
-        if(requestBodyObject != null) bodyStr = TypeConvertUtil.objectToJson(requestBodyObject, false);
+        if(requestBodyObject != null) bodyStr = TypeConvertUtil.objectToJsonWithoutRootName(requestBodyObject, false);
 
         return requestPut(requestUrl, headers, bodyStr);
     }

@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class RestConfig {
+public class RestUtilConfig {
     private int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
     private int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
     private int HTTP_CLIENT_MAX_CONN_TOTAL = 100;

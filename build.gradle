@@ -9,6 +9,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
+
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -19,10 +20,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:3.0.4'
 	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.0.4'
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.0.4'
 	implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services:3.0.4'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
@@ -44,6 +45,11 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.33'
 	implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.4.6'
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	implementation 'org.apache.tomcat:tomcat-jdbc:10.1.9'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+
+
 
 
 	compileOnly 'org.projectlombok:lombok:1.18.26'

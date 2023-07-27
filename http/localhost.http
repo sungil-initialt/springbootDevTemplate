@@ -1,25 +1,78 @@
 ### hello
-GET {{api-server-ver}}/hello?ehco=hi
+GET {{api-server-ver}}/hello?message=hi
+Content-Type: application/json
 
 ### 서버정보
 GET {{api-server-ver}}/projectinfo
+Content-Type: application/json
+
+
+
+### XssProtectSupport 테스트
+GET {{api-server-ver}}/XssProtectSupportGet?originText=<javascript>alert('hello');</javascript>
+Content-Type: application/json
+
+### XssProtectSupport 테스트
+POST {{api-server-ver}}XssProtectSupportPost
+Content-Type: application/json
+
+{
+  "originText": "<javascript>alert('hello');</javascript>"
+}
+
+
+### xxInterceptorTest 테스트
+POST {{api-server-ver}}/xxInterceptorTest
+Content-Type: application/json
+
+### xxInterceptorTest 테스트
+PUT {{api-server-ver}}/xxInterceptorTest
+Content-Type: application/json
+
+### xxInterceptorTest 테스트
+DELETE {{api-server-ver}}/xxInterceptorTest
+Content-Type: application/json
+
+### xxInterceptorTest 테스트
+GET {{api-server-ver}}/xxInterceptorTest
+Content-Type: application/json
+
+
 
 ### closeableHttpClientSupport 테스트
-POST {{api-server-ver}}/closeableHttpClientSupport
+GET {{api-server-ver}}/closeableHttpClientSupport
 Content-Type: application/json
 
 ### closeableHttpClient 테스트
-POST {{api-server-ver}}/closeableHttpClient
+GET {{api-server-ver}}/closeableHttpClient
 Content-Type: application/json
 
 ### restTemplate 테스트
-POST {{api-server-ver}}/restTemplate
+GET {{api-server-ver}}/restTemplate
 Content-Type: application/json
 
 ### restTemplateSupport 테스트
-POST {{api-server-ver}}/restTemplateSupport
+GET {{api-server-ver}}/restTemplateSupport
 Content-Type: application/json
 
 ### reqResUtil 테스트
 POST {{api-server-ver}}/reqResUtil?a=1&b=2&a=3
+Content-Type: application/json
+
+
+
+### validationAnnoTationt 테스트(POST)
+POST {{api-server-ver}}/ValidationAnnotationPost
+Content-Type: application/json
+
+{
+  "userId": "sungilry00",
+  "userName": "ss",
+  "age": 43,
+  "email": "sungilry@naver.com",
+  "mobileNumber" : "01042983113"
+}
+
+### validationAnnoTationt 테스트(GET)
+GET {{api-server-ver}}/ValidationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
 Content-Type: application/json

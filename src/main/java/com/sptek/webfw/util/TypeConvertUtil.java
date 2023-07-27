@@ -32,7 +32,7 @@ public class TypeConvertUtil {
                 .collect(Collectors.joining(", "));
     }
 
-    public static String objectToJson(Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
+    public static String objectToJsonWithoutRootName(Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (prettyPrintOption) {

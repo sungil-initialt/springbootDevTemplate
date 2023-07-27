@@ -44,20 +44,20 @@ spring:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
       username: root
-      password: root
-      pool-name: Hikari master Connection Pool
+      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      pool-name: Hikari write Connection Pool
       maximum-pool-size: 20
       connectionTimeout: 30000
       idleTimeout: 600000
       maxLifetime: 1800000
     read:
       #driver-class-name: com.mysql.cj.jdbc.Driver
-      #jdbc-url: jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
+      #jdbc-url: jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: jdbc:log4jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
       username: root
-      password: root
-      pool-name: Hikari slave Connection Pool
+      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      pool-name: Hikari read Connection Pool
       maximum-pool-size: 20
       connectionTimeout: 30000
       idleTimeout: 600000
@@ -74,6 +74,14 @@ spring:
       suffix: .html
       enabled: true
 
+jndi:
+  datasource:
+    lookup:
+      write:
+        name: writeDatasourceJndiName
+      read:
+        name: readDatasourceJndiName
+
 
 pagehelper:
   helper-dialect: mysql
@@ -86,13 +94,14 @@ pagehelper:
   close-conn: true
   default-count: true
 
+
 # Swagger springdoc-ui Configuration
 springdoc:
   packages-to-scan: com.sptek.webfw.example.api.api1
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
-    path: swagger-ui.html            # Swagger UI 경로 => localhost:8000/demo-ui.html
+    path: swagger-ui.html         # Swagger UI 경로 => http://localhost:8080/swagger-ui.html
     tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
     operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
   api-docs:
@@ -102,3 +111,8 @@ springdoc:
   cache:
     disabled: true
 
+
+jasypt:
+  encryptor:
+    bean=encryptorBean: jasyptStringEncryptor
+    secretKey: JasyptStringEncryptor_key_Hello

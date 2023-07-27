@@ -2,8 +2,8 @@ package com.sptek.webfw.example.web.page1;
 
 import com.sptek.webfw.code.ApiErrorCode;
 import com.sptek.webfw.support.PageInfoSupport;
-import com.sptek.webfw.example.web.page1.dto.TBTest;
-import com.sptek.webfw.example.web.page1.dto.TBZipcode;
+import com.sptek.webfw.example.dto.TBTestDto;
+import com.sptek.webfw.example.dto.TBZipcodeDto;
 import com.sptek.webfw.exception.ApiBusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -67,23 +67,23 @@ public class PageTestController {
     @RequestMapping("/selectOneTest")
     public String selectOneTest(Model model) {
         log.debug("called selectOneTest");
-        TBTest tbTest = pageTestService.selectOneTest();
-        model.addAttribute("result", tbTest.toString());
+        TBTestDto tbTestDto = pageTestService.selectOneTest();
+        model.addAttribute("result", tbTestDto.toString());
         return PAGE_PATH + "simpleResultPage";
     }
 
     @RequestMapping("/selectListTest")
     public String selectListTest(Model model) {
         log.debug("called selectListTest");
-        List<TBTest> tbTests = pageTestService.selectListTest();
-        model.addAttribute("result", tbTests.toString());
+        List<TBTestDto> tbTestDtos = pageTestService.selectListTest();
+        model.addAttribute("result", tbTestDtos.toString());
         return PAGE_PATH + "simpleResultPage";
     }
 
     @RequestMapping("/selectListWithResultHandlerTest")
     public String selectListWithResultHandlerTest(Model model) {
         log.debug("called selectListWithResultHandlerTest");
-        List<TBZipcode> tBZipcode = pageTestService.selectListWithResultHandlerTest();
+        List<TBZipcodeDto> tBZipcode = pageTestService.selectListWithResultHandlerTest();
         model.addAttribute("result", tBZipcode.toString());
         return PAGE_PATH + "simpleResultPage";
     }
@@ -102,7 +102,7 @@ public class PageTestController {
         int currentPageNum = Integer.parseInt(request.getParameter("currentPageNum"));
         int setRowSizePerPage = Integer.parseInt(request.getParameter("setRowSizePerPage"));
         int setButtomPageNavigationSize = Integer.parseInt(request.getParameter("setButtomPageNavigationSize"));
-        PageInfoSupport<TBZipcode> pageInfoSupport = pageTestService.selectPaginateTest(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
+        PageInfoSupport<TBZipcodeDto> pageInfoSupport = pageTestService.selectPaginateTest(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
 
         model.addAttribute("result", pageInfoSupport.toString());
         return PAGE_PATH + "simpleResultPage";
@@ -111,12 +111,12 @@ public class PageTestController {
     @RequestMapping("/insertTest")
     public String insertTest(Model model) {
         log.debug("called insertTest");
-        TBTest tbTest = TBTest.builder()
+        TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41)
                 .c2(42)
                 .c3(43).build();
 
-        int result = pageTestService.insertTest(tbTest);
+        int result = pageTestService.insertTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_PATH + "simpleResultPage";
     }
@@ -124,12 +124,12 @@ public class PageTestController {
     @RequestMapping("/updateTest")
     public String updateTest(Model model) {
         log.debug("called updateTest");
-        TBTest tbTest = TBTest.builder()
+        TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41)
                 .c2(422)
                 .c3(433).build();
 
-        int result = pageTestService.updateTest(tbTest);
+        int result = pageTestService.updateTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_PATH + "simpleResultPage";
     }
@@ -137,10 +137,10 @@ public class PageTestController {
     @RequestMapping("/deleteTest")
     public String deleteTest(Model model) {
         log.debug("called deleteTest");
-        TBTest tbTest = TBTest.builder()
+        TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41).build();
 
-        int result = pageTestService.deleteTest(tbTest);
+        int result = pageTestService.deleteTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_PATH + "simpleResultPage";
     }
