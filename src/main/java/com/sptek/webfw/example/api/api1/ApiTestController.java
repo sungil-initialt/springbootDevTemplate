@@ -5,7 +5,10 @@ import com.sptek.webfw.code.ApiSuccessCode;
 import com.sptek.webfw.config.vo.PropertyVos;
 import com.sptek.webfw.dto.ApiSuccessResponse;
 import com.sptek.webfw.example.dto.ValidationTestDto;
+import com.sptek.webfw.example.web.page1.PageTestService;
 import com.sptek.webfw.support.CloseableHttpClientSupport;
+import com.sptek.webfw.support.MethodArgumentSupport.CustomArgument;
+import com.sptek.webfw.support.MethodArgumentSupport.CustomMyUserHandler;
 import com.sptek.webfw.support.RestTemplateSupport;
 import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
@@ -21,6 +24,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +56,9 @@ public class ApiTestController {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    private ApiTestService apiTestService;
+
     @GetMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {""})
     protected ResponseEntity<ApiSuccessResponse<String>> hello(
@@ -60,7 +67,7 @@ public class ApiTestController {
         log.error("called hello");
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, message)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @GetMapping("/projectinfo")
@@ -69,7 +76,7 @@ public class ApiTestController {
         log.error("called projectinfo");
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, projectInfo)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @GetMapping("/XssProtectSupportGet")
@@ -81,7 +88,7 @@ public class ApiTestController {
 
         String message = "XssProtectedText = " + originText;
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, message)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @PostMapping("/XssProtectSupportPost")
@@ -93,7 +100,7 @@ public class ApiTestController {
 
         String message = "XssProtectedText = " + originText;
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, message)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @RequestMapping("/xxInterceptorTest")
@@ -103,7 +110,7 @@ public class ApiTestController {
 
         String message = "see the xxInterceptor message in log";
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, message)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @RequestMapping("/closeableHttpClient")
@@ -118,7 +125,7 @@ public class ApiTestController {
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, EntityUtils.toString(httpEntity))
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @RequestMapping("/closeableHttpClientSupport")
@@ -130,7 +137,7 @@ public class ApiTestController {
         HttpEntity httpEntity = closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, CloseableHttpClientSupport.convertResponseToString(httpEntity))
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @RequestMapping("/restTemplate")
@@ -146,7 +153,7 @@ public class ApiTestController {
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, responseEntity.getBody())
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @RequestMapping("/restTemplateSupport")
@@ -156,7 +163,7 @@ public class ApiTestController {
 
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(restTestUrl, null, null);
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, responseEntity.getBody())
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
     @RequestMapping("/reqResUtil")
@@ -177,27 +184,57 @@ public class ApiTestController {
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
                 , resultMap)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
-    @PostMapping("/ValidationAnnotationPost")
-    @Operation(summary = "ValidationAnnotationPost", description = "ValidationAnnotationPost 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponse<ValidationTestDto>> ValidationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
-        log.error("called ValidationAnnotationPost");
+    @PostMapping("/validationAnnotationPost")
+    @Operation(summary = "validationAnnotationPost", description = "validationAnnotationPost 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<ValidationTestDto>> validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
+        log.error("called validationAnnotationPost");
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
                 , validationTestDto)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
-    @GetMapping("/ValidationAnnotationGet")
-    @Operation(summary = "ValidationAnnotationGet", description = "ValidationAnnotationGet 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponse<ValidationTestDto>> ValidationAnnotationGet(@ModelAttribute  @Validated ValidationTestDto validationTestDto) {
-        log.error("called ValidationAnnotationGet");
+    @GetMapping("/validationAnnotationGet")
+    @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<ValidationTestDto>> validationAnnotationGet(@ModelAttribute  @Validated ValidationTestDto validationTestDto) {
+        log.error("called validationAnnotationGet");
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
                 , validationTestDto)
-                ,ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
+    @GetMapping("/propertyConfigImport")
+    @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<String>> propertyConfigImport(@Value("${specific.value}") String specificValue) {
+        log.error("called propertyConfigImport");
+
+        return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
+                , specificValue)
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+    }
+
+
+    @GetMapping("/customMyUserHandler")
+    @Operation(summary = "customMyUserHandler", description = "customMyUserHandler 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<CustomMyUserHandler.MyUser>> customMyUserHandler(CustomMyUserHandler.MyUser myUser) {
+        log.error("called customMyUserHandler");
+
+        return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
+                , myUser)
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+    }
+
+    @GetMapping("/customMyUserHandler2")
+    @Operation(summary = "customMyUserHandler2", description = "customMyUserHandler2 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<CustomMyUserHandler.MyUser>> customMyUserHandler2(@CustomArgument  CustomMyUserHandler.MyUser myUser) {
+        log.error("called customMyUserHandler2");
+
+        return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
+                , myUser)
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+    }
 }

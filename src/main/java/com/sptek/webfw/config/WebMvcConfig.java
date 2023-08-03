@@ -7,6 +7,7 @@ import com.sptek.webfw.interceptor.ReqInfoLoggingInterceptor;
 import com.sptek.webfw.interceptor.UvLoggingInterceptor;
 import com.sptek.webfw.interceptor.XxInterceptor;
 import com.sptek.webfw.support.InterceptorMatchSupport;
+import com.sptek.webfw.support.MethodArgumentSupport.CustomMyUserHandler;
 import com.sptek.webfw.support.XssProtectSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -127,6 +132,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         converters.add(mappingJackson2HttpMessageConverter());
 
         WebMvcConfigurer.super.configureMessageConverters(converters);
+    }
+
+    @Bean
+    public CustomMyUserHandler customMyUserHandler() {
+        return new CustomMyUserHandler();
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(customMyUserHandler());
+        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 
     @Bean(name = "multipartResolver")

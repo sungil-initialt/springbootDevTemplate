@@ -3,7 +3,7 @@ package com.sptek.webfw.example.web.page1;
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
 import com.sptek.webfw.persistence.dao.MyBatisCommonDao;
-import com.sptek.webfw.support.CommServiceSupport;
+import com.sptek.webfw.support.CommonServiceSupport;
 import com.sptek.webfw.support.MybatisResultHandlerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class PageTestService extends CommServiceSupport {
+public class PageTestService extends CommonServiceSupport {
 
     @Autowired
     private MyBatisCommonDao myBatisCommonDao;

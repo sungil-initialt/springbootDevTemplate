@@ -61,7 +61,7 @@ Content-Type: application/json
 
 
 
-### validationAnnoTationt 테스트(POST)
+### validationAnnoTationt 테스트
 POST {{api-server-ver}}/ValidationAnnotationPost
 Content-Type: application/json
 
@@ -73,6 +73,20 @@ Content-Type: application/json
   "mobileNumber" : "01042983113"
 }
 
-### validationAnnoTationt 테스트(GET)
+### validationAnnoTationt 테스트
 GET {{api-server-ver}}/ValidationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
+Content-Type: application/json
+
+### validationAnnoTationt 테스트
+GET {{api-server-ver}}/propertyConfigImport
+Content-Type: application/json
+
+
+
+### customMyUserHandler 테스트
+GET {{api-server-ver}}/customMyUserHandler
+Content-Type: application/json
+
+### customMyUserHandler2 테스트
+GET {{api-server-ver}}/customMyUserHandler2
 Content-Type: application/json
