@@ -7,11 +7,11 @@ public abstract class MybatisResultHandlerSupport <T, R> {
     public void open(){
     }
 
-    public void stop(){
+    public void stop() {
         this.stopFlag = true;
     }
 
-    public boolean isStop(){
+    public boolean isStop() {
         return stopFlag;
     }
 
@@ -19,5 +19,4 @@ public abstract class MybatisResultHandlerSupport <T, R> {
     }
 
     public abstract R handleResultRow(T resultRow);
-
 }

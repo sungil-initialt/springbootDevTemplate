@@ -6,11 +6,12 @@ project-info:
 
 server:
   port: 8080
+  #스프링 에러 처리 기본 설정
   error:
-    include-exception: true
-    include-stacktrace: always
-    path: error
-    whitelabel.enabled: false
+    include-exception: true #exception 정보를 보여줄지
+    include-stacktrace: always #stacktrace 를 보여줄지
+    path: error #에러 처리에 대한 뷰 경로
+    whitelabel.enabled: false #스프링의 기본 에러 페이지를 사용할지
 
 
 logging:
@@ -37,6 +38,7 @@ spring:
   profiles:
     active: local
 
+  #write, read로 리플리케이션 구조 설정
   datasource:
     write:
       #driver-class-name: com.mysql.cj.jdbc.Driver
@@ -74,6 +76,7 @@ spring:
       suffix: .html
       enabled: true
 
+#tomcat에 설정한 jndi 값을 통해 datasource 정보를 읽는다 (실제값으로 변경 필요)
 jndi:
   datasource:
     lookup:

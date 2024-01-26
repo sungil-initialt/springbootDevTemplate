@@ -11,6 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+//rest Api에서 실패 응답 규격
+{
+  "resultCode": "GE011",
+  "resultMessage": "handle Validation Exception",
+  "inValidFieldInfos": [
+    {
+      "field": "userName",
+      "value": "s",
+      "reason": "Size error"
+    }
+  ],
+  "exceptionMessage": "Validation failed for argument [0] in protected org.springframework.http.ResponseEntity&lt;com.sptek.webfw.dto.ApiSuccessResponse&lt;com.sptek.webfw.example.dto.ValidationTestDto&gt;&gt; com.sptek.webfw.example.api.api1.ApiTestController.validationAnnotationPost(com.sptek.webfw.example.dto.ValidationTestDto): [Field error in object 'validationTestDto' on field 'userName': rejected value [s]; codes [Size.validationTestDto.userName,Size.userName,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [validationTestDto.userName,userName]; arguments []; default message [userName],20,2]; default message [Size error]] "
+}
+ */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiErrorResponse {

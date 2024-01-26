@@ -3,11 +3,11 @@ package com.sptek.webfw.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.interceptor.ReqInfoLoggingInterceptor;
 import com.sptek.webfw.interceptor.UvLoggingInterceptor;
 import com.sptek.webfw.interceptor.XxInterceptor;
 import com.sptek.webfw.support.InterceptorMatchSupport;
-import com.sptek.webfw.support.MethodArgumentSupport.CustomMyUserHandler;
 import com.sptek.webfw.support.XssProtectSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -44,8 +44,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //@formatter:off
-        String[] swaggerAndErrorExcludePathPatterns = new String[] {
+        //interceptor 제외 패턴
+        String[] interceptorExcludePathPatterns = new String[] {
                 "/v2/api-docs",
                 "/configuration/ui",
                 "/configuration/security",
@@ -55,10 +55,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 "/swagger/**",
                 "error"
         };
-
-        registry.addInterceptor(this.reqInfoLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
-        registry.addInterceptor(this.uvLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
-        registry.addInterceptor(xxInterceptorMatchSupport()).addPathPatterns("/api/**").excludePathPatterns(swaggerAndErrorExcludePathPatterns);
+        
+        //필요한 interceptor 등록
+        registry.addInterceptor(this.reqInfoLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(this.uvLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(xxInterceptorMatchSupport()).addPathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }
@@ -66,6 +67,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private HandlerInterceptor xxInterceptorMatchSupport() {
         final InterceptorMatchSupport interceptorMatchSupport = new InterceptorMatchSupport(new XxInterceptor());
 
+        //request 된 method의 타입까지 일치하는 경우에만 interceptor 적용되도록 처리할 수 있다(restfull 설계에 의해서 mothod에 따라 interceptor가 다르게 적용되는 경우 활용)
         return interceptorMatchSupport
                 .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.POST)
                 .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.PUT)
@@ -73,9 +75,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPattern("/**/xxInterceptorTest/**", HttpMethod.GET);
     }
 
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //html등에서 resource 위치를 축약해서 사용할수 있게 해준다.
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 
@@ -84,16 +86,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/static/js/");
     }
 
+    //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        //registry.addViewController("/error").setViewName("error");
+        //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정
+        registry.addViewController("/temporaryParkingPageForTest").setViewName("/pages/example/page1/temporaryParkingView");
+        registry.addViewController("/sorry").setViewName("/pages/example/page1/temporaryParkingView");
+
+        //swagger.
         registry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
     }
-
-    // application.yml 에서 thymeleaf로 설정
+    
     /*
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
+        //thymeleaf 설정을 application.yml 에서 설정하고 있어서 사용하지 않도록 처리됨
+    
+        //jsp로 설정이 필요한 경우
         registry.jsp("/WEB-INF/views/", ".jsp");
         WebMvcConfigurer.super.configureViewResolvers(registry);
     }
@@ -101,11 +110,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public ObjectMapper objectMapper() {
+        //MessageConverter 에 활용하기 위한 objectMapper를 생성, locale, timeZone등 공통요소에 대한 setting을 할수 있다.
+        
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setLocale(Locale.KOREA);
         objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 
-        objectMapper.getFactory().setCharacterEscapes(new XssProtectSupport());
+        objectMapper.getFactory().setCharacterEscapes(new XssProtectSupport()); //Xss 방지 적용
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         return objectMapper;
@@ -113,6 +124,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        //req, res 에서 message Convert로 활용하기 위한 Convertor.
+        
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(APPLICATION_JSON);
 
@@ -125,6 +138,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        //framework에서 default로 사용한 messageConvertor 설정
+        
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setDefaultCharset(StandardCharsets.UTF_8);
 
@@ -134,14 +149,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.configureMessageConverters(converters);
     }
 
-    @Bean
-    public CustomMyUserHandler customMyUserHandler() {
-        return new CustomMyUserHandler();
-    }
-
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(customMyUserHandler());
+        //controller에서 request 데이터를 object로 바인딩 해줄때 단순 바인딩이 아니라 HandlerMethodArgumentResolver를 구현한것들이 있으면 그에 따라 처리해줌.
+        //HandlerMethodArgumentResolver를 구현해논 객체를 미리 등록해 둔다.
+        resolvers.add(new ArgumentResolverForMyUser());
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 

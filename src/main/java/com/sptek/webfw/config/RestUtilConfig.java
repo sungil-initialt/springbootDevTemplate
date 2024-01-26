@@ -7,8 +7,10 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.util.Timeout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,14 +18,16 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RestUtilConfig {
-    private int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
-    private int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
-    private int HTTP_CLIENT_MAX_CONN_TOTAL = 100;
-    private int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 20;
-    private static final int IDLE_CONNECTION_TIMEOUT = 30 * 1000;
+    //todo: CloseableHttpClient 의 close 처리와 PoolingHttpClientConnectionManager shutdown 처리에 대해서 더 고민 필요함 (pool 모니터링 기능 필요)
 
-    @Bean
-    public PoolingHttpClientConnectionManager getPoolingHttpClientConnectionManager() {
+    private int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
+    private int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000; //connection pool 에서 커넥션을 얻어올때까지의 최대 시간
+    private int HTTP_CLIENT_MAX_CONN_TOTAL = 100;
+    private int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 50;
+    //private static final int IDLE_CONNECTION_TIMEOUT = 30 * 1000;
+
+
+    private PoolingHttpClientConnectionManager getPoolingHttpClientConnectionManager() {
         PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
         poolingHttpClientConnectionManager.setMaxTotal(HTTP_CLIENT_MAX_CONN_TOTAL);
         poolingHttpClientConnectionManager.setDefaultMaxPerRoute(HTTP_CLIENT_MAX_CONN_PER_ROUTE);
@@ -41,7 +45,8 @@ public class RestUtilConfig {
     }
 
     @Bean
-    public CloseableHttpClient getCloseableHttpClient() {
+    //HttpClient를 사용하지 말고 CloseableHttpClient를 @Autowired 해 사용할 수 있도록 Bean 구성함
+    public CloseableHttpClient CloseableHttpClient() {
         CloseableHttpClient closeableHttpClient = HttpClients.custom()
                 .setConnectionManager(getPoolingHttpClientConnectionManager())
                 .setDefaultRequestConfig(getRequestConfig())
@@ -51,23 +56,32 @@ public class RestUtilConfig {
     }
 
     @Bean
-    public CloseableHttpClientSupport getHttpClientSupport(){
-        CloseableHttpClientSupport myHttpClientSupport = new CloseableHttpClientSupport();
+    @DependsOn({"CloseableHttpClient"})
+    @Autowired
+    //CloseableHttpClient를 쉽게 쓸수있도록 기능 랩핑한 Bean
+    public CloseableHttpClientSupport CloseableHttpClientSupport(CloseableHttpClient closeableHttpClient){
+        CloseableHttpClientSupport myHttpClientSupport = new CloseableHttpClientSupport(closeableHttpClient);
         return myHttpClientSupport;
     }
 
     @Bean
-    public RestTemplate getRestTemplate(){
+    @DependsOn({"CloseableHttpClient"})
+    @Autowired
+    //reqConfig와 pool 관리를 내부적으로 하고 있는 RestTemplate을 @Autowired 해 사용할 수 있도록 Bean 구성함
+    public RestTemplate RestTemplate(CloseableHttpClient closeableHttpClient){
         HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        httpComponentsClientHttpRequestFactory.setHttpClient(getCloseableHttpClient());
+        httpComponentsClientHttpRequestFactory.setHttpClient(closeableHttpClient);
         RestTemplate restTemplate = new RestTemplate(httpComponentsClientHttpRequestFactory);
 
         return restTemplate;
     }
 
     @Bean
-    public RestTemplateSupport getRestTemplateSupport(){
-        RestTemplateSupport myRestTemplateSupport = new RestTemplateSupport();
+    @DependsOn({"RestTemplate"})
+    @Autowired
+    //restTemplate을 쉽게 쓸수있도록 기능 랩핑한 Bean
+    public RestTemplateSupport RestTemplateSupport(RestTemplate restTemplate){
+        RestTemplateSupport myRestTemplateSupport = new RestTemplateSupport(restTemplate);
         return myRestTemplateSupport;
     }
 

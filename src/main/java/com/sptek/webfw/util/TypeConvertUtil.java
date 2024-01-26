@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -32,13 +33,18 @@ public class TypeConvertUtil {
                 .collect(Collectors.joining(", "));
     }
 
-    public static String objectToJsonWithoutRootName(Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static String objectToJsonWithoutRootName(@Nullable Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
+        if (object == null) {
+            return "{}";
 
-        if (prettyPrintOption) {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
         } else {
-            return objectMapper.writeValueAsString(object);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            if (prettyPrintOption) {
+                return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+            } else {
+                return objectMapper.writeValueAsString(object);
+            }
         }
     }
 

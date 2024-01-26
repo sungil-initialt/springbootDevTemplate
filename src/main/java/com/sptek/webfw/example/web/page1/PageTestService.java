@@ -22,43 +22,39 @@ public class PageTestService extends CommonServiceSupport {
     private MyBatisCommonDao myBatisCommonDao;
 
     @Transactional(readOnly = true)
-    public int return1(){
+    public int returnOne(){
         return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false) //false 임으로 master 쪽으로 요청됨.
     public int replicationMasterTest(){
         return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
     }
 
-    @Transactional(readOnly = true)
-    public int replicationSlaveTest(){
+    @Transactional(readOnly = true) //true 임으로 slave 쪽으로 요청됨.
+    public int replicationSlaveTest() {
         return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
     }
 
     @Transactional(readOnly = true)
-    public TBTestDto selectOneTest(){
+    public TBTestDto selectOneTest() {
         int limit = 1;
-        TBTestDto tbTestDto = this.myBatisCommonDao.selectOne("PageTestMapper.selecWithLimit", limit);
-
-        return tbTestDto;
+        return this.myBatisCommonDao.selectOne("PageTestMapper.selecWithLimit", limit);
     }
 
     @Transactional(readOnly = true)
-    public List<TBTestDto> selectListTest(){
+    public List<TBTestDto> selectListTest() {
         int limit = 100;
-        List<TBTestDto> tbTestDtos = this.myBatisCommonDao.selectList("PageTestMapper.selecWithLimit", limit);
-
-        return tbTestDtos;
+        return this.myBatisCommonDao.selectList("PageTestMapper.selecWithLimit", limit);
     }
 
     @Transactional(readOnly = true)
     public List<TBZipcodeDto> selectListWithResultHandlerTest(){
-        MybatisResultHandlerSupport mybatisResultHandlerSupport = new MybatisResultHandlerSupport<TBZipcodeDto, TBZipcodeDto>(){
+        MybatisResultHandlerSupport mybatisResultHandlerSupport = new MybatisResultHandlerSupport<TBZipcodeDto, TBZipcodeDto>() {
             int maxProcessCount = 0;
             @Override
             public TBZipcodeDto handleResultRow(TBZipcodeDto resultRow) {
-                //전체 처리건수를 10건으로 제한하면서 zipNO 값이 12보다 작은 데이터를  제외하는 간단한 예시
+                //전체 처리건수를 10건으로 제한하면서 zipNO 값이 특정 값보다 작은 데이터를  제외하는 간단한 예시
                 maxProcessCount++;
                 if(Integer.parseInt(resultRow.getZipNo()) < 14040) return null;
                 if(maxProcessCount == 10) stop();
@@ -66,13 +62,11 @@ public class PageTestService extends CommonServiceSupport {
             }
         };
 
-        List<TBZipcodeDto> tBZipcode = this.myBatisCommonDao.selectListWithResultHandler("PageTestMapper.selectAll",
-                null, mybatisResultHandlerSupport);
-        return tBZipcode;
+        return this.myBatisCommonDao.selectListWithResultHandler("PageTestMapper.selectAll", null, mybatisResultHandlerSupport);
     }
 
     @Transactional(readOnly = true)
-    public Map<?, ?> selectMapTest(){
+    public Map<?, ?> selectMapTest() {
         int limit = 3;
         Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("PageTestMapper.selecWithLimit", limit, "c1");
 
@@ -86,20 +80,17 @@ public class PageTestService extends CommonServiceSupport {
     }
 
     @Transactional(readOnly = false)
-    public int insertTest(TBTestDto tbTestDto){
-        int result = this.myBatisCommonDao.insert("PageTestMapper.insertTbtest", tbTestDto);
-        return result;
+    public int insertTest(TBTestDto tbTestDto) {
+        return this.myBatisCommonDao.insert("PageTestMapper.insertTbtest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
-    public int updateTest(TBTestDto tbTestDto){
-        int result = this.myBatisCommonDao.insert("PageTestMapper.updateTbtest", tbTestDto);
-        return result;
+    public int updateTest(TBTestDto tbTestDto) {
+        return this.myBatisCommonDao.insert("PageTestMapper.updateTbtest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
-    public int deleteTest(TBTestDto tbTestDto){
-        int result = this.myBatisCommonDao.insert("PageTestMapper.deleteTbtest", tbTestDto);
-        return result;
+    public int deleteTest(TBTestDto tbTestDto) {
+        return this.myBatisCommonDao.insert("PageTestMapper.deleteTbtest", tbTestDto);
     }
 }

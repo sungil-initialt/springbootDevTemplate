@@ -16,7 +16,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
-
+/*
+RestController 의 GlobalException (실행중 예상하지 않은 Exception에 대한 처리로 ServiceException과 비교할 수 있음) 처리를 담당함
+Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진다. (Exception 메시지는 실제 시스템에서 생성한 메시지)
+최종 Response 응답까지 처리해 준다.
+ */
 @Slf4j
 @RestControllerAdvice(annotations = RestController.class)
 public class ApiGlobalExceptionHandler {

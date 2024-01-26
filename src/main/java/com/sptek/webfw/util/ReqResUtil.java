@@ -10,6 +10,7 @@ import java.util.Map;
 @Slf4j
 public class ReqResUtil {
 
+    //request에서 요청 uri를 가져옴
     public static String getRequestUrlString(HttpServletRequest request) {
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append("request_url=").append(request.getRequestURL());
@@ -20,6 +21,7 @@ public class ReqResUtil {
         return urlBuilder.toString();
     }
 
+    //request에서 모든 해더 정보를 추출해 Map으로 반환
     public static Map<String, String> getRequestHeaderMap(HttpServletRequest request) {
         Map<String, String> headers = new HashMap<>();
         Enumeration<String> headerNames = request.getHeaderNames();
@@ -31,10 +33,12 @@ public class ReqResUtil {
         return headers;
     }
 
+    //request에서 모든 param을 추출해 Map으로 반환
     public static Map<String, String[]> getRequestParameterMap(HttpServletRequest request) {
         return request.getParameterMap();
     }
 
+    //request에서 클라이언트의 최종 IP를 추출함
     public static String getReqUserIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
 
@@ -62,7 +66,7 @@ public class ReqResUtil {
             ip = ip.substring(0, 23);
         }
 
-        log.debug("============= CLIENT IP : [" + ip + "] =============");
+        log.debug("request client IP : {}", ip);
         return ip;
     }
 }

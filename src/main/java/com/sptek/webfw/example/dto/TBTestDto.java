@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/*
+DTO는 가능하면 builder 방식으로 사용하면 좋음
+ */
 @Data
 @Builder
 @AllArgsConstructor

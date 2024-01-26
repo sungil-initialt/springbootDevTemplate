@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TBZipcodeDto {
-
     private String zipNo;
     private String sido;
     private String sidoEng;

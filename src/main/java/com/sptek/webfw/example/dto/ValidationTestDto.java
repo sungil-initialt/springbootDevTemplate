@@ -5,14 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/*
+어노테이션을 사용하여 input 값들에 대한 validation을 처리하는 예시 (주로 많이 사용하는 것들 위주)
+이러한 어노테이션을 방식을 많이 활용하도록 권장 (EX 처리등에도 많은 이점이 있다)
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ValidationTestDto {
 
-    @NotBlank(message = "NotBlank error") //NotNull, NotEmpty 기능 포함
+
+    //NotBlank은 NotNull, NotEmpty 기능을 모두 포함함.
+    @NotBlank(message = "NotBlank error") //message값은 Exception 발생시 Exception의 메시지 값으로 처리됨.
     @Pattern(regexp = "^[a-zA-Z0-9]{1,20}$")
     private String userId;
 

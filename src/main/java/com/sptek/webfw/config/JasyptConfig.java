@@ -3,10 +3,8 @@ package com.sptek.webfw.config;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -22,11 +20,12 @@ public class JasyptConfig {
 
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-
         log.info("JASYPT_SECRET_KEY(system env): {}", jasyptSecretKey);
+
         if(StringUtils.isEmpty(jasyptSecretKey)) {
+            //jasypt를 위한 secretKey 값이 시스템 환경값으로 셋팅이 안된경우 property 에서 읽어서 처리함
             jasyptSecretKey = environment.getProperty("jasypt.encryptor.secretKey");
-            log.info("JASYPT_SECRET_KEY(system env): is not found and be injected from app properties ({})", jasyptSecretKey);
+            log.info("JASYPT_SECRET_KEY(system env): is not found and it's injected from app properties ({})", jasyptSecretKey);
         }
 
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();

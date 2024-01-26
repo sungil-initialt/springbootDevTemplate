@@ -1,67 +1,34 @@
 package com.sptek.webfw.support;
 
 import com.sptek.webfw.util.TypeConvertUtil;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpPut;
-import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.util.Timeout;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class CloseableHttpClientSupport {
-
-    private int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
-    private int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
-    private int HTTP_CLIENT_MAX_CONN_TOTAL = 3;
-    private int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 2;
-    PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
     private CloseableHttpClient closeableHttpClient;
-    public @Getter @Setter RequestConfig requestConfig;
 
-    public CloseableHttpClientSupport(){
-        poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
-        poolingHttpClientConnectionManager.setMaxTotal(HTTP_CLIENT_MAX_CONN_TOTAL);
-        poolingHttpClientConnectionManager.setDefaultMaxPerRoute(HTTP_CLIENT_MAX_CONN_PER_ROUTE);
-
-        setTimeout(DEFAULT_CONNECT_TIMEOUT, DEFAULT_CONNECTION_REQUEST_TIMEOUT);
-    }
-
-    public void setTimeout(int connectTimeout, int connectionRequestTimeout){
-        requestConfig = RequestConfig.custom()
-                .setConnectTimeout(Timeout.of(connectTimeout, TimeUnit.MILLISECONDS))
-                .setConnectionRequestTimeout(Timeout.of(connectionRequestTimeout,TimeUnit.MILLISECONDS))
-                .build();
-    }
-
-    private void setCloseableHttpClient(){
-        closeableHttpClient = HttpClients.custom()
-                .setConnectionManager(poolingHttpClientConnectionManager)
-                .setDefaultRequestConfig(requestConfig)
-                .build();
+    public CloseableHttpClientSupport(CloseableHttpClient closeableHttpClient){
+        this.closeableHttpClient = closeableHttpClient;
     }
 
     public HttpEntity requestGet(String requestUrl, @Nullable HttpHeaders headers) throws Exception {
-        setCloseableHttpClient();
-
         HttpGet httpGet = new HttpGet(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpGet.addHeader(name, value))));
 
@@ -74,38 +41,39 @@ public class CloseableHttpClientSupport {
         return requestPost(requestUrl, headers, TypeConvertUtil.objectToJsonWithoutRootName(requestBodyObject, false));
     }
 
-    public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBodyJson) throws IOException {
-        setCloseableHttpClient();
-
+    public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBody) throws IOException {
         HttpPost httpPost = new HttpPost(requestUrl);
-        httpPost.setHeader("Content-type", "application/json");
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpPost.addHeader(name, value))));
 
-        if(StringUtils.isNotBlank(requestBodyJson)) {
-            StringEntity requestEntity = new StringEntity(requestBodyJson);
+        //해더에 Content-Type이 없는 경우 default 로 json 타입으로 처리함
+        if (httpPost.getFirstHeader(HttpHeaders.CONTENT_TYPE) == null) {
+            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        }
+
+        if(StringUtils.isNotBlank(requestBody)) {
+            StringEntity requestEntity = new StringEntity(requestBody);
             httpPost.setEntity(requestEntity);
         }
 
+        log.info("closeableHttpClient identityHashCode in CloseableHttpClientSupport : {}", System.identityHashCode(closeableHttpClient));
         CloseableHttpResponse response = closeableHttpClient.execute(httpPost);
         return response.getEntity();
     }
 
     public HttpEntity requestPut(String requestUrl, @Nullable HttpHeaders headers, @Nullable Object requestBodyObject) throws IOException {
-        String bodyStr = "";
-        if(requestBodyObject != null) bodyStr = TypeConvertUtil.objectToJsonWithoutRootName(requestBodyObject, false);
-
-        return requestPut(requestUrl, headers, bodyStr);
+        return requestPut(requestUrl, headers, TypeConvertUtil.objectToJsonWithoutRootName(requestBodyObject, false));
     }
 
-    public HttpEntity requestPut(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBodyJson) throws IOException {
-        setCloseableHttpClient();
-
+    public HttpEntity requestPut(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBody) throws IOException {
         HttpPut httpPut = new HttpPut(requestUrl);
-        httpPut.setHeader("Content-type", "application/json");
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpPut.addHeader(name, value))));
 
-        if(StringUtils.isNotBlank(requestBodyJson)) {
-            StringEntity requestEntity = new StringEntity(requestBodyJson);
+        if (httpPut.getFirstHeader(HttpHeaders.CONTENT_TYPE) == null) {
+            httpPut.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        }
+
+        if(StringUtils.isNotBlank(requestBody)) {
+            StringEntity requestEntity = new StringEntity(requestBody);
             httpPut.setEntity(requestEntity);
         }
 
@@ -114,8 +82,6 @@ public class CloseableHttpClientSupport {
     }
 
     public HttpEntity requestDelete(String requestUrl, @Nullable HttpHeaders headers) throws IOException {
-        setCloseableHttpClient();
-
         HttpDelete httpDelete = new HttpDelete(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpDelete.addHeader(name, value))));
 
@@ -124,13 +90,19 @@ public class CloseableHttpClientSupport {
     }
 
     public static String convertResponseToString(HttpEntity httpEntity) throws Exception {
-        return EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
-        /*
+
+        String reponseString =EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
+        if(httpEntity != null) {EntityUtils.consume(httpEntity);}
+        return reponseString;
+        
+        //todo: response 결과를 라인별로 받아서 처리가 필요한 경우데 대한 코드로 확인 필요
+        /* 
         try (InputStreamReader inputStreamReader = new InputStreamReader(httpEntity.getContent(), StandardCharsets.UTF_8)) {
             String responseStr = new BufferedReader(inputStreamReader)
                     .lines()
                     .collect(Collectors.joining("\n"));
 
+            if(httpEntity != null) {EntityUtils.consume(httpEntity);}
             return responseStr;
         }
          */

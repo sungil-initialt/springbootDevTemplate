@@ -39,12 +39,12 @@ Content-Type: application/json
 
 
 
-### closeableHttpClientSupport 테스트
-GET {{api-server-ver}}/closeableHttpClientSupport
-Content-Type: application/json
-
 ### closeableHttpClient 테스트
 GET {{api-server-ver}}/closeableHttpClient
+Content-Type: application/json
+
+### closeableHttpClientSupport 테스트
+POST {{api-server-ver}}/closeableHttpClientSupport
 Content-Type: application/json
 
 ### restTemplate 테스트
@@ -62,19 +62,19 @@ Content-Type: application/json
 
 
 ### validationAnnoTationt 테스트
-POST {{api-server-ver}}/ValidationAnnotationPost
+POST {{api-server-ver}}/validationAnnotationPost
 Content-Type: application/json
 
 {
   "userId": "sungilry00",
-  "userName": "ss",
+  "userName": "s",
   "age": 43,
   "email": "sungilry@naver.com",
   "mobileNumber" : "01042983113"
 }
 
 ### validationAnnoTationt 테스트
-GET {{api-server-ver}}/ValidationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
+GET {{api-server-ver}}/validationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
 Content-Type: application/json
 
 ### validationAnnoTationt 테스트
@@ -84,9 +84,13 @@ Content-Type: application/json
 
 
 ### customMyUserHandler 테스트
-GET {{api-server-ver}}/customMyUserHandler
+GET {{api-server-ver}}/argumentResolverForMyUser?id=admin
 Content-Type: application/json
 
-### customMyUserHandler2 테스트
-GET {{api-server-ver}}/customMyUserHandler2
+### customMyUserHandler2 테스트1
+GET {{api-server-ver}}/argumentResolverForMyUser2?id=admin
+Content-Type: application/json
+
+### customMyUserHandler2 테스트2
+GET {{api-server-ver}}/argumentResolverForMyUser2?id=sungil
 Content-Type: application/json

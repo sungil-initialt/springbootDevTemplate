@@ -3,6 +3,8 @@ package com.sptek.webfw.code;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+//Rest API 요청이 실패일 경우 활용되는 실패코드 enum 객체
+//http 상태코드로 사용되는  HttpStatus와, responseBody에 들어가는 resultCode, resultMessage 로 구성됨
 @Getter
 public enum ApiErrorCode {
     //범용적으로 사용되고 있는 httpstatus 와 관련된 에러 (httpstatuscode를 그에 맞게 내린다)
@@ -21,17 +23,17 @@ public enum ApiErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE999", "Internal Server Error Exception"),
 
 
-
-    //내부적으로 추가된 에러코드로 (에러 상황이지만 httpstatuscode는 200으로 내린다)
-    BUSINESS_DEFAULT_ERROR(HttpStatus.OK, "BE000", "Default Error Exception"),
-    BUSINESS_INSERT_ERROR(HttpStatus.OK, "BE001", "Insert Transaction Error Exception"),
-    BUSINESS_UPDATE_ERROR(HttpStatus.OK, "BE002", "Update Transaction Error Exception"),
-    BUSINESS_DELETE_ERROR(HttpStatus.OK, "BE003", "Delete Transaction Error Exception");
+    //시스템 내부적으로 활용되는 에러코드 예시로 서비스에 맞게 추가해 나가면 된다. (todo: 이 경우 HttpStatus가 200이 맞을까? 고민해 봐야함)
+    SERVICE_DEFAULT_ERROR(HttpStatus.OK, "SE000", "Default Error Exception"),
+    SERVICE_INSERT_ERROR(HttpStatus.OK, "SE001", "Insert Transaction Error Exception"),
+    SERVICE_UPDATE_ERROR(HttpStatus.OK, "SE002", "Update Transaction Error Exception"),
+    SERVICE_DELETE_ERROR(HttpStatus.OK, "SE003", "Delete Transaction Error Exception");
 
 
     private final HttpStatus httpStatusCode;
     private final String resultCode;
     private final String resultMessage;
+
 
     ApiErrorCode(final HttpStatus httpStatusCode, final String resultCode, final String resultMessage) {
         this.httpStatusCode = httpStatusCode;

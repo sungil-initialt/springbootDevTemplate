@@ -29,8 +29,12 @@ public class DataSourceConfigWithProperty {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Bean(name = "writeDataSource")
+    @Bean(name = "writeDataSource", destroyMethod = "")
     @ConfigurationProperties(prefix = "spring.datasource.write")
+    //HikariCP를 이용하여 datasource를 관리한다.
+    //Spring이 DataSource를 필요로하는 시점에 여러개가 존재할수 있기때문에 별도의 이름을 추가해 줄수 있다. (기본은 return 타입)
+    //Spring이 bean 소멸시 자동으로 dataSource의 close를 기본으로 호출해줌으로 destroyMethod를 따로 선언하지 않아도 된다(필요한경우 사용)
+    // write용 리프리케이션.
     public DataSource writeDataSource() throws Exception {
         return DataSourceBuilder
                 .create()
@@ -38,7 +42,7 @@ public class DataSourceConfigWithProperty {
                 .build();
     }
 
-    @Bean(name = "readDataSource")
+    @Bean(name = "readDataSource", destroyMethod = "")
     @ConfigurationProperties(prefix = "spring.datasource.read")
     public DataSource readDataSource() throws Exception {
         return DataSourceBuilder
@@ -48,6 +52,8 @@ public class DataSourceConfigWithProperty {
     }
 
     @Bean(name = "routingDataSource")
+    //DataSource 가 여럿 존재할수 있기 때문에 @Qualifier통해 그 중 명확한 이름으로 선언된 것을 주입해 줄수 있다.
+    //write, read를 나눠 사용할수 있도록 ReplicationRoutingDataSource 생성
     public DataSource routingDataSource(@Qualifier("writeDataSource") DataSource writeDataSource,
                                         @Qualifier("readDataSource") DataSource readDataSource) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
@@ -63,6 +69,7 @@ public class DataSourceConfigWithProperty {
 
     @Bean(name = "dataSource")
     @DependsOn({"routingDataSource"})
+    //실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
     public DataSource routingLazyDataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
     }
@@ -71,7 +78,7 @@ public class DataSourceConfigWithProperty {
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource);
-        transactionManager.setGlobalRollbackOnParticipationFailure(false);
+        transactionManager.setGlobalRollbackOnParticipationFailure(false); //TODO
         return transactionManager;
     }
 
@@ -80,7 +87,8 @@ public class DataSourceConfigWithProperty {
         SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*config.xml")[0]);
-        //config 파일에서 설정하는 것으로 변경
+
+        //위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
         //org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
         //configuration.setMapUnderscoreToCamelCase(true);
         //configuration.setJdbcTypeForNull(JdbcType.NULL);
@@ -98,6 +106,7 @@ public class DataSourceConfigWithProperty {
 
     public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
         @Override
+        //@Transactional(readOnly = true) 를 사용하는 경우 read용 dataSource를 활용하도록 처리함으로써 속도 계선 가능.
         protected Object determineCurrentLookupKey() {
             boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
             return isReadOnly ? "read" : "write";
