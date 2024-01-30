@@ -1,7 +1,7 @@
 package com.sptek.webfw.example.api.api1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.argumentResolver.AnoCustomArgument;
+import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.code.ApiSuccessCode;
 import com.sptek.webfw.vo.PropertyVos;
@@ -108,13 +108,13 @@ public class ApiTestController {
                 , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
-    @RequestMapping("/xxInterceptorTest")
-    @Operation(summary = "xxInterceptorTest", description = "xxInterceptorTest 테스트", tags = {""})
-    //request의 method까지 구분해서 인터셉터가 적용되는지 단순히 확인하기 위한 용도로 관련 설정은 WebMvcConfig 파일에 있다.
-    protected ResponseEntity<ApiSuccessResponse<String>> xxInterceptorTest() {
-        log.info("called xxInterceptorTest");
+    @RequestMapping("/interceptorTest")
+    @Operation(summary = "interceptorTest", description = "interceptorTest 테스트", tags = {""})
+    //인터셉터들을 테스트 하기 위한 용도 (사실 아무것으로나 테스트 가능)
+    protected ResponseEntity<ApiSuccessResponse<String>> interceptorTest() {
+        log.info("called interceptorTest");
 
-        String message = "see the xxInterceptor message in log";
+        String message = "see the interceptorTest message in log";
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS, message)
                 , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }

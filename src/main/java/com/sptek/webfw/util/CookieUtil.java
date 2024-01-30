@@ -5,56 +5,56 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Set;
+/*
+CookieUtil 을 사용하지 않고 ResponseCookie 객체를 직접 builder 방식으로 사용하는게 가장 좋음.(익숙하지 않은사람을 위해 남김)
+*/
 
 @Slf4j
 public class CookieUtil {
-    private static final Logger logger = LoggerFactory.getLogger(CookieUtil.class);
 
     private static final String DEFAULT_COOKIE_PATH = "/";
 
-    public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value) {
+    public static @NotNull ResponseCookie createResponseCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, boolean isHttpOnly, boolean secure, String domain, String path, String sameSite) {
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
+                .maxAge(maxAge)
+                .httpOnly(isHttpOnly)
+                .secure(secure)
+                .domain(org.springframework.util.StringUtils.hasText(domain) ? domain : "")
+                .path(org.springframework.util.StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
+
+        Optional.ofNullable(sameSite)
+                .map(String::toLowerCase)
+                .filter(s -> Set.of("none", "lax", "strict").contains(s))
+                .ifPresentOrElse(
+                        cookieBuilder::sameSite,
+                        () -> { throw new IllegalArgumentException("Invalid SameSite value: " + sameSite); }
+                );
+
+        return cookieBuilder.build();
+    }
+
+    public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAgeSec) {
         Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(maxAgeSec);
         return cookie;
     }
     public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, boolean isHttpOnly, boolean secure, String domain, String path) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAge);
+
         cookie.setHttpOnly(isHttpOnly);
         cookie.setSecure(secure);
 
-        if (!StringUtils.isEmpty(domain)) {
-            cookie.setDomain(domain);
-        }
-
+        cookie.setDomain(!StringUtils.isEmpty(domain) ? domain : "");
         cookie.setPath(!StringUtils.isEmpty(path) ? path : DEFAULT_COOKIE_PATH);
+
         return cookie;
-    }
-
-    public static @NotNull ResponseCookie createResponseCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, boolean isHttpOnly, boolean secure, String domain, String path, String sameSite) {
-        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-            .maxAge(maxAge)
-            .httpOnly(isHttpOnly)
-            .secure(secure)
-            .domain(org.springframework.util.StringUtils.hasText(domain) ? domain : "")
-            .path(org.springframework.util.StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
-
-        if (StringUtils.hasText(sameSite)) {
-            String formattedSameSite = sameSite.toLowerCase();
-
-            if (formattedSameSite.equals("none") || formattedSameSite.equals("lax") || formattedSameSite.equals("strict")) {
-                cookieBuilder.sameSite(formattedSameSite);
-            } else {
-                throw new IllegalArgumentException("Invalid SameSite value: " + sameSite);
-            }
-        }
-
-        return cookieBuilder.build();
     }
 
     public static void addCookie(@NotNull HttpServletResponse response, @NotNull Cookie cookie) {

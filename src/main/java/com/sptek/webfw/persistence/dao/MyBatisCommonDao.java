@@ -1,6 +1,5 @@
 package com.sptek.webfw.persistence.dao;
 
-
 import com.sptek.webfw.support.MybatisResultHandlerSupport;
 import com.sptek.webfw.support.PageHelperSupport;
 import com.sptek.webfw.support.PageInfoSupport;
@@ -16,6 +15,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+/*
+mybatis를 이용한 db 기본 템플릿을 제공함
+ */
 
 @SuppressWarnings("rawtypes")
 @Slf4j
@@ -25,9 +27,6 @@ public class MyBatisCommonDao {
     @Autowired
     @Qualifier("sqlSessionTemplate")
     protected SqlSessionTemplate sqlSessionTemplate;
-
-    final private int DEFAULT_SET_ROWSIZE_PER_PAGE = 5;
-    final private int DEFAULT_SET_BUTTOM_PAGE_NAVIGATION_SIZE = 10;
 
     public <T> T selectOne(String statementId, @Nullable Object parameter) {
         return (T)(this.sqlSessionTemplate.selectOne(statementId, parameter));
@@ -60,9 +59,13 @@ public class MyBatisCommonDao {
 
     public <T> PageInfoSupport<T> selectPaginatedList(String statementId, @Nullable Object parameter,
                                                       int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
-        currentPageNum = currentPageNum == 0 ? 1 : currentPageNum;
-        setRowSizePerPage = setRowSizePerPage == 0 ? DEFAULT_SET_ROWSIZE_PER_PAGE : setRowSizePerPage;
-        setButtomPageNavigationSize = setButtomPageNavigationSize == 0 ? DEFAULT_SET_BUTTOM_PAGE_NAVIGATION_SIZE : setButtomPageNavigationSize;
+        //todo : totla 사이즈를 매번 구하지 않도록 캐싱 방안을 고려해야함
+        int defaultSetRowSizePerPage = 20;
+        int defaultSetButtomPageNavigationSize = 10;
+
+        currentPageNum = currentPageNum <= 0 ? 1 : currentPageNum;
+        setRowSizePerPage = setRowSizePerPage <= 0 ? defaultSetRowSizePerPage : setRowSizePerPage;
+        setButtomPageNavigationSize = setButtomPageNavigationSize <= 0 ? defaultSetButtomPageNavigationSize : setButtomPageNavigationSize;
 
         PageHelperSupport.setPageForSelect(currentPageNum, setRowSizePerPage);
         PageInfoSupport<T> pageInfoSupport = PageHelperSupport.selectPaginatedList((List<T>) this.sqlSessionTemplate.selectList(statementId, parameter), setButtomPageNavigationSize);

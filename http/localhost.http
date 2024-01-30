@@ -21,22 +21,21 @@ Content-Type: application/json
 }
 
 
-### xxInterceptorTest 테스트
-POST {{api-server-ver}}/xxInterceptorTest
+### interceptorTest 테스트
+GET {{api-server-ver}}/interceptorTest
 Content-Type: application/json
 
-### xxInterceptorTest 테스트
-PUT {{api-server-ver}}/xxInterceptorTest
+### interceptorTest 테스트
+POST {{api-server-ver}}/interceptorTest
 Content-Type: application/json
 
-### xxInterceptorTest 테스트
-DELETE {{api-server-ver}}/xxInterceptorTest
+### interceptorTest 테스트
+PUT {{api-server-ver}}/interceptorTest
 Content-Type: application/json
 
-### xxInterceptorTest 테스트
-GET {{api-server-ver}}/xxInterceptorTest
+### interceptorTest 테스트
+DELETE {{api-server-ver}}/interceptorTest
 Content-Type: application/json
-
 
 
 ### closeableHttpClient 테스트
@@ -67,7 +66,7 @@ Content-Type: application/json
 
 {
   "userId": "sungilry00",
-  "userName": "s",
+  "userName": "sungil",
   "age": 43,
   "email": "sungilry@naver.com",
   "mobileNumber" : "01042983113"

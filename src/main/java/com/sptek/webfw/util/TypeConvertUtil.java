@@ -70,8 +70,6 @@ public class TypeConvertUtil {
         }
     }
 
-
-
     public static Map<String, Object> jsonToMap(String json) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, new TypeReference<HashMap<String, Object>>() {});
@@ -86,11 +84,6 @@ public class TypeConvertUtil {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, type);
     }
-
-
-
-
-
 
 }
 

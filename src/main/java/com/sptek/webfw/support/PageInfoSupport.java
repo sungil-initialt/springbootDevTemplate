@@ -10,10 +10,14 @@ import java.util.List;
 @ToString
 public class PageInfoSupport<T> {
 
+    //입력 받는 파람(반환도 됨)
     int currentPageNum; //조회된 현재 페이지의 페이지 넘버
     int setRowSizePerPage; //한페이지당 노출할 row 수 (셋팅값으로 동적 변경 가능)
     int setButtomPageNavigationSize; //네비게이션바에 최대 몇개의 넘버릴을 해줄지의 값 (셋팅값으로 동적 변경 가능, 5로 셋팅시 현재 페이지가 3이면 [1, 2, 3, 4, 5], 현재 페이지가 6이면 [4, 5, 6, 7, 8], 조회된 결과 전체 페이지가 3개고 현재 페이지가 1 이면 [1, 2, 3] 으로 셋팅값보다 작을수 있음)
 
+
+
+    //반환 되는 값
     int totalPageCount; //해당 조회의 전체 페이지 수
     long totalRowCount; //해당 조회의 전체 row 건수
     int currentPageRowCount; //현재 페이지에 노출된 row 건수(보통의 경우 setRowSizePerPage 값과 같겠지만 조회 전체 건수가 한페이지 개수보다 적거나 마지막 페이지의 경우 setRowSizePerPage 보다 작을 수 있다)

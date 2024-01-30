@@ -1,5 +1,6 @@
 package com.sptek.webfw.example.web.page1;
 
+import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
 import com.sptek.webfw.support.PageInfoSupport;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -17,17 +19,28 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class PageTestController {
+public class ViewTestController {
     private final String PAGE_BASE_PATH = "pages/example/page1/";
     @Autowired
-    private PageTestService pageTestService;
+    private ViewTestService viewTestService;
 
     //기본 테스트
     @RequestMapping("/welcome")
     public String welcome(Model model) {
         log.debug("called welcome");
         model.addAttribute("message", "welcome");
+
         return PAGE_BASE_PATH + "welcome";
+    }
+
+    @RequestMapping("/interceptorTest")
+    @AnoInterceptorCheck
+    public String interceptorTest(Model model) {
+        log.debug("called interceptorTest : first log");
+        model.addAttribute("message", "welcome");
+
+        log.debug("called interceptorTest : just before return");
+        return PAGE_BASE_PATH + "interceptorTest";
     }
 
     //내부 로직에직 발생한 EX에 대한 처리.
@@ -45,7 +58,7 @@ public class PageTestController {
     @RequestMapping("/dbConnectTest")
     public String dbConnectTest(Model model) {
         log.debug("called dbConnectTest");
-        int result = pageTestService.returnOne();
+        int result = viewTestService.returnOne();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
@@ -53,7 +66,7 @@ public class PageTestController {
     @RequestMapping("/replicationMasterTest")
     public String replicationMasterTest(Model model) {
         log.debug("called replicationMasterTest");
-        int result = pageTestService.replicationMasterTest();
+        int result = viewTestService.replicationMasterTest();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
@@ -61,7 +74,7 @@ public class PageTestController {
     @RequestMapping("/replicationSlaveTest")
     public String replicationSlaveTest(Model model) {
         log.debug("called replicationSlaveTest");
-        int result = pageTestService.replicationSlaveTest();
+        int result = viewTestService.replicationSlaveTest();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
@@ -69,7 +82,7 @@ public class PageTestController {
     @RequestMapping("/selectOneTest")
     public String selectOneTest(Model model) {
         log.debug("called selectOneTest");
-        TBTestDto tbTestDto = pageTestService.selectOneTest();
+        TBTestDto tbTestDto = viewTestService.selectOneTest();
         model.addAttribute("result", tbTestDto.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
@@ -77,34 +90,40 @@ public class PageTestController {
     @RequestMapping("/selectListTest")
     public String selectListTest(Model model) {
         log.debug("called selectListTest");
-        List<TBTestDto> tbTestDtos = pageTestService.selectListTest();
+        List<TBTestDto> tbTestDtos = viewTestService.selectListTest();
         model.addAttribute("result", tbTestDtos.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
     @RequestMapping("/selectListWithResultHandlerTest")
+    //ResultHandler를 이용해서 db에서 result row를 하나씩 읽어와 각 row에 대한 처리가 가능함
     public String selectListWithResultHandlerTest(Model model) {
         log.debug("called selectListWithResultHandlerTest");
-        List<TBZipcodeDto> tBZipcode = pageTestService.selectListWithResultHandlerTest();
+        List<TBZipcodeDto> tBZipcode = viewTestService.selectListWithResultHandlerTest();
         model.addAttribute("result", tBZipcode.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
     @RequestMapping("/selectMapTest")
+    //result 결과 list를 map 형태로 받아올수 있다.
     public String selectMapTest(Model model) {
         log.debug("called selectMapTest");
-        Map<?, ?> resultMap = pageTestService.selectMapTest();
+        Map<?, ?> resultMap = viewTestService.selectMapTest();
         model.addAttribute("result", resultMap.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
     @RequestMapping("/selectPaginateTest")
-    public String selectPaginateTest(HttpServletRequest request, Model model) {
+    //PageHelperSupport를 이용해서 페이지 처리가 가능한 형태로 result row를 읽어 온다.
+    public String selectPaginateTest(HttpServletRequest request,
+                                     @RequestParam(name = "currentPageNum", required = false, defaultValue = "0") int currentPageNum,
+                                     @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
+                                     @RequestParam(name = "setButtomPageNavigationSize", required = false, defaultValue = "0") int setButtomPageNavigationSize,
+                                     Model model) {
+        //값이 0일때는 디폴트값으로 적용됨
         log.debug("called selectPaginateTest");
-        int currentPageNum = Integer.parseInt(request.getParameter("currentPageNum"));
-        int setRowSizePerPage = Integer.parseInt(request.getParameter("setRowSizePerPage"));
-        int setButtomPageNavigationSize = Integer.parseInt(request.getParameter("setButtomPageNavigationSize"));
-        PageInfoSupport<TBZipcodeDto> pageInfoSupport = pageTestService.selectPaginateTest(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
+
+        PageInfoSupport<TBZipcodeDto> pageInfoSupport = viewTestService.selectPaginateTest(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
 
         model.addAttribute("result", pageInfoSupport.toString());
         return PAGE_BASE_PATH + "simpleModelView";
@@ -118,7 +137,7 @@ public class PageTestController {
                 .c2(42)
                 .c3(43).build();
 
-        int result = pageTestService.insertTest(tbTestDto);
+        int result = viewTestService.insertTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
@@ -131,7 +150,7 @@ public class PageTestController {
                 .c2(422)
                 .c3(433).build();
 
-        int result = pageTestService.updateTest(tbTestDto);
+        int result = viewTestService.updateTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
@@ -142,7 +161,7 @@ public class PageTestController {
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41).build();
 
-        int result = pageTestService.deleteTest(tbTestDto);
+        int result = viewTestService.deleteTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }

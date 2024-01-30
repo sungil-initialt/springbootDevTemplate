@@ -12,8 +12,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/*
+org.springframework.session:spring-session-data-redis 을 사용하게 되면 SessionRepositoryFilter 가 자동 등록되게 되는데
+이로인해 결과적으로 불필요한 session이 redis 등에 저장되는 경우가 발생한다. (기타 단순 resource 요청, 헬스체크등의 요청과 같은 경우)
+이를 회피하기 위한 필터임.
+ */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE) //최상위 필터로 적용
 public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
 
     @Override
@@ -25,6 +30,7 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
     }
 
     private boolean isStaticResources(HttpServletRequest request) {
+        //제외하고 싶은 extention 추가하면 됨
         String url = request.getRequestURL().toString();
         String[] staticResourceExtentions = {".js", ".css", ".json", ".eot", ".otf", "woff", ".png", ".jpg", ".gif", ".ico"};
 
@@ -36,7 +42,8 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
     }
 
     private boolean isExcludePath(HttpServletRequest request) {
-        String[] excludePathPatterns = {"/error", "/health-chck"};
+        //제외하고 싶은 path 추가하면 됨
+        String[] excludePathPatterns = {"/js", "/css", "/img", "/image", "/images", "/error", "/health"};
         String reqPath = request.getServletPath();
 
         AntPathMatcher pathMatcher = new AntPathMatcher();

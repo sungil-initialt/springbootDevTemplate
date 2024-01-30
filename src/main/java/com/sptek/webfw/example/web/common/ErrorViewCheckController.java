@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /*
-해당 컨트롤러는 에러 페이지의 모양을 단순히 확인하기 위한 용도이다.(이 컨트롤러가 없으면 페이지를 확인하기 위해 실제 에러를 발생해야 함)
+해당 컨트롤러는 error 페이지의 UI를 단순히 확인하기 위한 용도이다.(이 컨트롤러가 없으면 페이지 UI를 확인하기 위해 실제 에러를 발생해야 함)
  */
 @Slf4j
 @Controller

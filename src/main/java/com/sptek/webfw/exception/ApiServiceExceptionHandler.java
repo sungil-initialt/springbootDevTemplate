@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /*
-RestController 의 ServiceException 처리를 담당함
-ApiServiceException 한 종류에 대한 처리만을 담당하고 api 응답을 받은쪽에서는 에러코드를 통해 적절한 처리를 함.
-최종 Response 응답까지 처리해 준다.
+서비스 영역의 Exception 처리를 담당함 (ex: id/pw가 일치하지 않습니다, 구매 내역이 없습니다. 등)
  */
 @Slf4j
 @RestControllerAdvice(annotations = RestController.class)

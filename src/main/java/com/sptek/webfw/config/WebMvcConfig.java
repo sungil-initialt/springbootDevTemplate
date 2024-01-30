@@ -4,9 +4,10 @@ package com.sptek.webfw.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
-import com.sptek.webfw.interceptor.ReqInfoLoggingInterceptor;
-import com.sptek.webfw.interceptor.UvLoggingInterceptor;
-import com.sptek.webfw.interceptor.XxInterceptor;
+import com.sptek.webfw.interceptor.ExampleInterceptor;
+import com.sptek.webfw.interceptor.RequestInfoInterceptor;
+import com.sptek.webfw.interceptor.UvInterceptor;
+import com.sptek.webfw.interceptor.ReqMethodCheckInterceptor;
 import com.sptek.webfw.support.InterceptorMatchSupport;
 import com.sptek.webfw.support.XssProtectSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
-    private ReqInfoLoggingInterceptor reqInfoLoggingInterceptor;
+    private ExampleInterceptor exampleInterceptor;
     @Autowired
-    private UvLoggingInterceptor uvLoggingInterceptor;
+    private RequestInfoInterceptor requestInfoInterceptor;
+    @Autowired
+    private UvInterceptor uvInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -57,15 +60,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         };
         
         //필요한 interceptor 등록
-        registry.addInterceptor(this.reqInfoLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
-        registry.addInterceptor(this.uvLoggingInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
-        registry.addInterceptor(xxInterceptorMatchSupport()).addPathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
+        registry.addInterceptor(ReqMethodCheckInterceptorMatchSupport()).addPathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
-    private HandlerInterceptor xxInterceptorMatchSupport() {
-        final InterceptorMatchSupport interceptorMatchSupport = new InterceptorMatchSupport(new XxInterceptor());
+    private HandlerInterceptor ReqMethodCheckInterceptorMatchSupport() {
+        final InterceptorMatchSupport interceptorMatchSupport = new InterceptorMatchSupport(new ReqMethodCheckInterceptor());
 
         //request 된 method의 타입까지 일치하는 경우에만 interceptor 적용되도록 처리할 수 있다(restfull 설계에 의해서 mothod에 따라 interceptor가 다르게 적용되는 경우 활용)
         return interceptorMatchSupport

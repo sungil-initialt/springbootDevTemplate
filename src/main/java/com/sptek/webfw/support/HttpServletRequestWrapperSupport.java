@@ -8,6 +8,9 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
+/*
+컨트럴러 이전단계(필터등)에서 request ioStream이 읽어진 경우 이를 대체하기 위한 대체 request의 역할을 함
+ */
 public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper {
 
     private byte[] rawData;

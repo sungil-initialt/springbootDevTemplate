@@ -1,6 +1,7 @@
 package com.sptek.webfw.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.sptek.webfw.code.ApiErrorCode;
 import com.sptek.webfw.dto.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.io.IOException;
 /*
 RestController 의 GlobalException (실행중 예상하지 않은 Exception에 대한 처리로 ServiceException과 비교할 수 있음) 처리를 담당함
-Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진다. (Exception 메시지는 실제 시스템에서 생성한 메시지)
+Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진다. (Exception 메시지는 실제 발생한 Exception의 메시지를 사용한다.)
 최종 Response 응답까지 처리해 준다.
  */
 @Slf4j
@@ -27,7 +28,7 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error("handleMethodArgumentNotValidException", ex);
+        log.error("MethodArgumentNotValidException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.NOT_VALID_ERROR, ex.getMessage(), ex.getBindingResult());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.NOT_VALID_ERROR.getHttpStatusCode());
@@ -50,24 +51,24 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    protected ResponseEntity<ApiErrorResponse> handleMissingRequestHeaderExceptionException(MissingServletRequestParameterException ex) {
-        log.error("handleMissingServletRequestParameterException", ex);
+    protected ResponseEntity<ApiErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        log.error("MissingServletRequestParameterException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.MISSING_REQUEST_PARAMETER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.MISSING_REQUEST_PARAMETER_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    protected ResponseEntity<ApiErrorResponse> handleBadRequestException(HttpClientErrorException ex) {
-        log.error("HttpClientErrorException.BadRequest", ex);
+    protected ResponseEntity<ApiErrorResponse> handleHttpClientErrorException(HttpClientErrorException ex) {
+        log.error("HttpClientErrorException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.BAD_REQUEST_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.BAD_REQUEST_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    protected ResponseEntity<ApiErrorResponse> handleNoHandlerFoundExceptionException(NoHandlerFoundException ex) {
-        log.error("handleNoHandlerFoundExceptionException", ex);
+    protected ResponseEntity<ApiErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        log.error("NoHandlerFoundException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.NOT_FOUND_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.NOT_FOUND_ERROR.getHttpStatusCode());
@@ -75,7 +76,7 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     protected ResponseEntity<ApiErrorResponse> handleNullPointerException(NullPointerException ex) {
-        log.error("handleNullPointerException", ex);
+        log.error("NullPointerException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.NULL_POINT_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.NULL_POINT_ERROR.getHttpStatusCode());
@@ -83,25 +84,23 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ApiErrorResponse> handleIOException(IOException ex) {
-        log.error("handleIOException", ex);
+        log.error("IOException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.IO_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.IO_ERROR.getHttpStatusCode());
     }
 
-    /*
     @ExceptionHandler(JsonParseException.class)
-    protected ResponseEntity<ApiErrorResponse> handleJsonParseExceptionException(JsonParseException ex) {
-        log.error("handleJsonParseExceptionException", ex);
+    protected ResponseEntity<ApiErrorResponse> handleJsonParseException(JsonParseException ex) {
+        log.error("JsonParseException", ex);
 
-        final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ErrorCode.JSON_PARSE_ERROR, ex.getMessage());
-        return new ResponseEntity<>(apiErrorResponse, ErrorCode.JSON_PARSE_ERROR.getHttpStatusCode());
+        final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.JSON_PARSE_ERROR, ex.getMessage());
+        return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.JSON_PARSE_ERROR.getHttpStatusCode());
     }
-     */
 
     @ExceptionHandler(JsonProcessingException.class)
     protected ResponseEntity<ApiErrorResponse> handleJsonProcessingException(JsonProcessingException ex) {
-        log.error("handleJsonProcessingException", ex);
+        log.error("JsonProcessingException", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.REQUEST_BODY_MISSING_ERROR.getHttpStatusCode());
@@ -109,7 +108,7 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected final ResponseEntity<ApiErrorResponse> handleAllExceptions(Exception ex) {
-        log.error("Exception", ex);
+        log.error("handleAllExceptions", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ApiErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.INTERNAL_SERVER_ERROR.getHttpStatusCode());

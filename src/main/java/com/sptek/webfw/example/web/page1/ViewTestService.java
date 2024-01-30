@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class PageTestService extends CommonServiceSupport {
+public class ViewTestService extends CommonServiceSupport {
 
     @Autowired
     private MyBatisCommonDao myBatisCommonDao;
@@ -38,28 +38,47 @@ public class PageTestService extends CommonServiceSupport {
 
     @Transactional(readOnly = true)
     public TBTestDto selectOneTest() {
-        int limit = 1;
-        return this.myBatisCommonDao.selectOne("PageTestMapper.selecWithLimit", limit);
+        int SqlParamForlimit = 1;
+        return this.myBatisCommonDao.selectOne("PageTestMapper.selecWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
     public List<TBTestDto> selectListTest() {
-        int limit = 100;
-        return this.myBatisCommonDao.selectList("PageTestMapper.selecWithLimit", limit);
+        int SqlParamForlimit = 100;
+        return this.myBatisCommonDao.selectList("PageTestMapper.selecWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
+    //DB로 부터 result row를 하나씩 받아와 처리하는 용도 (대용량 결과라 한번에 받기 어려운 경우 또는 result row의 결과를 보고 처리가 필요한 경우 사용)
     public List<TBZipcodeDto> selectListWithResultHandlerTest(){
         MybatisResultHandlerSupport mybatisResultHandlerSupport = new MybatisResultHandlerSupport<TBZipcodeDto, TBZipcodeDto>() {
-            int maxProcessCount = 0;
+            int maxCount = 0;
+
             @Override
+            //result row 단위로 해야할 작업을 정의한다.
             public TBZipcodeDto handleResultRow(TBZipcodeDto resultRow) {
-                //전체 처리건수를 10건으로 제한하면서 zipNO 값이 특정 값보다 작은 데이터를  제외하는 간단한 예시
-                maxProcessCount++;
+                //ex) 전체 처리건수를 10건으로 제한하면서 zipNO 값이 특정 값보다 작은 데이터를 제외하는 간단한 예시
+                maxCount++;
                 if(Integer.parseInt(resultRow.getZipNo()) < 14040) return null;
-                if(maxProcessCount == 10) stop();
+                if(maxCount == 10) stop();
                 return resultRow;
             }
+
+            //필요시 override
+            /*
+            @Override
+            public void open(){
+                log.info("called MybatisResultHandlerSupport open");
+            }
+
+             */
+            //필요시 override
+            /*
+            @Override
+            public void close(){
+                log.info("called MybatisResultHandlerSupport close");
+            }
+             */
         };
 
         return this.myBatisCommonDao.selectListWithResultHandler("PageTestMapper.selectAll", null, mybatisResultHandlerSupport);
@@ -67,13 +86,16 @@ public class PageTestService extends CommonServiceSupport {
 
     @Transactional(readOnly = true)
     public Map<?, ?> selectMapTest() {
-        int limit = 3;
-        Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("PageTestMapper.selecWithLimit", limit, "c1");
+        int SqlParamForlimit = 3;
+        //"컬럼명 c1의 값을 map의 key값으로 하여 Map을 생성한다.
+        Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("PageTestMapper.selecWithLimit", SqlParamForlimit, "c1");
 
         return resultMap;
     }
 
     @Transactional(readOnly = true)
+    //result row의 페이징 처리를 위한 예시
+    //파람의 상세 내용은 PageInfoSupport 클레스에서 확인가능
     public PageInfoSupport<TBZipcodeDto> selectPaginateTest(int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
         return this.myBatisCommonDao.selectPaginatedList("PageTestMapper.selectAll", null,
                 currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
