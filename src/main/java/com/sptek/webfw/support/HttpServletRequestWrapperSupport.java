@@ -9,7 +9,8 @@ import org.apache.commons.io.IOUtils;
 import java.io.*;
 
 /*
-컨트럴러 이전단계(필터등)에서 request ioStream이 읽어진 경우 이를 대체하기 위한 대체 request의 역할을 함
+Controller 이전단계(필터등)에서 request의 ioStream이 읽어진 경우 이를 대체하기 위한 대체 request 용도임
+(한번 읽어진 request는 controller 에서 다시 읽을수 없음)
  */
 public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper {
 

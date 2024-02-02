@@ -36,6 +36,7 @@ public class MyBatisCommonDao {
         return  (List<T>) this.sqlSessionTemplate.selectList(statementId, parameter);
     }
 
+    //DB로 부터 result row를 하나씩 받아가며 중간처리 작업을 진행할 수 있게 해준다.
     public <T, R> List<R> selectListWithResultHandler(String statementId, Object parameter,
                                                       final MybatisResultHandlerSupport<T, R> mybatisResultHandlerSupport) {
         final List<R> finalHeandledResults = new ArrayList<R>();
@@ -44,8 +45,8 @@ public class MyBatisCommonDao {
             this.sqlSessionTemplate.select(statementId, parameter, new ResultHandler() {
                 @Override
                 public void handleResult(ResultContext context) {
-                    R HandledResult = mybatisResultHandlerSupport.handleResultRow((T) context.getResultObject());
-                    if (HandledResult != null) finalHeandledResults.add(HandledResult);
+                    R handledResult = mybatisResultHandlerSupport.handleResultRow((T) context.getResultObject());
+                    if (handledResult != null) finalHeandledResults.add(handledResult);
                     if (mybatisResultHandlerSupport.isStop()) context.stop();
                 }
             });

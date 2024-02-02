@@ -11,6 +11,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 /*
 인터셉터를 만들때 레퍼런스용
+<로그 결과>
+getMethod : interceptorTest
+getBeanType : com.sptek.webfw.example.api.api1.ApiTestController
+getReturnType : org.springframework.http.ResponseEntity
+hasMethodAnnotation : false
  */
 @Component
 @Slf4j

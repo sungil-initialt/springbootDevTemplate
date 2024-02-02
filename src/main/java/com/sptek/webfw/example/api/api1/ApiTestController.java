@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.code.ApiSuccessCode;
+import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.vo.PropertyVos;
 import com.sptek.webfw.dto.ApiSuccessResponse;
 import com.sptek.webfw.example.dto.ValidationTestDto;
@@ -37,11 +38,11 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-//v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml 타입에 응답할수 있도록 처리 필요)
+//v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 @RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 //swagger
 @Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹")
-public class ApiTestController {
+public class ApiTestController extends CommonControllerSupport {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
     @Autowired

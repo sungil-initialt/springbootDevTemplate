@@ -17,9 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/*
+오브젝트 또는 데이터 타입과 관련한 변경 유틸
+ */
 @Slf4j
 public class TypeConvertUtil {
-
     public static String strMapToString(Map<String, String> originMap){
         return originMap.entrySet()
                 .stream()

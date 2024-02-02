@@ -13,6 +13,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
+/*
+RestTemplate을 쉽게 사용하기 위한 클레스로 직접 생성(new) 하지 않고 @Autowired로 주입받아 사용해야 한다.
+ */
 public class RestTemplateSupport{
 
     private RestTemplate restTemplate;

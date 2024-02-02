@@ -3,6 +3,7 @@ package com.sptek.webfw.example.web.page1;
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
+import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class ViewTestController {
+public class ViewTestController extends CommonControllerSupport {
     private final String PAGE_BASE_PATH = "pages/example/page1/";
     @Autowired
     private ViewTestService viewTestService;

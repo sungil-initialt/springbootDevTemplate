@@ -22,19 +22,19 @@ Content-Type: application/json
 
 
 ### interceptorTest 테스트
-GET {{api-server-ver}}/interceptorTest
+GET localhost:8080/api/v2/interceptorTest
 Content-Type: application/json
 
 ### interceptorTest 테스트
-POST {{api-server-ver}}/interceptorTest
+POST localhost:8080/api/v2/interceptorTest
 Content-Type: application/json
 
 ### interceptorTest 테스트
-PUT {{api-server-ver}}/interceptorTest
+PUT localhost:8080/api/v1/interceptorTest
 Content-Type: application/json
 
 ### interceptorTest 테스트
-DELETE {{api-server-ver}}/interceptorTest
+DELETE localhost:8080/api/v1/interceptorTest
 Content-Type: application/json
 
 

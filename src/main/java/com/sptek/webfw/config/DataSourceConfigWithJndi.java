@@ -25,7 +25,8 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@Profile(value = { "prd" })
+@Profile(value = { "prd" }) //해당 Configuration은 프로파일이 prd 일때만 적용된다.
+
 //todo todcat JNDI 방식에 대해 실제 테스트는 해보지 않았음
 public class DataSourceConfigWithJndi extends DataSourceConfigWithProperty{
     @Autowired

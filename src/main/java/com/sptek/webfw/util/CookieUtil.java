@@ -7,10 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 /*
 CookieUtil 을 사용하지 않고 ResponseCookie 객체를 직접 builder 방식으로 사용하는게 가장 좋음.(익숙하지 않은사람을 위해 남김)
 */
@@ -44,6 +49,7 @@ public class CookieUtil {
         cookie.setMaxAge(maxAgeSec);
         return cookie;
     }
+
     public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, boolean isHttpOnly, boolean secure, String domain, String path) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAge);
@@ -57,36 +63,42 @@ public class CookieUtil {
         return cookie;
     }
 
+
+    public static void addCookie(@NotNull Cookie cookie) {
+        addCookie(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse(), cookie);
+    }
     public static void addCookie(@NotNull HttpServletResponse response, @NotNull Cookie cookie) {
         response.addCookie(cookie);
-
-        if (log.isDebugEnabled()) {
-            log.debug("addCookie : {}", cookie.toString());
-        }
+        log.debug("addCookie : {}", cookie.toString());
     }
 
+
+    public static void addResponseCookie(@NotNull ResponseCookie responseCookie) {
+       addResponseCookie(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse(), responseCookie);
+    }
     public static void addResponseCookie(@NotNull HttpServletResponse response, @NotNull ResponseCookie responseCookie) {
         response.addHeader("Set-Cookie", responseCookie.toString());
-
-        if (log.isDebugEnabled()) {
-            log.debug("addResponseCookie : {}", responseCookie.toString());
-        }
+        log.debug("addResponseCookie : {}", responseCookie.toString());
     }
 
-    public static ArrayList<Cookie> getCookies(@NotNull HttpServletRequest request, @NotNull String name) {
-        Cookie cookies[] = request.getCookies();
-        ArrayList<Cookie> resultCookieList = new ArrayList<>();
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (name.equals(cookie.getName())) {
-                    resultCookieList.add(cookie);
-                }
-            }
-        }
+    public static ArrayList<Cookie> getCookies(@NotNull String name) {
+        return getCookies(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest(), name);
+    }
+    public static ArrayList<Cookie> getCookies(@NotNull HttpServletRequest request, @NotNull String name) {
+        ArrayList<Cookie> resultCookieList = Optional.ofNullable(request.getCookies())
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .filter(cookie -> name.equals(cookie.getName()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         return resultCookieList;
     }
 
+
+    public static void deleteCookie(@NotNull String name) {
+        deleteCookie(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse(), name);
+    }
     public static void deleteCookie(@NotNull HttpServletResponse response, @NotNull String name) {
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
@@ -96,12 +108,12 @@ public class CookieUtil {
     }
 
 
-
-    public class CookieUtilEx extends CookieUtil {
-        public static void deleteCookies(@NotNull HttpServletResponse response, @NotNull String... cookieNames) {
-            for(String cookieName : cookieNames){
-                deleteCookie(response, cookieName);
-            }
+    public static void deleteCookies(@NotNull String... cookieNames) {
+        deleteCookies(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse(), cookieNames);
+    }
+    public static void deleteCookies(@NotNull HttpServletResponse response, @NotNull String... cookieNames) {
+        for(String cookieName : cookieNames){
+            deleteCookie(response, cookieName);
         }
     }
 }

@@ -17,43 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class RestUtilConfig {
-    //todo: CloseableHttpClient 의 close 처리와 PoolingHttpClientConnectionManager shutdown 처리에 대해서 더 고민 필요함 (pool 모니터링 기능 필요)
-
-    private int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
-    private int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000; //connection pool 에서 커넥션을 얻어올때까지의 최대 시간
-    private int HTTP_CLIENT_MAX_CONN_TOTAL = 100;
-    private int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 50;
-    //private static final int IDLE_CONNECTION_TIMEOUT = 30 * 1000;
-
-
-    private PoolingHttpClientConnectionManager getPoolingHttpClientConnectionManager() {
-        PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
-        poolingHttpClientConnectionManager.setMaxTotal(HTTP_CLIENT_MAX_CONN_TOTAL);
-        poolingHttpClientConnectionManager.setDefaultMaxPerRoute(HTTP_CLIENT_MAX_CONN_PER_ROUTE);
-
-        return poolingHttpClientConnectionManager;
-    }
-
-    private RequestConfig getRequestConfig(){
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(Timeout.of(DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS))
-                .setConnectionRequestTimeout(Timeout.of(DEFAULT_CONNECTION_REQUEST_TIMEOUT,TimeUnit.MILLISECONDS))
-                .build();
-
-        return requestConfig;
-    }
-
-    @Bean
-    //HttpClient를 사용하지 말고 CloseableHttpClient를 @Autowired 해 사용할 수 있도록 Bean 구성함
-    public CloseableHttpClient CloseableHttpClient() {
-        CloseableHttpClient closeableHttpClient = HttpClients.custom()
-                .setConnectionManager(getPoolingHttpClientConnectionManager())
-                .setDefaultRequestConfig(getRequestConfig())
-                .build();
-
-        return closeableHttpClient;
-    }
+public class RestToolConfig {
 
     @Bean
     @DependsOn({"CloseableHttpClient"})
@@ -85,4 +49,39 @@ public class RestUtilConfig {
         return myRestTemplateSupport;
     }
 
+
+
+    private PoolingHttpClientConnectionManager getPoolingHttpClientConnectionManager() {
+        int HTTP_CLIENT_MAX_CONN_TOTAL = 100;
+        int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 50;
+
+        PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+        poolingHttpClientConnectionManager.setMaxTotal(HTTP_CLIENT_MAX_CONN_TOTAL);
+        poolingHttpClientConnectionManager.setDefaultMaxPerRoute(HTTP_CLIENT_MAX_CONN_PER_ROUTE);
+
+        return poolingHttpClientConnectionManager;
+    }
+
+    private RequestConfig getRequestConfig(){
+        int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
+        int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000; //connection pool 에서 커넥션을 얻어올때까지의 최대 시간
+
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(Timeout.of(DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS))
+                .setConnectionRequestTimeout(Timeout.of(DEFAULT_CONNECTION_REQUEST_TIMEOUT,TimeUnit.MILLISECONDS))
+                .build();
+
+        return requestConfig;
+    }
+
+    @Bean
+    //HttpClient를 사용하지 말고 CloseableHttpClient를 @Autowired 해 사용할 수 있도록 Bean 구성함
+    public CloseableHttpClient CloseableHttpClient() {
+        CloseableHttpClient closeableHttpClient = HttpClients.custom()
+                .setConnectionManager(getPoolingHttpClientConnectionManager())
+                .setDefaultRequestConfig(getRequestConfig())
+                .build();
+
+        return closeableHttpClient;
+    }
 }

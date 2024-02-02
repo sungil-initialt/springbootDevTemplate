@@ -5,6 +5,12 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+/*
+온픈 소스인 PageHelper Lib에서 사용하는 변수를 재 정의한 클레스 (변수명이 직관적이지 않아서..)
+게시판등에 활동할 수 있는 페이징 처리가 가능한 result 정보를 얻는데 활용
+특별한 버그가 없는한 수정할 부분은 없다.
+실제 사용은 MybatisCommonDao 의 selectPaginatedList()를 이용하면 됨
+ */
 
 @Getter
 @ToString

@@ -10,6 +10,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Optional;
+
 /*
 UV 관련 처리를 위한 인터셉터
  */
@@ -25,14 +27,16 @@ public class UvInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(CookieUtil.getCookies(request, uvCheckCookieName).size() == 0){
-            log.info("UvInterceptor : created new");
-        }
+        String checkMsg = Optional.ofNullable(CookieUtil.getCookies(uvCheckCookieName))
+                .filter(cookies -> !cookies.isEmpty())
+                .map(cookies -> "update expire time")
+                .orElse("created new");
+
+        log.info("UvInterceptor : {}", checkMsg);
 
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(uvCheckCookieName, uvCheckCookieValue)
                 .maxAge(uvCheckCookieMaxAgeSec);
-
-        CookieUtil.addResponseCookie(response, cookieBuilder.build());
+        CookieUtil.addResponseCookie(cookieBuilder.build());
 
         try {
             //처리하고 싶은 내옹 추가(selectOneTest()은 예시)

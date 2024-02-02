@@ -7,22 +7,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.HandlerInterceptor;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/*/
+인터셉터가 특정 메소드(GET, POST, PUT, DELETE 등)를 구분해서 동작해야 하는 경우 InterceptorMatchSupport 를 통해 해당 인터셉터를 등록하도록 한다.
+ */
 @Slf4j
-public class InterceptorMatchSupport  implements HandlerInterceptor {
+public class ReqMethodCheckInterceptorSupport implements HandlerInterceptor {
 
     private final HandlerInterceptor handlerInterceptor;
     private final MatchInfoContainer matchInfoContainer;
 
-    public InterceptorMatchSupport(HandlerInterceptor handlerInterceptor) {
+    public ReqMethodCheckInterceptorSupport(HandlerInterceptor handlerInterceptor) {
         this.handlerInterceptor = handlerInterceptor;
         this.matchInfoContainer = new MatchInfoContainer();
     }
@@ -35,16 +35,16 @@ public class InterceptorMatchSupport  implements HandlerInterceptor {
         return true;
     }
 
-    public InterceptorMatchSupport includePathPattern(String pathPattern, HttpMethod pathMethod) {
+    //사용할 경우가 있을까?
+    public ReqMethodCheckInterceptorSupport includePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.includePathPattern(pathPattern, pathMethod);
         return this;
     }
 
-    public InterceptorMatchSupport excludePathPattern(String pathPattern, HttpMethod pathMethod) {
+    public ReqMethodCheckInterceptorSupport excludePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.excludePathPattern(pathPattern, pathMethod);
         return this;
     }
-
 
     @Data
     @AllArgsConstructor
@@ -52,7 +52,6 @@ public class InterceptorMatchSupport  implements HandlerInterceptor {
         private String path;
         private HttpMethod method;
     }
-
 
     public class MatchInfoContainer {
 
@@ -90,36 +89,6 @@ public class InterceptorMatchSupport  implements HandlerInterceptor {
             this.excludeMatchInfos.add(new MatchInfo(excludePath, excludeMethod));
         }
     }
-
-
-
-        public static void main(String[] args) {
-            WebClient webClient = WebClient.create();
-
-            // 첫 번째 RESTful 호출
-            Mono<String> firstRequest = webClient.get()
-                    .uri("https://api.github.com/users/octocat")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(String.class);
-
-            // 두 번째 RESTful 호출
-            Mono<String> secondRequest = webClient.get()
-                    .uri("https://api.github.com/users/octocat/repos")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(String.class);
-
-            // 비동기로 두 개의 호출 처리
-            Mono.zip(firstRequest, secondRequest)
-                    .doOnSuccess(response -> {
-                        String firstResponse = response.getT1();
-                        String secondResponse = response.getT2();
-                        System.out.println("First Response: " + firstResponse);
-                        System.out.println("Second Response: " + secondResponse);
-                    })
-                    .block();
-        }
 
 }
 

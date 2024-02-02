@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.interceptor.ExampleInterceptor;
+import com.sptek.webfw.interceptor.MyMethodCheckInterceptor;
 import com.sptek.webfw.interceptor.RequestInfoInterceptor;
 import com.sptek.webfw.interceptor.UvInterceptor;
-import com.sptek.webfw.interceptor.ReqMethodCheckInterceptor;
-import com.sptek.webfw.support.InterceptorMatchSupport;
+import com.sptek.webfw.support.ReqMethodCheckInterceptorSupport;
 import com.sptek.webfw.support.XssProtectSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,6 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -63,21 +62,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
         registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
         registry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
-        registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
-        registry.addInterceptor(ReqMethodCheckInterceptorMatchSupport()).addPathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
+
+        registry.addInterceptor(new ReqMethodCheckInterceptorSupport(new MyMethodCheckInterceptor())
+                //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
+                .excludePathPattern("/api/**", HttpMethod.GET)
+                .excludePathPattern("/api/v2/**", HttpMethod.POST)
+                ).addPathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns); //1차 필터 조건
 
         WebMvcConfigurer.super.addInterceptors(registry);
-    }
-
-    private HandlerInterceptor ReqMethodCheckInterceptorMatchSupport() {
-        final InterceptorMatchSupport interceptorMatchSupport = new InterceptorMatchSupport(new ReqMethodCheckInterceptor());
-
-        //request 된 method의 타입까지 일치하는 경우에만 interceptor 적용되도록 처리할 수 있다(restfull 설계에 의해서 mothod에 따라 interceptor가 다르게 적용되는 경우 활용)
-        return interceptorMatchSupport
-                .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.POST)
-                .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.PUT)
-                .includePathPattern("/**/xxInterceptorTest/**", HttpMethod.DELETE)
-                .excludePathPattern("/**/xxInterceptorTest/**", HttpMethod.GET);
     }
 
     @Override

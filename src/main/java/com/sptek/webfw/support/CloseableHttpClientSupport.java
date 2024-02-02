@@ -20,8 +20,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+/*
+closeableHttpClient 사용을 쉽게 할수있도록 만듬.
+해당 클레스는 직접 생성(new)하지 않고 @Autowired 통해 사용해야 함
+ */
+
 @Slf4j
 public class CloseableHttpClientSupport {
+    //todo: CloseableHttpClient 의 close 처리와 PoolingHttpClientConnectionManager shutdown 처리에 대해서 더 고민 필요함 (pool 모니터링 기능 필요)
+
     private CloseableHttpClient closeableHttpClient;
 
     public CloseableHttpClientSupport(CloseableHttpClient closeableHttpClient){
@@ -41,7 +48,7 @@ public class CloseableHttpClientSupport {
         return requestPost(requestUrl, headers, TypeConvertUtil.objectToJsonWithoutRootName(requestBodyObject, false));
     }
 
-    public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBody) throws IOException {
+    public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBodyString) throws IOException {
         HttpPost httpPost = new HttpPost(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpPost.addHeader(name, value))));
 
@@ -50,8 +57,8 @@ public class CloseableHttpClientSupport {
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         }
 
-        if(StringUtils.isNotBlank(requestBody)) {
-            StringEntity requestEntity = new StringEntity(requestBody);
+        if(StringUtils.isNotBlank(requestBodyString)) {
+            StringEntity requestEntity = new StringEntity(requestBodyString);
             httpPost.setEntity(requestEntity);
         }
 
@@ -95,7 +102,7 @@ public class CloseableHttpClientSupport {
         if(httpEntity != null) {EntityUtils.consume(httpEntity);}
         return reponseString;
         
-        //todo: response 결과를 라인별로 받아서 처리가 필요한 경우데 대한 코드로 확인 필요
+        //todo: response 결과를 라인별로 받아서 처리가 필요한 경우 사용 (코드 테스트 필요)
         /* 
         try (InputStreamReader inputStreamReader = new InputStreamReader(httpEntity.getContent(), StandardCharsets.UTF_8)) {
             String responseStr = new BufferedReader(inputStreamReader)
