@@ -3,6 +3,10 @@ project-info:
   version: v1
   description : sptek web framework
 
+system:
+  propertySources:
+    expose-enabled: true
+
 
 server:
   port: 8080

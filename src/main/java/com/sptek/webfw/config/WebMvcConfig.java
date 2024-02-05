@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.interceptor.ExampleInterceptor;
-import com.sptek.webfw.interceptor.MyMethodCheckInterceptor;
+import com.sptek.webfw.interceptor.MethodCheckInterceptorForXX;
 import com.sptek.webfw.interceptor.RequestInfoInterceptor;
 import com.sptek.webfw.interceptor.UvInterceptor;
-import com.sptek.webfw.support.ReqMethodCheckInterceptorSupport;
+import com.sptek.webfw.support.MethodCheckInterceptorSupport;
 import com.sptek.webfw.support.XssProtectSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -63,7 +63,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
         registry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
 
-        registry.addInterceptor(new ReqMethodCheckInterceptorSupport(new MyMethodCheckInterceptor())
+        registry.addInterceptor(new MethodCheckInterceptorSupport(new MethodCheckInterceptorForXX())
                 //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
                 .excludePathPattern("/api/**", HttpMethod.GET)
                 .excludePathPattern("/api/v2/**", HttpMethod.POST)

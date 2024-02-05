@@ -1,6 +1,7 @@
 package com.sptek.webfw.support;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -16,6 +17,7 @@ import java.io.IOException;
 /*
 RestTemplate을 쉽게 사용하기 위한 클레스로 직접 생성(new) 하지 않고 @Autowired로 주입받아 사용해야 한다.
  */
+@Slf4j
 public class RestTemplateSupport{
 
     private RestTemplate restTemplate;
@@ -25,6 +27,8 @@ public class RestTemplateSupport{
     }
 
     public ResponseEntity<String> requestGet(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders) {
+        log.debug("RestTemplateSupport requestGet\nrequestUri = {}\nqueryParams = {}\nhttpHeaders={}", requestUri, queryParams, httpHeaders);
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(requestUri).queryParams(queryParams);
         String finalUrl = builder.toUriString();
 
@@ -38,6 +42,8 @@ public class RestTemplateSupport{
     }
 
     public ResponseEntity<String> requestPost(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders, @Nullable LinkedMultiValueMap<String, Object> requestBody) {
+        log.debug("RestTemplateSupport requestPost\nrequestUri = {}\nqueryParams = {}\nhttpHeaders = {}\nrequestBody = {}", requestUri, queryParams, httpHeaders, requestBody);
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(requestUri).queryParams(queryParams);
         String finalUrl = builder.toUriString();
 
@@ -52,6 +58,8 @@ public class RestTemplateSupport{
 
     public String convertResponseToString(ResponseEntity<String> responseEntity) throws IOException {
         String resultStr = responseEntity.getBody();
+        log.debug("RestTemplateSupport convertResponseToString = \n{}", resultStr);
+
         return resultStr;
     }
 }

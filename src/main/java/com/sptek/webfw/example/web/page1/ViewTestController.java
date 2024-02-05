@@ -14,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -165,5 +168,18 @@ public class ViewTestController extends CommonControllerSupport {
         int result = viewTestService.deleteTest(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
+    }
+
+    @RequestMapping("/i18nTest")
+    public String i18nTest(Model model) {
+        log.debug("called i18nTest");
+
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+
+        String connectTime = getI18nMessage("connectTime", new String[]{formattedDateTime});
+        model.addAttribute("connectTime", connectTime);
+        return PAGE_BASE_PATH + "i18n";
     }
 }

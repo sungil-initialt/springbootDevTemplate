@@ -17,12 +17,12 @@ import java.util.List;
 인터셉터가 특정 메소드(GET, POST, PUT, DELETE 등)를 구분해서 동작해야 하는 경우 InterceptorMatchSupport 를 통해 해당 인터셉터를 등록하도록 한다.
  */
 @Slf4j
-public class ReqMethodCheckInterceptorSupport implements HandlerInterceptor {
+public class MethodCheckInterceptorSupport implements HandlerInterceptor {
 
     private final HandlerInterceptor handlerInterceptor;
     private final MatchInfoContainer matchInfoContainer;
 
-    public ReqMethodCheckInterceptorSupport(HandlerInterceptor handlerInterceptor) {
+    public MethodCheckInterceptorSupport(HandlerInterceptor handlerInterceptor) {
         this.handlerInterceptor = handlerInterceptor;
         this.matchInfoContainer = new MatchInfoContainer();
     }
@@ -36,12 +36,12 @@ public class ReqMethodCheckInterceptorSupport implements HandlerInterceptor {
     }
 
     //사용할 경우가 있을까?
-    public ReqMethodCheckInterceptorSupport includePathPattern(String pathPattern, HttpMethod pathMethod) {
+    public MethodCheckInterceptorSupport includePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.includePathPattern(pathPattern, pathMethod);
         return this;
     }
 
-    public ReqMethodCheckInterceptorSupport excludePathPattern(String pathPattern, HttpMethod pathMethod) {
+    public MethodCheckInterceptorSupport excludePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.excludePathPattern(pathPattern, pathMethod);
         return this;
     }
