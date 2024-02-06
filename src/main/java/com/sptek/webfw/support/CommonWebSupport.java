@@ -14,6 +14,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 /*
@@ -26,6 +27,7 @@ public class CommonWebSupport {
     @Autowired
     protected MessageSource messageSource;
 
+    //현재 Locale에 해당하는 메시지로 제공한다.
     protected String getI18nMessage(String code, @Nullable Object[] args) {
         String langCode;
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(getCurrenRequest());
@@ -53,4 +55,6 @@ public class CommonWebSupport {
     protected HttpServletResponse getCurrenResponse(){
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
     }
+
+
 }

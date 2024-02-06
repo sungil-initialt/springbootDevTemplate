@@ -4,74 +4,32 @@ package com.sptek.webfw.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
-import com.sptek.webfw.interceptor.ExampleInterceptor;
-import com.sptek.webfw.interceptor.MethodCheckInterceptorForXX;
-import com.sptek.webfw.interceptor.RequestInfoInterceptor;
-import com.sptek.webfw.interceptor.UvInterceptor;
-import com.sptek.webfw.support.MethodCheckInterceptorSupport;
 import com.sptek.webfw.support.XssProtectSupport;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.MultipartConfigElement;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Configuration
 //@EnableWebMvc
-public class WebMvcConfig implements WebMvcConfigurer {
-
-    @Autowired
-    private ExampleInterceptor exampleInterceptor;
-    @Autowired
-    private RequestInfoInterceptor requestInfoInterceptor;
-    @Autowired
-    private UvInterceptor uvInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        //interceptor 제외 패턴
-        String[] interceptorExcludePathPatterns = new String[] {
-                "/v2/api-docs",
-                "/configuration/ui",
-                "/configuration/security",
-                "/swagger-resources/**",
-                "/swagger-ui.html",
-                "/webjars/**",
-                "/swagger/**",
-                "error"
-        };
-        
-        //필요한 interceptor 등록
-        registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
-        registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
-        registry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
-
-        registry.addInterceptor(new MethodCheckInterceptorSupport(new MethodCheckInterceptorForXX())
-                //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
-                .excludePathPattern("/api/**", HttpMethod.GET)
-                .excludePathPattern("/api/v2/**", HttpMethod.POST)
-                ).addPathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns); //1차 필터 조건
-
-        WebMvcConfigurer.super.addInterceptors(registry);
-    }
-
+public class BaseWebMvcConfig implements WebMvcConfigurer {
+    
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //html등에서 resource 위치를 축약해서 사용할수 있게 해준다.
@@ -155,12 +113,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean(name = "multipartResolver")
-    public StandardServletMultipartResolver multipartResolver() {
-        final StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
-        //multipartResolver.setMaxUploadSize(62914560);			// 60MB * 1024 * 1024
-        //multipartResolver.setMaxUploadSizePerFile(10485760);	// 10MB * 1024 * 1024
-
+    public MultipartResolver multipartResolver() {
+        StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
         return multipartResolver;
     }
+
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        long maxUploadSize = 10 * 1024 * 1024; //10M
+        long maxUploadSizePerFile = 50 * 1024 * 1024; //50M
+
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxRequestSize(DataSize.ofBytes(maxUploadSize));
+        factory.setMaxFileSize(DataSize.ofBytes(maxUploadSizePerFile));
+
+        return factory.createMultipartConfig();
+    }
+
 
 }

@@ -256,4 +256,11 @@ public class ApiTestController extends CommonControllerSupport {
                 , myUser)
                 , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
+
+    /*
+    @PostMapping("/fileUploadTest")
+    @Operation(summary = "fileUploadTest", description = "fileUploadTest 테스트", tags = {""})
+    protected
+
+     */
 }
