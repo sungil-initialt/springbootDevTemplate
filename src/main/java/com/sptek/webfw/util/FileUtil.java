@@ -23,15 +23,16 @@ public class FileUtil {
 
     public static List<FileUploadDto> saveMultipartFiles(MultipartFile[] multipartFiles
             , String baseStoragePath
-            , @Nullable String additionalLastPath
-            , @Nullable Predicate<MultipartFile> exceptionFilter) throws Exception {
+            , @Nullable String additionalPath
+            , @Nullable Predicate<MultipartFile> exceptionFilter) throws ApiServiceException, Exception {
 
-        additionalLastPath = Optional.ofNullable(additionalLastPath).orElse("");
+        additionalPath = Optional.ofNullable(additionalPath).orElse("");
         List<FileUploadDto> uploadFileDtoList = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
             //예외 조건 확인
             if(exceptionFilter != null && exceptionFilter.test(multipartFile)) {
+                //exception 조건에 맞는경우 ex를 발생시켜 줌
                 throw new ApiServiceException(ApiErrorCode.FORBIDDEN_ERROR);
             }
 
@@ -40,8 +41,7 @@ public class FileUtil {
             String newFilePath = baseStoragePath + File.separator +  LocalDate.now().getYear()
                     + File.separator + LocalDate.now().getMonthValue()
                     + File.separator + LocalDate.now().getDayOfMonth();
-                    //+ File.separator + additionalLastPath
-                    //+ File.separator;
+            newFilePath = (additionalPath.isBlank()) ? newFilePath + File.separator : newFilePath + File.separator + additionalPath + File.separator;
 
             createDirectories(newFilePath);
             String uuidForFileName = UUID.randomUUID().toString();
@@ -62,17 +62,17 @@ public class FileUtil {
     }
 
     //주어진 파일경로대로 디렉토리를 구성함(이미 존재하는 경로여도 상관없음)
-    public static void createDirectories(String filePath) throws Exception{
-        Path path = Paths.get(filePath);
-        Path parentDir = path.getParent();
+    public static void createDirectories(String directories) throws Exception{
+        //directories = directories.replaceAll("//", "/");
+        Path dirPath = Paths.get(directories);
+        //Path parentDir = dirPath.getParent();
 
-        if (parentDir != null) {
+        if (dirPath != null) {
             //FileAttribute<?> fileAttrs = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxr-xr-x"));
             //Files.createDirectories(parentDir, fileAttrs);
-            Files.createDirectories(parentDir);
-
-            log.debug("Created directories for path: " + parentDir);
+            Files.createDirectories(dirPath);
         }
+        log.debug("Created directories for path: " + dirPath);
     }
 
 }

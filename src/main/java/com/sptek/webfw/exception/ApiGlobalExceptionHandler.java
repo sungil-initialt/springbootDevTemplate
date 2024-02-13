@@ -106,6 +106,15 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, ApiErrorCode.REQUEST_BODY_MISSING_ERROR.getHttpStatusCode());
     }
 
+    //개발자가 의도적으로 생성하는 Exception는 ApiServiceException로 생성하며 해당 핸들러에서 처리 됨
+    @ExceptionHandler(ApiServiceException.class)
+    public ResponseEntity<ApiErrorResponse> handleCustomException(ApiServiceException ex) {
+        log.error("ApiServiceExceptionHandler", ex);
+
+        final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ex.getApiErrorCode(), ex.getMessage());
+        return new ResponseEntity<>(apiErrorResponse, ex.getApiErrorCode().getHttpStatusCode());
+    }
+    
     @ExceptionHandler(Exception.class)
     protected final ResponseEntity<ApiErrorResponse> handleAllExceptions(Exception ex) {
         log.error("handleAllExceptions", ex);

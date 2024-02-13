@@ -26,19 +26,23 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Slf4j
 @RestController
@@ -115,7 +119,7 @@ public class ApiTestController extends CommonControllerSupport {
 
     @RequestMapping("/interceptorTest")
     @Operation(summary = "interceptorTest", description = "interceptorTest 테스트", tags = {""})
-    //인터셉터들을 테스트 하기 위한 용도 (사실 아무것으로나 테스트 가능)
+    //인터셉터들을 테스트 하기 위한 용도
     protected ResponseEntity<ApiSuccessResponse<String>> interceptorTest() {
         log.info("called interceptorTest");
 
@@ -261,18 +265,45 @@ public class ApiTestController extends CommonControllerSupport {
                 , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
-
     @PostMapping(value = "/fileUploadTest", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "fileUploadTest", description = "fileUploadTest 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponse<List<FileUploadDto>>> fileUploadTest(@RequestParam("uploadFiles") MultipartFile[] uploadFiles) throws Exception{
-        log.info("called fileUploadTest : {}", uploadFiles.length );
+    protected ResponseEntity<ApiSuccessResponse<List<FileUploadDto>>> fileUploadTest(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
+            , @RequestParam("fileDescription") String fileDescription) throws Exception{
 
-        String baseStoragePath = "C:/";
-        List<FileUploadDto> FileUploadDtoList = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, null, null);
+        log.info("called fileUploadTest : file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
+        //필요시 파일관련 데이터(fileDescription) 처리
+
+        String additionalPath = ""; //로그인계정번호등 필요한 구분 디렉토리가 있는다면 추가
+        Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
+        List<FileUploadDto> FileUploadDtoList = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
 
         return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
                 , FileUploadDtoList)
                 , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
+    @GetMapping(value = "/byteForImage")
+    @Operation(summary = "byteForImage", description = "byteForImage 테스트", tags = {""})
+    protected ResponseEntity<byte[]> byteForImage(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+            , @RequestParam("originFileName") String originFileName
+            , @RequestParam("uuidForFileName") String uuidForFileName) throws Exception{
+
+        originFileName = URLDecoder.decode(originFileName, StandardCharsets.UTF_8);
+        uuidForFileName = URLDecoder.decode(uuidForFileName, StandardCharsets.UTF_8);
+        log.info("called imageBytes : originFileName = {}, uuidForFileName = {}", originFileName, uuidForFileName);
+
+        //todo : 실제 상황에서는 uuid 값을 통해 저장 위치를 검색해오도록 수정
+        String realFilePath = baseStoragePath + File.separator +  LocalDate.now().getYear()
+                + File.separator + LocalDate.now().getMonthValue()
+                + File.separator + LocalDate.now().getDayOfMonth()
+                + File.separator + uuidForFileName + "_" + originFileName;
+        log.info("realFilePath : {}", realFilePath);
+
+        File imageFile = new File(realFilePath);
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", Files.probeContentType(imageFile.toPath())); // MIME 타입 처리
+
+        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
+    }
 }

@@ -9,23 +9,20 @@
 </head>
 <body>
 <B>fileUploadTest</B><br><br>
-
+<br>
+파일설명 :<br>
+<input id="fileDescription" name="fileDescription" type="text"><br><br>
 <input name="uploadFiles" type="file" multiple>
 <button class="uploadBtn">Upload</button>
 
 <div class="uploadResult"></div>
-
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <!--upload btn-->
 <script>
-
     $('.uploadBtn').click(() => {
-
         const formData = new FormData();
-
         const inputFile = $("input[type='file']");
-
         const files = inputFile[0].files;
 
         for(let i = 0; i < files.length; i++) {
@@ -33,15 +30,18 @@
             formData.append("uploadFiles", files[i]);
         }
 
-        const showUploadedImages = arr => {
-            console.log(arr);
-
+        const showUploadedImages = result => {
             const divArea = $(".uploadResult");
 
-            for(let i = 0; i<arr.length; i++){
-                divArea.append("<img src='/display?fileName="+arr[i].imageURL+"' alt='..null'>");
+            for(let i = 0; i<result.result.length; i++){
+                const reqParams = 'uuidForFileName=' + result.result[i].uuidForFileName + '&originFileName=' + result.result[i].originFileName;
+                alert(reqParams);
+                divArea.append("<img src='/api/v1/byteForImage?"+reqParams+"' alt='..null'>");
             }
         }
+
+        const fileDescriptionValue = $("#fileDescription").val();
+        formData.append("fileDescription", fileDescriptionValue);
 
         /*실제 업로드 부분*/
         /*upload ajax*/
@@ -53,18 +53,14 @@
             type: 'POST',
             dataType: 'json',
             success: result => {
-                alert(result);
-                console.log(result);
-                //showUploadedImages(result);
+                alert(JSON.stringify(result));
+                showUploadedImages(result);
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 console.log(textStatus)
-                result = JSON.parse(jqXHR.responseText);
-                console.log(result);
-                alert(JSON.stringify(result));
+                alert(JSON.parse(jqXHR.responseText));
             }
         })
-
     })
 
 </script>
