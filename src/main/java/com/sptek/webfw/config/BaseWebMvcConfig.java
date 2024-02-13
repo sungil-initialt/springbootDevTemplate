@@ -15,14 +15,16 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -47,6 +49,8 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정
         registry.addViewController("/temporaryParkingPageForTest").setViewName("/pages/example/page1/temporaryParkingView");
         registry.addViewController("/sorry").setViewName("/pages/example/page1/temporaryParkingView");
+
+        registry.addViewController("/fileUploadTest").setViewName("/pages/example/page1/fileUploadTest");
 
         //swagger.
         registry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
@@ -113,7 +117,7 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean(name = "multipartResolver")
-    public MultipartResolver multipartResolver() {
+    public StandardServletMultipartResolver multipartResolver() {
         StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
         return multipartResolver;
     }

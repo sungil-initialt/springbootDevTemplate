@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.code.ApiSuccessCode;
-import com.sptek.webfw.support.CommonControllerSupport;
-import com.sptek.webfw.vo.PropertyVos;
 import com.sptek.webfw.dto.ApiSuccessResponse;
+import com.sptek.webfw.example.dto.FileUploadDto;
 import com.sptek.webfw.example.dto.ValidationTestDto;
 import com.sptek.webfw.support.CloseableHttpClientSupport;
+import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.RestTemplateSupport;
+import com.sptek.webfw.util.FileUtil;
 import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
+import com.sptek.webfw.vo.PropertyVos;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,9 +33,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -257,10 +261,18 @@ public class ApiTestController extends CommonControllerSupport {
                 , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
     }
 
-    /*
-    @PostMapping("/fileUploadTest")
-    @Operation(summary = "fileUploadTest", description = "fileUploadTest 테스트", tags = {""})
-    protected
 
-     */
+    @PostMapping(value = "/fileUploadTest", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "fileUploadTest", description = "fileUploadTest 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<List<FileUploadDto>>> fileUploadTest(@RequestParam("uploadFiles") MultipartFile[] uploadFiles) throws Exception{
+        log.info("called fileUploadTest : {}", uploadFiles.length );
+
+        String baseStoragePath = "C:/";
+        List<FileUploadDto> FileUploadDtoList = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, null, null);
+
+        return new ResponseEntity<>(new ApiSuccessResponse<>(ApiSuccessCode.DEFAULT_SUCCESS
+                , FileUploadDtoList)
+                , ApiSuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+    }
+
 }
