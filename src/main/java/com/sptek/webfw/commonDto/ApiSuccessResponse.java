@@ -1,4 +1,4 @@
-package com.sptek.webfw.dto;
+package com.sptek.webfw.commonDto;
 
 import com.sptek.webfw.code.ApiSuccessCode;
 import lombok.Getter;

@@ -48,17 +48,15 @@ dependencies {
 	implementation 'org.apache.tomcat:tomcat-jdbc:10.1.9'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
-
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4'
 	compileOnly 'org.projectlombok:lombok:1.18.26'
 	runtimeOnly 'com.h2database:h2:2.1.214'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
 
 	//testImplementation 'org.springframework.security:spring-security-test'
-
-
 }
 
 tasks.named('test') {

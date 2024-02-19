@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.code.ApiSuccessCode;
-import com.sptek.webfw.dto.ApiSuccessResponse;
+import com.sptek.webfw.commonDto.ApiSuccessResponse;
 import com.sptek.webfw.example.dto.FileUploadDto;
 import com.sptek.webfw.example.dto.ValidationTestDto;
 import com.sptek.webfw.support.CloseableHttpClientSupport;
@@ -272,7 +272,7 @@ public class ApiTestController extends CommonControllerSupport {
             , @RequestParam("fileDescription") String fileDescription) throws Exception{
 
         log.info("called fileUploadTest : file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
-        //필요시 파일관련 데이터(fileDescription) 처리
+        //todo: 실제 상황에서는 부가정보 저장 처리등 조치 필요
 
         String additionalPath = ""; //로그인계정번호등 필요한 구분 디렉토리가 있는다면 추가
         Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
@@ -293,7 +293,7 @@ public class ApiTestController extends CommonControllerSupport {
         uuidForFileName = URLDecoder.decode(uuidForFileName, StandardCharsets.UTF_8);
         log.info("called imageBytes : originFileName = {}, uuidForFileName = {}", originFileName, uuidForFileName);
 
-        //todo : 실제 상황에서는 uuid 값을 통해 저장 위치를 검색해오도록 수정
+        //todo : 실제 상황에서는 uuid 값을 통해 저장 위치를 검색해오도록 수정 필요
         String realFilePath = baseStoragePath + File.separator +  LocalDate.now().getYear()
                 + File.separator + LocalDate.now().getMonthValue()
                 + File.separator + LocalDate.now().getDayOfMonth()

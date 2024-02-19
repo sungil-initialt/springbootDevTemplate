@@ -14,7 +14,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 
 /*
@@ -41,7 +40,7 @@ public class CommonWebSupport {
             langCode = LocaleContextHolder.getLocale().toLanguageTag();
         }
 
-        return messageSource.getMessage(code, args, Locale.of(langCode));
+        return messageSource.getMessage(code, args, Locale.forLanguageTag(langCode));
     }
 
     protected String getCurLangTag(){

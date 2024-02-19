@@ -80,7 +80,7 @@ public class DataSourceConfigWithProperty {
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource);
-        transactionManager.setGlobalRollbackOnParticipationFailure(false); //TODO
+        transactionManager.setGlobalRollbackOnParticipationFailure(false); //TODO : false 의미 정확히 판단 필요
         return transactionManager;
     }
 

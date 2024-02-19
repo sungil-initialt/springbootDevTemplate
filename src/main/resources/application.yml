@@ -17,9 +17,11 @@ server:
     path: error #에러 처리에 대한 뷰 경로
     whitelabel.enabled: false #스프링의 기본 에러 페이지를 사용할지
 
+
 Storage:
   multipartFiles:
     basePath: c:/
+
 
 logging:
   level:
@@ -40,10 +42,15 @@ logging:
       connection: OFF  # 커넥션 확인가능
 
 
-
 spring:
   profiles:
     active: local
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
 
   #write, read로 리플리케이션 구조 설정
   datasource:
@@ -79,7 +86,8 @@ spring:
 
   thymeleaf:
       cache: false
-      prefix: classpath:/templates/thymeleaf/
+      #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
+      prefix: file:src/main/resources/templates/thymeleaf/
       suffix: .html
       enabled: true
 
@@ -126,3 +134,4 @@ jasypt:
   encryptor:
     bean=encryptorBean: jasyptStringEncryptor
     secretKey: JasyptStringEncryptor_key_Hello
+

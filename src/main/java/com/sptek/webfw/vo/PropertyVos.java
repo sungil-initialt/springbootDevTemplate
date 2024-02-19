@@ -33,3 +33,7 @@ public class PropertyVos {
 
     //프로퍼티 클레스를 계속 추가해 나가면 된다..
 }
+
+
+
+

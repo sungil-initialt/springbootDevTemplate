@@ -3,7 +3,7 @@ package com.sptek.webfw.exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.sptek.webfw.code.ApiErrorCode;
-import com.sptek.webfw.dto.ApiErrorResponse;
+import com.sptek.webfw.commonDto.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
