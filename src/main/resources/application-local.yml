@@ -15,7 +15,6 @@ server:
     key-store: classpath:keystore/keystore.p12
     key-store-type: PKCS12
     key-store-password: keystore_password
-
   #에러전파순서 :
   #개발자가만든ExHandler에서처리 (핸들러가 있어도 404같이 서블릿컨테이너 진입전 에러는 처리못하고 넘김)
   #--> 스프링제공에러기본페이지 (특정위치에 404.html, 5xx.html 과 같이 페이지를 만들어 놓으면 에러코드에 마춰 해당 페이지 호출해줌, 페이지가 없으면 기본폼으로 호출, whitelabel.enabled가 false이면 그냥 넘김)
@@ -33,7 +32,38 @@ Storage:
 
 
 logging:
+  #property를 통한 간단 설정
+  pattern.dateformat: yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul
+  file.name: c:/logs/spt.log
+  logback:
+    rollingpolicy:
+      max-history: 30
+      max-file-size: 1MB
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}-%i.log
+
+  #logback-spring.xml을 통한 상세 설정
+  logback-ex:
+    default:
+      path: c/logback/default/
+      name: default.log
+      rollingpolicy:
+        max-history: 30
+        max-file-size: 1MB
+        file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}-%i.log
+      log-pattern: _%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n
+
+    error:
+      path: c/logback/error/
+      name: error.log
+    system-start:
+      path: c/logback/system-start/
+      name: system-start.log
+      evaluator-expression: return message.startsWith("system-start"); #마지막에 ; 필요
+
+
+
   level:
+    root: info
     com:
       sptek: debug
       sptek.webfw.persistence.dao: debug
@@ -49,17 +79,17 @@ logging:
       connection: debug  # 커넥션 확인가능
 
 
+
+
 spring:
   devtools: #코드 수정 실시간 반영
     livereload:
       enabled: true
     restart:
       enabled: true
-
   config:
     import: #기본 프로퍼티가 아닌 추가적인 property 파일 읽어올수 있다. (특정기능을 위한 프로퍼티로 분리가 필요할때, list 형태로 여럿 셋팅 가능)
       - classpath:specificProperties/specificName.yml
-
   thymeleaf:
     cache: false
     #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
@@ -71,12 +101,10 @@ spring:
   #  view:
   #    prefix: /WEB-INF/views/
   #    suffix: .jsp
-
   h2: #H2 DB 사용은 프로퍼티설정만 있음
     console:
       enabled: true #웹콘솔 사용 여부
       path: /h2-console #웹콘솔 url 경로
-
   datasource: #리플리카 구성이 아닌 단순 DS 사용
     #url: jdbc:h2:G:\내 드라이브\work\sptek\frameWork\webfw1\spt-wfw\src\main\resources\h2\local  #해당 위치에 cmd로 copy con local.mv.db 을 통해 파일 생성
     url: jdbc:h2:G:\내 드라이브\work\sptek\frameWork\webfw1\spt-wfw\src\main\resources\h2\local;AUTO_SERVER=TRUE  #해당 위치에 cmd로 copy con local.mv.db 을 통해 파일 생성, embed지만 서버모드로

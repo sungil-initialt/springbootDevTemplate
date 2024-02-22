@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds"> <!--설정갱신-->
+    <!--스프링 프로파일별 개별 프로퍼티 구성시 설정(필요시사용)
+    <springProfile name="local">
+    <property resource="logback-local.properties"/>
+    </springProfile>
+    <springProfile name="dev">
+    <property resource="logback-dev.properties"/>
+    </springProfile-->
+
+
+    <springProperty scope="context" name="logging.level.root" source="logging.level.root"/>
+
+    <springProperty scope="context" name="logging.logback-ex.default.path" source="logging.logback-ex.default.path"/>
+    <springProperty scope="context" name="logging.logback-ex.default.name" source="logging.logback-ex.default.name"/>
+    <springProperty scope="context" name="logging.logback-ex.default.rollingpolicy.max-history"
+                    source="logging.logback-ex.default.rollingpolicy.max-history"/>
+    <springProperty scope="context" name="logging.logback-ex.default.rollingpolicy.max-file-size"
+                    source="logging.logback-ex.default.rollingpolicy.max-file-size"/>
+    <springProperty scope="context" name="logging.logback-ex.default.rollingpolicy.file-name-pattern"
+                    source="logging.logback-ex.default.rollingpolicy.file-name-pattern"/>
+    <springProperty scope="context" name="logging.logback-ex.default.log-pattern"
+                    source="logging.logback-ex.default.log-pattern"/>
+
+    <springProperty scope="context" name="logging.logback-ex.error.path" source="logging.logback-ex.error.path"/>
+    <springProperty scope="context" name="logging.logback-ex.error.name" source="logging.logback-ex.error.name"/>
+
+    <springProperty scope="context" name="logging.logback-ex.system-start.path"
+                    source="logging.logback-ex.system-start.path"/>
+    <springProperty scope="context" name="logging.logback-ex.system-start.name"
+                    source="logging.logback-ex.system-start.name"/>
+    <springProperty scope="context" name="logging.logback-ex.system-start.evaluator-expression"
+                    source="logging.logback-ex.system-start.evaluator-expression"/>
+
+
+    <!-- Console Appender -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logging.logback-ex.default.log-pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File Appender -->
+    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.logback-ex.default.path}/${logging.logback-ex.default.name}</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logging.logback-ex.default.log-pattern}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>
+                ${logging.logback-ex.default.path}/${logging.logback-ex.default.name}.%d{yyyy-MM-dd}_%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logging.logback-ex.default.rollingpolicy.max-history}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${logging.logback-ex.default.rollingpolicy.max-file-size}</maxHistory>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>1000</MaxIndex>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <file>${logging.logback-ex.default.path}/${logging.logback-ex.error.name}</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logging.logback-ex.default.log-pattern}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>${logging.logback-ex.error.path}/${logging.logback-ex.error.name}.%d{yyyy-MM-dd}_%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logging.logback-ex.default.rollingpolicy.max-history}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${logging.logback-ex.default.rollingpolicy.max-file-size}</maxHistory>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>1000</MaxIndex>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="system_start" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>${logging.logback-ex.system-start.evaluator-expression}</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>ACCEPT</OnMatch>
+        </filter>
+
+        <file>${logging.logback-ex.system_start.path}/${logging.logback-ex.system_start.name}</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logging.logback-ex.default.log-pattern}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>
+                ${logging.logback-ex.system_start.path}/${logging.logback-ex.system_start.name}.%d{yyyy-MM-dd}_%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logging.logback-ex.default.rollingpolicy.max-history}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${logging.logback-ex.default.rollingpolicy.max-file-size}</maxHistory>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>1000</MaxIndex>
+        </rollingPolicy>
+    </appender>
+
+    <!-- root레벨 설정 -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="Error"/>
+    </root>
+
+    <!-- 특정패키지 로깅레벨 설정 -->
+    <!--logger name="org.apache.ibatis" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="Error"/>
+    </logger-->
+</configuration>
