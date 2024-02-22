@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 /*
-모든 Controller는 CommonControllerSupport를 상속하여 구현함.
+모든 Controller는 해당 클레스를 상속받아 구현함.
 Controller에서 이용할수 있는 공통 기능을 추가해 나가면 됨
  */
 @Slf4j
@@ -54,6 +54,4 @@ public class CommonWebSupport {
     protected HttpServletResponse getCurrenResponse(){
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
     }
-
-
 }

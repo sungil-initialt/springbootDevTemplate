@@ -6,13 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.support.XssProtectSupport;
 import jakarta.servlet.MultipartConfigElement;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -20,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +40,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Configuration
 //@EnableWebMvc
 public class BaseWebMvcConfig implements WebMvcConfigurer {
+    @Autowired
+    private ApplicationContext applicationContext;
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -49,7 +60,6 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정
         registry.addViewController("/temporaryParkingPageForTest").setViewName("/pages/example/page1/temporaryParkingView");
         registry.addViewController("/sorry").setViewName("/pages/example/page1/temporaryParkingView");
-
         registry.addViewController("/fileUploadTest").setViewName("/pages/example/page1/fileUploadTest");
 
         //swagger.
@@ -116,12 +126,14 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 
+    //Multipart 파일을 다루기 위한 Resolver
     @Bean(name = "multipartResolver")
     public StandardServletMultipartResolver multipartResolver() {
         StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
         return multipartResolver;
     }
 
+    //Multipart config 설정
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         long maxUploadSize = 10 * 1024 * 1024; //10M
@@ -134,5 +146,33 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         return factory.createMultipartConfig();
     }
 
+    @Bean
+    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource);
+        transactionManager.setGlobalRollbackOnParticipationFailure(false); //TODO : false 의미 정확히 판단 필요
+        return transactionManager;
+    }
 
+    @Bean(name = "sqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
+        sessionFactoryBean.setDataSource(dataSource);
+        sessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*config.xml")[0]);
+
+        //위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
+        //org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        //configuration.setMapUnderscoreToCamelCase(true);
+        //configuration.setJdbcTypeForNull(JdbcType.NULL);
+        //sessionFactoryBean.setConfiguration(configuration);
+
+        sessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mapper/*Mapper.xml"));
+        return sessionFactoryBean.getObject();
+    }
+
+    @Bean(name = "sqlSessionTemplate")
+    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
+        return sqlSessionTemplate;
+    }
 }

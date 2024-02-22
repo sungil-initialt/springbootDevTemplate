@@ -2,22 +2,15 @@ package com.sptek.webfw.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
@@ -26,11 +19,8 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@Profile(value = { "!prd" }) //해당 Configuration은 프로파일이 prd 아닐때만 적용된다.
-public class DataSourceConfigWithProperty {
-    @Autowired
-    private ApplicationContext applicationContext;
-
+@Profile(value = { "dev", "stg" })
+public class DataSourceConfigForReplica {
     @Bean(name = "writeDataSource", destroyMethod = "")
     @ConfigurationProperties(prefix = "spring.datasource.write")
     //HikariCP를 이용하여 datasource를 관리한다.
@@ -74,36 +64,6 @@ public class DataSourceConfigWithProperty {
     //실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
     public DataSource routingLazyDataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(dataSource);
-        transactionManager.setGlobalRollbackOnParticipationFailure(false); //TODO : false 의미 정확히 판단 필요
-        return transactionManager;
-    }
-
-    @Bean(name = "sqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*config.xml")[0]);
-
-        //위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
-        //org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-        //configuration.setMapUnderscoreToCamelCase(true);
-        //configuration.setJdbcTypeForNull(JdbcType.NULL);
-        //sessionFactoryBean.setConfiguration(configuration);
-
-        sessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mapper/*Mapper.xml"));
-        return sessionFactoryBean.getObject();
-    }
-
-    @Bean(name = "sqlSessionTemplate")
-    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
-        return sqlSessionTemplate;
     }
 
     public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {

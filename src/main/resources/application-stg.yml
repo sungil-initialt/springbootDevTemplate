@@ -1,4 +1,129 @@
 project-info:
-  name: myProject Stg
+  name: myProject
   version: v1
-  description : sptek web framework
+  description : Stg
+
+
+system:
+  propertySources:
+    expose-enabled: ture #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
+
+
+server:
+  port: 8080
+  ssl:
+    key-store: classpath:keystore/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: keystore_password
+
+  error: #스프링에서 제공하는 에러 기본 처리 설정
+    include-exception: true #exception 정보를 보여줄지
+    include-stacktrace: always #stacktrace 를 보여줄지
+    path: error #에러 처리에 대한 뷰 경로
+    whitelabel.enabled: false #스프링의 기본 에러 페이지(Whitelabel Error Page)를 사용할지
+
+
+Storage:
+  multipartFiles:
+    basePath: c:/
+
+
+logging:
+  level:
+    com:
+      sptek: debug
+      sptek.webfw.persistence.dao: debug
+      com.zaxxer.hikari.pool.HikariPool: debug
+    org:
+      mybatis.spring: debug
+    jdbc:
+      audit: debug
+      resultset: debug
+      resultsettable: debug #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
+      sqlonly: debug     #SQL만 로그로 남긴다.
+      sqltiming: debug    #SQL과 소요시간을 표기한다.
+      connection: debug  # 커넥션 확인가능
+
+
+spring:
+  devtools: #코드 수정 실시간 반영
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+  config:
+    import: #기본 프로퍼티가 아닌 추가적인 property 파일 읽어올수 있다. (특정기능을 위한 프로퍼티로 분리가 필요할때, list 형태로 여럿 셋팅 가능)
+      - classpath:specificProperties/specificName.yml
+
+  thymeleaf:
+    cache: false
+    #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
+    prefix: file:src/main/resources/templates/thymeleaf/
+    suffix: .html
+    enabled: true
+  #jsp로 설정할때
+  #mvc:
+  #  view:
+  #    prefix: /WEB-INF/views/
+  #    suffix: .jsp
+
+  datasource:
+    #write, read로 리플리케이션 구조 설정
+    write:
+      #일반적인 mysql 드라이버
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
+      username: root
+      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      pool-name: Hikari write Connection Pool
+      maximum-pool-size: 20
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+    read:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
+      username: root
+      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      pool-name: Hikari read Connection Pool
+      maximum-pool-size: 20
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+
+
+#PageInoSupport 클레스 관련 설정
+pagehelper:
+  helper-dialect: mysql
+  auto-dialect: true
+  page-size-zero: false
+  reasonable: true
+  offset-as-page-num: false
+  row-bounds-with-count: false
+  auto-runtime-dialect: false
+  close-conn: true
+  default-count: true
+
+
+jasypt:
+  encryptor:
+    bean=encryptorBean: jasyptStringEncryptor
+    secretKey: JasyptStringEncryptor_key_Hello
+
+
+# Swagger springdoc-ui Configuration
+springdoc:
+  packages-to-scan: com.sptek.webfw.example.api.api1
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: swagger-ui.html         # Swagger UI 경로 => http://localhost:8080/swagger-ui.html
+    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: true
+  cache:
+    disabled: true

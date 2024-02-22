@@ -29,7 +29,7 @@ public class ViewTestController extends CommonControllerSupport {
     private ViewTestService viewTestService;
 
     //기본 테스트
-    @RequestMapping("/welcome")
+    @RequestMapping({"/", "/welcome"})
     public String welcome(Model model) {
         log.debug("called welcome");
         model.addAttribute("message", "welcome");
@@ -55,7 +55,7 @@ public class ViewTestController extends CommonControllerSupport {
         if(1==1) throw new NullPointerException("NP Exception for Test");
         //if(1==1) throw new ApiServiceException(ApiErrorCode.SERVICE_DEFAULT_ERROR, "serviceErr");
         
-        return PAGE_BASE_PATH + "위에서 에러가 발생함으로 뷰로 갈일이 없음";
+        return PAGE_BASE_PATH + "xx"; //위에서 에러가 발생함으로 뷰로 갈일은 없음";
     }
 
     //Mybatis 를 통한 DB 테스트들

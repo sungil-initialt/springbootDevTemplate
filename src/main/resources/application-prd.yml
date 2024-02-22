@@ -1,4 +1,111 @@
 project-info:
   name: myProject Prd
   version: v1
-  description : sptek web framework
+  description : Prd
+
+
+system:
+  propertySources:
+    expose-enabled: ture #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
+
+
+server:
+  port: 8080
+
+  error: #스프링에서 제공하는 에러 기본 처리 설정
+    include-exception: true #exception 정보를 보여줄지
+    include-stacktrace: always #stacktrace 를 보여줄지
+    path: error #에러 처리에 대한 뷰 경로
+    whitelabel.enabled: false #스프링의 기본 에러 페이지(Whitelabel Error Page)를 사용할지
+
+
+Storage:
+  multipartFiles:
+    basePath: c:/
+
+
+logging:
+  level:
+    com:
+      sptek: info
+      sptek.webfw.persistence.dao: info
+      com.zaxxer.hikari.pool.HikariPool: info
+    org:
+      mybatis.spring: debug
+    jdbc:
+      audit: off
+      resultset: off
+      resultsettable: off #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
+      sqlonly: off     #SQL만 로그로 남긴다.
+      sqltiming: off    #SQL과 소요시간을 표기한다.
+      connection: off  # 커넥션 확인가능
+
+
+spring:
+  devtools: #코드 수정 실시간 반영
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+
+  config:
+    import: #기본 프로퍼티가 아닌 추가적인 property 파일 읽어올수 있다. (특정기능을 위한 프로퍼티로 분리가 필요할때, list 형태로 여럿 셋팅 가능)
+      - classpath:specificProperties/specificName.yml
+
+  thymeleaf:
+    cache: false
+    #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
+    prefix: file:src/main/resources/templates/thymeleaf/
+    suffix: .html
+    enabled: true
+  #jsp로 설정할때
+  #mvc:
+  #  view:
+  #    prefix: /WEB-INF/views/
+  #    suffix: .jsp
+
+
+#For DataSource (tomcat등에 설정한 jndi 값을 통해 datasource 정보를 읽는다, 실제값으로 변경 필요)
+jndi:
+  datasource:
+    lookup:
+      write:
+        name: writeDatasourceJndiName(change to real name)
+      read:
+        name: readDatasourceJndiName(change to real name)
+
+
+#PageInoSupport 클레스 관련 설정
+pagehelper:
+  helper-dialect: mysql
+  auto-dialect: true
+  page-size-zero: false
+  reasonable: true
+  offset-as-page-num: false
+  row-bounds-with-count: false
+  auto-runtime-dialect: false
+  close-conn: true
+  default-count: true
+
+
+jasypt:
+  encryptor:
+    bean=encryptorBean: jasyptStringEncryptor
+    secretKey: JasyptStringEncryptor_key_Hello
+
+
+# Swagger springdoc-ui Configuration
+springdoc:
+  packages-to-scan: com.sptek.webfw.example.api.api1
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: swagger-ui.html         # Swagger UI 경로 => http://localhost:8080/swagger-ui.html
+    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: true
+  cache:
+    disabled: true
