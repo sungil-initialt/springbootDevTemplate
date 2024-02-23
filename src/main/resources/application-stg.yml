@@ -15,7 +15,6 @@ server:
     key-store: classpath:keystore/keystore.p12
     key-store-type: PKCS12
     key-store-password: keystore_password
-
   error: #스프링에서 제공하는 에러 기본 처리 설정
     include-exception: true #exception 정보를 보여줄지
     include-stacktrace: always #stacktrace 를 보여줄지
@@ -30,19 +29,20 @@ Storage:
 
 logging:
   level:
+    root: info
     com:
-      sptek: debug
-      sptek.webfw.persistence.dao: debug
-      com.zaxxer.hikari.pool.HikariPool: debug
+      sptek.webfw.persistence.dao: info
+      zaxxer.hikari.pool.HikariPool: info
     org:
-      mybatis.spring: debug
+      mybatis.spring: info
     jdbc:
-      audit: debug
-      resultset: debug
-      resultsettable: debug #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
-      sqlonly: debug     #SQL만 로그로 남긴다.
-      sqltiming: debug    #SQL과 소요시간을 표기한다.
-      connection: debug  # 커넥션 확인가능
+      audit: info
+      resultset: info
+      resultsettable: info #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
+      sqlonly: info     #SQL만 로그로 남긴다.
+      sqltiming: info    #SQL과 소요시간을 표기한다.
+      connection: info  # 커넥션 확인가능
+  config: classpath:logbackConfig/logback-spring-server.xml
 
 
 spring:
@@ -51,11 +51,9 @@ spring:
       enabled: true
     restart:
       enabled: true
-
   config:
     import: #기본 프로퍼티가 아닌 추가적인 property 파일 읽어올수 있다. (특정기능을 위한 프로퍼티로 분리가 필요할때, list 형태로 여럿 셋팅 가능)
       - classpath:specificProperties/specificName.yml
-
   thymeleaf:
     cache: false
     #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
@@ -67,7 +65,6 @@ spring:
   #  view:
   #    prefix: /WEB-INF/views/
   #    suffix: .jsp
-
   datasource:
     #write, read로 리플리케이션 구조 설정
     write:

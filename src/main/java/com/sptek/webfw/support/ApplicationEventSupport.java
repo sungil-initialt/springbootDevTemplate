@@ -23,6 +23,7 @@ public class ApplicationEventSupport {
     @EventListener
     // 애플리케이션 컨텍스트가 초기화되거나 새로고침될 때 실행
     public void handleContextRefresh(ContextRefreshedEvent event) {
+        log.info("LBF>>systemStart: message here!");
         log.debug("ApplicationCheckSupport - ContextRefreshedEvent");
 
         //to do what you want..
