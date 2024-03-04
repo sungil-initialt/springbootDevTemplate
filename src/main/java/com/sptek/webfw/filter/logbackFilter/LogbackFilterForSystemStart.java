@@ -1,4 +1,4 @@
-package com.sptek.webfw.filter.logback;
+package com.sptek.webfw.filter.logbackFilter;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;

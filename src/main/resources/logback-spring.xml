@@ -69,7 +69,7 @@
     </appender>
 
     <appender name="systemStart" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="com.sptek.webfw.filter.logback.LogbackFilterForSystemStart"/>
+        <filter class="com.sptek.webfw.filter.logbackFilter.LogbackFilterForSystemStart"/>
 
         <file>${base_log_path}/systemStart/systemStart.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
