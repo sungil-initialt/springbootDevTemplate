@@ -47,6 +47,8 @@ dependencies {
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 	implementation 'org.apache.tomcat:tomcat-jdbc:10.1.9'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.aspectj:aspectjweaver:1.9.7'
 
 	runtimeOnly 'com.h2database:h2:2.1.214'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
