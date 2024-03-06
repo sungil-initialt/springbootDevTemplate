@@ -36,16 +36,16 @@ logging:
     root: debug
     com:
       sptek.webfw.persistence.dao: debug
-      zaxxer.hikari.pool.HikariPool: debug
+      zaxxer.hikari.pool.HikariPool: info
     org:
-      mybatis.spring: debug
+      mybatis.spring: info
     jdbc:
-      audit: debug
-      resultset: debug
-      resultsettable: debug #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
-      sqlonly: debug     #SQL만 로그로 남긴다.
-      sqltiming: debug    #SQL과 소요시간을 표기한다.
-      connection: debug  # 커넥션 확인가능
+      audit: info
+      resultset: info
+      resultsettable: info #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
+      sqlonly: info     #SQL만 로그로 남긴다.
+      sqltiming: info    #SQL과 소요시간을 표기한다.
+      connection: info  # 커넥션 확인가능
   config: classpath:logbackConfig/logback-spring-local.xml
 
 

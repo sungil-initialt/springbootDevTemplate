@@ -1,5 +1,6 @@
 package com.sptek.webfw.example.web.page1;
 
+import com.sptek.webfw.anotation.AnoDuplicationRequestPrevent;
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
@@ -181,5 +182,15 @@ public class ViewTestController extends CommonControllerSupport {
         String connectTime = getI18nMessage("connectTime", new String[]{formattedDateTime});
         model.addAttribute("connectTime", connectTime);
         return PAGE_BASE_PATH + "i18n";
+    }
+
+    @AnoDuplicationRequestPrevent
+    @RequestMapping("/duplicateRequest")
+    public String duplicateRequest(Model model) throws Exception {
+        log.debug("called duplicateRequest");
+
+        //테스트를 위한 강제 딜레이
+        Thread.sleep(3000L);
+        return PAGE_BASE_PATH + "welcome";
     }
 }

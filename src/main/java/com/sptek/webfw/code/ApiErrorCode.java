@@ -27,7 +27,8 @@ public enum ApiErrorCode {
     SERVICE_DEFAULT_ERROR(HttpStatus.OK, "SE000", "Default Error Exception"),
     SERVICE_INSERT_ERROR(HttpStatus.OK, "SE001", "Insert Transaction Error Exception"),
     SERVICE_UPDATE_ERROR(HttpStatus.OK, "SE002", "Update Transaction Error Exception"),
-    SERVICE_DELETE_ERROR(HttpStatus.OK, "SE003", "Delete Transaction Error Exception");
+    SERVICE_DELETE_ERROR(HttpStatus.OK, "SE003", "Delete Transaction Error Exception"),
+    SERVICE_DUPLICATION_REQUEST_ERROR(HttpStatus.OK, "SE202", "Duplication Request Error Exception");
 
 
     private final HttpStatus httpStatusCode;

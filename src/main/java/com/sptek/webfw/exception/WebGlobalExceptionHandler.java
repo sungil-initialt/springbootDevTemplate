@@ -16,11 +16,18 @@ public class WebGlobalExceptionHandler {
     개발시에는 해당 핸들러를 막아서 5xx.html로 유도하게 하면 좀더 에러 분석이 좋을 수 있음
     todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 고민필요.
      */
+
+    /*
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected final String handleAllExceptions(Exception ex) {
         log.error("WebGlobalExceptionHandler : ", ex);
 
         return "error/commonInternalErrorView";
+    }
+    */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void handleGenericException(Exception ex) {
     }
 }
