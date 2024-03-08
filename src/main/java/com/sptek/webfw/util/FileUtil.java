@@ -1,8 +1,8 @@
 package com.sptek.webfw.util;
 
-import com.sptek.webfw.code.ApiErrorCode;
+import com.sptek.webfw.code.ErrorCode;
 import com.sptek.webfw.example.dto.FileUploadDto;
-import com.sptek.webfw.exception.ApiServiceException;
+import com.sptek.webfw.exceptionHandler.exception.ApiServiceException;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +33,7 @@ public class FileUtil {
             //예외 조건 확인
             if(exceptionFilter != null && exceptionFilter.test(multipartFile)) {
                 //exception 조건에 맞는경우 ex를 발생시켜 줌
-                throw new ApiServiceException(ApiErrorCode.FORBIDDEN_ERROR);
+                throw new ApiServiceException(ErrorCode.FORBIDDEN_ERROR);
             }
 
             //브라우저에따라 파일명에 경로가 포함되는 경우가 있어 제거 추가

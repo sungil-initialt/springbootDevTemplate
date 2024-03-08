@@ -57,13 +57,16 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
     //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        //swagger.
+        registry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
+
         //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정
         registry.addViewController("/temporaryParkingPageForTest").setViewName("/pages/example/page1/temporaryParkingView");
         registry.addViewController("/sorry").setViewName("/pages/example/page1/temporaryParkingView");
         registry.addViewController("/fileUploadTest").setViewName("/pages/example/page1/fileUploadTest");
+        registry.addViewController("/pageWithPost").setViewName("/pages/example/page1/pageWithPost");
+        registry.addViewController("/apiWithAjax").setViewName("/pages/example/page1/apiWithAjax");
 
-        //swagger.
-        registry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
     }
     
     /*

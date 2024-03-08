@@ -1,4 +1,4 @@
-package com.sptek.webfw.filter;
+package com.sptek.webfw.config.filter;
 
 /*
 Xss 방지 필터 목적인데.. request param 으로 들어오는 값들에 대한 처리는 필터에서 적용하기가 애매함 (해당 코드 request body 에만 Xss 필터가 적용됨)

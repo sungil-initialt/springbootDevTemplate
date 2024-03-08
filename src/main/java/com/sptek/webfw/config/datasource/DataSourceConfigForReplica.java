@@ -1,15 +1,16 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.datasource;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
@@ -18,30 +19,28 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@Profile(value = { "prd" })
-
-//todo: JNDI 방식에 대한 테스트 필요
-public class DataSourceConfigForReplicaWithJndi {
-    @Value("${jndi.datasource.lookup.write.name}") //프로퍼티 항목 정의
-    private String jndiWriteDatasourceLookupName;
-    @Value("${jndi.datasource.lookup.read.name}")
-    private String jndiReadDatasourceLookupName;
-
-
+@Profile(value = { "dev", "stg" })
+public class DataSourceConfigForReplica {
     @Bean(name = "writeDataSource", destroyMethod = "")
-    public org.apache.tomcat.jdbc.pool.DataSource writeDataSource() {
-        JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) dataSourceLookup
-                .getDataSource(this.jndiWriteDatasourceLookupName);
-        return dataSource;
+    @ConfigurationProperties(prefix = "spring.datasource.write")
+    //HikariCP를 이용하여 datasource를 관리한다.
+    //Spring이 DataSource를 필요로하는 시점에 여러개가 존재할수 있기때문에 별도의 이름을 추가해 줄수 있다. (기본은 return 타입)
+    //Spring이 bean 소멸시 자동으로 dataSource의 close를 기본으로 호출해줌으로 destroyMethod를 따로 선언하지 않아도 된다(필요한경우 사용)
+    // write용 리프리케이션.
+    public DataSource writeDataSource() throws Exception {
+        return DataSourceBuilder
+                .create()
+                .type(HikariDataSource.class)
+                .build();
     }
 
     @Bean(name = "readDataSource", destroyMethod = "")
-    public org.apache.tomcat.jdbc.pool.DataSource readDataSource() {
-        JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) dataSourceLookup
-                .getDataSource(this.jndiReadDatasourceLookupName);
-        return dataSource;
+    @ConfigurationProperties(prefix = "spring.datasource.read")
+    public DataSource readDataSource() throws Exception {
+        return DataSourceBuilder
+                .create()
+                .type(HikariDataSource.class)
+                .build();
     }
 
     @Bean(name = "routingDataSource")

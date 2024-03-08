@@ -4,14 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.MutablePropertySources;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.stream.StreamSupport;
 
 /*
 
@@ -23,7 +19,7 @@ public class ApplicationEventSupport {
     @EventListener
     // 애플리케이션 컨텍스트가 초기화되거나 새로고침될 때 실행
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        log.info("LBF>>systemStart: message here!");
+        log.info("XXX >> systemStart: message here!");
         log.debug("ApplicationCheckSupport - ContextRefreshedEvent");
 
         //to do what you want..
@@ -34,6 +30,7 @@ public class ApplicationEventSupport {
         log.debug("activeProfiles = {}", Arrays.toString(activeProfiles));
 
         //시스템 설정 프로퍼티 모두 노출(시스템 설정상의 문제를 확인하는데 도움을 줄 수 있다)
+        /*
         if(Boolean.parseBoolean(environment.getProperty("system.propertySources.expose-enabled"))) {
             final MutablePropertySources mutablePropertySources = ((AbstractEnvironment) environment).getPropertySources();
             StreamSupport.stream(mutablePropertySources.spliterator(), false)
@@ -46,9 +43,11 @@ public class ApplicationEventSupport {
                             propertyName.contains("java.class.path") ||
                                     propertyName.contains("credentials") ||
                                     propertyName.contains("password") ||
+                                    propertyName.contains("token") ||
                                     propertyName.contains("secret")))
                     .forEach(propertyName -> log.info("{}: {}", propertyName, environment.getProperty(propertyName)));
         }
+         */
     }
 
     @EventListener

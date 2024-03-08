@@ -1,5 +1,6 @@
-package com.sptek.webfw.exception;
+package com.sptek.webfw.exceptionHandler;
 
+import com.sptek.webfw.exceptionHandler.exception.DuplicatedRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,17 +18,20 @@ public class WebGlobalExceptionHandler {
     todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 고민필요.
      */
 
-    /*
+    //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
+    @ExceptionHandler(DuplicatedRequestException.class)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void handleGenericException(Exception ex) {
+        log.error("WebGlobalExceptionHandler : ", ex);
+        //응답코드만 내리고 page는 내리지 않음
+    }
+
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected final String handleAllExceptions(Exception ex) {
         log.error("WebGlobalExceptionHandler : ", ex);
-
         return "error/commonInternalErrorView";
     }
-    */
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void handleGenericException(Exception ex) {
-    }
+
 }

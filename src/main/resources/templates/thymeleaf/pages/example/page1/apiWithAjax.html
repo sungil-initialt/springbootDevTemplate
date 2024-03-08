@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!--
+테스트용
+-->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>apiWithAjax</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<script>
+    var host = 'http://localhost:8080/api/v1/';
+</script>
+
+<button id="btn1">duplicatedRequest1</button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('btn1').addEventListener('click', async function() {
+            fetch(host + 'duplicatedRequest')
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
+        });
+    });
+</script>
+</body>
+</html>
+
+-->여기까지 작성함, 어씽크하게 동작하도록 수정이 필요함

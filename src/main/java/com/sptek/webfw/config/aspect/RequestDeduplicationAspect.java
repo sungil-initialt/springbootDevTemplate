@@ -1,5 +1,8 @@
-package com.sptek.webfw.aop;
+package com.sptek.webfw.config.aspect;
 
+import com.sptek.webfw.code.ErrorCode;
+import com.sptek.webfw.exceptionHandler.exception.ApiServiceException;
+import com.sptek.webfw.exceptionHandler.exception.DuplicatedRequestException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +22,23 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+/*
+Controller, RestController 모두 동작할 수 있게 만들었으나 브라우저(chrome, ie..) 등에서는 request 응답을 받기전
+동일한 request를 또 보내면 이전 request를 부라우저가 cancel 처리하여 추후 response가 오더라도 받지를 않는다.
+그래서 브라우저를 이용하여 페이지를 전화하는 경우의 request에서는 사실상 동작이 정상적으로 되지 않음.
+ */
+
 @Slf4j
 @Aspect
 @Component
-public class DuplicateRequestPreventAspect
+public class RequestDeduplicationAspect
 {
     private String REQUEST_ID_SET_NAME = "myRequestIdSet";
 
     @Pointcut("(@within(org.springframework.stereotype.Controller) || " +
             "@within(org.springframework.web.bind.annotation.RestController)) && " +
-            "(@within(com.sptek.webfw.anotation.AnoDuplicationRequestPrevent) || " +
-            "@annotation(com.sptek.webfw.anotation.AnoDuplicationRequestPrevent))")
+            "(@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || " +
+            "@annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
     public void duplicateRequestPrevent() {}
 
     @Before("duplicateRequestPrevent()")
@@ -41,13 +50,13 @@ public class DuplicateRequestPreventAspect
     public Object duplicateRequestCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest myRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        // GET은 처리에서 제외 (중요한 요청이 아닌경우가 보통이고 img, css 등 static 리소스를 제외하기 위함)
+        // GET 요청을 제외 하고 싶을때
         //if ("GET".equalsIgnoreCase(myRequest.getMethod())) {
         //    log.debug("duplicateRequestCheck : GET,  just pass through");
         //    return joinPoint.proceed();
         //}
 
-        String controllerType = joinPoint.getTarget().getClass().isAnnotationPresent(RestController.class) ? "restController" : "viewController"; //타입에 따라 response 다르게 처리
+        String controllerType = joinPoint.getTarget().getClass().isAnnotationPresent(RestController.class) ? "restController" : "viewController";
         HttpSession mySession = myRequest.getSession(true);
         String requestId = joinPoint.getSignature().toLongString();
         Set<String> myRequestIdSet;
@@ -57,13 +66,14 @@ public class DuplicateRequestPreventAspect
 
         if(myRequestIdSet.contains(requestId)) {
             if(controllerType.equals("restController")) {
-                return handleDuplicateForRestController();
+                return handleDuplicationForRestController();
             } else {
-                return handleDuplicateForViewController();
+                return handleDuplicationForViewController(myRequest);
             }
         } else {
             myRequestIdSet.add(requestId);
             mySession.setAttribute(REQUEST_ID_SET_NAME, myRequestIdSet);
+            log.debug("duplicateRequestCheck : saved myRequestId ({}) in session.", requestId);
             try {
                 return joinPoint.proceed();
 
@@ -75,16 +85,13 @@ public class DuplicateRequestPreventAspect
         }
     }
 
-    private Object handleDuplicateForRestController() {
-        //HttpStatus.OK, "SE202", "Duplication Request Error Exception"
+    private Object handleDuplicationForRestController() {
         log.debug("duplicateRequestCheck : RestController request is canceled");
-        return null;
-        //throw new ApiServiceException(ApiErrorCode.SERVICE_DUPLICATION_REQUEST_ERROR);
+        throw new ApiServiceException(ErrorCode.SERVICE_DUPLICATION_REQUEST_ERROR);
     }
 
-    private Object handleDuplicateForViewController() {
-        // 중복 요청에 대한 응답 처리
+    private Object handleDuplicationForViewController(HttpServletRequest request) {
         log.debug("duplicateRequestCheck : ViewController request is canceled");
-        throw new RuntimeException("duplicateRequestCheck : ViewController request is canceled");
+        throw new DuplicatedRequestException(request);
     }
 }

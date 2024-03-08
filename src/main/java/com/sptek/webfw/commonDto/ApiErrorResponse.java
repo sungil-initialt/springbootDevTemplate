@@ -1,6 +1,6 @@
 package com.sptek.webfw.commonDto;
 
-import com.sptek.webfw.code.ApiErrorCode;
+import com.sptek.webfw.code.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,36 +35,36 @@ public class ApiErrorResponse {
     private String exceptionMessage;
 
     @Builder
-    protected ApiErrorResponse(final ApiErrorCode apiErrorCode) {
-        this.resultCode = apiErrorCode.getResultCode();
-        this.resultMessage = apiErrorCode.getResultMessage();
+    protected ApiErrorResponse(final ErrorCode errorCode) {
+        this.resultCode = errorCode.getResultCode();
+        this.resultMessage = errorCode.getResultMessage();
     }
 
     @Builder
-    protected ApiErrorResponse(final ApiErrorCode apiErrorCode, final String exceptionMessage) {
-        this.resultCode = apiErrorCode.getResultCode();
-        this.resultMessage = apiErrorCode.getResultMessage();
+    protected ApiErrorResponse(final ErrorCode errorCode, final String exceptionMessage) {
+        this.resultCode = errorCode.getResultCode();
+        this.resultMessage = errorCode.getResultMessage();
         this.exceptionMessage = exceptionMessage;
     }
 
     @Builder
-    protected ApiErrorResponse(final ApiErrorCode apiErrorCode, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
-        this.resultCode = apiErrorCode.getResultCode();
-        this.resultMessage = apiErrorCode.getResultMessage();
+    protected ApiErrorResponse(final ErrorCode errorCode, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
+        this.resultCode = errorCode.getResultCode();
+        this.resultMessage = errorCode.getResultMessage();
         this.exceptionMessage = exceptionMessage;
         this.inValidFieldInfos = inValidFieldInfos;
     }
 
-    public static ApiErrorResponse of(final ApiErrorCode apiErrorCode) {
-        return new ApiErrorResponse(apiErrorCode);
+    public static ApiErrorResponse of(final ErrorCode errorCode) {
+        return new ApiErrorResponse(errorCode);
     }
 
-    public static ApiErrorResponse of(final ApiErrorCode apiErrorCode, final String exceptionMessage) {
-        return new ApiErrorResponse(apiErrorCode, exceptionMessage);
+    public static ApiErrorResponse of(final ErrorCode errorCode, final String exceptionMessage) {
+        return new ApiErrorResponse(errorCode, exceptionMessage);
     }
 
-    public static ApiErrorResponse of(final ApiErrorCode apiErrorCode, final String exceptionMessage, final BindingResult bindingResult) {
-        return new ApiErrorResponse(apiErrorCode, exceptionMessage, InValidFieldInfo.of(bindingResult));
+    public static ApiErrorResponse of(final ErrorCode errorCode, final String exceptionMessage, final BindingResult bindingResult) {
+        return new ApiErrorResponse(errorCode, exceptionMessage, InValidFieldInfo.of(bindingResult));
     }
 
 

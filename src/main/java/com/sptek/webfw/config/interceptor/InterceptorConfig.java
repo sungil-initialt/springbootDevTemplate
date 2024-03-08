@@ -1,10 +1,6 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.interceptor;
 
 
-import com.sptek.webfw.interceptor.ExampleInterceptor;
-import com.sptek.webfw.interceptor.MethodCheckInterceptorForXX;
-import com.sptek.webfw.interceptor.RequestInfoInterceptor;
-import com.sptek.webfw.interceptor.UvInterceptor;
 import com.sptek.webfw.support.MethodCheckInterceptorSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +29,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 "/swagger-ui.html",
                 "/webjars/**",
                 "/swagger/**",
-                "error"
+                "/error/**"
         };
         
         //필요한 interceptor 등록
-        registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
+        //registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
         registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**").excludePathPatterns(interceptorExcludePathPatterns);
         registry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**").excludePathPatterns(interceptorExcludePathPatterns);
 

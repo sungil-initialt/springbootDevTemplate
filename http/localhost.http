@@ -21,6 +21,7 @@ Content-Type: application/json
 }
 
 
+
 ### interceptorTest 테스트
 GET localhost:8080/api/v2/interceptorTest
 Content-Type: application/json
@@ -36,6 +37,7 @@ Content-Type: application/json
 ### interceptorTest 테스트
 DELETE localhost:8080/api/v1/interceptorTest
 Content-Type: application/json
+
 
 
 ### closeableHttpClient 테스트
@@ -93,3 +95,10 @@ Content-Type: application/json
 ### customMyUserHandler2 테스트2
 GET {{api-server-ver}}/argumentResolverForMyUser2?id=sungil
 Content-Type: application/json
+
+
+
+### duplicatedRequest 테스트
+GET {{api-server-ver}}/duplicatedRequest
+Content-Type: application/json
+

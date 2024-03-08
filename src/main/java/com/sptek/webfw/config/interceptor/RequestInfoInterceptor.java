@@ -1,4 +1,4 @@
-package com.sptek.webfw.interceptor;
+package com.sptek.webfw.config.interceptor;
 
 import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.TypeConvertUtil;

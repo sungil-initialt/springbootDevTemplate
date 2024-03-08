@@ -1,6 +1,6 @@
 package com.sptek.webfw.example.web.page1;
 
-import com.sptek.webfw.anotation.AnoDuplicationRequestPrevent;
+import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
@@ -54,7 +54,7 @@ public class ViewTestController extends CommonControllerSupport {
         log.debug("called serviceErr");
         
         if(1==1) throw new NullPointerException("NP Exception for Test");
-        //if(1==1) throw new ApiServiceException(ApiErrorCode.SERVICE_DEFAULT_ERROR, "serviceErr");
+        //if(1==1) throw new ApiServiceException(ErrorCode.SERVICE_DEFAULT_ERROR, "serviceErr");
         
         return PAGE_BASE_PATH + "xx"; //위에서 에러가 발생함으로 뷰로 갈일은 없음";
     }
@@ -184,9 +184,9 @@ public class ViewTestController extends CommonControllerSupport {
         return PAGE_BASE_PATH + "i18n";
     }
 
-    @AnoDuplicationRequestPrevent
-    @RequestMapping("/duplicateRequest")
-    public String duplicateRequest(Model model) throws Exception {
+    @AnoRequestDeduplication
+    @RequestMapping("/duplicatedRequest")
+    public String duplicatedRequest(Model model) throws Exception {
         log.debug("called duplicateRequest");
 
         //테스트를 위한 강제 딜레이

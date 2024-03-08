@@ -1,4 +1,4 @@
-package com.sptek.webfw.filter;
+package com.sptek.webfw.config.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,7 +43,7 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
 
     private boolean isExcludePath(HttpServletRequest request) {
         //제외하고 싶은 path 추가하면 됨
-        String[] excludePathPatterns = {"/js", "/css", "/img", "/image", "/images", "/error", "/health"};
+        String[] excludePathPatterns = {"/js", "/css", "/img", "/image", "/images", "/error", "/health", "/github-markdown-css"};
         String reqPath = request.getServletPath();
 
         AntPathMatcher pathMatcher = new AntPathMatcher();

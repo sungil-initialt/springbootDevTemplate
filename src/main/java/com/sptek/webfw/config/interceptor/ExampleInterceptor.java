@@ -1,6 +1,5 @@
-package com.sptek.webfw.interceptor;
+package com.sptek.webfw.config.interceptor;
 
-import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
+            /*
             log.debug("ExampleInterceptor preHandle information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
@@ -34,6 +34,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
                     , handlerMethod.getBeanType().getName()
                     , handlerMethod.getReturnType().getParameterType().getName()
                     , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class)); //해당 메소드에 @AnoInterceptorCheck 어노테이션이 적용되어 있는지 여부
+             */
 
             //todo : 위 정보를 이용하여 원하는 내용을 작성
         }
@@ -46,6 +47,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
+            /*
             log.debug("ExampleInterceptor postHandle information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
@@ -55,6 +57,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
                     , handlerMethod.getBeanType().getName()
                     , handlerMethod.getReturnType().getParameterType().getName()
                     , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class));
+             */
         }
     }
 
@@ -63,6 +66,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
+            /*
             log.debug("ExampleInterceptor afterCompletion information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
@@ -72,6 +76,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
                     , handlerMethod.getBeanType().getName()
                     , handlerMethod.getReturnType().getParameterType().getName()
                     , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class));
+             */
         }
     }
 }
