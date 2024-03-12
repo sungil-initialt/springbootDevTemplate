@@ -1,13 +1,29 @@
 <!DOCTYPE html>
-<!--
-테스트용
--->
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{thymeleaf/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>welcome</title>
+    <title>테스트 페이지</title>
+
+    <!-- inline CSS 영역-->
+    <style th:inline="css" type="text/css">
+    </style>
+
+    <!-- inline JS 영역-->
+    <script th:inline="javascript" type="text/javascript">
+    </script>
 </head>
+
 <body>
-<B>welcome</B>
+<div>
+    <h1>welcome</h1>
+</div>
 </body>
 </html>
+
+
+템플릿위치 못찾는 문제 해결해야함
