@@ -1,0 +1,30 @@
+package com.sptek.webfw.exceptionHandler.exception;
+
+import com.sptek.webfw.code.ErrorCode;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+/*
+ServiceException 은 RuntimeException을 상속받으며 ErrorCode와 exceptionMessage로 구성됨. (exceptionMessage 은 없을수 있음)
+서비스 로직상의 에러?를 처리하기 위해 사용함 (ex:고객님은 휴면 고객 입니다...와 같이 코드상의 에러가 아닌 케이스에 적용)
+throw new ServiceException(ErrorCode.SERVICE_XXXX_ERROR, "최근 구매내역 없음"); 와 같이 개발자가 직접 메시지를 넣어준다.
+ */
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ServiceException extends RuntimeException {
+    private ErrorCode errorCode;
+
+    @Builder
+    public ServiceException(ErrorCode errorCode) {
+        super(errorCode.getResultMessage());
+        this.errorCode = errorCode;
+    }
+
+    @Builder
+    public ServiceException(ErrorCode errorCode, String exceptionMessage) {
+        super(exceptionMessage);
+        this.errorCode = errorCode;
+    }
+}

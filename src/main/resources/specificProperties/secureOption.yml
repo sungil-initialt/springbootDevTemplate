@@ -1,0 +1,9 @@
+#secure 관련 옵션 설정
+secureOption:
+  cors:
+    defaultAccessControlAllowOrigin: "http://backend.com:8080" #허용되지 않는 도메인의 경우 해당 값을 accessControlAllowOrigin로 대체 (서버도메인 활용)
+    accessControlAllowOrigin: "http://frontend.com:8080, https://frontend.com:8080"
+    accessControlAllowMethods: "GET, POST, PUT, DELETE, OPTIONS"
+    accessControlAllowCredentials: true
+    accessControlMaxAge: 3600
+    accessControlAllowHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"

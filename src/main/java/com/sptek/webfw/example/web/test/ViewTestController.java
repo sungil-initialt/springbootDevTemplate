@@ -1,17 +1,25 @@
-package com.sptek.webfw.example.web.page1;
+package com.sptek.webfw.example.web.test;
 
-import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
+import com.sptek.webfw.anotation.AnoRequestDeduplication;
+import com.sptek.webfw.code.ErrorCode;
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
+import com.sptek.webfw.example.dto.ValidationTestDto;
+import com.sptek.webfw.exceptionHandler.exception.ServiceException;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,12 +33,13 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class ViewTestController extends CommonControllerSupport {
-    private final String PAGE_BASE_PATH = "pages/example/page1/";
+    private final String PAGE_BASE_PATH = "pages/example/test/";
     @Autowired
     private ViewTestService viewTestService;
 
     //기본 테스트
-    @RequestMapping({"/", "/welcome"})
+    //@RequestMapping({"/", "/welcome"})
+    @RequestMapping({"/welcome"})
     public String welcome(Model model) {
         log.debug("called welcome");
         model.addAttribute("message", "welcome");
@@ -38,14 +47,14 @@ public class ViewTestController extends CommonControllerSupport {
         return PAGE_BASE_PATH + "welcome";
     }
 
-    @RequestMapping("/interceptorTest")
+    @RequestMapping("/interceptor")
     @AnoInterceptorCheck
-    public String interceptorTest(Model model) {
-        log.debug("called interceptorTest : first log");
+    public String interceptor(Model model) {
+        log.debug("called interceptor : first log");
         model.addAttribute("message", "welcome");
 
-        log.debug("called interceptorTest : just before return");
-        return PAGE_BASE_PATH + "interceptorTest";
+        log.debug("called interceptor : just before return");
+        return PAGE_BASE_PATH + "interceptor";
     }
 
     //내부 로직에직 발생한 EX에 대한 처리.
@@ -53,127 +62,127 @@ public class ViewTestController extends CommonControllerSupport {
     public String serviceErr(Model model) {
         log.debug("called serviceErr");
         
-        if(1==1) throw new NullPointerException("NP Exception for Test");
-        //if(1==1) throw new ApiServiceException(ErrorCode.SERVICE_DEFAULT_ERROR, "serviceErr");
-        
+        //if(1==1) throw new NullPointerException("NP Exception for Test");
+        if(1==1) throw ServiceException.builder().errorCode(ErrorCode.SERVICE_DEFAULT_ERROR).build();
+
         return PAGE_BASE_PATH + "xx"; //위에서 에러가 발생함으로 뷰로 갈일은 없음";
     }
 
     //Mybatis 를 통한 DB 테스트들
-    @RequestMapping("/dbConnectTest")
-    public String dbConnectTest(Model model) {
-        log.debug("called dbConnectTest");
+    @RequestMapping("/dbConnect")
+    public String dbConnect(Model model) {
+        log.debug("called dbConnect");
         int result = viewTestService.returnOne();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/replicationMasterTest")
-    public String replicationMasterTest(Model model) {
-        log.debug("called replicationMasterTest");
-        int result = viewTestService.replicationMasterTest();
+    @RequestMapping("/replicationMaster")
+    public String replicationMaster(Model model) {
+        log.debug("called replicationMaster");
+        int result = viewTestService.replicationMaster();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/replicationSlaveTest")
-    public String replicationSlaveTest(Model model) {
-        log.debug("called replicationSlaveTest");
-        int result = viewTestService.replicationSlaveTest();
+    @RequestMapping("/replicationSlave")
+    public String replicationSlave(Model model) {
+        log.debug("called replicationSlave");
+        int result = viewTestService.replicationSlave();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/selectOneTest")
-    public String selectOneTest(Model model) {
-        log.debug("called selectOneTest");
-        TBTestDto tbTestDto = viewTestService.selectOneTest();
+    @RequestMapping("/selectOne")
+    public String selectOne(Model model) {
+        log.debug("called selectOne");
+        TBTestDto tbTestDto = viewTestService.selectOne();
         model.addAttribute("result", tbTestDto.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/selectListTest")
-    public String selectListTest(Model model) {
-        log.debug("called selectListTest");
-        List<TBTestDto> tbTestDtos = viewTestService.selectListTest();
+    @RequestMapping("/selectList")
+    public String selectList(Model model) {
+        log.debug("called selectList");
+        List<TBTestDto> tbTestDtos = viewTestService.selectList();
         model.addAttribute("result", tbTestDtos.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/selectListWithResultHandlerTest")
+    @RequestMapping("/selectListWithResultHandler")
     //ResultHandler를 이용해서 db에서 result row를 하나씩 읽어와 각 row에 대한 처리가 가능함
-    public String selectListWithResultHandlerTest(Model model) {
-        log.debug("called selectListWithResultHandlerTest");
-        List<TBZipcodeDto> tBZipcode = viewTestService.selectListWithResultHandlerTest();
+    public String selectListWithResultHandler(Model model) {
+        log.debug("called selectListWithResultHandler");
+        List<TBZipcodeDto> tBZipcode = viewTestService.selectListWithResultHandler();
         model.addAttribute("result", tBZipcode.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/selectMapTest")
+    @RequestMapping("/selectMap")
     //result 결과 list를 map 형태로 받아올수 있다.
-    public String selectMapTest(Model model) {
-        log.debug("called selectMapTest");
-        Map<?, ?> resultMap = viewTestService.selectMapTest();
+    public String selectMap(Model model) {
+        log.debug("called selectMap");
+        Map<?, ?> resultMap = viewTestService.selectMap();
         model.addAttribute("result", resultMap.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/selectPaginateTest")
+    @RequestMapping("/selectPaginate")
     //PageHelperSupport를 이용해서 페이지 처리가 가능한 형태로 result row를 읽어 온다.
-    public String selectPaginateTest(HttpServletRequest request,
+    public String selectPaginate(HttpServletRequest request,
                                      @RequestParam(name = "currentPageNum", required = false, defaultValue = "0") int currentPageNum,
                                      @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
                                      @RequestParam(name = "setButtomPageNavigationSize", required = false, defaultValue = "0") int setButtomPageNavigationSize,
                                      Model model) {
         //값이 0일때는 디폴트값으로 적용됨
-        log.debug("called selectPaginateTest");
+        log.debug("called selectPaginate");
 
-        PageInfoSupport<TBZipcodeDto> pageInfoSupport = viewTestService.selectPaginateTest(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
+        PageInfoSupport<TBZipcodeDto> pageInfoSupport = viewTestService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
 
         model.addAttribute("result", pageInfoSupport.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/insertTest")
-    public String insertTest(Model model) {
-        log.debug("called insertTest");
+    @RequestMapping("/insert")
+    public String insert(Model model) {
+        log.debug("called insert");
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41)
                 .c2(42)
                 .c3(43).build();
 
-        int result = viewTestService.insertTest(tbTestDto);
+        int result = viewTestService.insert(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/updateTest")
-    public String updateTest(Model model) {
-        log.debug("called updateTest");
+    @RequestMapping("/update")
+    public String update(Model model) {
+        log.debug("called update");
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41)
                 .c2(422)
                 .c3(433).build();
 
-        int result = viewTestService.updateTest(tbTestDto);
+        int result = viewTestService.update(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/deleteTest")
-    public String deleteTest(Model model) {
-        log.debug("called deleteTest");
+    @RequestMapping("/delete")
+    public String delete(Model model) {
+        log.debug("called delete");
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41).build();
 
-        int result = viewTestService.deleteTest(tbTestDto);
+        int result = viewTestService.delete(tbTestDto);
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/i18nTest")
-    public String i18nTest(Model model) {
-        log.debug("called i18nTest");
+    @RequestMapping("/i18n")
+    public String i18n(Model model) {
+        log.debug("called i18n");
 
         ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -192,5 +201,28 @@ public class ViewTestController extends CommonControllerSupport {
         //테스트를 위한 강제 딜레이
         Thread.sleep(3000L);
         return PAGE_BASE_PATH + "welcome";
+    }
+
+    @GetMapping("/validationWithBindingResult")
+    public String validationWithBindingResult(ValidationTestDto validationTestDto) {
+        log.debug("called validationWithBindingResult (GET)");
+        return PAGE_BASE_PATH + "validationWithBindingResult";
+    }
+
+    @PostMapping("/validationWithBindingResult")
+    public String validationWithBindingResult(@Valid ValidationTestDto validationTestDto, BindingResult bindingResult) {
+        log.debug("called validationWithBindingResult (POST)");
+
+        if (bindingResult.hasErrors()) {
+            return PAGE_BASE_PATH + "validationWithBindingResult";
+        }
+
+        if (StringUtils.hasText(validationTestDto.getEmail()) && validationTestDto.getEmail().contains("@naver.com")) {
+            bindingResult.rejectValue("email", "emailFail", "네이버 메일은 사용할 수 없습니다.");
+            return PAGE_BASE_PATH + "validationWithBindingResult";
+        }
+
+        //do what you want.
+        return "redirect:" + "validationWithBindingResult";
     }
 }

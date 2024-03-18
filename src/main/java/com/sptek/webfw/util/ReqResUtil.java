@@ -1,8 +1,12 @@
 package com.sptek.webfw.util;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -69,5 +73,32 @@ public class ReqResUtil {
         log.debug("request client IP : {}", ip);
         return ip;
     }
+
+    public static HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    }
+
+    public static HttpServletResponse getResponse() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+    }
+
+    public static HttpSession getSession() {
+        return getSession(false);
+    }
+
+    public static HttpSession getSession(boolean create) {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(create);
+    }
+
+    public static Object setSessionAttribute(String attributeName, Object attribute) {
+        getSession(true).setAttribute(attributeName, attribute);
+        return attribute;
+    }
+
+    public static Object getSessionAttribute(String attributeName) {
+        return getSession(true).getAttribute(attributeName);
+    }
+
+
 }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sptek.webfw.code.ErrorCode;
 import com.sptek.webfw.commonDto.ApiErrorResponse;
-import com.sptek.webfw.exceptionHandler.exception.ApiServiceException;
+import com.sptek.webfw.exceptionHandler.exception.ServiceException;
 import com.sptek.webfw.exceptionHandler.exception.DuplicatedRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -108,10 +108,10 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, ErrorCode.REQUEST_BODY_MISSING_ERROR.getHttpStatusCode());
     }
 
-    //개발자가 의도적으로 생성하는 Exception는 ApiServiceException로 생성하며 해당 핸들러에서 처리 됨
-    @ExceptionHandler(ApiServiceException.class)
-    public ResponseEntity<ApiErrorResponse> handleCustomException(ApiServiceException ex) {
-        log.error("ApiServiceExceptionHandler : ", ex);
+    //개발자가 의도적으로 생성하는 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<ApiErrorResponse> handleServiceException(ServiceException ex) {
+        log.error("ServiceException로 : ", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ex.getErrorCode().getHttpStatusCode());
@@ -119,8 +119,8 @@ public class ApiGlobalExceptionHandler {
 
     //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
     @ExceptionHandler(DuplicatedRequestException.class)
-    public ResponseEntity<ApiErrorResponse> handleCustomException(DuplicatedRequestException ex) {
-        log.error("ApiServiceExceptionHandler : ", ex);
+    public ResponseEntity<ApiErrorResponse> handleDuplicatedRequestException(DuplicatedRequestException ex) {
+        log.error("DuplicatedRequestException : ", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ex.getErrorCode().getHttpStatusCode());
@@ -128,7 +128,7 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected final ResponseEntity<ApiErrorResponse> handleAllExceptions(Exception ex) {
-        log.error("handleAllExceptions : ", ex);
+        log.error("AllException : ", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatusCode());

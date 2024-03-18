@@ -1,8 +1,9 @@
 package com.sptek.webfw.config.aspect;
 
 import com.sptek.webfw.code.ErrorCode;
-import com.sptek.webfw.exceptionHandler.exception.ApiServiceException;
 import com.sptek.webfw.exceptionHandler.exception.DuplicatedRequestException;
+import com.sptek.webfw.exceptionHandler.exception.ServiceException;
+import com.sptek.webfw.util.ReqResUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +15,6 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -48,7 +47,7 @@ public class RequestDeduplicationAspect
 
     @Around("duplicateRequestPrevent()")
     public Object duplicateRequestCheck(ProceedingJoinPoint joinPoint) throws Throwable {
-        HttpServletRequest myRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpServletRequest currentRequest = ReqResUtil.getRequest();
 
         // GET 요청을 제외 하고 싶을때
         //if ("GET".equalsIgnoreCase(myRequest.getMethod())) {
@@ -57,22 +56,22 @@ public class RequestDeduplicationAspect
         //}
 
         String controllerType = joinPoint.getTarget().getClass().isAnnotationPresent(RestController.class) ? "restController" : "viewController";
-        HttpSession mySession = myRequest.getSession(true);
+        HttpSession currentSession = currentRequest.getSession(true);
         String requestId = joinPoint.getSignature().toLongString();
         Set<String> myRequestIdSet;
 
-        myRequestIdSet = Optional.ofNullable((Set<String>) mySession.getAttribute(REQUEST_ID_SET_NAME))
+        myRequestIdSet = Optional.ofNullable((Set<String>) currentSession.getAttribute(REQUEST_ID_SET_NAME))
                 .orElseGet(() -> Collections.synchronizedSet(new HashSet<>()));
 
         if(myRequestIdSet.contains(requestId)) {
             if(controllerType.equals("restController")) {
                 return handleDuplicationForRestController();
             } else {
-                return handleDuplicationForViewController(myRequest);
+                return handleDuplicationForViewController(currentRequest);
             }
         } else {
             myRequestIdSet.add(requestId);
-            mySession.setAttribute(REQUEST_ID_SET_NAME, myRequestIdSet);
+            currentSession.setAttribute(REQUEST_ID_SET_NAME, myRequestIdSet);
             log.debug("duplicateRequestCheck : saved myRequestId ({}) in session.", requestId);
             try {
                 return joinPoint.proceed();
@@ -80,14 +79,14 @@ public class RequestDeduplicationAspect
             } finally {  //exception 상황에서도 반드시 제거 필요
                 myRequestIdSet.remove(requestId);
                 //for check
-                log.debug("duplicateRequestCheck : my request is done , clean requestId?  = {}", !((Set<String>) mySession.getAttribute(REQUEST_ID_SET_NAME)).contains(requestId));
+                log.debug("duplicateRequestCheck : my request is done , clean requestId?  = {}", !((Set<String>) currentSession.getAttribute(REQUEST_ID_SET_NAME)).contains(requestId));
             }
         }
     }
 
     private Object handleDuplicationForRestController() {
         log.debug("duplicateRequestCheck : RestController request is canceled");
-        throw new ApiServiceException(ErrorCode.SERVICE_DUPLICATION_REQUEST_ERROR);
+        throw ServiceException.builder().errorCode(ErrorCode.SERVICE_DUPLICATION_REQUEST_ERROR).build();
     }
 
     private Object handleDuplicationForViewController(HttpServletRequest request) {

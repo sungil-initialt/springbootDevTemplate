@@ -48,14 +48,16 @@ spring:
     restart:
       enabled: false
   config:
-    import: #기본 프로퍼티가 아닌 추가적인 property 파일 읽어올수 있다. (특정기능을 위한 프로퍼티로 분리가 필요할때, list 형태로 여럿 셋팅 가능)
+    import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
       - classpath:specificProperties/specificName.yml
+      - classpath:specificProperties/secureOption.yml
   thymeleaf:
+    enabled: true
     cache: false
+    check-template-location: true
     #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
     prefix: file:src/main/resources/templates/thymeleaf/
     suffix: .html
-    enabled: true
   #jsp로 설정할때
   #mvc:
   #  view:

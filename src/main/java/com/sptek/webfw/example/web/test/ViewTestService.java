@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.web.page1;
+package com.sptek.webfw.example.web.test;
 
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
@@ -27,30 +27,30 @@ public class ViewTestService extends CommonServiceSupport {
     }
 
     @Transactional(readOnly = false) //false 임으로 master 쪽으로 요청됨.
-    public int replicationMasterTest(){
+    public int replicationMaster(){
         return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
     }
 
     @Transactional(readOnly = true) //true 임으로 slave 쪽으로 요청됨.
-    public int replicationSlaveTest() {
+    public int replicationSlave() {
         return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
     }
 
     @Transactional(readOnly = true)
-    public TBTestDto selectOneTest() {
+    public TBTestDto selectOne() {
         int SqlParamForlimit = 1;
         return this.myBatisCommonDao.selectOne("PageTestMapper.selecWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
-    public List<TBTestDto> selectListTest() {
+    public List<TBTestDto> selectList() {
         int SqlParamForlimit = 100;
         return this.myBatisCommonDao.selectList("PageTestMapper.selecWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
     //DB로 부터 result row를 하나씩 받아와 처리하는 용도 (대용량 결과라 한번에 받기 어려운 경우 또는 result row의 결과를 보고 처리가 필요한 경우 사용)
-    public List<TBZipcodeDto> selectListWithResultHandlerTest(){
+    public List<TBZipcodeDto> selectListWithResultHandler(){
         MybatisResultHandlerSupport mybatisResultHandlerSupport = new MybatisResultHandlerSupport<TBZipcodeDto, TBZipcodeDto>() {
             int maxCount = 0;
 
@@ -85,7 +85,7 @@ public class ViewTestService extends CommonServiceSupport {
     }
 
     @Transactional(readOnly = true)
-    public Map<?, ?> selectMapTest() {
+    public Map<?, ?> selectMap() {
         int SqlParamForlimit = 3;
         //"컬럼명 c1의 값을 map의 key값으로 하여 Map을 생성한다.
         Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("PageTestMapper.selecWithLimit", SqlParamForlimit, "c1");
@@ -96,23 +96,23 @@ public class ViewTestService extends CommonServiceSupport {
     @Transactional(readOnly = true)
     //result row의 페이징 처리를 위한 예시
     //파람의 상세 내용은 PageInfoSupport 클레스에서 확인가능
-    public PageInfoSupport<TBZipcodeDto> selectPaginateTest(int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
+    public PageInfoSupport<TBZipcodeDto> selectPaginate(int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
         return this.myBatisCommonDao.selectPaginatedList("PageTestMapper.selectAll", null,
                 currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
     }
 
     @Transactional(readOnly = false)
-    public int insertTest(TBTestDto tbTestDto) {
+    public int insert(TBTestDto tbTestDto) {
         return this.myBatisCommonDao.insert("PageTestMapper.insertTbtest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
-    public int updateTest(TBTestDto tbTestDto) {
+    public int update(TBTestDto tbTestDto) {
         return this.myBatisCommonDao.insert("PageTestMapper.updateTbtest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
-    public int deleteTest(TBTestDto tbTestDto) {
+    public int delete(TBTestDto tbTestDto) {
         return this.myBatisCommonDao.insert("PageTestMapper.deleteTbtest", tbTestDto);
     }
 }

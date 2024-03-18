@@ -15,10 +15,8 @@ import lombok.Getter;
   }
 }
  */
-
 @Getter
 public class ApiSuccessResponse<T> {
-
     private String resultCode;
     private String resultMessage;
     private T result;
@@ -30,10 +28,17 @@ public class ApiSuccessResponse<T> {
         this.result = result;
     }
 
+    public ApiSuccessResponse(final T result) {
+        this.resultCode = SuccessCode.DEFAULT_SUCCESS.getResultCode();
+        this.resultMessage = SuccessCode.DEFAULT_SUCCESS.getResultMessage();
+        this.result = result;
+    }
+
     //SuccessCode enum 안에서 선택할 수 없는 특별한 경우에 사용.
     public ApiSuccessResponse(final String resultCode, final String resultMessage, final T result) {
         this.resultCode = resultCode;
         this.resultMessage = resultMessage;
         this.result = result;
     }
+
 }

@@ -1,10 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- Thymeleaf 선언 / navigationFragment 임을 선언-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="NavigationFragment">
+<div style="border: solid 1px yellow">
+    Navigation bar 영역입니다.
+    <nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/welcome">welcom</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/interceptor">interceptor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/serviceErr">serviceErr</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dbConnect">dbConnect</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/replicationMaster">replicationMaster</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/replicationSlave">replicationSlave</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/selectOne">selectOne</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/selectListWithResultHandler">selectListWithResultHandler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/selectMap">selectMap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/selectPaginate?currentPageNum=1&setRowSizePerPage=3&setButtomPageNavigationSize=5">selectPaginate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/insert">insert</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/update">update</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/delete">delete</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/i18n">i18n</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/fileUpload">fileUpload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/validationWithBindingResult">validationWithBindingResult</a>
+                    </li>
 
-</body>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pageWithPost">pageWithPost</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/apiWithAjax">apiWithAjax</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
 </html>

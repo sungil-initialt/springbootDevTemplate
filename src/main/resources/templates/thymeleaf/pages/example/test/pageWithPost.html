@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>테스트 페이지</title>
+
+    <!-- inline CSS 영역-->
+    <style th:inline="css" type="text/css">
+    </style>
+
+    <!-- inline JS 영역-->
+    <script th:inline="javascript" type="text/javascript">
+    </script>
+</head>
+
+<body>
+<div>
+    <form action="http://localhost:8080/duplicatedRequest" method="POST">
+        <input type="submit" value="http://localhost:8080/duplicatedRequest">
+    </form>
+</div>
+</body>
+</html>

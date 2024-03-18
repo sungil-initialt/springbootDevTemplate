@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
-import com.sptek.webfw.code.SuccessCode;
 import com.sptek.webfw.commonDto.ApiSuccessResponse;
 import com.sptek.webfw.example.dto.FileUploadDto;
 import com.sptek.webfw.example.dto.ValidationTestDto;
@@ -77,8 +76,7 @@ public class ApiTestController extends CommonControllerSupport {
             @RequestParam String message) throws Exception{
         log.info("called hello");
 
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, message)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(message));
     }
 
     @GetMapping("/projectinfo")
@@ -86,9 +84,7 @@ public class ApiTestController extends CommonControllerSupport {
     //단순 프로젝트 정보 확인
     protected ResponseEntity<ApiSuccessResponse<PropertyVos.ProjectInfoVo>> projectinfo() {
         log.info("called projectinfo");
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, projectInfoVo)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(projectInfoVo));
     }
 
     @GetMapping("/XssProtectSupportGet")
@@ -99,10 +95,10 @@ public class ApiTestController extends CommonControllerSupport {
             @RequestParam String originText) {
         log.info("called XssProtectSupportGet");
 
-        String message = "XssProtectedText = " + originText;
         //XssProtectFilter를 통해 response body 내 스크립트 일괄 제거.
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, message)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        String message = "XssProtectedText = " + originText;
+
+        return ResponseEntity.ok(new ApiSuccessResponse(message));
     }
 
     @PostMapping("/XssProtectSupportPost")
@@ -114,19 +110,17 @@ public class ApiTestController extends CommonControllerSupport {
         log.info("called XssProtectSupportPost");
 
         String message = "XssProtectedText = " + originText;
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, message)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(message));
     }
 
-    @RequestMapping("/interceptorTest")
-    @Operation(summary = "interceptorTest", description = "interceptorTest 테스트", tags = {""})
+    @RequestMapping("/interceptor")
+    @Operation(summary = "interceptor", description = "interceptor 테스트", tags = {""})
     //인터셉터들을 테스트 하기 위한 용도
-    protected ResponseEntity<ApiSuccessResponse<String>> interceptorTest() {
-        log.info("called interceptorTest");
+    protected ResponseEntity<ApiSuccessResponse<String>> interceptor() {
+        log.info("called interceptor");
 
-        String message = "see the interceptorTest message in log";
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, message)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        String message = "see the interceptor message in log";
+        return ResponseEntity.ok(new ApiSuccessResponse(message));
     }
 
     @RequestMapping("/closeableHttpClient")
@@ -141,9 +135,7 @@ public class ApiTestController extends CommonControllerSupport {
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet);
 
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, EntityUtils.toString(httpEntity))
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(EntityUtils.toString(httpEntity)));
     }
 
     @RequestMapping("/closeableHttpClientSupport")
@@ -156,8 +148,7 @@ public class ApiTestController extends CommonControllerSupport {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
         HttpEntity httpEntity = closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
 
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, CloseableHttpClientSupport.convertResponseToString(httpEntity))
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(CloseableHttpClientSupport.convertResponseToString(httpEntity)));
     }
 
     @RequestMapping("/restTemplate")
@@ -173,8 +164,7 @@ public class ApiTestController extends CommonControllerSupport {
                 .build();
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, responseEntity.getBody())
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(responseEntity.getBody()));
     }
 
     @RequestMapping("/restTemplateSupport")
@@ -184,8 +174,7 @@ public class ApiTestController extends CommonControllerSupport {
         log.info("called restTemplateSupport");
 
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(fooResponseUrl, null, null);
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS, responseEntity.getBody())
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(responseEntity.getBody()));
     }
 
     @RequestMapping("/reqResUtil")
@@ -205,9 +194,7 @@ public class ApiTestController extends CommonControllerSupport {
         resultMap.put("heades", heades);
         resultMap.put("params", params);
 
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , resultMap)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(resultMap));
     }
 
     @PostMapping("/validationAnnotationPost")
@@ -215,20 +202,14 @@ public class ApiTestController extends CommonControllerSupport {
     //request input 값에대한 validation 처리 테스트
     protected ResponseEntity<ApiSuccessResponse<ValidationTestDto>> validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
         log.info("called validationAnnotationPost");
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , validationTestDto)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(validationTestDto));
     }
 
     @GetMapping("/validationAnnotationGet")
     @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
     protected ResponseEntity<ApiSuccessResponse<ValidationTestDto>> validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
         log.info("called validationAnnotationGet");
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , validationTestDto)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(validationTestDto));
     }
 
     @GetMapping("/propertyConfigImport")
@@ -236,10 +217,7 @@ public class ApiTestController extends CommonControllerSupport {
     //컨트롤러 진입시 특정 property값을 가져올수 있다.
     protected ResponseEntity<ApiSuccessResponse<String>> propertyConfigImport(@Value("${specific.value}") String specificValue) {
         log.info("called propertyConfigImport");
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , specificValue)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(specificValue));
     }
 
     @GetMapping("/argumentResolverForMyUser")
@@ -249,10 +227,7 @@ public class ApiTestController extends CommonControllerSupport {
     protected ResponseEntity<ApiSuccessResponse<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser(ArgumentResolverForMyUser.MyUser myUser) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
         log.info("called argumentResolverForMyUser");
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , myUser)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(myUser));
     }
 
     @GetMapping("/argumentResolverForMyUser2")
@@ -260,28 +235,23 @@ public class ApiTestController extends CommonControllerSupport {
     protected ResponseEntity<ApiSuccessResponse<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser2(@AnoCustomArgument ArgumentResolverForMyUser.MyUser myUser) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
         log.info("called argumentResolverForMyUser2");
-
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , myUser)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(myUser));
     }
 
-    @PostMapping(value = "/fileUploadTest", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "fileUploadTest", description = "fileUploadTest 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponse<List<FileUploadDto>>> fileUploadTest(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+    @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
+    protected ResponseEntity<ApiSuccessResponse<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception{
 
-        log.info("called fileUploadTest : file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
+        log.info("called fileUpload : file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
         //todo: 실제 상황에서는 부가정보 저장 처리등 조치 필요
 
         String additionalPath = ""; //로그인계정번호등 필요한 구분 디렉토리가 있는다면 추가
         Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
         List<FileUploadDto> FileUploadDtoList = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
 
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , FileUploadDtoList)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(FileUploadDtoList));
     }
 
     @GetMapping(value = "/byteForImage")
@@ -309,15 +279,13 @@ public class ApiTestController extends CommonControllerSupport {
     }
 
     @AnoRequestDeduplication
-    @GetMapping("/duplicatedRequest")
+    @RequestMapping("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     protected ResponseEntity<ApiSuccessResponse<String>> duplicatedRequest() throws Exception {
         log.info("called duplicatedRequest");
 
         String result = "duplicatedRequest test";
         Thread.sleep(3000L);
-        return new ResponseEntity<>(new ApiSuccessResponse<>(SuccessCode.DEFAULT_SUCCESS
-                , result)
-                , SuccessCode.DEFAULT_SUCCESS.getHttpStatusCode());
+        return ResponseEntity.ok(new ApiSuccessResponse(result));
     }
 }

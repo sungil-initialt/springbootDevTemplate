@@ -5,18 +5,23 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <!--공통 JS / CSS 영역을 관리하는 환경 영역-->
-<head th:replace="thymeleaf/common/fragment/config :: ConfigFragment">
-    <title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">디폴트 타이틀</title> <!-- model.addAttribute("LAYOUT_TITLE", "여기에 원하는 레이아웃 타이틀"); //-->
+<head th:replace="/common/fragment/config :: ConfigFragment">
 </head>
 
 <body>
 <!--Header 영역을 참조합니다.-->
-<header th:replace="thymeleaf/common/fragment/header :: HeaderFragment"></header>
+<header th:replace="/common/fragment/header :: HeaderFragment"></header>
+
+<!--Navigation 영역을 참조합니다.-->
+<header th:replace="/common/fragment/navigation :: NavigationFragment"></header>
 
 <!--Content 내용 영역을 참조합니다-->
+Content 영역입니다.
+<br>
 <th:block layout:fragment="Content"></th:block>
+<br>
 
 <!--Footer 영역을 참조합니다.-->
-<footer th:replace="thymeleaf/common/fragment/footer :: FooterFragment"></footer>
+<footer th:replace="/common/fragment/footer :: FooterFragment"></footer>
 </body>
 </html>

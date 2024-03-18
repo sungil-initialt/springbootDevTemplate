@@ -23,13 +23,16 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE999", "Internal Server Error Exception"),
 
 
-    //시스템 내부적으로 활용되는 에러코드 예시로 서비스에 맞게 추가해 나가면 된다. (todo: 이 경우 HttpStatus가 200이 맞을까? 고민해 봐야함)
-    SERVICE_DEFAULT_ERROR(HttpStatus.OK, "SE000", "Default Error Exception"),
-    SERVICE_INSERT_ERROR(HttpStatus.OK, "SE001", "Insert Transaction Error Exception"),
-    SERVICE_UPDATE_ERROR(HttpStatus.OK, "SE002", "Update Transaction Error Exception"),
-    SERVICE_DELETE_ERROR(HttpStatus.OK, "SE003", "Delete Transaction Error Exception"),
 
-    SERVICE_DUPLICATION_REQUEST_ERROR(HttpStatus.OK, "SE202", "Duplication Request Error Exception");
+
+    //시스템 내부에서 발생하는 에러가 아니라 서비스 로직상 에러로 취급되야 하는 경우에 활용하는 Exception 이다. 서비스에 맞게 추가해 나가면 된다.
+    //API 에서 주로 활용되지만 viewController에서도 활용될수 있다. viewController에서 활용되는 경우 HttpStatus는 의미가 없음
+    //todo: 이 경우 HttpStatus가 200이 맞을까? 고민해 봐야함
+    SERVICE_DEFAULT_ERROR(HttpStatus.OK, "SE000", "Default Error Exception"),
+
+
+    //동일한 request가 빠르게 연속으로 들어오는 경우 내부적으로 한번만 처리하기 위한 기능을 위해 만듬, (매우 예외적인 케이스의 에러코드임)
+    SERVICE_DUPLICATION_REQUEST_ERROR(HttpStatus.OK, "SE202", "Duplication Request Exception");
 
 
     private final HttpStatus httpStatusCode;

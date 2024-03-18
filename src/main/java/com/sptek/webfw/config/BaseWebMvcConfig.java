@@ -49,9 +49,9 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 
-        registry.addResourceHandler("/css/**").addResourceLocations("/resources/static/css/");
-        registry.addResourceHandler("/images/**").addResourceLocations("/resources/static/images/");
-        registry.addResourceHandler("/js/**").addResourceLocations("/resources/static/js/");
+        registry.addResourceHandler("/css/").addResourceLocations("classpath:/META-INF/resources/static/css/");
+        registry.addResourceHandler("/images/").addResourceLocations("/resources/static/images/");
+        registry.addResourceHandler("/js/").addResourceLocations("/resources/static/js/");
     }
 
     //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함
@@ -61,11 +61,13 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         registry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
 
         //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정
-        registry.addViewController("/temporaryParkingPageForTest").setViewName("/pages/example/page1/temporaryParkingView");
-        registry.addViewController("/sorry").setViewName("/pages/example/page1/temporaryParkingView");
-        registry.addViewController("/fileUploadTest").setViewName("/pages/example/page1/fileUploadTest");
-        registry.addViewController("/pageWithPost").setViewName("/pages/example/page1/pageWithPost");
-        registry.addViewController("/apiWithAjax").setViewName("/pages/example/page1/apiWithAjax");
+        registry.addViewController("/").setViewName("/pages/example/test/none");
+        registry.addViewController("/none").setViewName("/pages/example/test/none");
+        registry.addViewController("/temporaryParkingPageForXXX").setViewName("/pages/example/test/temporaryParkingView");
+        registry.addViewController("/sorry").setViewName("/pages/example/test/temporaryParkingView");
+        registry.addViewController("/fileUpload").setViewName("/pages/example/test/fileUpload");
+        registry.addViewController("/pageWithPost").setViewName("/pages/example/test/pageWithPost");
+        registry.addViewController("/apiWithAjax").setViewName("/pages/example/test/apiWithAjax");
 
     }
     

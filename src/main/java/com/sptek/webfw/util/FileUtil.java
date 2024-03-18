@@ -2,12 +2,13 @@ package com.sptek.webfw.util;
 
 import com.sptek.webfw.code.ErrorCode;
 import com.sptek.webfw.example.dto.FileUploadDto;
-import com.sptek.webfw.exceptionHandler.exception.ApiServiceException;
+import com.sptek.webfw.exceptionHandler.exception.ServiceException;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +25,7 @@ public class FileUtil {
     public static List<FileUploadDto> saveMultipartFiles(MultipartFile[] multipartFiles
             , String baseStoragePath
             , @Nullable String additionalPath
-            , @Nullable Predicate<MultipartFile> exceptionFilter) throws ApiServiceException, Exception {
+            , @Nullable Predicate<MultipartFile> exceptionFilter) throws ServiceException, IOException{
 
         additionalPath = Optional.ofNullable(additionalPath).orElse("");
         List<FileUploadDto> uploadFileDtoList = new ArrayList<>();
@@ -33,7 +34,7 @@ public class FileUtil {
             //예외 조건 확인
             if(exceptionFilter != null && exceptionFilter.test(multipartFile)) {
                 //exception 조건에 맞는경우 ex를 발생시켜 줌
-                throw new ApiServiceException(ErrorCode.FORBIDDEN_ERROR);
+                throw ServiceException.builder().errorCode(ErrorCode.FORBIDDEN_ERROR).build();
             }
 
             //브라우저에따라 파일명에 경로가 포함되는 경우가 있어 제거 추가
@@ -62,7 +63,7 @@ public class FileUtil {
     }
 
     //주어진 파일경로대로 디렉토리를 구성함(이미 존재하는 경로여도 상관없음)
-    public static void createDirectories(String directories) throws Exception{
+    public static void createDirectories(String directories) throws IOException {
         //directories = directories.replaceAll("//", "/");
         Path dirPath = Paths.get(directories);
         //Path parentDir = dirPath.getParent();

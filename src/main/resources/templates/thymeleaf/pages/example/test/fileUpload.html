@@ -1,24 +1,32 @@
 <!DOCTYPE html>
-<!--
-테스트용
--->
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>fileUploadTest</title>
+    <title>테스트 페이지</title>
+
+    <!-- inline CSS 영역-->
+    <style th:inline="css" type="text/css">
+    </style>
+
+    <!-- inline JS 영역-->
+    <script th:inline="javascript" type="text/javascript">
+    </script>
 </head>
+
 <body>
-<B>fileUploadTest</B><br><br>
-<br>
-부가정보를 입력 하세요:<br>
-<input id="fileDescription" name="fileDescription" type="text"><br><br>
-<input name="uploadFiles" type="file" multiple>
-<button class="uploadBtn">Upload</button>
+<div>
+    부가정보를 입력 하세요:<br>
+    <input id="fileDescription" name="fileDescription" type="text"><br><br>
+    <input name="uploadFiles" type="file" multiple>
+    <button class="uploadBtn">Upload</button>
 
-<div class="uploadResult"></div>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-<!--upload btn-->
+    <div class="uploadResult"></div>
+</div>
 <script>
     $('.uploadBtn').click(() => {
         const formData = new FormData();
@@ -46,7 +54,7 @@
         /*실제 업로드 부분*/
         /*upload ajax*/
         $.ajax({
-            url: '/api/v1/fileUploadTest',
+            url: '/api/v1/fileUpload',
             processData: false,
             contentType: false, // 파일 업로드를 multipart/form-data 타입을 사용하기 위함
             data: formData,
@@ -62,7 +70,6 @@
             }
         })
     })
-
 </script>
 </body>
 </html>

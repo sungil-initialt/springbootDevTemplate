@@ -22,20 +22,20 @@ Content-Type: application/json
 
 
 
-### interceptorTest 테스트
-GET localhost:8080/api/v2/interceptorTest
+### interceptor 테스트
+GET localhost:8080/api/v2/interceptor
 Content-Type: application/json
 
-### interceptorTest 테스트
-POST localhost:8080/api/v2/interceptorTest
+### interceptor 테스트
+POST localhost:8080/api/v2/interceptor
 Content-Type: application/json
 
-### interceptorTest 테스트
-PUT localhost:8080/api/v1/interceptorTest
+### interceptor 테스트
+PUT localhost:8080/api/v1/interceptor
 Content-Type: application/json
 
-### interceptorTest 테스트
-DELETE localhost:8080/api/v1/interceptorTest
+### interceptor 테스트
+DELETE localhost:8080/api/v1/interceptor
 Content-Type: application/json
 
 
@@ -62,7 +62,7 @@ Content-Type: application/json
 
 
 
-### validationAnnoTationt 테스트
+### validationAnnoTationt Post 테스트
 POST {{api-server-ver}}/validationAnnotationPost
 Content-Type: application/json
 
@@ -74,7 +74,7 @@ Content-Type: application/json
   "mobileNumber" : "01042983113"
 }
 
-### validationAnnoTationt 테스트
+### validationAnnoTationt Get 테스트
 GET {{api-server-ver}}/validationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
 Content-Type: application/json
 

@@ -30,11 +30,11 @@ public class UvInterceptor implements HandlerInterceptor {
         log.info("UvInterceptor : {}", checkMsg);
 
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(uvCheckCookieName, uvCheckCookieValue)
-                .maxAge(uvCheckCookieMaxAgeSec);
+                .maxAge(uvCheckCookieMaxAgeSec).path("/").sameSite("Strict");
         CookieUtil.addResponseCookie(cookieBuilder.build());
 
         try {
-            //처리하고 싶은 내옹 추가(selectOneTest()은 예시)
+            //todo: do more what you want (checkMsg 로그를 통해 uv 카운트??)
             log.debug("UvInterceptor : do more what you want");
 
         }catch (Exception ex){
