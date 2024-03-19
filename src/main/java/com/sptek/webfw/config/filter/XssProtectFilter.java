@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 @Order(1)
+//@WebFilter적용시 @Component 사용하지 않아야함(@Component 적용시 모든 요청에 적용됨)
+//@Component
+@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class XssProtectFilter extends OncePerRequestFilter {
 
     @Override

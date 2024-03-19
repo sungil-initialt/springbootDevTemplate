@@ -3,22 +3,27 @@ package com.sptek.webfw.config.filter;
 import com.sptek.webfw.util.ReqResUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/*
+MVC 인터셉터 방법보다 Fiter 방식이 추후 커스텀하기에 좋음
+ */
 @Slf4j
-@Component
 @Order(1)
-public class CorsPolicyWithFilter extends OncePerRequestFilter {
+//@WebFilter적용시 @Component 사용하지 않아야함(@Component 적용시 모든 요청에 적용됨)
+//@Component
+@WebFilter(urlPatterns = "/api/*") //ant 표현식 사용 불가 ex: /**
+public class CorsPolicyFilter extends OncePerRequestFilter {
 
     @Value("${secureOption.cors.defaultAccessControlAllowOrigin}")
     private String defaultAccessControlAllowOrigin;
@@ -35,12 +40,15 @@ public class CorsPolicyWithFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.debug("accessControlAllowOriginList : {}", accessControlAllowOriginList);
-        //origin 해더가 없는 경우 조합해서 만듬
-        String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
-                .orElseGet(() -> request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length() + request.getContextPath().length()));
+        log.debug("called CorsPolicyWithFilter : doFilterInternal");
+        log.debug("request Header : {}", ReqResUtil.getRequestHeaderMap(request));
 
+        String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
+                .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
+
+        log.debug("origin({}) contained ? : {}", origin, accessControlAllowOriginList.contains(origin));
         origin = accessControlAllowOriginList.contains(origin) ? origin : defaultAccessControlAllowOrigin;
+
         response.setHeader("Access-Control-Allow-Origin", origin);
         response.setHeader("Access-Control-Allow-Methods", accessControlAllowMethods);
         response.setHeader("Access-Control-Allow-Credentials", accessControlAllowCredentials);
@@ -53,5 +61,4 @@ public class CorsPolicyWithFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
     }
-    //테스트 해봐야함
 }

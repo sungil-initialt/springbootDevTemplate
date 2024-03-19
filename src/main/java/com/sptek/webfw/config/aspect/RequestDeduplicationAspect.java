@@ -9,10 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,15 +35,23 @@ public class RequestDeduplicationAspect
             "@within(org.springframework.web.bind.annotation.RestController)) && " +
             "(@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || " +
             "@annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
-    public void duplicateRequestPrevent() {}
+    public void pointCut() {}
 
-    @Before("duplicateRequestPrevent()")
+    @Before("pointCut()")
     public void beforeRequest(JoinPoint joinPoint) {
+        log.debug("AOP order : 3");
         //to do when you need.
     }
 
-    @Around("duplicateRequestPrevent()")
+    @After("pointCut()")
+    public void AfterRequest(JoinPoint joinPoint) {
+        log.debug("AOP order : 5 (APO order 4 was caller)");
+        //to do when you need.
+    }
+
+    @Around("pointCut()")
     public Object duplicateRequestCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.debug("AOP order : 1");
         HttpServletRequest currentRequest = ReqResUtil.getRequest();
 
         // GET 요청을 제외 하고 싶을때
@@ -74,7 +79,8 @@ public class RequestDeduplicationAspect
             currentSession.setAttribute(REQUEST_ID_SET_NAME, myRequestIdSet);
             log.debug("duplicateRequestCheck : saved myRequestId ({}) in session.", requestId);
             try {
-                return joinPoint.proceed();
+                log.debug("AOP order : 2");
+                return joinPoint.proceed(); //here!! return to caller method !! AOP order 4 is caller
 
             } finally {  //exception 상황에서도 반드시 제거 필요
                 myRequestIdSet.remove(requestId);

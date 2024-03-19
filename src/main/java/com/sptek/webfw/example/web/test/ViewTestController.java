@@ -181,7 +181,7 @@ public class ViewTestController extends CommonControllerSupport {
     }
 
     @RequestMapping("/i18n")
-    public String i18n(Model model) {
+    public String i18n(Model model) throws Exception {
         log.debug("called i18n");
 
         ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
@@ -203,6 +203,7 @@ public class ViewTestController extends CommonControllerSupport {
         return PAGE_BASE_PATH + "welcome";
     }
 
+    //thyleaf 에러 처리 테스트
     @GetMapping("/validationWithBindingResult")
     public String validationWithBindingResult(ValidationTestDto validationTestDto) {
         log.debug("called validationWithBindingResult (GET)");
