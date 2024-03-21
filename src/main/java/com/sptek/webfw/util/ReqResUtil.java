@@ -82,10 +82,6 @@ public class ReqResUtil {
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
     }
 
-    public static HttpSession getSession() {
-        return getSession(false);
-    }
-
     public static HttpSession getSession(boolean create) {
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(create);
     }
@@ -99,6 +95,18 @@ public class ReqResUtil {
         return getSession(true).getAttribute(attributeName);
     }
 
+    public static Map<String, Object> getSessionAttributesAll(boolean create) {
+        HttpSession session = ReqResUtil.getSession(create);
+        Map<String, Object> attributes = new HashMap<>();
+        Enumeration<String> attributeNames = session.getAttributeNames();
+
+        while (attributeNames.hasMoreElements()) {
+            String attributeName = attributeNames.nextElement();
+            attributes.put(attributeName, session.getAttribute(attributeName));
+        }
+
+        return attributes;
+    }
 
 }
 

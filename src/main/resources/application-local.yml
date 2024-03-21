@@ -11,10 +11,15 @@ system:
 
 server:
   port: 8080
-  #ssl:
-  #  key-store: classpath:keystore/keystore.p12
-  #  key-store-type: PKCS12
-  #  key-store-password: keystore_password
+  servlet.session.cookie:
+    http-only: false
+    secure: false #(ssl 사용시 설정과 상관없이 true로 설정됨, ssl 비사용시 false로 설정할수 있으나 false 일경우 브라우저가 자체 block처리하여 사용이 불가능함)
+    same-site: none
+  #사설 인증사의 경우 로컬 테스트를 위해 브라우저 설정 필요 (chrome://flags/ -> Allow invalid certificates for resources loaded from localhost. -> Enabled, 도메인은 front.localhost:8080 형태로 구성)
+  ssl:
+    key-store: classpath:keystore/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: keystore_password
   #에러전파순서 :
   #개발자가만든ExHandler에서처리 (핸들러가 있어도 404같이 서블릿컨테이너 진입전 에러는 처리못하고 넘김)
   #--> 스프링제공에러기본페이지 (특정위치에 404.html, 5xx.html 과 같이 페이지를 만들어 놓으면 에러코드에 마춰 해당 페이지 호출해줌, 페이지가 없으면 기본폼으로 호출, whitelabel.enabled가 false이면 그냥 넘김)

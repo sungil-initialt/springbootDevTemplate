@@ -15,7 +15,7 @@
 
     <!-- inline JS 영역-->
     <script>
-        var host = 'http://backend.com:8080/api/v1/';
+        var host = 'https://back.localhost:8080/api/v1/';
     </script>
 </head>
 
@@ -25,7 +25,9 @@
     <script th:inline="javascript" type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('btn1').addEventListener('click', async function() {
-                fetch(host + 'duplicatedRequest')
+                fetch(host + 'duplicatedRequest', {
+                    credentials: 'include' // 이 옵션을 추가합니다.
+                })
                     .then(response => response.json())
                     .then(data => console.log(data))
                     .catch(error => console.error(error));
@@ -35,9 +37,9 @@
     </script>
 
 
-    <button id="apiCallBtn">Call API</button>
+    <button id="btn2">Call API</button>
     <script>
-        document.getElementById('apiCallBtn').addEventListener('click', function() {
+        document.getElementById('btn2').addEventListener('click', function() {
             const apiUrl = host + 'duplicatedRequest'; // 실제 API 주소로 변경 필요
 
             // Preflight Request가 발생하는 설정
@@ -47,6 +49,7 @@
                     'Content-Type': 'application/json', // 이 헤더 설정으로 인해 Preflight Request 발생
                     // 필요한 경우 추가 헤더 설정
                 },
+                credentials: 'include', // 쿠키(JSESSIONID 등) 값을 함께 전송하기 위해 추가
                 body: JSON.stringify({
                     key: 'value' // 실제 요청에 포함할 데이터
                 })

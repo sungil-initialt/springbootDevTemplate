@@ -46,7 +46,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
                 .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
 
-        log.debug("origin({}) contained ? : {}", origin, accessControlAllowOriginList.contains(origin));
+        log.debug("origin({} : {}) contained ? : {},{}", origin, accessControlAllowOriginList, accessControlAllowOriginList.contains(origin), accessControlAllowOriginList.size());
         origin = accessControlAllowOriginList.contains(origin) ? origin : defaultAccessControlAllowOrigin;
 
         response.setHeader("Access-Control-Allow-Origin", origin);
