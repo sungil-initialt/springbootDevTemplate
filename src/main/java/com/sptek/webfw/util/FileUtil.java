@@ -73,7 +73,7 @@ public class FileUtil {
             //Files.createDirectories(parentDir, fileAttrs);
             Files.createDirectories(dirPath);
         }
-        log.debug("Created directories for path: " + dirPath);
+        log.debug("dir path : " + dirPath);
     }
 
 }

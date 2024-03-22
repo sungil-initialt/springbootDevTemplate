@@ -32,7 +32,7 @@ public enum ErrorCode {
 
 
     //동일한 request가 빠르게 연속으로 들어오는 경우 내부적으로 한번만 처리하기 위한 기능을 위해 만듬, (매우 예외적인 케이스의 에러코드임)
-    SERVICE_DUPLICATION_REQUEST_ERROR(HttpStatus.OK, "SE202", "Duplication Request Exception");
+    SERVICE_DUPLICATION_REQUEST_ERROR(HttpStatus.TOO_MANY_REQUESTS, "SE429", "Duplication Request Exception");
 
 
     private final HttpStatus httpStatusCode;

@@ -27,7 +27,7 @@ public class RestTemplateSupport{
     }
 
     public ResponseEntity<String> requestGet(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders) {
-        log.debug("RestTemplateSupport requestGet\nrequestUri = {}\nqueryParams = {}\nhttpHeaders={}", requestUri, queryParams, httpHeaders);
+        log.debug("requestUri = ({}), queryParams = ({}), httpHeaders = ({})", requestUri, queryParams, httpHeaders);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(requestUri).queryParams(queryParams);
         String finalUrl = builder.toUriString();
@@ -42,7 +42,7 @@ public class RestTemplateSupport{
     }
 
     public ResponseEntity<String> requestPost(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders, @Nullable LinkedMultiValueMap<String, Object> requestBody) {
-        log.debug("RestTemplateSupport requestPost\nrequestUri = {}\nqueryParams = {}\nhttpHeaders = {}\nrequestBody = {}", requestUri, queryParams, httpHeaders, requestBody);
+        log.debug("requestUri = ({}), queryParams = ({}), httpHeaders = ({}), requestBody = ({})", requestUri, queryParams, httpHeaders, requestBody);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(requestUri).queryParams(queryParams);
         String finalUrl = builder.toUriString();
@@ -57,9 +57,9 @@ public class RestTemplateSupport{
     }
 
     public String convertResponseToString(ResponseEntity<String> responseEntity) throws IOException {
-        String resultStr = responseEntity.getBody();
-        log.debug("RestTemplateSupport convertResponseToString = \n{}", resultStr);
+        String reponseString = responseEntity.getBody();
+        log.debug("responseBody to String = {}", reponseString);
 
-        return resultStr;
+        return reponseString;
     }
 }

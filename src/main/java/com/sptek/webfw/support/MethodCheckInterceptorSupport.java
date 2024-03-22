@@ -72,7 +72,7 @@ public class MethodCheckInterceptorSupport implements HandlerInterceptor {
             boolean excludeMatchResult = excludeMatchInfos.stream()
                     .anyMatch(matchInfo -> anyMatchPathPattern(request, matchInfo));
 
-            log.debug("InterceptorMatchSupport includeMatchResult={}, excludeMatchResult={}", includeMatchResult, excludeMatchResult);
+            log.debug("includeMatchResult={}, excludeMatchResult={}", includeMatchResult, excludeMatchResult);
             return includeMatchResult || !excludeMatchResult;
         }
 

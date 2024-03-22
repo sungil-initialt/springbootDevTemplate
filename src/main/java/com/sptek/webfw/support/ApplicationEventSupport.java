@@ -19,12 +19,10 @@ public class ApplicationEventSupport {
     @EventListener
     // 애플리케이션 컨텍스트가 초기화되거나 새로고침될 때 실행
     public void handleContextRefresh(ContextRefreshedEvent event) {
+        //test for LogbackKeywordFilterForXXX, this below info log will be saved in specific file.
         log.info("XXX >> systemStart: message here!");
-        log.debug("ApplicationCheckSupport - ContextRefreshedEvent");
 
-        //to do what you want..
         final Environment environment = event.getApplicationContext().getEnvironment();
-
         //현재 프로파일 확인
         String[] activeProfiles = environment.getActiveProfiles();
         log.debug("activeProfiles = {}", Arrays.toString(activeProfiles));
@@ -48,15 +46,15 @@ public class ApplicationEventSupport {
                     .forEach(propertyName -> log.info("{}: {}", propertyName, environment.getProperty(propertyName)));
         }
          */
+
+        //do more what you want..
     }
 
     @EventListener
-    // 애플리케이션 컨텍스트가 닫힐 때 실행
+    // occur when the app context close
     public void handleContextClosed(ContextClosedEvent event) {
-        log.debug("ApplicationCheckSupport - ContextClosedEvent");
-
-        //to do what you want..
-        log.debug("bye bye");
+        log.debug("call ContextClosedEvent : bye bye");
+        //do more what you want..
     }
 
     /*
@@ -64,7 +62,7 @@ public class ApplicationEventSupport {
     // 사용자 정의 이벤트 처리
     //todo : 어디에 활용하면 좋을까?
     public void handleCustomEvent(MyCustomEvent event) {
-        System.out.println("사용자 정의 이벤트가 발생했습니다: " + event.getMessage());
+        log.debug("catched CustomEvent : " + event.getMessage());
     }
      */
 }

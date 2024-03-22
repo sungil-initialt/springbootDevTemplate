@@ -35,11 +35,10 @@ public class UvInterceptor implements HandlerInterceptor {
 
         try {
             //todo: do more what you want (checkMsg 로그를 통해 uv 카운트??)
-            log.debug("UvInterceptor : do more what you want");
 
         }catch (Exception ex){
             //중요 오류가 아니기 때문에 ex를 throw 하지 않는다.
-            log.error("UvInterceptor : ", ex);
+            log.error(ex.getMessage());
         }
         return true;
     }

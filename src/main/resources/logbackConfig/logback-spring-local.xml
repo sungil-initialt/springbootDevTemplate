@@ -14,12 +14,12 @@
     <property name="default_log_max_history" value="1"/>
     <property name="default_log_max_filesize" value="10MB"/>
     <property name="default_log_pattern"
-              value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
+              value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}.%method:%line] - %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n</pattern>
+            <pattern>${default_log_pattern}</pattern>
         </encoder>
     </appender>
 

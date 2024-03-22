@@ -13,7 +13,7 @@ public class DuplicatedRequestException extends RuntimeException {
 
     @Builder
     public DuplicatedRequestException(HttpServletRequest request) {
-        super("duplicate request url => " + ReqResUtil.getRequestUrlString(request));
+        super("occur duplicate request : " + ReqResUtil.getRequestUrlString(request));
         this.errorCode = ErrorCode.SERVICE_DUPLICATION_REQUEST_ERROR;
     }
 }

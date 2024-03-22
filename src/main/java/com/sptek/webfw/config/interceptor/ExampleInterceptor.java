@@ -25,7 +25,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
             /*
-            log.debug("ExampleInterceptor preHandle information : \n" +
+            log.debug("preHandle information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
                             "getReturnType : {}\n" +
@@ -48,7 +48,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
             /*
-            log.debug("ExampleInterceptor postHandle information : \n" +
+            log.debug("postHandle information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
                             "getReturnType : {}\n" +
@@ -67,7 +67,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
             /*
-            log.debug("ExampleInterceptor afterCompletion information : \n" +
+            log.debug("afterCompletion information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
                             "getReturnType : {}\n" +

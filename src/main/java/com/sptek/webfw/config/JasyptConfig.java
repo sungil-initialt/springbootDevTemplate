@@ -20,12 +20,14 @@ public class JasyptConfig {
 
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        log.info("JASYPT_SECRET_KEY(system env): {}", jasyptSecretKey);
 
-        if(StringUtils.isEmpty(jasyptSecretKey)) {
+        if(!StringUtils.isEmpty(jasyptSecretKey)) {
+            log.info(">> set JASYPT_SECRET_KEY from system environment");
+
+        } else {
             //jasypt를 위한 secretKey 값이 시스템 환경값으로 셋팅이 안된경우 property 에서 읽어서 처리함
             jasyptSecretKey = environment.getProperty("jasypt.encryptor.secretKey");
-            log.info("JASYPT_SECRET_KEY(system env): is not found and it's injected from app properties ({})", jasyptSecretKey);
+            log.info(">> set JASYPT_SECRET_KEY from property");
         }
 
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();

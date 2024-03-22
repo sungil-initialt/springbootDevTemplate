@@ -36,7 +36,7 @@ public class CloseableHttpClientSupport {
     }
 
     public HttpEntity requestGet(String requestUrl, @Nullable HttpHeaders headers) throws Exception {
-        log.debug("CloseableHttpClientSupport requestGet\nrequestUrl = {}\nheaders = {}", requestUrl, headers);
+        log.debug("requestUrl = ({}), headers = ({})", requestUrl, headers);
 
         HttpGet httpGet = new HttpGet(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpGet.addHeader(name, value))));
@@ -51,7 +51,7 @@ public class CloseableHttpClientSupport {
     }
 
     public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBodyString) throws IOException {
-        log.debug("CloseableHttpClientSupport requestPost\nrequestUrl = {}\nheaders = {}\nrequestBody = {}", requestUrl, headers, requestBodyString);
+        log.debug("requestUrl = ({}), headers = ({}), requestBody = ({})", requestUrl, headers, requestBodyString);
 
         HttpPost httpPost = new HttpPost(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpPost.addHeader(name, value))));
@@ -66,7 +66,7 @@ public class CloseableHttpClientSupport {
             httpPost.setEntity(requestEntity);
         }
 
-        log.debug("closeableHttpClient identityHashCode in CloseableHttpClientSupport : {}", System.identityHashCode(closeableHttpClient));
+        log.debug("identityHashCode : {}", System.identityHashCode(closeableHttpClient));
         CloseableHttpResponse response = closeableHttpClient.execute(httpPost);
         return response.getEntity();
     }
@@ -76,7 +76,7 @@ public class CloseableHttpClientSupport {
     }
 
     public HttpEntity requestPut(String requestUrl, @Nullable HttpHeaders headers, @Nullable String requestBodyString) throws IOException {
-        log.debug("CloseableHttpClientSupport requestPut\nrequestUrl = {}\nheaders = {}\nrequestBody = {}", requestUrl, headers, requestBodyString);
+        log.debug("requestUrl = ({}), headers = ({}), requestBody = ({})", requestUrl, headers, requestBodyString);
 
         HttpPut httpPut = new HttpPut(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpPut.addHeader(name, value))));
@@ -95,7 +95,7 @@ public class CloseableHttpClientSupport {
     }
 
     public HttpEntity requestDelete(String requestUrl, @Nullable HttpHeaders headers) throws IOException {
-        log.debug("CloseableHttpClientSupport requestDelete\nrequestUrl = {}\nheaders = {}", requestUrl, headers);
+        log.debug("requestUrl = ({}), headers = ({})", requestUrl, headers);
 
         HttpDelete httpDelete = new HttpDelete(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpDelete.addHeader(name, value))));
@@ -106,7 +106,7 @@ public class CloseableHttpClientSupport {
 
     public static String convertResponseToString(HttpEntity httpEntity) throws Exception {
         String reponseString =EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
-        log.debug("CloseableHttpClientSupport convertResponseToString\nresponseBody = \n{}", reponseString);
+        log.debug("responseBody to String = {}", reponseString);
 
         if(httpEntity != null) {EntityUtils.consume(httpEntity);}
         return reponseString;

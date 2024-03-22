@@ -127,8 +127,8 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    protected final ResponseEntity<ApiErrorResponse> handleAllExceptions(Exception ex) {
-        log.error("AllException : ", ex);
+    protected final ResponseEntity<ApiErrorResponse> handleUnExpectedException(Exception ex) {
+        log.error("UnExpectedException : ", ex);
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponse, ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatusCode());

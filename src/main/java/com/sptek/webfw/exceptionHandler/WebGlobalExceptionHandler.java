@@ -20,17 +20,17 @@ public class WebGlobalExceptionHandler {
 
     //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
     @ExceptionHandler(DuplicatedRequestException.class)
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void handleGenericException(Exception ex) {
-        log.error("WebGlobalExceptionHandler : ", ex);
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public void handleDuplicatedRequestException(DuplicatedRequestException ex) {
+        log.error("DuplicatedRequestException : ", ex);
         //응답코드만 내리고 page는 내리지 않음
     }
 
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected final String handleAllExceptions(Exception ex) {
-        log.error("WebGlobalExceptionHandler : ", ex);
+    protected final String handleUnExpectedException(Exception ex) {
+        log.error("UnExpectedException : ", ex);
         return "error/commonInternalErrorView";
     }
 

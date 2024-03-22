@@ -70,7 +70,7 @@ public class ReqResUtil {
             ip = ip.substring(0, 23);
         }
 
-        log.debug("request client IP : {}", ip);
+        log.debug("final requester ip : {}", ip);
         return ip;
     }
 

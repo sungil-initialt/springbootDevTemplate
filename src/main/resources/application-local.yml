@@ -12,9 +12,9 @@ system:
 server:
   port: 8080
   servlet.session.cookie:
-    http-only: false
-    secure: false #(ssl 사용시 설정과 상관없이 true로 설정됨, ssl 비사용시 false로 설정할수 있으나 false 일경우 브라우저가 자체 block처리하여 사용이 불가능함)
-    same-site: none
+    http-only: true
+    secure: true #(ssl 사용시 설정과 상관없이 true로 설정됨, ssl 비사용시 false로 설정할수 있으나 false 일경우 브라우저가 자체 block처리하여 사용이 불가능함)
+    same-site: none #(사설 인증서의 경우 Lax 사용을 해도 브라우저가 block 처리함, 테스트를 위해 none 설정 필요)
   #사설 인증사의 경우 로컬 테스트를 위해 브라우저 설정 필요 (chrome://flags/ -> Allow invalid certificates for resources loaded from localhost. -> Enabled, 도메인은 front.localhost:8080 형태로 구성)
   ssl:
     key-store: classpath:keystore/keystore.p12

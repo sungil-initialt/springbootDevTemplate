@@ -69,7 +69,7 @@ public class CookieUtil {
     }
     public static void addCookie(@NotNull HttpServletResponse response, @NotNull Cookie cookie) {
         response.addCookie(cookie);
-        log.debug("addCookie : {}", cookie.toString());
+        log.debug("addCookie : {}", cookie);
     }
 
 
@@ -78,7 +78,7 @@ public class CookieUtil {
     }
     public static void addResponseCookie(@NotNull HttpServletResponse response, @NotNull ResponseCookie responseCookie) {
         response.addHeader("Set-Cookie", responseCookie.toString());
-        log.debug("addResponseCookie : {}", responseCookie.toString());
+        log.debug("addResponseCookie : {}", responseCookie);
     }
 
 

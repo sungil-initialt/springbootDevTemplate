@@ -40,13 +40,12 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.debug("called CorsPolicyWithFilter : doFilterInternal");
         log.debug("request Header : {}", ReqResUtil.getRequestHeaderMap(request));
 
         String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
                 .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
 
-        log.debug("origin({} : {}) contained ? : {},{}", origin, accessControlAllowOriginList, accessControlAllowOriginList.contains(origin), accessControlAllowOriginList.size());
+        log.debug("request origin({}) contained ? : {}", origin, accessControlAllowOriginList.contains(origin));
         origin = accessControlAllowOriginList.contains(origin) ? origin : defaultAccessControlAllowOrigin;
 
         response.setHeader("Access-Control-Allow-Origin", origin);

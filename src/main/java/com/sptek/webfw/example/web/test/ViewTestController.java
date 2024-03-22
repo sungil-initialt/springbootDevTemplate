@@ -41,37 +41,30 @@ public class ViewTestController extends CommonControllerSupport {
     //@RequestMapping({"/", "/welcome"})
     @RequestMapping({"/welcome"})
     public String welcome(Model model) {
-        log.debug("called welcome");
         model.addAttribute("message", "welcome");
-
         return PAGE_BASE_PATH + "welcome";
     }
 
     @RequestMapping("/interceptor")
     @AnoInterceptorCheck
     public String interceptor(Model model) {
-        log.debug("called interceptor : first log");
+        log.debug("origin caller is called");
         model.addAttribute("message", "welcome");
-
-        log.debug("called interceptor : just before return");
         return PAGE_BASE_PATH + "interceptor";
     }
 
     //내부 로직에직 발생한 EX에 대한 처리.
     @RequestMapping("/serviceErr")
     public String serviceErr(Model model) {
-        log.debug("called serviceErr");
-        
         //if(1==1) throw new NullPointerException("NP Exception for Test");
         if(1==1) throw ServiceException.builder().errorCode(ErrorCode.SERVICE_DEFAULT_ERROR).build();
 
-        return PAGE_BASE_PATH + "xx"; //위에서 에러가 발생함으로 뷰로 갈일은 없음";
+        return PAGE_BASE_PATH + "xx"; //there's no way to reach here
     }
 
     //Mybatis 를 통한 DB 테스트들
     @RequestMapping("/dbConnect")
     public String dbConnect(Model model) {
-        log.debug("called dbConnect");
         int result = viewTestService.returnOne();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
@@ -79,7 +72,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/replicationMaster")
     public String replicationMaster(Model model) {
-        log.debug("called replicationMaster");
         int result = viewTestService.replicationMaster();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
@@ -87,7 +79,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/replicationSlave")
     public String replicationSlave(Model model) {
-        log.debug("called replicationSlave");
         int result = viewTestService.replicationSlave();
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
@@ -95,7 +86,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/selectOne")
     public String selectOne(Model model) {
-        log.debug("called selectOne");
         TBTestDto tbTestDto = viewTestService.selectOne();
         model.addAttribute("result", tbTestDto.toString());
         return PAGE_BASE_PATH + "simpleModelView";
@@ -103,7 +93,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/selectList")
     public String selectList(Model model) {
-        log.debug("called selectList");
         List<TBTestDto> tbTestDtos = viewTestService.selectList();
         model.addAttribute("result", tbTestDtos.toString());
         return PAGE_BASE_PATH + "simpleModelView";
@@ -112,7 +101,6 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping("/selectListWithResultHandler")
     //ResultHandler를 이용해서 db에서 result row를 하나씩 읽어와 각 row에 대한 처리가 가능함
     public String selectListWithResultHandler(Model model) {
-        log.debug("called selectListWithResultHandler");
         List<TBZipcodeDto> tBZipcode = viewTestService.selectListWithResultHandler();
         model.addAttribute("result", tBZipcode.toString());
         return PAGE_BASE_PATH + "simpleModelView";
@@ -121,7 +109,6 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping("/selectMap")
     //result 결과 list를 map 형태로 받아올수 있다.
     public String selectMap(Model model) {
-        log.debug("called selectMap");
         Map<?, ?> resultMap = viewTestService.selectMap();
         model.addAttribute("result", resultMap.toString());
         return PAGE_BASE_PATH + "simpleModelView";
@@ -134,18 +121,14 @@ public class ViewTestController extends CommonControllerSupport {
                                      @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
                                      @RequestParam(name = "setButtomPageNavigationSize", required = false, defaultValue = "0") int setButtomPageNavigationSize,
                                      Model model) {
-        //값이 0일때는 디폴트값으로 적용됨
-        log.debug("called selectPaginate");
 
         PageInfoSupport<TBZipcodeDto> pageInfoSupport = viewTestService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
-
         model.addAttribute("result", pageInfoSupport.toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
     @RequestMapping("/insert")
     public String insert(Model model) {
-        log.debug("called insert");
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41)
                 .c2(42)
@@ -158,7 +141,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/update")
     public String update(Model model) {
-        log.debug("called update");
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41)
                 .c2(422)
@@ -171,7 +153,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/delete")
     public String delete(Model model) {
-        log.debug("called delete");
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41).build();
 
@@ -182,8 +163,6 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/i18n")
     public String i18n(Model model) throws Exception {
-        log.debug("called i18n");
-
         ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
@@ -196,8 +175,6 @@ public class ViewTestController extends CommonControllerSupport {
     @AnoRequestDeduplication
     @RequestMapping("/duplicatedRequest")
     public String duplicatedRequest(Model model) throws Exception {
-        log.debug("called duplicateRequest");
-
         //테스트를 위한 강제 딜레이
         Thread.sleep(3000L);
         return PAGE_BASE_PATH + "welcome";
@@ -206,13 +183,13 @@ public class ViewTestController extends CommonControllerSupport {
     //thyleaf 에러 처리 테스트
     @GetMapping("/validationWithBindingResult")
     public String validationWithBindingResult(ValidationTestDto validationTestDto) {
-        log.debug("called validationWithBindingResult (GET)");
+        log.debug("called by GET");
         return PAGE_BASE_PATH + "validationWithBindingResult";
     }
 
     @PostMapping("/validationWithBindingResult")
     public String validationWithBindingResult(@Valid ValidationTestDto validationTestDto, BindingResult bindingResult) {
-        log.debug("called validationWithBindingResult (POST)");
+        log.debug("called by POST");
 
         if (bindingResult.hasErrors()) {
             return PAGE_BASE_PATH + "validationWithBindingResult";

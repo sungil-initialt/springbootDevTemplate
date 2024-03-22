@@ -68,7 +68,7 @@ public class ViewTestService extends CommonServiceSupport {
             /*
             @Override
             public void open(){
-                log.info("called MybatisResultHandlerSupport open");
+                log.info("called open");
             }
 
              */
@@ -76,7 +76,7 @@ public class ViewTestService extends CommonServiceSupport {
             /*
             @Override
             public void close(){
-                log.info("called MybatisResultHandlerSupport close");
+                log.info("called close");
             }
              */
         };

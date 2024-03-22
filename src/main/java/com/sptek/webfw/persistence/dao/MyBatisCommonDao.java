@@ -29,19 +29,19 @@ public class MyBatisCommonDao {
     protected SqlSessionTemplate sqlSessionTemplate;
 
     public <T> T selectOne(String statementId, @Nullable Object parameter) {
-        log.debug("call selectOne : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         return (T)(this.sqlSessionTemplate.selectOne(statementId, parameter));
     }
 
     public <T> List<T> selectList(String statementId, @Nullable Object parameter) {
-        log.debug("call selectList : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         return  (List<T>) this.sqlSessionTemplate.selectList(statementId, parameter);
     }
 
     //DB로 부터 result row를 하나씩 받아가며 중간처리 작업을 진행할 수 있게 해준다.
     public <T, R> List<R> selectListWithResultHandler(String statementId, Object parameter,
                                                       final MybatisResultHandlerSupport<T, R> mybatisResultHandlerSupport) {
-        log.debug("call selectListWithResultHandler : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         final List<R> finalHeandledResults = new ArrayList<R>();
         try {
             mybatisResultHandlerSupport.open();
@@ -63,7 +63,7 @@ public class MyBatisCommonDao {
 
     public <T> PageInfoSupport<T> selectPaginatedList(String statementId, @Nullable Object parameter,
                                                       int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
-        log.debug("call selectPaginatedList : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
 
         //todo : totla 사이즈를 매번 구하지 않도록 캐싱 방안을 고려해야함
         int defaultSetRowSizePerPage = 20;
@@ -80,22 +80,22 @@ public class MyBatisCommonDao {
     }
 
     public Map<?, ?> selectMap(String statementId, @Nullable Object parameter, String columnNameForMapkey) {
-        log.debug("call selectMap : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.selectMap(statementId, parameter, columnNameForMapkey);
     }
 
     public Integer insert(String statementId, @Nullable Object parameter) {
-        log.debug("call insert : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.insert(statementId, parameter);
     }
 
     public Integer update(String statementId, @Nullable Object parameter) {
-        log.debug("call update : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.update(statementId, parameter);
     }
 
     public Integer delete(String statementId, @Nullable Object parameter) {
-        log.debug("call delete : statementId = {}", statementId);
+        log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.delete(statementId, parameter);
     }
 }
