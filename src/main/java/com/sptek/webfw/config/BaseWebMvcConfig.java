@@ -15,6 +15,7 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -45,13 +47,17 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //html등에서 resource 위치를 축약해서 사용할수 있게 해준다.
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        //js.css 변경에 따른 deploy시 파일 이름을 변경하게 됨으로 관련 maxAge를 길게 가져가도 될듯
+        CacheControl cacheControl = CacheControl.maxAge(Duration.ofDays(365)).cachePublic();
 
-        registry.addResourceHandler("/css/").addResourceLocations("classpath:/META-INF/resources/static/css/");
-        registry.addResourceHandler("/images/").addResourceLocations("/resources/static/images/");
-        registry.addResourceHandler("/js/").addResourceLocations("/resources/static/js/");
+        //html등에서 resource 위치를 축약해서 사용할수 있게 해준다.
+        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
+
+        //todo: css 파일의 케싱이 정확히 되지않은 이유 확인 필요
+        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/").setCacheControl(cacheControl);
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/").setCacheControl(cacheControl);
+        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/").setCacheControl(cacheControl);
     }
 
     //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함

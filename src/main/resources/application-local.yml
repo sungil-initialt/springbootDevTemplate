@@ -55,6 +55,8 @@ logging:
 
 
 spring:
+  mvc:
+    #static-path-pattern: /** #기본설정으로 /resource/static 이 기본위치 임
   devtools: #코드 수정 실시간 반영
     livereload:
       enabled: true
