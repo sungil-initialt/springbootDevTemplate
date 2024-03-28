@@ -10,9 +10,11 @@ import com.sptek.webfw.exceptionHandler.exception.ServiceException;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +30,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Controller
@@ -202,5 +205,17 @@ public class ViewTestController extends CommonControllerSupport {
 
         //do what you want.
         return "redirect:" + "validationWithBindingResult";
+    }
+
+    @RequestMapping("/httpCache")
+    public String httpCache(HttpServletResponse response, Model model) {
+        //todo : 현재 cache가 되지 않음, 이유확인이 필요함
+        long cacheSec = 60L;
+        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic();
+        long result = System.currentTimeMillis();
+
+        model.addAttribute("result", result);
+        response.setHeader("Cache-Control", cacheControl.getHeaderValue());
+        return PAGE_BASE_PATH + "simpleModelView";
     }
 }

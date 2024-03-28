@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -27,6 +28,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +44,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 @Slf4j
 @RestController
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
-@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+@RequestMapping(value = {"/api/v1/", "/api/v2/"})
 //swagger
 @Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹")
 public class ApiTestController extends CommonControllerSupport {
@@ -265,5 +269,16 @@ public class ApiTestController extends CommonControllerSupport {
         String result = "duplicatedRequest test";
         Thread.sleep(3000L);
         return ResponseEntity.ok(new ApiSuccessResponse(result));
+    }
+
+    @RequestMapping("/httpCache")
+    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
+    public ResponseEntity<ApiSuccessResponse<Long>> httpCache(HttpServletResponse response, Model model) {
+        //todo : 현재 cache가 되지 않음, 이유확인이 필요함
+        long cacheSec = 60L;
+        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
+        long result = System.currentTimeMillis();
+
+        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiSuccessResponse(result));
     }
 }

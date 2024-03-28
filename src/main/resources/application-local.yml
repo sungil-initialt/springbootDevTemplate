@@ -11,10 +11,13 @@ system:
 
 server:
   port: 8080
-  servlet.session.cookie:
-    http-only: true
-    secure: true #(ssl 사용시 설정과 상관없이 true로 설정됨, ssl 비사용시 false로 설정할수 있으나 false 일경우 브라우저가 자체 block처리하여 사용이 불가능함)
-    same-site: none #(사설 인증서의 경우 Lax 사용을 해도 브라우저가 block 처리함, 테스트를 위해 none 설정 필요)
+  servlet.session:
+    timeout: 60m
+    cookie:
+      name: JSESSIONID
+      http-only: true
+      secure: true #(ssl 사용시 설정과 상관없이 true로 설정됨, ssl 비사용시 false로 설정할수 있으나 false 일경우 브라우저가 자체 block처리하여 사용이 불가능함)
+      same-site: none #(사설 인증서의 경우 Lax 사용을 해도 브라우저가 block 처리함, 테스트를 위해 none 설정 필요)
   #사설 인증사의 경우 로컬 테스트를 위해 브라우저 설정 필요 (chrome://flags/ -> Allow invalid certificates for resources loaded from localhost. -> Enabled, 도메인은 front.localhost:8080 형태로 구성)
   ssl:
     key-store: classpath:keystore/keystore.p12
@@ -56,7 +59,8 @@ logging:
 
 spring:
   mvc:
-    #static-path-pattern: /** #기본설정으로 /resource/static 이 기본위치 임
+    #설정이 없다면 모든 정적 리소스(/static 하위)는 /css, /js 형태로 바로 호출가능. 설정을 하게 되면 /설정값/css, /설정값/js 형태로만 호출 가능
+    static-path-pattern: /static/**
   devtools: #코드 수정 실시간 반영
     livereload:
       enabled: true

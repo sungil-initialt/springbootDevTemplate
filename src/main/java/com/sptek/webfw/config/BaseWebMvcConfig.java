@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.argumentResolver.ArgumentResolverForMyUser;
 import com.sptek.webfw.support.XssProtectSupport;
 import jakarta.servlet.MultipartConfigElement;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -39,6 +40,7 @@ import java.util.TimeZone;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+@Slf4j
 @Configuration
 //@EnableWebMvc
 public class BaseWebMvcConfig implements WebMvcConfigurer {
@@ -54,10 +56,11 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
 
-        //todo: css 파일의 케싱이 정확히 되지않은 이유 확인 필요
-        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/").setCacheControl(cacheControl);
-        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/").setCacheControl(cacheControl);
-        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/").setCacheControl(cacheControl);
+        //프로퍼티 속성 spring.mvc.static-path-pattern 의 설정과 중복될수 있음(양쪽 설정 모두 적용됨, 그러나 프로퍼티 속성이 없는 경우는 /static 하위를 /**로 매핑한것으로 디포트 설정됨을 주의)
+        //registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/").setCacheControl(cacheControl); //todo: css 파일이 케싱되지 않는 이유 확인 필요
+        //registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/").setCacheControl(cacheControl);
+        //registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/").setCacheControl(cacheControl);
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
     }
 
     //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함
@@ -186,4 +189,5 @@ public class BaseWebMvcConfig implements WebMvcConfigurer {
         SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
         return sqlSessionTemplate;
     }
+
 }

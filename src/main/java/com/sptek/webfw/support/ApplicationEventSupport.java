@@ -1,6 +1,9 @@
 package com.sptek.webfw.support;
 
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -65,4 +68,21 @@ public class ApplicationEventSupport {
         log.debug("catched CustomEvent : " + event.getMessage());
     }
      */
+
+    @Bean
+    public HttpSessionListener httpSessionListener() {
+        return new HttpSessionListener() {
+            @Override
+            public void sessionCreated(HttpSessionEvent hse) {
+                log.debug("new session Created : {}", hse.getSession().getId());
+                //do more what you want.
+            }
+
+            @Override
+            public void sessionDestroyed(HttpSessionEvent hse) {
+                log.debug("session Destroyed : {}", hse.getSession().getId());
+                //do more what you want.
+            }
+        };
+    }
 }
