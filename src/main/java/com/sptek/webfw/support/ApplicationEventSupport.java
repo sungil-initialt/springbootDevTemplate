@@ -12,9 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-/*
-
- */
 @Slf4j
 @Component
 public class ApplicationEventSupport {
@@ -60,15 +57,6 @@ public class ApplicationEventSupport {
         //do more what you want..
     }
 
-    /*
-    @EventListener
-    // 사용자 정의 이벤트 처리
-    //todo : 어디에 활용하면 좋을까?
-    public void handleCustomEvent(MyCustomEvent event) {
-        log.debug("catched CustomEvent : " + event.getMessage());
-    }
-     */
-
     @Bean
     public HttpSessionListener httpSessionListener() {
         return new HttpSessionListener() {
@@ -85,4 +73,14 @@ public class ApplicationEventSupport {
             }
         };
     }
+
+    /*
+    @EventListener
+    // 사용자 정의 이벤트 처리
+    //todo : 어디에 활용하면 좋을까?
+    public void handleCustomEvent(MyCustomEvent event) {
+        log.debug("catched CustomEvent : " + event.getMessage());
+    }
+     */
+
 }

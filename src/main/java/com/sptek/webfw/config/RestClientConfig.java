@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class RestToolConfig {
+public class RestClientConfig {
 
     @Bean
     @DependsOn({"CloseableHttpClient"})

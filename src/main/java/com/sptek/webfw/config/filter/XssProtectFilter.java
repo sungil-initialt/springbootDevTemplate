@@ -32,7 +32,7 @@ public class XssProtectFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+        log.debug("[Filter >>> ]");
         HttpServletRequestWrapperSupport wrappedRequest = new HttpServletRequestWrapperSupport(request);
         String reqBody = IOUtils.toString(wrappedRequest.getReader()); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 대체 request를 생성해서 넘겨줘야 함
 

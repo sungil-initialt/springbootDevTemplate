@@ -20,33 +20,27 @@ public class SecureUtil {
 
     public static List<String> getNotEssentialRequestPatternList(){
         return Arrays.asList(
-                "/v2/api-docs",
-                "/configuration/ui",
-                "/configuration/security",
-                "/swagger-resources/**",
                 "/swagger-ui.html",
-                "/webjars/**",
+                "/api-docs/**",
+                "/v2/api-docs/**",
+                "/configuration/ui/**",
+                "/configuration/security/**",
+                "/swagger-resources/**",
+                "/swagger-ui/**",
                 "/swagger/**",
+                "/webjars/**",
                 "/error/**",
                 "/err/**",
                 "/static/**",
                 "/health/**",
-                "/github-markdown-css/**"
+                "/github-markdown-css/**",
+                "/h2-console/**"
         );
     }
     public static String[] getNotEssentialRequestPatternsArray() {
         List<String> patternList = getNotEssentialRequestPatternList();
         String[] patternsArray = patternList.toArray(new String[0]);
         return patternsArray;
-    }
-
-    public static List<String> getStaticResourceRequestPatternList(){
-        return Arrays.asList(
-                "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**",
-                "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**",
-                "/**/*.woff**", "/**/*.woff2**", "/**/*.ttf**", "/**/*.otf**", "/**/*.eot**", "/**/*.pdf**", "/**/*.xml**", "/**/*.json**",
-                "/**/*.csv**", "/**/*.txt**"
-        );
     }
 
     public static boolean isNotEssentialRequest(){
@@ -59,6 +53,21 @@ public class SecureUtil {
                 return true;
         }
         return false;
+    }
+
+    public static List<String> getStaticResourceRequestPatternList(){
+        return Arrays.asList(
+                "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**",
+                "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**",
+                "/**/*.woff**", "/**/*.woff2**", "/**/*.ttf**", "/**/*.otf**", "/**/*.eot**", "/**/*.pdf**", "/**/*.xml**", "/**/*.json**",
+                "/**/*.csv**", "/**/*.txt**"
+        );
+    }
+
+    public static String[] getStaticResourceRequestPatternArray() {
+        List<String> patternList = getStaticResourceRequestPatternList();
+        String[] patternsArray = patternList.toArray(new String[0]);
+        return patternsArray;
     }
 
     public static boolean isStaticResourceRequest(){

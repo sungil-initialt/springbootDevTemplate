@@ -51,7 +51,7 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping("/interceptor")
     @AnoInterceptorCheck
     public String interceptor(Model model) {
-        log.debug("origin caller is called");
+        log.debug("ran origin caller here.");
         model.addAttribute("message", "welcome");
         return PAGE_BASE_PATH + "interceptor";
     }

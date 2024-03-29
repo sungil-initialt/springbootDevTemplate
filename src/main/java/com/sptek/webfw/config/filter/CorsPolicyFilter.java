@@ -40,6 +40,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.debug("[Filter >>> ]");
         String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
                 .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
 

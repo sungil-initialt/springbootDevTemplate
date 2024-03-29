@@ -29,6 +29,7 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain filterChain) throws ServletException, IOException {
+        log.debug("[Filter >>> ]");
         if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
             httpRequest.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE);
             log.debug("setAttribute for ExcludeSessionRepository of {}", httpRequest.getServletPath());

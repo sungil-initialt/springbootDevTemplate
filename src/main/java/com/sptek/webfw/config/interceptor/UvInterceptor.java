@@ -22,12 +22,13 @@ public class UvInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.debug("[Interceptor >>> ]");
         String checkMsg = Optional.ofNullable(CookieUtil.getCookies(uvCheckCookieName))
                 .filter(cookies -> !cookies.isEmpty())
                 .map(cookies -> "update expire time")
                 .orElse("created new");
 
-        log.info("UvInterceptor : {}", checkMsg);
+        log.debug("UvInterceptor : {}", checkMsg);
 
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(uvCheckCookieName, uvCheckCookieValue)
                 .maxAge(uvCheckCookieMaxAgeSec).path("/").sameSite("Strict");
