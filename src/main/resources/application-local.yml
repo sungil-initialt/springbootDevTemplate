@@ -58,9 +58,12 @@ logging:
 
 
 spring:
-  mvc:
-    #설정이 없다면 모든 정적 리소스(/static 하위)는 /css, /js 형태로 바로 호출가능. 설정을 하게 되면 /설정값/css, /설정값/js 형태로만 호출 가능
-    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: #설정이 없다면 classpath:/resources/ 와 동일하며 resource/static/xxx 를 /xxx로 접근함 (하나 이상 설정시 둘다 적용)
+        - classpath:/resources/ #/resource/static/xxx 를 /xxx로 접근함 (이게 없으면 resource/favicon.ico 가 404가 나는 문제가 있음)
+        - classpath:/static/ #/resource/static/xxx 를 /static/xxx로 접근함
+        
   devtools: #코드 수정 실시간 반영
     livereload:
       enabled: true

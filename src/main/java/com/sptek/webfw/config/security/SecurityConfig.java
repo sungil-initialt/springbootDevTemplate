@@ -1,25 +1,23 @@
 package com.sptek.webfw.config.security;
 
-import com.sptek.webfw.util.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
 @Slf4j
 @Configuration
 public class SecurityConfig {
 
-    /*
+
     //All processing by Spring Security is bypassed.(This is not recommended)
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (webSecurity) -> webSecurity.ignoring().requestMatchers(SecureUtil.getNotEssentialRequestPatternsArray());
+        //return (webSecurity) -> webSecurity.ignoring().requestMatchers(SecureUtil.getNotEssentialRequestPatternsArray());
+        return (webSecurity) -> webSecurity.ignoring().requestMatchers("/**");
     }
-    */
-    
+
+    /*
     //-->여기 수정해야 함
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -65,5 +63,7 @@ public class SecurityConfig {
                 );
         return httpSecurity.build();
     }
+
+     */
 
 }

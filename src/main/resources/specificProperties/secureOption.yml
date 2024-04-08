@@ -8,4 +8,4 @@ secureOption:
     accessControlAllowMethods: "GET, POST, PUT, DELETE, OPTIONS"
     accessControlAllowCredentials: true
     accessControlMaxAge: 3600
-    accessControlAllowHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    accessControlAllowHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Etag, If-None-Match"
