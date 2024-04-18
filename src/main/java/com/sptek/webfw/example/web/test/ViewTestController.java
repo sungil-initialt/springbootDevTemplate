@@ -185,7 +185,9 @@ public class ViewTestController extends CommonControllerSupport {
 
     //thyleaf 에러 처리 테스트
     @GetMapping("/validationWithBindingResult")
-    public String validationWithBindingResult(ValidationTestDto validationTestDto) { //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
+    public String validationWithBindingResult(ValidationTestDto validationTestDto) {
+        //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
+
         log.debug("called by GET");
         return PAGE_BASE_PATH + "validationWithBindingResult";
     }

@@ -1,36 +1,45 @@
 package com.sptek.webfw.config.springSecurity;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
     //private final TokenProvider tokenProvider;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-    public SecurityConfig(/*TokenProvider tokenProvider,*/ JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
-        //this.tokenProvider = tokenProvider;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
-    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    //All processing by Spring Security is bypassed.(This is not recommended)
+    @Bean
+    //인증 방식을 구현한 AuthenticationProvider의 impl 를 ProviderManager(AuthenticationManager의 impl)에 등록
+    //WebSecurityConfigurerAdapter 가 deprecated 되면서 방식이 변경됨
+    public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
+        return authenticationManagerBuilder.build();
+    }
 
     @Bean
+    //All processing by Spring Security is bypassed.(This is not recommended)
     public WebSecurityCustomizer webSecurityCustomizer() {
         //return (webSecurity) -> webSecurity.ignoring().requestMatchers(SecureUtil.getNotEssentialRequestPatternsArray());
         return (webSecurity) -> webSecurity.ignoring().requestMatchers("/**");
     }
+
 
 
     /*

@@ -11,13 +11,23 @@ public enum UserRole {
 
     private String value;
 
-    //특정 value 값의 UserRole을 반환함.
+    //해당 value 값의 UserRole을 반환함.
     public static UserRole getUserRoleFromValue(String value) {
-        for (UserRole role : values()) {
-            if (role.getValue().equals(value)) {
-                return role;
+        for (UserRole userRole : values()) {
+            if (userRole.getValue().equals(value)) {
+                return userRole;
             }
         }
-        throw new IllegalArgumentException("can not make UserRole from value. it's Unknown role value: " + value);
+        throw new IllegalArgumentException("can not make UserRole from value. it's Unknown userRole value: " + value);
+    }
+
+    //해당 name 값의 UserRole을 반환함.
+    public static UserRole getUserRoleFromName(String name) {
+        for (UserRole userRole : values()) {
+            if (userRole.name().equals(name)) {
+                return userRole;
+            }
+        }
+        throw new IllegalArgumentException("can not make UserRole from name. it's Unknown userRole name: " + name);
     }
 }

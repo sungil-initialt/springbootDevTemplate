@@ -2576,3 +2576,15 @@ Caused by: org.h2.mvstore.MVStoreException: The write format 2 is smaller than t
 	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:2036)
 	at org.h2.mvstore.db.Store.<init>(Store.java:133)
 	... 26 more
+2024-04-18 10:13:06 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "insert into [*]user (id, email, password, user_role) values (default, ?, ?, ?)"; expected "identifier"; SQL statement:
+insert into user (id, email, password, user_role) values (default, ?, ?, ?) [42001-214]
+2024-04-18 10:20:55 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "insert into [*]user (id, email, password, user_role) values (default, ?, ?, ?)"; expected "identifier"; SQL statement:
+insert into user (id, email, password, user_role) values (default, ?, ?, ?) [42001-214]
+2024-04-18 10:22:31 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "insert into [*]user (id, email, password, user_role) values (default, ?, ?, ?)"; expected "identifier"; SQL statement:
+insert into user (id, email, password, user_role) values (default, ?, ?, ?) [42001-214]
+2024-04-18 10:27:54 jdbc[25]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "insert into [*]user (id, email, password, user_role) values (default, ?, ?, ?)"; expected "identifier"; SQL statement:
+insert into user (id, email, password, user_role) values (default, ?, ?, ?) [42001-214]
