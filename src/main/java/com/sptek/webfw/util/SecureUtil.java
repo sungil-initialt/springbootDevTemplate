@@ -34,7 +34,8 @@ public class SecureUtil {
                 "/static/**",
                 "/health/**",
                 "/github-markdown-css/**",
-                "/h2-console/**"
+                "/h2-console/**",
+                "/favicon.ico"
         );
     }
     public static String[] getNotEssentialRequestPatternsArray() {

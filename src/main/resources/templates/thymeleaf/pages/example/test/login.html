@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:inline="javascript" type="text/javascript">
+  </script>
+</head>
+
+<body>
+<div>
+  <div class="my-3 border-bottom">
+    <b>login with spring security</b>
+  </div>
+  <form th:action="@{/signup}" th:object="${signupRequestDto}" method="post">
+    <div th:replace="/common/fragment/formError :: FormErrorFragment"></div>
+
+    <label for="email">email</label>
+    <input type="text" th:field="*{email}">
+
+    <label for="passWord">Password:</label>
+    <input type="text" th:field="*{passWord}">
+
+    <label for="userRole">Select your role:</label>
+    <select th:field="*{userRole}">
+      <option th:each="role : ${allUserRoles}"
+              th:value="${role.value}"
+              th:text="${role.name()}"
+              th:selected="${role.value == userRole}">Role</option>
+    </select>
+
+    <button type="submit">submit</button>
+  </form>
+</div>
+</body>
+</html>
