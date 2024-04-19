@@ -1,8 +1,8 @@
 package com.sptek.webfw.example.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.service.UserEntity;
 import com.sptek.webfw.config.springSecurity.UserRole;
 import com.sptek.webfw.config.springSecurity.service.SignupRequestDto;
+import com.sptek.webfw.config.springSecurity.service.User;
 import com.sptek.webfw.config.springSecurity.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class SecurityController {
+public class SecurityTestController {
     private final String PAGE_BASE_PATH = "pages/example/test/";
     @Autowired
     private UserService userService;
@@ -50,10 +49,9 @@ public class SecurityController {
 
     @GetMapping("/User/{email}}")
     public String user(@PathVariable String email, Model model) {
-        Optional<UserEntity> optUser = userService.getUserByEmail(email);
-        log.debug("{} user info search result : {}", email, optUser);
+        User resultUser = userService.getUserByEmail(email);
+        log.debug("{} user info search result : {}", email, resultUser);
 
-        model.addAttribute("result", optUser.get().toString());
         return PAGE_BASE_PATH + "simpleModelView";
     }
 

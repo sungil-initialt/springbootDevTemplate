@@ -1,12 +1,11 @@
 package com.sptek.webfw.config.springSecurity.service;
 
 import com.sptek.webfw.config.springSecurity.UserRole;
+import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,8 +31,11 @@ public class UserService {
                 .build();
     }
 
-    public Optional<UserEntity> getUserByEmail(String email) {
-        return  userRepository.findByEmail(email);
+    public User getUserByEmail(String email) {
+
+        User user = ModelMapperUtil.getObject(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
+        return user;
+
         //----> 여기부터 수정해야 함.
         //UserEntity userEntity = userRepository.findByEmail(email).ifPresent(userEntity);
     }
