@@ -47,11 +47,12 @@ public class SecurityTestController {
         return "redirect:" + "login";
     }
 
-    @GetMapping("/User/{email}}")
+    @GetMapping("/User/{email}")
     public String user(@PathVariable String email, Model model) {
         User resultUser = userService.getUserByEmail(email);
         log.debug("{} user info search result : {}", email, resultUser);
 
+        model.addAttribute("result", resultUser);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 

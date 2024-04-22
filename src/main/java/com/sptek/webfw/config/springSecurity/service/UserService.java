@@ -32,11 +32,13 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-
         User user = ModelMapperUtil.getObject(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
-        return user;
 
-        //----> 여기부터 수정해야 함.
-        //UserEntity userEntity = userRepository.findByEmail(email).ifPresent(userEntity);
+        //for execute time test.
+        //User user2 = ModelMapperUtil.getObject(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
+        //User user3 = ModelMapperUtil.getUser(userRepository.findByEmail(email).orElse(new UserEntity()));
+        //User user4 = ModelMapperUtil.getUser(userRepository.findByEmail(email).orElse(new UserEntity()));
+
+        return user;
     }
 }

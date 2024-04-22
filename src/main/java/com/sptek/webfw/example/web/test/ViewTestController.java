@@ -3,12 +3,11 @@ package com.sptek.webfw.example.web.test;
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.code.ErrorCode;
-import com.sptek.webfw.example.dto.TBTestDto;
-import com.sptek.webfw.example.dto.TBZipcodeDto;
-import com.sptek.webfw.example.dto.ValidationTestDto;
+import com.sptek.webfw.example.dto.*;
 import com.sptek.webfw.exceptionHandler.exception.ServiceException;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
+import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -209,15 +209,28 @@ public class ViewTestController extends CommonControllerSupport {
         return "redirect:" + "validationWithBindingResult";
     }
 
+    //todo : Document에 대한 cache 처리를 위한건데.. 현재 cache 가 동작하지 않음(이유 확인이 필요함)
     @RequestMapping("/httpCache")
     public String httpCache(HttpServletResponse response, Model model) {
-        //todo : 현재 cache가 되지 않음, 이유확인이 필요함
         long cacheSec = 60L;
         CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic();
         long result = System.currentTimeMillis();
 
         model.addAttribute("result", result);
         response.setHeader("Cache-Control", cacheControl.getHeaderValue());
+        return PAGE_BASE_PATH + "simpleModelView";
+    }
+
+    @RequestMapping("/mapperTestAtoB")
+    public String httpCache(Model model) {
+        AtypeDto atypeDto = new AtypeDto();
+        BtypeDto btypeDto = ModelMapperUtil.getBtypeDto(atypeDto);
+
+        Map result = new HashMap();
+        result.put("AtypeDto", atypeDto);
+        result.put("BtypeDto", btypeDto);
+
+        model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 }
