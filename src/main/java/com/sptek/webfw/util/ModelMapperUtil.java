@@ -6,19 +6,33 @@ import com.sptek.webfw.config.springSecurity.service.UserEntity;
 import com.sptek.webfw.example.dto.AtypeDto;
 import com.sptek.webfw.example.dto.BtypeDto;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
 @Slf4j
 public class ModelMapperUtil {
-    public static ModelMapper rawModelMapper;
+    public static final ModelMapper rawModelMapper = createModelMapper();
+
+    public static ModelMapper createModelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.STANDARD) //MatchingStrategies.LOOSE, MatchingStrategies.STRICT
+                .setSkipNullEnabled(true)
+                .setAmbiguityIgnored(true);
+
+        modelMapper.addConverter((Converter<AtypeDto, BtypeDto>) mappingContext -> {
+            AtypeDto src = mappingContext.getSource();
+            BtypeDto des = mappingContext.getDestination();
+            des.setName(src.getProductName());
+            //des.setDiscountedPrice(String.valueOf(src.getProductPrice()  * (100-src.getDiscountRate()) /100));
+            return des;
+        });
+
+        return modelMapper;
+    }
+
     public static ModelMapper getRawModelMapper() {
-        if(rawModelMapper == null) {
-            rawModelMapper = new ModelMapper();
-            rawModelMapper.getConfiguration()
-                    .setMatchingStrategy(MatchingStrategies.STANDARD) //MatchingStrategies.LOOSE, MatchingStrategies.STRICT
-                    .setSkipNullEnabled(true);
-        }
         return rawModelMapper;
     }
 
@@ -53,6 +67,8 @@ public class ModelMapperUtil {
         return customUserDetailsMapper.map(userEntity, CustomUserDetails.class);
     }
 
+
+    /*
     //it's a just example for custom Converting
     public static ModelMapper btypeDtoMapper;
     public static BtypeDto getBtypeDto(AtypeDto atypeDto) {
@@ -61,21 +77,27 @@ public class ModelMapperUtil {
 
             btypeDtoMapper.getConfiguration().setAmbiguityIgnored(true);
             btypeDtoMapper.typeMap(AtypeDto.class, BtypeDto.class).addMappings(mapper -> {
+
                 mapper.map(AtypeDto::getProductName, BtypeDto::setName);
                 mapper.map(src -> src.getDiscountRate()
                         , (BtypeDto des, Long value)
                                 -> des.setDiscountedPrice(Long.toString(Long.valueOf(des.getProductPrice()) * (100-value) /100)));
                 });
 
-            /*
-            btypeDtoMapper.typeMap(AtypeDto.class, BtypeDto.class).addMappings(mapper -> {
-                mapper.map(AtypeDto::getManufacturerName, BtypeDto::setBrand);
-                mapper.map(AtypeDto::getProductName, BtypeDto::setName);
-            });
-             */
+
+//            btypeDtoMapper.typeMap(AtypeDto.class, BtypeDto.class).addMappings(mapper -> {
+//                mapper.map(AtypeDto::getManufacturerName, BtypeDto::setBrand);
+//                mapper.map(AtypeDto::getProductName, BtypeDto::setName);
+//            });
+
         }
         return btypeDtoMapper.map(atypeDto, BtypeDto.class);
+
+
     }
+
+     */
+    
 
 
 }
