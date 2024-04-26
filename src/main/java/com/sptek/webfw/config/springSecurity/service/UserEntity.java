@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 @Entity
 @NoArgsConstructor
-//@Data //Entity에서는 @Data를 사용하지 않는것이 좋음
+//@Data //Entity에서는 @Data를 사용하지 않는것이 좋음 (Setter가 노출되지 않도록)
 //@Builder //특정 필드만 처리하기 위해 메소드에 빌더 적용
 @Table(name = "USERS")
 public class UserEntity {

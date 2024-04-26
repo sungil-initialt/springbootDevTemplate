@@ -28,14 +28,13 @@ public class SecurityTestController {
     private UserService userService;
 
 
-    @GetMapping("/signup")
-    public String validationWithBindingResult(Model model
-            , SignupRequestDto signupRequestDto) { //thyleaf 쪽에 default 값을 만들기 위해 signupRequestDto 필요함
+    @GetMapping("/signup") //회원가입 입력 페이지
+    public String validationWithBindingResult(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         model.addAttribute("allUserRoles", Arrays.asList(UserRole.values()));
         return PAGE_BASE_PATH + "signup";
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/signup") //회원가입 처리
     public String validationWithBindingResult(Model model, @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
         model.addAttribute("allUserRoles", Arrays.asList(UserRole.values()));
 

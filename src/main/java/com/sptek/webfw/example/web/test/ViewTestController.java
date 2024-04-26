@@ -7,13 +7,11 @@ import com.sptek.webfw.example.dto.*;
 import com.sptek.webfw.exceptionHandler.exception.ServiceException;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
+import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -224,40 +222,24 @@ public class ViewTestController extends CommonControllerSupport {
     }
 
     @RequestMapping("/mapperTestAtoB")
-    public String httpCache(Model model) {
-        AtypeDto atypeDto = new AtypeDto();
-        BtypeDto btypeDto;
+    public String mapperTestAtoB(Model model) {
+        ExampleProductDto atypeDto = new ExampleProductDto();
+        ExampleGoodsDto btypeDto;
 
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.STANDARD) //MatchingStrategies.LOOSE, MatchingStrategies.STRICT
-                .setSkipNullEnabled(true)
-                .setAmbiguityIgnored(true);
-
-        Converter<AtypeDto, Long> discountPrice = ctx -> {
-            AtypeDto src = ctx.getSource();
-            long discountedPrice = src.getProductPrice() * (100 - src.getDiscountRate()) / 100;
-            return discountedPrice;
-        };
-
-        modelMapper.createTypeMap(AtypeDto.class, BtypeDto.class).addMappings(mapper -> {
-            mapper.using(discountPrice).map(source -> source, BtypeDto::setDiscountedPrice);
-        });
-
-        btypeDto = modelMapper.map(atypeDto, BtypeDto.class);
+        btypeDto = ModelMapperUtil.of(atypeDto, ExampleGoodsDto.class);
 
         Map result = new HashMap();
         result.put("AtypeDto", atypeDto);
         result.put("BtypeDto", btypeDto);
-
         model.addAttribute("result", result);
-        return PAGE_BASE_PATH + "simpleModelView";
-    }
 
-    private String discountPrice(long originPrice, long discountRate) {
-        return String.valueOf(originPrice * (100 - discountRate) / 100);
+        return PAGE_BASE_PATH + "simpleModelView";
     }
 }
 
+/*
+-->
+예전에 만들었던 객체들에서 @Builder 가 붙은 것들에 대해 잘 만들어 졌는지 확인이 필요함
+ModelMapper 마무리 필요 (다른 typemap도 넣어서 동작 여부 확인 필요)
 
-컨트롤러와 ModelMapperUtil 정리, discountPrice 만들어 내는것은 테스트가 되었는데 어떻게 잘 정리할지 고민 필요!
+*/

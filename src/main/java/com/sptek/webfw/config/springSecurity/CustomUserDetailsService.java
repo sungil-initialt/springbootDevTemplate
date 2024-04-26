@@ -15,7 +15,8 @@ class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String userEmail) {
-        return ModelMapperUtil.getCustomUserDetails(userRepository.findByEmail(userEmail).orElseThrow(
-                () -> new BadCredentialsException("이메일 주소를 확인해주세요.")));
+        return ModelMapperUtil.of(userRepository.findByEmail(userEmail)
+                        .orElseThrow(() -> new BadCredentialsException("이메일 주소를 확인해주세요."))
+                , CustomUserDetails.class);
     }
 }

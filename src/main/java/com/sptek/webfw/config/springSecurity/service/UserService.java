@@ -16,29 +16,21 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User saveUser(SignupRequestDto signupRequestDto){
-        UserEntity newUser = UserEntity.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(signupRequestDto.getEmail())
                 .password(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()))
                 .userRole(UserRole.getUserRoleFromValue(signupRequestDto.getUserRole()))
                 .build();
 
-        log.debug("new User {}", newUser);
-        userRepository.save(newUser);
-        return User.builder()
-                .email(newUser.getEmail())
-                .password(newUser.getPassword())
-                .userRole(newUser.getUserRole())
-                .build();
+
+        log.debug("new userEntity {}", userEntity);
+        userRepository.save(userEntity);
+
+        return ModelMapperUtil.of(userEntity, User.class);
     }
 
     public User getUserByEmail(String email) {
-        User user = ModelMapperUtil.getObject(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
-
-        //for execute time test.
-        //User user2 = ModelMapperUtil.getObject(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
-        //User user3 = ModelMapperUtil.getUser(userRepository.findByEmail(email).orElse(new UserEntity()));
-        //User user4 = ModelMapperUtil.getUser(userRepository.findByEmail(email).orElse(new UserEntity()));
-
+        User user = ModelMapperUtil.of(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
         return user;
     }
 }
