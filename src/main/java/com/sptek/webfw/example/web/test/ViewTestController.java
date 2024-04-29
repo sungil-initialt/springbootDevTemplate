@@ -223,14 +223,45 @@ public class ViewTestController extends CommonControllerSupport {
 
     @RequestMapping("/mapperTestAtoB")
     public String mapperTestAtoB(Model model) {
-        ExampleProductDto atypeDto = new ExampleProductDto();
-        ExampleGoodsDto btypeDto;
+        ExampleProductDto exampleProductDto = ExampleProductDto.builder()
+                .manufacturerName("samsung")
+                .productName("TV")
+                .productPrice(1000000L)
+                .curDiscountRate(20)
+                .quantity(10)
+                .isAvailableReturn(true)
+                .build();
 
-        btypeDto = ModelMapperUtil.of(atypeDto, ExampleGoodsDto.class);
+        ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.of(exampleProductDto, ExampleGoodsDto.class);
 
         Map result = new HashMap();
-        result.put("AtypeDto", atypeDto);
-        result.put("BtypeDto", btypeDto);
+        result.put("ExampleProductDto", exampleProductDto);
+        result.put("ExampleGoodsDto", exampleGoodsDto);
+        model.addAttribute("result", result);
+
+        return PAGE_BASE_PATH + "simpleModelView";
+    }
+
+    @RequestMapping("/mapperMultiObject")
+    public String mapperMultiObject(Model model) {
+        ExampleProductDto exampleProductDto = ExampleProductDto.builder()
+                .manufacturerName("samsung")
+                .productName("TV")
+                .productPrice(1000000L)
+                .curDiscountRate(20)
+                .quantity(10)
+                .isAvailableReturn(true)
+                .build();
+
+        ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.of(exampleProductDto, ExampleGoodsDto.class);
+
+        ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.of(exampleProductDto, ExampleGoodsNProductDto.class);
+
+
+        Map result = new HashMap();
+        result.put("ExampleProductDto", exampleProductDto);
+        result.put("ExampleGoodsDto", exampleGoodsDto);
+        result.put("ExampleGoodsNProductDto", exampleGoodsNProductDto);
         model.addAttribute("result", result);
 
         return PAGE_BASE_PATH + "simpleModelView";
@@ -240,6 +271,6 @@ public class ViewTestController extends CommonControllerSupport {
 /*
 -->
 예전에 만들었던 객체들에서 @Builder 가 붙은 것들에 대해 잘 만들어 졌는지 확인이 필요함
-ModelMapper 마무리 필요 (다른 typemap도 넣어서 동작 여부 확인 필요)
+ModelMapper 마무리 필요 (of 가 새 클레스 리턴전 후처리 작업을 할수 있는 람다 메소드를 지원하도록 수정 필요)
 
 */

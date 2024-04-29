@@ -31,23 +31,6 @@ public class ModelMapperUtil {
                             .map(ExampleProductDto::isAvailableReturn, ExampleGoodsDto::setAvailableSendBackYn);
         });
 
-        /*
-        btypeDtoMapper.addConverter((Converter<AtypeDto, BtypeDto>) mappingContext -> {
-        AtypeDto source = mappingContext.getSource();
-        BtypeDto destination = mappingContext.getDestination();
-        destination.setName(source.getProductName());
-        //destination.setDiscountedPrice(String.valueOf(source.getProductPrice() * (100 - source.getDiscountRate()) / 100));
-
-        destination.setId(source.getId());
-        destination.setFirstShift(source.getFirstShift() == null ? null : Time.valueOf(source.getFirstShift()));
-        destination.setSecondShift(source.getSecondShift() == null ? null : Time.valueOf(source.getSecondShift()));
-        destination.setEnable(true);
-        destination.setAddress(source.getAddress());
-        destination.setBoxCount(source.getBoxCount());
-        destination.setName(source.getName());
-        destination.setDateOfCreation(source.getDateOfCreation());
-        */
-
         return modelMapper;
     }
 

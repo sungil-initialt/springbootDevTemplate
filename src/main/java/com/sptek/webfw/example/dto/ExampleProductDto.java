@@ -1,16 +1,22 @@
 package com.sptek.webfw.example.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ExampleProductDto {
-    private String manufacturerName = "Samsung";
-    private String productName = "TV";
-    private long productPrice = 1000000L;
+    private String manufacturerName;
+    private String productName;
+    private long productPrice;
     private int weight;
-    private int curDiscountRate = 20;
-    private int quantity = 1000;
-    private boolean isAvailableReturn = true;
+    private int curDiscountRate;
+    private int quantity;
+    private boolean isAvailableReturn;
 
 
 //    public long getDiscountedPrice(){
