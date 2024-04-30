@@ -6,42 +6,47 @@
 
     <select id="return1" resultType="int">
         <![CDATA[
-        select 1 from dual
+        select 1
+        from dual
         ]]>
     </select>
 
     <select id="selecWithLimit" parameterType="int" resultType="com.sptek.webfw.example.dto.TBTestDto">
         <![CDATA[
-        select c1, c2, c3 from test limit #{limit}
+        select c1, c2, c3
+        from test limit #{limit}
         ]]>
     </select>
 
     <select id="selectAll" resultType="com.sptek.webfw.example.dto.TBZipcodeDto">
         <![CDATA[
-        select * from ZIPCODE where doro = '안양천동로'
+        select *
+        from ZIPCODE
+        where doro = '공항길'
         ]]>
     </select>
 
     <insert id="insertTbtest" parameterType="com.sptek.webfw.example.dto.TBTestDto">
         <![CDATA[
-        insert into test (c1, c2, c3) values(#{c1}, #{c2}, #{c3})
+        insert into test (c1, c2, c3)
+        values (#{c1}, #{c2}, #{c3})
         ]]>
     </insert>
 
     <update id="updateTbtest" parameterType="com.sptek.webfw.example.dto.TBTestDto">
         <![CDATA[
         update test
-            set
-                c2 = #{c2},
-                c3 = #{c3}
-            where c1 = #{c1}
+        set c2 = #{c2},
+            c3 = #{c3}
+        where c1 = #{c1}
         ]]>
     </update>
 
     <delete id="deleteTbtest" parameterType="com.sptek.webfw.example.dto.TBTestDto">
         <![CDATA[
-        delete from test
-            where c1 = #{c1}
+        delete
+        from test
+        where c1 = #{c1}
         ]]>
     </delete>
 </mapper>

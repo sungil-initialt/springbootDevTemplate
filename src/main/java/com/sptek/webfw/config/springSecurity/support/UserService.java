@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.service;
+package com.sptek.webfw.config.springSecurity.support;
 
 import com.sptek.webfw.config.springSecurity.UserRole;
 import com.sptek.webfw.util.ModelMapperUtil;
@@ -26,11 +26,11 @@ public class UserService {
         log.debug("new userEntity {}", userEntity);
         userRepository.save(userEntity);
 
-        return ModelMapperUtil.of(userEntity, User.class);
+        return ModelMapperUtil.map(userEntity, User.class);
     }
 
     public User getUserByEmail(String email) {
-        User user = ModelMapperUtil.of(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
+        User user = ModelMapperUtil.map(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
         return user;
     }
 }

@@ -5,8 +5,6 @@ import com.sptek.webfw.support.PageHelperSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,15 +43,12 @@ public class MyBatisCommonDao {
         final List<R> finalHeandledResults = new ArrayList<R>();
         try {
             mybatisResultHandlerSupport.open();
-            this.sqlSessionTemplate.select(statementId, parameter, new ResultHandler() {
-                @Override
-                public void handleResult(ResultContext context) {
-                    R handledResult = mybatisResultHandlerSupport.handleResultRow((T) context.getResultObject());
-                    if (handledResult != null) finalHeandledResults.add(handledResult);
-                    if (mybatisResultHandlerSupport.isStop()) context.stop();
-                }
-            });
-
+            this.sqlSessionTemplate.select(statementId, parameter
+                    , context -> {
+                        R handledResult = mybatisResultHandlerSupport.handleResultRow((T) context.getResultObject());
+                        if (handledResult != null) finalHeandledResults.add(handledResult);
+                        if (mybatisResultHandlerSupport.isStop()) context.stop();
+                    });
         } finally {
             mybatisResultHandlerSupport.close();
         }

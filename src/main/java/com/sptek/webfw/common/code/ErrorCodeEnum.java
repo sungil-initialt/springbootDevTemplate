@@ -1,12 +1,14 @@
-package com.sptek.webfw.code;
+package com.sptek.webfw.common.code;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 //Rest API 요청이 실패일 경우 활용되는 실패코드 enum 객체
 //http 상태코드로 사용되는  HttpStatus와, responseBody에 들어가는 resultCode, resultMessage 로 구성됨
+//에러 DTO를 통해 넘어갈때는 exceptionMessage가 추가되는데 exceptionMessage는 실제 에러메시지에로 개발자 정보 측면이라면
+//ErrorCodeEnum의 resultMessage는 사용자 알림등의 활용에서 사용되는 용도로 보면 좋을것 같다(물론 result 코드를 이용해 처리할 수도 있음)
 @Getter
-public enum ErrorCode {
+public enum ErrorCodeEnum {
     //범용적으로 사용되고 있는 httpstatus 와 관련된 에러 (httpstatuscode를 그에 맞게 내린다)
     BAD_REQUEST_ERROR(HttpStatus.BAD_REQUEST, "GE001", "Bad Request Exception"),
     REQUEST_BODY_MISSING_ERROR(HttpStatus.BAD_REQUEST, "GE002", "Required request body is missing"),
@@ -35,12 +37,12 @@ public enum ErrorCode {
     SERVICE_DUPLICATION_REQUEST_ERROR(HttpStatus.TOO_MANY_REQUESTS, "SE429", "Duplication Request Exception");
 
 
+
     private final HttpStatus httpStatusCode;
     private final String resultCode;
     private final String resultMessage;
 
-
-    ErrorCode(final HttpStatus httpStatusCode, final String resultCode, final String resultMessage) {
+    ErrorCodeEnum(final HttpStatus httpStatusCode, final String resultCode, final String resultMessage) {
         this.httpStatusCode = httpStatusCode;
         this.resultCode = resultCode;
         this.resultMessage = resultMessage;

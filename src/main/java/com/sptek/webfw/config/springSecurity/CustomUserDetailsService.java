@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.service.UserRepository;
+import com.sptek.webfw.config.springSecurity.support.UserRepository;
 import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,8 +15,10 @@ class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String userEmail) {
-        return ModelMapperUtil.of(userRepository.findByEmail(userEmail)
+        return ModelMapperUtil.map(userRepository.findByEmail(userEmail)
                         .orElseThrow(() -> new BadCredentialsException("이메일 주소를 확인해주세요."))
                 , CustomUserDetails.class);
     }
+
+    //-->여기부터 고민해 보쟈!!
 }

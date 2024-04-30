@@ -1,5 +1,7 @@
 package com.sptek.webfw.util;
 
+import com.sptek.webfw.example.dto.ExampleADto;
+import com.sptek.webfw.example.dto.ExampleBDto;
 import com.sptek.webfw.example.dto.ExampleGoodsDto;
 import com.sptek.webfw.example.dto.ExampleProductDto;
 import lombok.extern.slf4j.Slf4j;
@@ -31,16 +33,22 @@ public class ModelMapperUtil {
                             .map(ExampleProductDto::isAvailableReturn, ExampleGoodsDto::setAvailableSendBackYn);
         });
 
+        modelMapper.createTypeMap(ExampleADto.class, ExampleBDto.class).addMappings(
+                mapper -> {
+                    mapper.map(ExampleADto::getADtoLastName, ExampleBDto::setBObjectEndTitle);
+                    mapper.map(ExampleADto::getADtoFirstName, ExampleBDto::setBObjectFamilyTitle);
+                });
+
         return modelMapper;
     }
 
-    public static <S, D> D of(S sourceObject, Class<D> destinationType) {
+    public static <S, D> D map(S sourceObject, Class<D> destinationType) {
         //for execute time test.
-        long startNtime = System.nanoTime();
+        long starttime = System.currentTimeMillis();
 
         ModelMapper modelMapper = getdefaultModelMapper();
         D result = modelMapper.map(sourceObject, destinationType);
-        log.debug("Executed time : {}", (System.nanoTime()-startNtime));
+        log.debug("Executed time : {}", (System.currentTimeMillis()-starttime));
         return result;
     }
 }

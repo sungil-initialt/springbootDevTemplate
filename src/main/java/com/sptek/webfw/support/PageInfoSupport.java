@@ -50,11 +50,11 @@ public class PageInfoSupport<T> {
 
     List<T> selectedList; //조회된 실제 데이터 리스트
 
-    public PageInfoSupport(PageInfo<T> pageInfo){
+    public PageInfoSupport(PageInfo<T> pageInfo) {
         MappingPageInfoToPageInfoSupport(pageInfo);
     }
 
-        private void MappingPageInfoToPageInfoSupport(PageInfo pageInfo){
+    private void MappingPageInfoToPageInfoSupport(PageInfo pageInfo) {
         //PageInfo의 불명확한 메소드명과 불필요한 데이터를 제거하여 사용자가 이해하기 쉽게하기 위한 처리
         currentPageNum = pageInfo.getPageNum();
         setRowSizePerPage = pageInfo.getPageSize();

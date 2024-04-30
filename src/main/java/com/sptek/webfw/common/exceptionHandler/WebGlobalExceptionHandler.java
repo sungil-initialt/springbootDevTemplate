@@ -1,6 +1,6 @@
-package com.sptek.webfw.exceptionHandler;
+package com.sptek.webfw.common.exceptionHandler;
 
-import com.sptek.webfw.exceptionHandler.exception.DuplicatedRequestException;
+import com.sptek.webfw.common.exception.DuplicatedRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,9 +21,9 @@ public class WebGlobalExceptionHandler {
     //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
     @ExceptionHandler(DuplicatedRequestException.class)
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
-    public void handleDuplicatedRequestException(DuplicatedRequestException ex) {
+    protected void handleDuplicatedRequestException(DuplicatedRequestException ex) {
         log.error("DuplicatedRequestException : ", ex);
-        //응답코드만 내리고 page는 내리지 않음
+        //web 핸들러임에도 에러가 발생되는 케이스의 특성상 응답코드만 내리고 page는 내리지 않음
     }
 
 

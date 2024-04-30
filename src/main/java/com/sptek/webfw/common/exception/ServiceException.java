@@ -1,8 +1,7 @@
-package com.sptek.webfw.exceptionHandler.exception;
+package com.sptek.webfw.common.exception;
 
-import com.sptek.webfw.code.ErrorCode;
+import com.sptek.webfw.common.code.ErrorCodeEnum;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,17 +13,15 @@ throw new ServiceException(ErrorCode.SERVICE_XXXX_ERROR, "최근 구매내역 �
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ServiceException extends RuntimeException {
-    private ErrorCode errorCode;
+    private ErrorCodeEnum errorCodeEnum;
 
-    @Builder
-    public ServiceException(ErrorCode errorCode) {
-        super(errorCode.getResultMessage());
-        this.errorCode = errorCode;
+    public ServiceException(ErrorCodeEnum errorCodeEnum) {
+        super(errorCodeEnum.getResultMessage());
+        this.errorCodeEnum = errorCodeEnum;
     }
 
-    @Builder
-    public ServiceException(ErrorCode errorCode, String exceptionMessage) {
+    public ServiceException(ErrorCodeEnum errorCodeEnum, String exceptionMessage) {
         super(exceptionMessage);
-        this.errorCode = errorCode;
+        this.errorCodeEnum = errorCodeEnum;
     }
 }

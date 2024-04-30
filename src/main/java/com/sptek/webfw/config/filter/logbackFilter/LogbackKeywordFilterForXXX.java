@@ -11,6 +11,7 @@ public class LogbackKeywordFilterForXXX extends Filter<ILoggingEvent>{
     @Override
     public FilterReply decide(ILoggingEvent event) {
         if (event.getMessage().contains(filterKeyword)) {
+            //조건에 맞을때 log 처리함
             return FilterReply.ACCEPT;
         }else{
             return FilterReply.DENY;

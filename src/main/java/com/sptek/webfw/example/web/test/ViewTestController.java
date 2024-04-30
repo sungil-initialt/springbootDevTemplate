@@ -2,9 +2,9 @@ package com.sptek.webfw.example.web.test;
 
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
-import com.sptek.webfw.code.ErrorCode;
+import com.sptek.webfw.common.code.ErrorCodeEnum;
 import com.sptek.webfw.example.dto.*;
-import com.sptek.webfw.exceptionHandler.exception.ServiceException;
+import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import com.sptek.webfw.util.ModelMapperUtil;
@@ -60,7 +60,7 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping("/serviceErr")
     public String serviceErr(Model model) {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
-        if(1==1) throw ServiceException.builder().errorCode(ErrorCode.SERVICE_DEFAULT_ERROR).build();
+        if(1==1) throw new ServiceException(ErrorCodeEnum.SERVICE_DEFAULT_ERROR);
 
         return PAGE_BASE_PATH + "xx"; //there's no way to reach here
     }
@@ -221,28 +221,7 @@ public class ViewTestController extends CommonControllerSupport {
         return PAGE_BASE_PATH + "simpleModelView";
     }
 
-    @RequestMapping("/mapperTestAtoB")
-    public String mapperTestAtoB(Model model) {
-        ExampleProductDto exampleProductDto = ExampleProductDto.builder()
-                .manufacturerName("samsung")
-                .productName("TV")
-                .productPrice(1000000L)
-                .curDiscountRate(20)
-                .quantity(10)
-                .isAvailableReturn(true)
-                .build();
-
-        ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.of(exampleProductDto, ExampleGoodsDto.class);
-
-        Map result = new HashMap();
-        result.put("ExampleProductDto", exampleProductDto);
-        result.put("ExampleGoodsDto", exampleGoodsDto);
-        model.addAttribute("result", result);
-
-        return PAGE_BASE_PATH + "simpleModelView";
-    }
-
-    @RequestMapping("/mapperMultiObject")
+    @RequestMapping("/modelMapperTest")
     public String mapperMultiObject(Model model) {
         ExampleProductDto exampleProductDto = ExampleProductDto.builder()
                 .manufacturerName("samsung")
@@ -252,16 +231,18 @@ public class ViewTestController extends CommonControllerSupport {
                 .quantity(10)
                 .isAvailableReturn(true)
                 .build();
+        ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsDto.class);
+        ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsNProductDto.class);
 
-        ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.of(exampleProductDto, ExampleGoodsDto.class);
-
-        ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.of(exampleProductDto, ExampleGoodsNProductDto.class);
-
+        ExampleADto exampleADto = ExampleADto.builder().aDtoLastName("이").aDtoFirstName("성일").build();
+        ExampleBDto exampleBDto = ModelMapperUtil.map(exampleADto, ExampleBDto.class);
 
         Map result = new HashMap();
-        result.put("ExampleProductDto", exampleProductDto);
-        result.put("ExampleGoodsDto", exampleGoodsDto);
-        result.put("ExampleGoodsNProductDto", exampleGoodsNProductDto);
+        result.put("exampleProductDto", exampleProductDto);
+        result.put("exampleGoodsDto", exampleGoodsDto);
+        result.put("exampleGoodsNProductDto", exampleGoodsNProductDto);
+        result.put("exampleADto", exampleADto);
+        result.put("exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
         return PAGE_BASE_PATH + "simpleModelView";

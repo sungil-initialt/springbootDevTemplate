@@ -1,6 +1,6 @@
 package com.sptek.webfw.example.api.api1;
 
-import com.sptek.webfw.commonDto.ApiSuccessResponse;
+import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.support.CommonControllerSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,8 +17,8 @@ public class SystemSupportController extends CommonControllerSupport {
 
     @GetMapping("/health/healthCheck")
     @Operation(summary = "healthCheck", description = "healthCheck 테스트", tags = {""}) //swagger
-    protected ResponseEntity<ApiSuccessResponse<String>> healthCheck() throws Exception{
-        return ResponseEntity.ok(new ApiSuccessResponse("ok"));
+    protected ResponseEntity<ApiSuccessResponseDto<String>> healthCheck() throws Exception{
+        return ResponseEntity.ok(new ApiSuccessResponseDto("ok"));
     }
 
 }

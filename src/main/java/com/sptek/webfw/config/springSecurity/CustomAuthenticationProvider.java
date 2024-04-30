@@ -32,7 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         //spring security 의 AuthenticaionFilter 에서 UsernamePasswordAuthenticationToken를 생성해줌
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 
-        //현재 서비스에서는 email 값을 Name으로 활용하고 있음
+        //email 값을 Name(일반적id개념) 으로 사용하는 케이스
         String email = token.getName();
         String password = (String) token.getCredentials();
         log.debug("user info : {} , {}", email, password);

@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.service;
+package com.sptek.webfw.config.springSecurity.support;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
