@@ -85,13 +85,13 @@ spring:
   #  view:
   #    prefix: /WEB-INF/views/
   #    suffix: .jsp
-  h2: #H2 DB 사용은 프로퍼티설정만 있음
+  h2: #H2 임베드 DB 사용은 프로퍼티설정만 있음
     console:
       enabled: true #웹콘솔 사용 여부
-      path: /h2-console #웹콘솔 url 경로
+      path: /h2-console #웹콘솔 url 경로, ex:https://localhost:8080/h2-console/
   datasource: #리플리카 구성이 아닌 단순 DS 사용
-    #url: jdbc:h2:G:\내 드라이브\work\sptek\frameWork\webfw1\spt-wfw\src\main\resources\h2\local  #해당 위치에 cmd로 copy con local.mv.db 을 통해 파일 생성
-    url: jdbc:h2:G:\내 드라이브\work\sptek\frameWork\webfw1\spt-wfw\src\main\resources\h2\local;AUTO_SERVER=TRUE  #해당 위치에 cmd로 copy con local.mv.db 을 통해 파일 생성, embed지만 서버모드로
+    url: jdbc:h2:mem:local #메모리모드, 휘발성, @Entity 클레스에 대해 자동으로 TB 구성, schema.sql, data.sql 자동 실행
+    #url: jdbc:h2:G:\내 드라이브\work\sptek\frameWork\webfw1\spt-wfw\src\main\resources\h2\local;AUTO_SERVER=TRUE  #서버모드(파일), 해당 위치에 cmd로 copy con local.mv.db 을 통해 초기 DB 파일 생성, 서버모드로
     driverClassName: org.h2.Driver
     username: sa
     password:

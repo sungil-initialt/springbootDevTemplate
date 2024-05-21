@@ -75,7 +75,7 @@ public class ApiTestController extends CommonControllerSupport {
 
     @GetMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {""}) //swagger
-    protected ResponseEntity<ApiSuccessResponseDto<String>> hello(
+    public ResponseEntity<ApiSuccessResponseDto<String>> hello(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) throws Exception{
 
@@ -85,14 +85,14 @@ public class ApiTestController extends CommonControllerSupport {
     @GetMapping("/projectinfo")
     @Operation(summary = "프로젝트 정보", description = "projectinfo 테스트", tags = {""})
     //단순 프로젝트 정보 확인
-    protected ResponseEntity<ApiSuccessResponseDto<PropertyVos.ProjectInfoVo>> projectinfo() {
+    public ResponseEntity<ApiSuccessResponseDto<PropertyVos.ProjectInfoVo>> projectinfo() {
         return ResponseEntity.ok(new ApiSuccessResponseDto(projectInfoVo));
     }
 
     @GetMapping("/XssProtectSupportGet")
     @Operation(summary = "XssProtectSupportGet", description = "XssProtectSupportGet 테스트", tags = {""})
     //get Req에 대한 xss 처리 결과 확인
-    protected ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportGet(
+    public ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportGet(
             @Parameter(name = "originText", description = "원본 텍스트", required = true)
             @RequestParam String originText) {
 
@@ -104,7 +104,7 @@ public class ApiTestController extends CommonControllerSupport {
     @PostMapping("/XssProtectSupportPost")
     @Operation(summary = "XssProtectSupportPost", description = "XssProtectSupportPost 테스트", tags = {""})
     //post Req에 대한 xss 처리 결과 확인
-    protected ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportPost(
+    public ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportPost(
             @Parameter(name = "originText", description = "원본 텍스트", required = true)
             @RequestBody String originText) {
 
@@ -115,7 +115,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/interceptor")
     @Operation(summary = "interceptor", description = "interceptor 테스트", tags = {""})
     //인터셉터들을 테스트 하기 위한 용도
-    protected ResponseEntity<ApiSuccessResponseDto<String>> interceptor() {
+    public ResponseEntity<ApiSuccessResponseDto<String>> interceptor() {
         String message = "see the interceptor message in log";
         return ResponseEntity.ok(new ApiSuccessResponseDto(message));
     }
@@ -123,7 +123,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/closeableHttpClient")
     @Operation(summary = "closeableHttpClient", description = "closeableHttpClient 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
-    protected ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClient() throws Exception{
+    public ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClient() throws Exception{
         log.debug("identityHashCode : {}", System.identityHashCode(closeableHttpClient));
 
         HttpGet httpGet = new HttpGet(fooResponseUrl);
@@ -137,7 +137,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/closeableHttpClientSupport")
     @Operation(summary = "closeableHttpClientSupport", description = "closeableHttpClientSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
-    protected ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClientSupport() throws Exception{
+    public ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClientSupport() throws Exception{
         log.debug("identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
@@ -149,7 +149,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/restTemplate")
     @Operation(summary = "restTemplate", description = "restTemplate 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하여 req 요청
-    protected ResponseEntity<ApiSuccessResponseDto<String>> restTemplate() {
+    public ResponseEntity<ApiSuccessResponseDto<String>> restTemplate() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
         String finalUrl = builder.toUriString();
         RequestEntity<Void> requestEntity = RequestEntity
@@ -163,7 +163,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/restTemplateSupport")
     @Operation(summary = "restTemplateSupport", description = "restTemplateSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
-    protected ResponseEntity<ApiSuccessResponseDto<String>> restTemplateSupport() {
+    public ResponseEntity<ApiSuccessResponseDto<String>> restTemplateSupport() {
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(fooResponseUrl, null, null);
         return ResponseEntity.ok(new ApiSuccessResponseDto(responseEntity.getBody()));
     }
@@ -171,7 +171,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/reqResUtil")
     @Operation(summary = "reqResUtil", description = "reqResUtil 테스트", tags = {""})
     //ReqResUtil 검증 테스트
-    protected ResponseEntity<ApiSuccessResponseDto<Map<String, String>>> reqResUtil(HttpServletRequest request) {
+    public ResponseEntity<ApiSuccessResponseDto<Map<String, String>>> reqResUtil(HttpServletRequest request) {
         String reqFullUrl = ReqResUtil.getRequestUrlString(request);
         String reqIp = ReqResUtil.getReqUserIp(request);
         String heades = ReqResUtil.getRequestHeaderMap(request).toString();
@@ -189,20 +189,20 @@ public class ApiTestController extends CommonControllerSupport {
     @PostMapping("/validationAnnotationPost")
     @Operation(summary = "validationAnnotationPost", description = "validationAnnotationPost 테스트", tags = {""})
     //request input 값에대한 validation 처리 테스트
-    protected ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
+    public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
         return ResponseEntity.ok(new ApiSuccessResponseDto(validationTestDto));
     }
 
     @GetMapping("/validationAnnotationGet")
     @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
+    public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
         return ResponseEntity.ok(new ApiSuccessResponseDto(validationTestDto));
     }
 
     @GetMapping("/propertyConfigImport")
     @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
     //컨트롤러 진입시 특정 property값을 가져올수 있다.
-    protected ResponseEntity<ApiSuccessResponseDto<String>> propertyConfigImport(@Value("${specific.value}") String specificValue) {
+    public ResponseEntity<ApiSuccessResponseDto<String>> propertyConfigImport(@Value("${specific.value}") String specificValue) {
         return ResponseEntity.ok(new ApiSuccessResponseDto(specificValue));
     }
 
@@ -210,21 +210,21 @@ public class ApiTestController extends CommonControllerSupport {
     @Operation(summary = "argumentResolverForMyUser", description = "argumentResolverForMyUser 테스트", tags = {""})
     //HandlerMethodArgumentResolver 를 implement 한 ArgumentResolverForMyUser에 의해 ArgumentResolverForMyUser.MyUser에 데이터가 바인딩 될때 미리 코딩된 로직에 따라 변형처리 되어 바인딩 할수 있다.
     //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
-    protected ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser(ArgumentResolverForMyUser.MyUser myUser) {
+    public ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser(ArgumentResolverForMyUser.MyUser myUser) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
         return ResponseEntity.ok(new ApiSuccessResponseDto(myUser));
     }
 
     @GetMapping("/argumentResolverForMyUser2")
     @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser2(@AnoCustomArgument ArgumentResolverForMyUser.MyUser myUser) {
+    public ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser2(@AnoCustomArgument ArgumentResolverForMyUser.MyUser myUser) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
         return ResponseEntity.ok(new ApiSuccessResponseDto(myUser));
     }
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<ApiSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception{
 
@@ -240,7 +240,7 @@ public class ApiTestController extends CommonControllerSupport {
 
     @GetMapping(value = "/byteForImage")
     @Operation(summary = "byteForImage", description = "byteForImage 테스트", tags = {""})
-    protected ResponseEntity<byte[]> byteForImage(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<byte[]> byteForImage(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
             , @RequestParam("uuidForFileName") String uuidForFileName) throws Exception{
 
@@ -265,7 +265,7 @@ public class ApiTestController extends CommonControllerSupport {
     @AnoRequestDeduplication
     @RequestMapping("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
-    protected ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
+    public ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
         String result = "duplicatedRequest test";
         Thread.sleep(3000L);
         return ResponseEntity.ok(new ApiSuccessResponseDto(result));

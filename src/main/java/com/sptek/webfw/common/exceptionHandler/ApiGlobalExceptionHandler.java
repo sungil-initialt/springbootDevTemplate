@@ -29,7 +29,7 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
 public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error("MethodArgumentNotValidException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.NOT_VALID_ERROR, ex.getMessage(), ex.getBindingResult());
@@ -37,7 +37,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
         log.error("MissingRequestHeaderException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
@@ -45,7 +45,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         log.error("HttpMessageNotReadableException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
@@ -53,7 +53,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         log.error("MissingServletRequestParameterException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.MISSING_REQUEST_PARAMETER_ERROR, ex.getMessage());
@@ -61,7 +61,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleHttpClientErrorException(HttpClientErrorException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleHttpClientErrorException(HttpClientErrorException ex) {
         log.error("HttpClientErrorException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.BAD_REQUEST_ERROR, ex.getMessage());
@@ -69,7 +69,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleNoHandlerFoundException(NoHandlerFoundException ex) {
         log.error("NoHandlerFoundException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.NOT_FOUND_ERROR, ex.getMessage());
@@ -77,7 +77,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(NullPointerException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleNullPointerException(NullPointerException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleNullPointerException(NullPointerException ex) {
         log.error("NullPointerException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.NULL_POINT_ERROR, ex.getMessage());
@@ -85,7 +85,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(IOException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleIOException(IOException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleIOException(IOException ex) {
         log.error("IOException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.IO_ERROR, ex.getMessage());
@@ -93,7 +93,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(JsonParseException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleJsonParseException(JsonParseException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleJsonParseException(JsonParseException ex) {
         log.error("JsonParseException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.JSON_PARSE_ERROR, ex.getMessage());
@@ -101,7 +101,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(JsonProcessingException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleJsonProcessingException(JsonProcessingException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleJsonProcessingException(JsonProcessingException ex) {
         log.error("JsonProcessingException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
@@ -110,7 +110,7 @@ public class ApiGlobalExceptionHandler {
 
     //개발자가 의도적으로 생성하는 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
     @ExceptionHandler(ServiceException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleServiceException(ServiceException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleServiceException(ServiceException ex) {
         log.error("ServiceException로 : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getErrorCodeEnum(), ex.getMessage());
@@ -119,7 +119,7 @@ public class ApiGlobalExceptionHandler {
 
     //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
     @ExceptionHandler(DuplicatedRequestException.class)
-    protected ResponseEntity<ApiErrorResponseDto> handleDuplicatedRequestException(DuplicatedRequestException ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleDuplicatedRequestException(DuplicatedRequestException ex) {
         log.error("DuplicatedRequestException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getErrorCodeEnum(), ex.getMessage());
@@ -127,7 +127,7 @@ public class ApiGlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    protected final ResponseEntity<ApiErrorResponseDto> handleUnExpectedException(Exception ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleUnExpectedException(Exception ex) {
         log.error("UnExpectedException : ", ex);
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());

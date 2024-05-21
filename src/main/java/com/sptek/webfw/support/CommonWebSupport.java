@@ -24,10 +24,10 @@ Controller에서 이용할수 있는 공통 기능을 추가해 나가면 됨
 public class CommonWebSupport {
 
     @Autowired
-    protected MessageSource messageSource;
+    private MessageSource messageSource;
 
     //현재 Locale에 해당하는 메시지로 제공한다.
-    protected String getI18nMessage(String code, @Nullable Object[] args) {
+    public String getI18nMessage(String code, @Nullable Object[] args) {
         String langCode;
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(getCurrenRequest());
 
@@ -43,15 +43,15 @@ public class CommonWebSupport {
         return messageSource.getMessage(code, args, Locale.forLanguageTag(langCode));
     }
 
-    protected String getCurLangTag(){
+    public String getCurLangTag(){
         return LocaleContextHolder.getLocale().toLanguageTag();
     }
 
-    protected HttpServletRequest getCurrenRequest(){
+    private HttpServletRequest getCurrenRequest(){
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     }
 
-    protected HttpServletResponse getCurrenResponse(){
+    private HttpServletResponse getCurrenResponse(){
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
     }
 }

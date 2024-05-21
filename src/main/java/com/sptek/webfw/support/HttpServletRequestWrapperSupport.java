@@ -40,7 +40,7 @@ public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper 
     @Override
     public BufferedReader getReader() throws IOException {
         if (rawData == null) {
-            rawData = IOUtils.toByteArray(this.request.getReader());
+            rawData = IOUtils.toByteArray(this.request.getReader(), "");
             servletInputStream.inputStream = new ByteArrayInputStream(rawData);
         }
         return new BufferedReader(new InputStreamReader(servletInputStream));
@@ -48,7 +48,6 @@ public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper 
 
 
     private class ResettableServletInputStream extends ServletInputStream {
-
         private InputStream inputStream;
 
         @Override

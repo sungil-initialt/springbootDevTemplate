@@ -18,7 +18,6 @@ import java.util.List;
  */
 @Slf4j
 public class MethodCheckInterceptorSupport implements HandlerInterceptor {
-
     private final HandlerInterceptor handlerInterceptor;
     private final MatchInfoContainer matchInfoContainer;
 
@@ -54,7 +53,6 @@ public class MethodCheckInterceptorSupport implements HandlerInterceptor {
     }
 
     public class MatchInfoContainer {
-
         private final AntPathMatcher pathMatcher;
         private final List<MatchInfo> includeMatchInfos;
         private final List<MatchInfo> excludeMatchInfos;

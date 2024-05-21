@@ -3,7 +3,7 @@ GET {{api-server-ver}}/hello?message=hi
 Content-Type: application/json
 
 ### 서버정보
-GET {{api-server-ver}}/projectinfo
+GET {{api-server-ver}}/api/v1/projectinfo
 Content-Type: application/json
 
 

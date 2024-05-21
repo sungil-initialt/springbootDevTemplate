@@ -31,18 +31,18 @@ public class ApiErrorResponseDto {
     private List<InValidFieldInfo> inValidFieldInfos;
     private String exceptionMessage;
 
-    protected ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum) {
+    public ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
     }
 
-    protected ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage) {
+    public ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
     }
 
-    protected ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
+    public ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
@@ -62,7 +62,6 @@ public class ApiErrorResponseDto {
     }
 
 
-
     @Getter
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class InValidFieldInfo {
@@ -70,14 +69,14 @@ public class ApiErrorResponseDto {
         private final String value;
         private final String reason;
 
-        protected static List<InValidFieldInfo> of(final String field, final String value, final String reason) {
+        private static List<InValidFieldInfo> of(final String field, final String value, final String reason) {
             List<InValidFieldInfo> inValidFieldInfos = new ArrayList<>();
             inValidFieldInfos.add(new InValidFieldInfo(field, value, reason));
 
             return inValidFieldInfos;
         }
 
-        protected static List<InValidFieldInfo> of(final BindingResult bindingResult) {
+        private static List<InValidFieldInfo> of(final BindingResult bindingResult) {
             final List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
 
             return fieldErrors.stream()

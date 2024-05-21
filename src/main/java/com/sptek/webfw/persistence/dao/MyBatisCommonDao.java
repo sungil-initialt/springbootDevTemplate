@@ -24,7 +24,7 @@ public class MyBatisCommonDao {
 
     @Autowired
     @Qualifier("sqlSessionTemplate")
-    protected SqlSessionTemplate sqlSessionTemplate;
+    private SqlSessionTemplate sqlSessionTemplate;
 
     public <T> T selectOne(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
