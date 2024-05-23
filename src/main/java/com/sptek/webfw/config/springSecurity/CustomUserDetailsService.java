@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.support.UserRepository;
+import com.sptek.webfw.config.springSecurity.extras.UserRepository;
 import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;

@@ -1,7 +1,11 @@
 package com.sptek.webfw.example.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /*
 어노테이션을 사용하여 input 값들에 대한 validation을 처리하는 예시 (주로 많이 사용하는 것들 위주)
@@ -17,21 +21,26 @@ public class ValidationTestDto {
     //NotBlank은 NotNull, NotEmpty 기능을 모두 포함함.
     @NotBlank(message = "userId을 입력해 주세요") //message값은 Exception 발생시 Exception의 메시지 값으로 처리됨.
     @Pattern(regexp = "^[a-zA-Z0-9]{1,20}$", message = "userId는 영문자와 숫자로만 입력해 주세요.")
+    @Schema(description = "사용자 ID", example = "sungilry")
     private String userId;
 
     @NotBlank(message = "userName을 입력해 주세요")
     @Size(min=2, max=20, message = "userName은 2자 이상 20자 이하로 해주세요")
+    @Schema(description = "사용자 이름", example = "이성일")
     private String userName;
 
     @NotNull(message = "age을 입력해 주세요")
     @Min(value = 0, message = "age은 0보다 커야 합니다.")
     @Max(value = Integer.MAX_VALUE, message = "age가 너무 큽니다.")
+    @Schema(description = "사용자 나이", example = "20")
     private int age;
 
     @Email(message = "email이 이메일 형식에 맞지 않습니다.")
+    @Schema(description = "사용자 이메일", example = "sungilry@sptek.co.kr")
     private String email;
 
     @Pattern(regexp = "010\\d{8}", message = "전화번호 형식에 맞지 않습니다.")
+    @Schema(description = "사용자 전화번호", example = "010-1234-5678")
     private String mobileNumber;
 
     /*

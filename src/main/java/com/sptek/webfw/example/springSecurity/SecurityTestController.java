@@ -1,9 +1,9 @@
 package com.sptek.webfw.example.springSecurity;
 
 import com.sptek.webfw.config.springSecurity.UserRole;
-import com.sptek.webfw.config.springSecurity.support.SignupRequestDto;
-import com.sptek.webfw.config.springSecurity.support.User;
-import com.sptek.webfw.config.springSecurity.support.UserService;
+import com.sptek.webfw.config.springSecurity.extras.SignupRequestDto;
+import com.sptek.webfw.config.springSecurity.extras.User;
+import com.sptek.webfw.config.springSecurity.extras.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -28,7 +27,6 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +49,7 @@ import java.util.function.Predicate;
 @RestController
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-@RequestMapping(value = {"/api/v1/", "/api/v2/"})
+@RequestMapping(value = {"/api/v1/"})
 //swagger
 @Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹")
 public class ApiTestController extends CommonControllerSupport {
@@ -74,7 +72,7 @@ public class ApiTestController extends CommonControllerSupport {
     private ApiTestService apiTestService;
 
     @GetMapping("/hello")
-    @Operation(summary = "hello", description = "hello 테스트", tags = {""}) //swagger
+    @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> hello(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) throws Exception{
@@ -83,10 +81,20 @@ public class ApiTestController extends CommonControllerSupport {
     }
 
     @GetMapping("/projectinfo")
-    @Operation(summary = "프로젝트 정보", description = "projectinfo 테스트", tags = {""})
+    @Operation(summary = "projectinfo", description = "projectinfo 테스트", tags = {""})
     //단순 프로젝트 정보 확인
     public ResponseEntity<ApiSuccessResponseDto<PropertyVos.ProjectInfoVo>> projectinfo() {
         return ResponseEntity.ok(new ApiSuccessResponseDto(projectInfoVo));
+    }
+
+    @PostMapping("/swaggerExample")
+    @Operation(summary = "swagger 구성 예시", description = "swagger 구성의 가이드 API", tags = {"가이드 예시 APIs"})
+    public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> swaggerExample(
+            @Parameter(name = "message", description = "가이드용으로 의미가 없음", required = true)
+            @RequestParam String message,
+            @RequestBody ValidationTestDto validationTestDto) {
+
+        return ResponseEntity.ok(new ApiSuccessResponseDto(validationTestDto));
     }
 
     @GetMapping("/XssProtectSupportGet")
@@ -273,12 +281,19 @@ public class ApiTestController extends CommonControllerSupport {
 
     @RequestMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<Long>> httpCache(HttpServletResponse response, Model model) {
+    public ResponseEntity<ApiSuccessResponseDto<Long>> httpCache() {
         //todo : 현재 cache가 되지 않음, 이유확인이 필요함
         long cacheSec = 60L;
         CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
         long result = System.currentTimeMillis();
 
         return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiSuccessResponseDto(result));
+    }
+
+    @RequestMapping("/apiServiceError")
+    @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
+    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) {
+        int result = apiTestService.raiseServiceError(errorType);
+        return ResponseEntity.ok(new ApiSuccessResponseDto(result));
     }
 }

@@ -1,10 +1,24 @@
+
 ### hello
 GET {{api-server-ver}}/hello?message=hi
 Content-Type: application/json
 
+> {%
+//동적 변수 set 테스트
+const eTag = response.headers.valueOf("ETag");
+if (eTag) {
+    client.global.set("eTag", eTag);
+    client.log("set eTag: " + client.global.get("eTag"));
+} else {
+    client.log("eTag not found in header");
+}
+%}
+
+
 ### 서버정보
-GET {{api-server-ver}}/api/v1/projectinfo
+GET {{api-server-ver}}/projectinfo
 Content-Type: application/json
+ETag: {{eTag}}
 
 
 
@@ -67,9 +81,9 @@ POST {{api-server-ver}}/validationAnnotationPost
 Content-Type: application/json
 
 {
-  "userId": "sungilry00",
+  "userId": "sungilry",
   "userName": "sungil",
-  "age": 43,
+  "age": 40,
   "email": "sungilry@naver.com",
   "mobileNumber" : "01042983113"
 }
@@ -78,7 +92,9 @@ Content-Type: application/json
 GET {{api-server-ver}}/validationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
 Content-Type: application/json
 
-### validationAnnoTationt 테스트
+
+
+### property 테스트
 GET {{api-server-ver}}/propertyConfigImport
 Content-Type: application/json
 

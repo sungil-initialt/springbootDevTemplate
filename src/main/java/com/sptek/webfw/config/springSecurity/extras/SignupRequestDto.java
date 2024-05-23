@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.support;
+package com.sptek.webfw.config.springSecurity.extras;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

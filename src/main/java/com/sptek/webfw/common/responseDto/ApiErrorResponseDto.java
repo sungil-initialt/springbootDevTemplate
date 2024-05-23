@@ -1,7 +1,10 @@
 package com.sptek.webfw.common.responseDto;
 
-import com.sptek.webfw.common.code.ErrorCodeEnum;
-import lombok.*;
+import com.sptek.webfw.common.code.BaseCode;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
@@ -10,9 +13,10 @@ import java.util.stream.Collectors;
 
 /*
 //rest Api에서 실패 응답 규격
+HttpStatus.BAD_REQUEST(400)
 {
   "resultCode": "GE011",
-  "resultMessage": "handle Validation Exception",
+  "resultMessage": "NOT_VALID_ERROR",
   "inValidFieldInfos": [
     {
       "field": "userName",
@@ -31,33 +35,33 @@ public class ApiErrorResponseDto {
     private List<InValidFieldInfo> inValidFieldInfos;
     private String exceptionMessage;
 
-    public ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum) {
+    ApiErrorResponseDto(final BaseCode errorCodeEnum) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
     }
 
-    public ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage) {
+    ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
     }
 
-    public ApiErrorResponseDto(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
+    ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
         this.inValidFieldInfos = inValidFieldInfos;
     }
 
-    public static ApiErrorResponseDto of(final ErrorCodeEnum errorCodeEnum) {
+    public static ApiErrorResponseDto of(final BaseCode errorCodeEnum) {
         return new ApiErrorResponseDto(errorCodeEnum);
     }
 
-    public static ApiErrorResponseDto of(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage) {
+    public static ApiErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage) {
         return new ApiErrorResponseDto(errorCodeEnum, exceptionMessage);
     }
 
-    public static ApiErrorResponseDto of(final ErrorCodeEnum errorCodeEnum, final String exceptionMessage, final BindingResult bindingResult) {
+    public static ApiErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage, final BindingResult bindingResult) {
         return new ApiErrorResponseDto(errorCodeEnum, exceptionMessage, InValidFieldInfo.of(bindingResult));
     }
 

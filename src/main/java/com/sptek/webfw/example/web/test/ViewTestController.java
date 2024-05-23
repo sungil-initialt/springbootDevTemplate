@@ -2,9 +2,10 @@ package com.sptek.webfw.example.web.test;
 
 import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
-import com.sptek.webfw.common.code.ErrorCodeEnum;
-import com.sptek.webfw.example.dto.*;
+import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.example.api.api1.ApiTestService;
+import com.sptek.webfw.example.dto.*;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import com.sptek.webfw.util.ModelMapperUtil;
@@ -39,6 +40,8 @@ public class ViewTestController extends CommonControllerSupport {
     private final String PAGE_BASE_PATH = "pages/example/test/";
     @Autowired
     private ViewTestService viewTestService;
+    @Autowired
+    private ApiTestService apiTestService;
 
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
@@ -60,9 +63,9 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping("/serviceErr")
     public String serviceErr(Model model) {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
-        if(1==1) throw new ServiceException(ErrorCodeEnum.SERVICE_DEFAULT_ERROR);
+        if(1==1) throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DEFAULT_ERROR);
 
-        return PAGE_BASE_PATH + "xx"; //there's no way to reach here
+        return PAGE_BASE_PATH + "xx"; //not to reach here
     }
 
     //Mybatis 를 통한 DB 테스트들
@@ -245,6 +248,16 @@ public class ViewTestController extends CommonControllerSupport {
         result.put("exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
+        return PAGE_BASE_PATH + "simpleModelView";
+    }
+
+    @RequestMapping("/viewServiceError")
+    public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
+
+        //여기해야됨 ---> Exception 처리를 강제 하려면 어떻게 해야하지??
+        int result = apiTestService.raiseServiceError(errorType);
+
+        model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }
 }

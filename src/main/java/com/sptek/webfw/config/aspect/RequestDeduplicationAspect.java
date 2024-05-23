@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.aspect;
 
-import com.sptek.webfw.common.code.ErrorCodeEnum;
+import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.DuplicatedRequestException;
 import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.util.ReqResUtil;
@@ -84,7 +84,7 @@ public class RequestDeduplicationAspect
     }
 
     private Object handleDuplicationForRestController() {
-        throw new ServiceException(ErrorCodeEnum.SERVICE_DUPLICATION_REQUEST_ERROR);
+        throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DUPLICATION_REQUEST_ERROR);
     }
 
     private Object handleDuplicationForViewController(HttpServletRequest request) {
