@@ -31,87 +31,87 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error("MethodArgumentNotValidException : ", ex);
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.NOT_VALID_ERROR, ex.getMessage(), ex.getBindingResult());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.NOT_VALID_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        log.error("MethodArgumentTypeMismatchException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleMethodArgumentTypeMismatchException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.INVALID_TYPE_VALUE_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.INVALID_TYPE_VALUE_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
-        log.error("MissingRequestHeaderException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleMissingRequestHeaderException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.NOT_VALID_HEADER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.NOT_VALID_HEADER_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        log.error("HttpMessageNotReadableException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleHttpMessageNotReadableException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.REQUEST_BODY_NOT_READABLE_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.REQUEST_BODY_NOT_READABLE_ERROR .getHttpStatusCode());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
-        log.error("MissingServletRequestParameterException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleMissingServletRequestParameterException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.MISSING_REQUEST_PARAMETER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.MISSING_REQUEST_PARAMETER_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    public ResponseEntity<ApiErrorResponseDto> handleHttpClientErrorException(HttpClientErrorException ex) {
-        log.error("HttpClientErrorException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleHttpClientErrorException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.BAD_REQUEST_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.BAD_REQUEST_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleNoHandlerFoundException(NoHandlerFoundException ex) {
-        log.error("NoHandlerFoundException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleNoHandlerFoundException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.NOT_FOUND_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.NOT_FOUND_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleNullPointerException(NullPointerException ex) {
-        log.error("NullPointerException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleNullPointerException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.NULL_POINT_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.NULL_POINT_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleIOException(IOException ex) {
-        log.error("IOException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleIOException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.IO_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.IO_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(JsonParseException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleJsonParseException(JsonParseException ex) {
-        log.error("JsonParseException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleJsonParseException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.JSON_PARSE_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.JSON_PARSE_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleJsonProcessingException(JsonProcessingException ex) {
-        log.error("JsonProcessingException : ", ex);
+    public ResponseEntity<ApiErrorResponseDto> handleJsonProcessingException(Exception ex) {
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.JACKSON_PROCESS_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.JACKSON_PROCESS_ERROR.getHttpStatusCode());
@@ -120,7 +120,7 @@ public class ApiGlobalExceptionHandler {
     //개발자가 의도적으로 생성하는 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ApiErrorResponseDto> handleServiceException(ServiceException ex) {
-        log.error("ServiceException : ", ex);
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getServiceErrorCodeEnum(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());
@@ -129,7 +129,7 @@ public class ApiGlobalExceptionHandler {
     //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
     @ExceptionHandler(DuplicatedRequestException.class)
     public ResponseEntity<ApiErrorResponseDto> handleDuplicatedRequestException(DuplicatedRequestException ex) {
-        log.error("DuplicatedRequestException : ", ex);
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getServiceErrorCodeEnum(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());
@@ -137,7 +137,7 @@ public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponseDto> handleUnExpectedException(Exception ex) {
-        log.error("UnExpectedException : ", ex);
+        log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR.getHttpStatusCode());
