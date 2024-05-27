@@ -24,9 +24,9 @@ server:
     key-store-type: PKCS12
     key-store-password: keystore_password
   #에러전파순서 :
-  #개발자가만든ExHandler에서처리 (핸들러가 있어도 404같이 서블릿컨테이너 진입전 에러는 처리못하고 넘김)
-  #   --> 스프링제공에러기본페이지 (특정위치에 404.html, 5xx.html 과 같이 페이지를 만들어 놓으면 에러코드에 따라 해당 페이지 호출해줌, 페이지가 없으면 기본폼(whitelabel)으로 호출됨, 근데 whitelabel.enabled: false 이면 was에러 페이지로 넘김)
-  #     --> WAS제공에러기본페이지 (스프링 내부에서 처리하지 못하면 was가 제공하는 기봄폼으로 노출)
+  #개발자가만든 ExHandler가 1순위 (여기서 처리가 안되면)
+  #   --> 스프링 에러 처리 메커니즘  (특정위치에 404.html, 5xx.html 과 같이 페이지를 만들어 놓으면 에러코드에 따라 해당 페이지 호출해줌, 페이지가 없으면 기본폼(whitelabel)으로 호출됨, 에러 파일도 없고 whitelabel.enabled: false 이면 was에러 페이지로 넘김)
+  #     --> WAS 에러 페이지 (스프링 내부에서 처리하지 못하면 was가 제공하는 기봄폼으로 노출)
   error: #스프링에서 제공하는 에러 기본 처리 설정
     include-exception: true #exception 정보를 보여줄지
     include-stacktrace: always #stacktrace 를 보여줄지

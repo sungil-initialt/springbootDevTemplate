@@ -61,7 +61,7 @@ public class ViewTestController extends CommonControllerSupport {
 
     //내부 로직에직 발생한 EX에 대한 처리.
     @RequestMapping("/serviceErr")
-    public String serviceErr(Model model) {
+    public String serviceErr(Model model) throws Exception{
         //if(1==1) throw new NullPointerException("NP Exception for Test");
         if(1==1) throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DEFAULT_ERROR);
 
@@ -252,9 +252,8 @@ public class ViewTestController extends CommonControllerSupport {
     }
 
     @RequestMapping("/viewServiceError")
-    public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
+    public String viewServiceError(@RequestParam("errorType") int errorType, Model model) throws Exception {
 
-        //여기해야됨 ---> Exception 처리를 강제 하려면 어떻게 해야하지??
         int result = apiTestService.raiseServiceError(errorType);
 
         model.addAttribute("result", result);

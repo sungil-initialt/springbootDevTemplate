@@ -83,7 +83,7 @@ public class RequestDeduplicationAspect
         }
     }
 
-    private Object handleDuplicationForRestController() {
+    private Object handleDuplicationForRestController() throws ServiceException {
         throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DUPLICATION_REQUEST_ERROR);
     }
 

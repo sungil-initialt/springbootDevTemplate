@@ -292,7 +292,7 @@ public class ApiTestController extends CommonControllerSupport {
 
     @RequestMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) {
+    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) throws Exception {
         int result = apiTestService.raiseServiceError(errorType);
         return ResponseEntity.ok(new ApiSuccessResponseDto(result));
     }
