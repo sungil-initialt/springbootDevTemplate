@@ -1,5 +1,6 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.message;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.support.XssProtectSupport;
@@ -22,7 +23,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Slf4j
 @Configuration
-public class MessageConfig implements WebMvcConfigurer {
+public class MessageConverterConfig implements WebMvcConfigurer {
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -31,6 +32,7 @@ public class MessageConfig implements WebMvcConfigurer {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setLocale(Locale.KOREA);
         objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
 
         objectMapper.getFactory().setCharacterEscapes(new XssProtectSupport()); //Xss 방지 적용
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

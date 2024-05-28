@@ -1,4 +1,4 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.message;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

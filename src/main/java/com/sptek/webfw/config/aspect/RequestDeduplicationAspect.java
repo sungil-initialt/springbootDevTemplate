@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Component
 public class RequestDeduplicationAspect
 {
-    private long DEDUPLICATION_DEFAULT_MS = 1000L*10;
-    private long DEDUPLICATION_EXTRA_MS = 1000L;
+    private long DEDUPLICATION_DEFAULT_MS = 1000L*10; //해당 호출이 언제 끝날지 모르기 때문에 최대 방어값을 설정해놈
+    private long DEDUPLICATION_EXTRA_MS = 1000L; //해당 호출이 종료되면 방어값을 변경해줌(최대값만큼 기다릴 필요가 없음)
 
     @Pointcut("(@within(org.springframework.stereotype.Controller) || " +
             "@within(org.springframework.web.bind.annotation.RestController)) && " +
@@ -60,9 +60,7 @@ public class RequestDeduplicationAspect
             if(joinPoint.getTarget().getClass().isAnnotationPresent(RestController.class)) {
                 return handleDuplicationForRestController();
             } else {
-                //todo: view 컨트롤러에서의 동작에 대해 고민 필요
-                //중복 요청에 대한 방어는 정상 동작하지만 이후 고객 UX에 대해 고민필요(현재는 최초 request가 브라우저에 의해 cancel 되면서 공백 화면으로 노출됨)
-                //202를 내려주지 말고 관련 안내페이지로 리다이렉트(303) 처리를 할까?
+                //todo: view 컨트롤러에서의 동작에 대해 고민 필요 (view컨트롤러에서는 사용이 어려울듯...)
                 return handleDuplicationForViewController(currentRequest);
             }
             

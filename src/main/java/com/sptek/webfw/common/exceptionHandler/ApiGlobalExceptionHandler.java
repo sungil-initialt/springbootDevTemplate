@@ -130,7 +130,7 @@ public class ApiGlobalExceptionHandler {
     //개발자가 의도적으로 생성하는 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ApiErrorResponseDto> handleServiceException(ServiceException ex) {
-        log.error(ex.getMessage());
+        log.error("{}, {}, {}", ex.getServiceErrorCodeEnum().getResultCode(), ex.getServiceErrorCodeEnum().getResultMessage(), ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getServiceErrorCodeEnum(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());
@@ -139,7 +139,7 @@ public class ApiGlobalExceptionHandler {
     //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
     @ExceptionHandler(DuplicatedRequestException.class)
     public ResponseEntity<ApiErrorResponseDto> handleDuplicatedRequestException(DuplicatedRequestException ex) {
-        log.error(ex.getMessage());
+        log.error("{}, {}, {}", ex.getServiceErrorCodeEnum().getResultCode(), ex.getServiceErrorCodeEnum().getResultMessage(), ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getServiceErrorCodeEnum(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());

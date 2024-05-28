@@ -83,8 +83,8 @@ Content-Type: application/json
 {
   "userId": "sungilry",
   "userName": "sungil",
-  "age": 40,
-  "email": "sungilry@naver.com",
+  "age": 10,
+  "email": "sungilrynaver.com",
   "mobileNumber" : "01042983113"
 }
 

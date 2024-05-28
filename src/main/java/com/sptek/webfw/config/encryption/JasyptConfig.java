@@ -1,4 +1,4 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.encryption;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;

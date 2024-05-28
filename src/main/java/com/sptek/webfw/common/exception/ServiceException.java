@@ -16,7 +16,7 @@ public class ServiceException extends Exception {
     private BaseCode serviceErrorCodeEnum;
 
     public ServiceException(BaseCode serviceErrorCodeEnum) {
-        //super(serviceErrorCodeEnum.getResultMessage());
+        super(serviceErrorCodeEnum.getResultMessage());
         this.serviceErrorCodeEnum = serviceErrorCodeEnum;
     }
 

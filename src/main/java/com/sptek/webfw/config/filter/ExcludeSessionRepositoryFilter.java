@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,6 +21,7 @@ org.springframework.session:spring-session-data-redis 을 사용하게 되면 Se
 todo : redis 연동후 실제 동작 확인 필요!!
  */
 
+@Profile(value = { "notused" })
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE) //최상위 필터로 적용
 //@WebFilter적용시 @Component 사용하지 않아야함(@Component 적용시 모든 요청에 적용됨)

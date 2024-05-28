@@ -1,4 +1,4 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.multipart;
 
 
 import jakarta.servlet.MultipartConfigElement;

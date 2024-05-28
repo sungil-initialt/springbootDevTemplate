@@ -1,4 +1,4 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.outbound;
 
 import com.sptek.webfw.support.CloseableHttpClientSupport;
 import com.sptek.webfw.support.RestTemplateSupport;

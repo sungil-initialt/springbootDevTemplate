@@ -1,4 +1,4 @@
-package com.sptek.webfw.config;
+package com.sptek.webfw.config.external;
 
 import com.sptek.webfw.vo.PropertyVos;
 import io.swagger.v3.oas.models.Components;
