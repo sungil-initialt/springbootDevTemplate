@@ -7,6 +7,7 @@ import com.sptek.webfw.support.XssProtectSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -24,16 +25,20 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Slf4j
 @Configuration
 public class MessageConverterConfig implements WebMvcConfigurer {
+    //jason->object, object->jason
 
     @Bean
     public ObjectMapper objectMapper() {
         //MessageConverter 에 활용하기 위한 objectMapper를 생성, locale, timeZone등 공통요소에 대한 setting을 할수 있다.
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setLocale(Locale.KOREA);
-        objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
+        Locale userLocale = LocaleContextHolder.getLocale();
+        objectMapper.setLocale(userLocale);
 
+        //todo : timezone 에 따른 시간정보 오류 수정 해야함
+        objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
         objectMapper.getFactory().setCharacterEscapes(new XssProtectSupport()); //Xss 방지 적용
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 

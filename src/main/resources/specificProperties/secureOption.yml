@@ -1,10 +1,13 @@
 #secure 관련 옵션 설정
 secureOption:
   cors:
-    #defaultAccessControlAllowOrigin: "*" #모두 혀용일 경우 *
-    defaultAccessControlAllowOrigin: "https://back.localhost:8080" #허용되지 않는 도메인의 경우 해당 값을 accessControlAllowOrigin로 대체 (서버도메인 활용), 모두 혀용일 경우 *
-    #accessControlAllowOrigin 목록은 공백없이 ,로 구분
+    #클라이언트가 보낸 origin 값이 accessControlAllowOrigin 에 포함되어 있지 않은 경우 어떤 orging 값을 보낼지의 설정임 (*로 보내면 모두 허용, 허용하지 않을려면 그냥 자신의 대표 url로 보냄)
+    defaultAccessControlAllowOrigin: "https://back.localhost:8080"
+
+    #내가 허용할 url목록(공백없이 ,로 구분)
     accessControlAllowOrigin: "http://back.localhost.com:8080,https://back.localhost:8080,http://front.localhost:8080,https://front.localhost:8080"
+
+    #클라이언트가 option 메소드로 확인을 요청할때 알려주는 요소들
     accessControlAllowMethods: "GET, POST, PUT, DELETE, OPTIONS"
     accessControlAllowCredentials: true
     accessControlMaxAge: 3600

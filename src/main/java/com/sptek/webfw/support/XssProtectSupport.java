@@ -20,6 +20,8 @@ public class XssProtectSupport extends CharacterEscapes {
         asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['#'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['/'] = CharacterEscapes.ESCAPE_CUSTOM;
     }
 
     @Override

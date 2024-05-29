@@ -33,6 +33,7 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
      public void doFilterInternal(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain filterChain) throws ServletException, IOException {
         log.debug("[Filter >>> ]");
         if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+            //해당 이름의 Attribute가 True이면 spring은 해당 request에 대한 세션 생성을 하지 않는다.
             httpRequest.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE);
             log.debug("setAttribute for ExcludeSessionRepository of {}", httpRequest.getServletPath());
         }

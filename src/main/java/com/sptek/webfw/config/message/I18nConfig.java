@@ -16,16 +16,18 @@ import java.util.Locale;
 public class I18nConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
+        //로케일 정보 저장 방식 선택
         CookieLocaleResolver resolver = new CookieLocaleResolver(); //세션방식으로도 구현가능
         resolver.setDefaultLocale(Locale.getDefault());
-        resolver.setCookieName("lang");
+        resolver.setCookieName("locale");
         return resolver;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
+        //로케일정보 key 값
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-        interceptor.setParamName("lang");
+        interceptor.setParamName("locale");
         return interceptor;
     }
 

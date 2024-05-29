@@ -19,7 +19,9 @@ hasMethodAnnotation : false
 @Component
 @Slf4j
 public class ExampleInterceptor implements HandlerInterceptor {
+    
     @Override
+    //컨트롤러 진입전 (인증, 권한 검사, 로깅 등의 작업 등)
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("[Interceptor >>> ]");
         if (handler instanceof HandlerMethod) {
@@ -36,14 +38,12 @@ public class ExampleInterceptor implements HandlerInterceptor {
                     , handlerMethod.getReturnType().getParameterType().getName()
                     , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class)); //해당 메소드에 @AnoInterceptorCheck 어노테이션이 적용되어 있는지 여부
              */
-
-            //todo : 위 정보를 이용하여 원하는 내용을 작성
         }
-
         return true;
     }
 
     @Override
+    //컨트롤러 처리후 view 렌더링 전(모델에 데이터 추가, 응답 수정 등)
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -63,6 +63,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     }
 
     @Override
+    //View가 렌더링되고 요청이 완료된 후 (주요 자원 정리, 예외 처리 로깅 등)
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;

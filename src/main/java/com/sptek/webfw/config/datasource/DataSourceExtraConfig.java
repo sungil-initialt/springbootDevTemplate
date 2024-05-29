@@ -26,7 +26,9 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
         dataSourceTransactionManager.setDataSource(dataSource);
-        dataSourceTransactionManager.setGlobalRollbackOnParticipationFailure(false); //TODO : false 의미 정확히 판단 필요
+
+        //트렌젝션 정책 설정
+        dataSourceTransactionManager.setGlobalRollbackOnParticipationFailure(false);
         return dataSourceTransactionManager;
     }
 
@@ -34,7 +36,9 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*-config.xml")[0]); //-->클레스페스에서는 로딩이 안되는 이유가 뭐지?? (resource쪽에서만 됨)
+
+        //-->클레스페스에서는 로딩이 안되는 이유가 뭐지?? (resource쪽에서만 됨)
+        sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*-config.xml")[0]);
 
         //위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
         //org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();

@@ -21,9 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //interceptor 제외 패턴
 
-        
         //필요한 interceptor 등록 (exampleInterceptor 참고)
         //registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(getNotEssentialRequestPatternList()).excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList());
         registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**")

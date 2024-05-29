@@ -271,7 +271,8 @@ public class ApiTestController extends CommonControllerSupport {
     }
 
     @AnoRequestDeduplication
-    @RequestMapping("/duplicatedRequest")
+    @PostMapping
+            ("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
         String result = "duplicatedRequest test";
