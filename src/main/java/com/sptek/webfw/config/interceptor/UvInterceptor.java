@@ -21,7 +21,7 @@ public class UvInterceptor implements HandlerInterceptor {
     private final int uvCheckCookieMaxAgeSec = 60 * 60; //해당 시간동안 request 가 없었던 경우 새로운 방문으로 본다.
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         log.debug("[Interceptor >>> ]");
         String checkMsg = Optional.ofNullable(CookieUtil.getCookies(uvCheckCookieName))
                 .filter(cookies -> !cookies.isEmpty())

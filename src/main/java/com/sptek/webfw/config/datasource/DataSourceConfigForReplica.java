@@ -27,7 +27,7 @@ public class DataSourceConfigForReplica {
     //Spring이 DataSource를 필요로하는 시점에 여러개가 존재할수 있기때문에 별도의 이름을 추가해 줄수 있다. (기본은 return 타입)
     //Spring이 bean 소멸시 자동으로 dataSource의 close를 기본으로 호출해줌으로 destroyMethod를 따로 선언하지 않아도 된다(필요한경우 사용)
     // write용 리프리케이션.
-    public DataSource writeDataSource() throws Exception {
+    public DataSource writeDataSource() {
         return DataSourceBuilder
                 .create()
                 .type(HikariDataSource.class)
@@ -36,7 +36,7 @@ public class DataSourceConfigForReplica {
 
     @Bean(name = "readDataSource", destroyMethod = "")
     @ConfigurationProperties(prefix = "spring.datasource.read")
-    public DataSource readDataSource() throws Exception {
+    public DataSource readDataSource() {
         return DataSourceBuilder
                 .create()
                 .type(HikariDataSource.class)

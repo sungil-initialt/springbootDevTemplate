@@ -27,7 +27,7 @@ public class ArgumentResolverForMyUser implements HandlerMethodArgumentResolver 
     @Override
     //controller에 obj를 넘기면서 특정한 처리를 미리 해서 넘길수 있게 해준다(반복적으로 이루어지는 작업에 활용하면 유용)
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer
-            , NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+            , NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
 
         MyUser myUser = null;
         String id = StringUtils.defaultIfBlank(nativeWebRequest.getParameter("id"), "anonymous");

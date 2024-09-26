@@ -61,7 +61,7 @@ public class ViewTestController extends CommonControllerSupport {
 
     //내부 로직에직 발생한 EX에 대한 처리.
     @RequestMapping("/serviceErr")
-    public String serviceErr(Model model) throws Exception{
+    public String serviceErr(Model model) {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
         if(1==1) throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DEFAULT_ERROR);
 
@@ -168,7 +168,7 @@ public class ViewTestController extends CommonControllerSupport {
     }
 
     @RequestMapping("/i18n")
-    public String i18n(Model model) throws Exception {
+    public String i18n(Model model) {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
@@ -252,10 +252,8 @@ public class ViewTestController extends CommonControllerSupport {
     }
 
     @RequestMapping("/viewServiceError")
-    public String viewServiceError(@RequestParam("errorType") int errorType, Model model) throws Exception {
-
+    public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
         int result = apiTestService.raiseServiceError(errorType);
-
         model.addAttribute("result", result);
         return PAGE_BASE_PATH + "simpleModelView";
     }

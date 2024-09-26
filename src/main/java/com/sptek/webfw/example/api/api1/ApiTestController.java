@@ -75,7 +75,7 @@ public class ApiTestController extends CommonControllerSupport {
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> hello(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
-            @RequestParam String message) throws Exception{
+            @RequestParam String message) {
 
         return ResponseEntity.ok(new ApiSuccessResponseDto(message));
     }
@@ -234,7 +234,7 @@ public class ApiTestController extends CommonControllerSupport {
     @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
-            , @RequestParam("fileDescription") String fileDescription) throws Exception{
+            , @RequestParam("fileDescription") String fileDescription) throws Exception {
 
         log.debug("file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
         //todo: 실제 상황에서는 부가정보 저장 처리등 조치 필요
@@ -250,7 +250,7 @@ public class ApiTestController extends CommonControllerSupport {
     @Operation(summary = "byteForImage", description = "byteForImage 테스트", tags = {""})
     public ResponseEntity<byte[]> byteForImage(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
-            , @RequestParam("uuidForFileName") String uuidForFileName) throws Exception{
+            , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
 
         originFileName = URLDecoder.decode(originFileName, StandardCharsets.UTF_8);
         uuidForFileName = URLDecoder.decode(uuidForFileName, StandardCharsets.UTF_8);
@@ -293,7 +293,7 @@ public class ApiTestController extends CommonControllerSupport {
 
     @RequestMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) throws Exception {
+    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) {
         int result = apiTestService.raiseServiceError(errorType);
         return ResponseEntity.ok(new ApiSuccessResponseDto(result));
     }

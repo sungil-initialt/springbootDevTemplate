@@ -1,7 +1,6 @@
 package com.sptek.webfw.config.aspect;
 
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.DuplicatedRequestException;
 import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.util.ReqResUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,8 +59,8 @@ public class RequestDeduplicationAspect
             if(joinPoint.getTarget().getClass().isAnnotationPresent(RestController.class)) {
                 return handleDuplicationForRestController();
             } else {
-                //todo: view 컨트롤러에서의 동작에 대해 고민 필요 (view컨트롤러에서는 사용이 어려울듯...)
-                return handleDuplicationForViewController(currentRequest);
+                //todo: 적절한 처리가 필요한데..  view 컨트롤러에서의 동작에 대해 고민 필요 (view컨트롤러에서는 사용이 어려울수도...)
+                return "";
             }
             
         } else {
@@ -83,10 +82,6 @@ public class RequestDeduplicationAspect
 
     private Object handleDuplicationForRestController() throws ServiceException {
         throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DUPLICATION_REQUEST_ERROR);
-    }
-
-    private Object handleDuplicationForViewController(HttpServletRequest request) {
-        throw new DuplicatedRequestException(request);
     }
 
     private boolean isDuplicatationCase(String requestSignature) {

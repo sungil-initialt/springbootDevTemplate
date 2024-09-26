@@ -1,6 +1,5 @@
 package com.sptek.webfw.common.exceptionHandler;
 
-import com.sptek.webfw.common.exception.DuplicatedRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,14 +20,6 @@ public class WebGlobalExceptionHandler {
     todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까?
      그래서 현재는 httpsttus 코드도 상세히 분리하고 있지않음, 고민필요.
      */
-
-    //어전 request 응답하기 전 동일한 request 중복 요청했을때 DuplicateRequestPreventAspect 에서 발생시킴
-    @ExceptionHandler(DuplicatedRequestException.class)
-    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
-    public void handleDuplicatedRequestException(Exception ex) {
-        log.error(ex.getMessage());
-        //web 핸들러임에도 에러가 발생되는 케이스의 특성상 응답코드만 내리고 page는 내리지 않음
-    }
 
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

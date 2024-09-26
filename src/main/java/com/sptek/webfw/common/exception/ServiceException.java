@@ -12,7 +12,7 @@ throw new ServiceException(ErrorCode.SERVICE_XXXX_ERROR, "최근 구매내역 �
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ServiceException extends Exception {
+public class ServiceException extends RuntimeException {
     private BaseCode serviceErrorCodeEnum;
 
     public ServiceException(BaseCode serviceErrorCodeEnum) {

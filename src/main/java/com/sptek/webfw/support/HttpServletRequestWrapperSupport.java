@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /*
 Controller 이전단계(필터등)에서 request의 ioStream이 읽어진 경우 이를 대체하기 위한 대체 request 용도임
@@ -40,7 +41,7 @@ public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper 
     @Override
     public BufferedReader getReader() throws IOException {
         if (rawData == null) {
-            rawData = IOUtils.toByteArray(this.request.getReader(), "");
+            rawData = IOUtils.toByteArray(this.request.getReader(), StandardCharsets.UTF_8);
             servletInputStream.inputStream = new ByteArrayInputStream(rawData);
         }
         return new BufferedReader(new InputStreamReader(servletInputStream));
