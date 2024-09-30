@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -67,13 +68,20 @@ public class SecurityConfig {
                                 //.anyRequest().authenticated() //그외
                 )
 
+                //httpBasic, formLogin을 사용하려면 exceptionHandling을 설정하지 말아야 함, 설정시 핸들러에서 먼저 처리됨
+                .httpBasic(Customizer.withDefaults()); //얼럿 형식의 id/pw 입력 제공
+                //.formLogin(withDefaults()); //form 형식의 id/pw 입력 제공, :8443/login 으로 고정됨 (property 설정을 8443으로 해야함)
+
+
+                /*
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
                                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
+*/
 
-                .formLogin(withDefaults());
+                //.formLogin(form -> form.loginPage("https://front.localhost:8080/login"));
 
                 /*
                 .authorizeHttpRequests(authz ->

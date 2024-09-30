@@ -10,7 +10,7 @@ system:
 
 
 server:
-  port: 8080
+  port: 8443
   servlet.session:
     timeout: 60m
     cookie:
