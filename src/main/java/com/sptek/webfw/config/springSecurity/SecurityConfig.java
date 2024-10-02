@@ -58,28 +58,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(csrf -> csrf.disable()) // JWT를 사용하는 경우 CSRF를 보통 비활성화
-                .authorizeHttpRequests(authz ->
-                        authz
-                                .requestMatchers("/signup", "/login", "/api/auth").permitAll()  //인증 처리를 위한 오픈 경로
-                                .requestMatchers("/my/**", "/mypage/**", "/api/**").authenticated()
-                                .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
-                                .anyRequest().permitAll() //그외
-                                //.anyRequest().authenticated() //그외
+                .csrf(csrf ->
+                    csrf.disable()) // JWT를 사용하는 경우 CSRF를 보통 비활성화
+
+                //Request Matchers
+                .authorizeHttpRequests(authorize ->
+                    authorize
+                        .requestMatchers("/signup", "/login", "/api/auth").permitAll()  //인증 처리를 위한 오픈 경로
+                        .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/my/**", "/mypage/**", "/api/**").hasAnyRole("ADMIN", "USER")
+                        .anyRequest().permitAll() //그외
+                        //.anyRequest().authenticated() //그외
                 )
 
-                //httpBasic, formLogin을 사용하려면 exceptionHandling을 설정하지 말아야 함, 설정시 핸들러에서 먼저 처리됨
-                .httpBasic(Customizer.withDefaults()); //얼럿 형식의 id/pw 입력 제공
-                //.formLogin(withDefaults()); //form 형식의 id/pw 입력 제공, :8443/login 으로 고정됨 (property 설정을 8443으로 해야함)
+
+                //signup page (httpBasic, formLogin을 사용하려면 exceptionHandling을 설정하지 말아야 함, 설정시 핸들러에서 먼저 처리됨)
+                //.httpBasic(Customizer.withDefaults()) //얼럿창 형식의 id/pw 입력 제공
+                .formLogin(withDefaults()) //form 형식의 id/pw 입력 제공, :8443/login 으로 고정됨 (property 설정을 8443으로 해야함)
 
 
-                /*
+
                 .exceptionHandling(exceptionHandling ->
-                        exceptionHandling
-                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(jwtAccessDeniedHandler)
-                )
-*/
+                    exceptionHandling
+                        //.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                );
+
 
                 //.formLogin(form -> form.loginPage("https://front.localhost:8080/login"));
 

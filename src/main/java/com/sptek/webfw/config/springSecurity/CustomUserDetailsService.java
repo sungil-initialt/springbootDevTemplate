@@ -5,6 +5,7 @@ import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUserDetails loadUserByUsername(String userEmail) {
         return ModelMapperUtil.map(userRepository.findByEmail(userEmail)
-                        .orElseThrow(() -> new BadCredentialsException("이메일 주소를 확인해주세요."))
+                        .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)))
                 , CustomUserDetails.class);
     }
 
