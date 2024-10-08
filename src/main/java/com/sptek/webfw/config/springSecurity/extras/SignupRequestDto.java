@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras;
 
+import com.sptek.webfw.config.springSecurity.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -20,5 +21,5 @@ public class SignupRequestDto {
     private String password;
 
     @NotNull
-    private String userRole;
+    private UserRole userRole;
 }

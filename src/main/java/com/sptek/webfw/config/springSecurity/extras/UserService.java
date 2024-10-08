@@ -30,7 +30,8 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        User user = ModelMapperUtil.map(userRepository.findByEmail(email).orElse(new UserEntity()), User.class);
+        //todo: 상세 처리 필요
+        User user = null;
         return user;
     }
 }
