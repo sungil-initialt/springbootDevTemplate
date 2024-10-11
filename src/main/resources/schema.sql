@@ -1,4 +1,4 @@
 CREATE TABLE IF NOT EXISTS phoneBook (
-    userName VARCHAR(50) NOT NULL,
-    phoneNumber VARCHAR(20) NOT NULL
+    user_name VARCHAR(50) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL
 );

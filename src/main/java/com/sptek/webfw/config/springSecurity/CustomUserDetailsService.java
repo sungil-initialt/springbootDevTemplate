@@ -35,7 +35,7 @@ class CustomUserDetailsService implements UserDetailsService {
                 .id(userEntity.getId())
                 .email(userEntity.getEmail())
                 .password(userEntity.getPassword())
-                .userRole(userEntity.getUserRole())
+                .userRoleEntitySet(userEntity.getUserRoleEntitySet())
                 .build();
 
         /*
@@ -44,6 +44,4 @@ class CustomUserDetailsService implements UserDetailsService {
                 , CustomUserDetails.class);
          */
     }
-
-    //-->여기부터 고민해 보쟈!!
 }

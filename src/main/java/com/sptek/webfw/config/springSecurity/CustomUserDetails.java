@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.springSecurity;
 
+import com.sptek.webfw.config.springSecurity.extras.UserRoleEntity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +19,14 @@ public class CustomUserDetails  implements UserDetails {
     private String email; //보여지는 계정 정보로 사용
     private String password;
     private String name; //사용자 이름
-    private Set<UserRole> userRoles;
+    private Set<UserRoleEntity> userRoleEntitySet;
 
     @Builder //특정 필드만 적용하기 위해
-    private CustomUserDetails(long id, String email, String password, Set<UserRole> userRoles) {
+    private CustomUserDetails(long id, String email, String password, Set<UserRoleEntity> userRoleEntitySet) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.userRoles = userRoles;
+        this.userRoleEntitySet = userRoleEntitySet;
     }
 
     @Override
@@ -43,14 +44,12 @@ public class CustomUserDetails  implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 계정의 권한 목록
-        Set<GrantedAuthority> roles = new HashSet<>();
+        Set<GrantedAuthority> grantedAuthoritySet = new HashSet<>();
 
-        for (UserRole role : userRole) {
-            roles.add(new SimpleGrantedAuthority(role.getValue())); // 역할 값을 GrantedAuthority로 변환하여 추가
+        for (UserRoleEntity userRoleEntity : userRoleEntitySet) {
+            grantedAuthoritySet.add(new SimpleGrantedAuthority(userRoleEntity.getUserRoleEnum().getValue())); // 역할 값을 GrantedAuthority로 변환하여 추가
         }
-
-        roles.add(new SimpleGrantedAuthority(userRole.getValue()));
-        return roles;
+        return grantedAuthoritySet;
     }
 
     @Override

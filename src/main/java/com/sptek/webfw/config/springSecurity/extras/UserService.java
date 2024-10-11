@@ -1,6 +1,5 @@
 package com.sptek.webfw.config.springSecurity.extras;
 
-import com.sptek.webfw.config.springSecurity.UserRole;
 import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class UserService {
         UserEntity userEntity = UserEntity.builder()
                 .email(signupRequestDto.getEmail())
                 .password(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()))
-                .userRole(UserRole.getUserRoleFromValue(signupRequestDto.getUserRole()))
+                .userRoleEntitySet((signupRequestDto.getUserRoleEntitySet()))
                 .build();
 
 

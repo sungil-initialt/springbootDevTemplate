@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras;
 
-import com.sptek.webfw.config.springSecurity.UserRole;
+import com.sptek.webfw.config.springSecurity.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,18 +40,20 @@ public class UserEntity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
+            name = "USER_ROLE_MAP", //만들어낼 매핑 테이블 이름
+            joinColumns = @JoinColumn(name = "user_id"), //각각의 테이블에서 사용될 조인 컬럼
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<UserRole> userRoles; // 유저의 역할
+    private Set<UserRoleEntity> userRoleEntitySet; // 유저의 역할
 
 
 
     @Builder //특정 필드만 적용하기 위해
-    private UserEntity(String email, String password, Set<UserRole> userRoles) {
+    private UserEntity(String email, String password, Set<UserRoleEntity> userRoleEntitySet) {
         this.email = email;
         this.password = password;
-        this.userRoles = userRoles;
+        this.userRoleEntitySet = userRoleEntitySet;
     }
+
+
 }
