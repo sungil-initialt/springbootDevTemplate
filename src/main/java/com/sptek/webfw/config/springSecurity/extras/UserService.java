@@ -15,10 +15,14 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User saveUser(SignupRequestDto signupRequestDto){
+
+
+
         UserEntity userEntity = UserEntity.builder()
+                .name(signupRequestDto.getName())
                 .email(signupRequestDto.getEmail())
                 .password(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()))
-                .userRoleEntitySet((signupRequestDto.getUserRoleEntitySet()))
+                //.userRoleEntitySet((signupRequestDto.getUserRoleEntitySet()))
                 .build();
 
 

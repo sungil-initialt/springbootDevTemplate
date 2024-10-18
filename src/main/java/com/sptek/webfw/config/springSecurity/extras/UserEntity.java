@@ -8,6 +8,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @ToString
 @Entity
@@ -21,14 +22,14 @@ public class UserEntity {
     @Column
     private Long id;
 
+    @Column
+    private String name;
+
     @Column(unique = true)
     private String email;
 
     @Column
     private String password;
-
-    @Column
-    private String name;
 
     /*
     //Users 테이블에 하나의 Role이 직접 저장되는 방식일때 사용 (n:n 관계로 Role 테이블이 없는 경우)
@@ -46,14 +47,13 @@ public class UserEntity {
     )
     private Set<UserRoleEntity> userRoleEntitySet; // 유저의 역할
 
-
-
-    @Builder //특정 필드만 적용하기 위해
-    private UserEntity(String email, String password, Set<UserRoleEntity> userRoleEntitySet) {
-        this.email = email;
-        this.password = password;
-        this.userRoleEntitySet = userRoleEntitySet;
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "USER_TERMS_AGREEMENT_MAP", //만들어낼 매핑 테이블 이름
+            joinColumns = @JoinColumn(name = "user_id"), //각각의 테이블에서 사용될 조인 컬럼
+            inverseJoinColumns = @JoinColumn(name = "terms_id")
+    )
+    private Set<TermsAgreementEntity> termsAgreementEntitySet; // 유저의 역할
 
 
 }

@@ -23,11 +23,12 @@
   <div class="my-3 border-bottom">
     <b>signup with spring security</b>
   </div>
-  <form th:action="@{/signup}" th:object="${signupRequestDto}" method="post">
-    <div th:replace="/common/fragment/formError :: FormErrorFragment"></div>
 
-    <label for="email">email</label>
-    <input type="text" th:field="*{email}">
+  <form th:action="@{/signup}" th:object="${signupRequestDto}" method="post">
+    <div th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
+
+    <label for="name">name</label>
+    <input type="text" th:field="*{name}">
 
     <label for="email">email</label>
     <input type="text" th:field="*{email}">
@@ -35,16 +36,24 @@
     <label for="password">password:</label>
     <input type="text" th:field="*{password}">
 
-    <label for="userRole">Select your role:</label>
-    <select th:field="*{userRole}">
-      <option th:each="role : ${allUserRoles}"
-              th:value="${role.value}"
-              th:text="${role.name()}"
-              th:selected="${role.value == userRole}">Role</option>
-    </select>
+    <br><br>
+    <label>Select your roles:</label>
+    <div th:each="role : ${signupRequestDto.userRoleLis}">
+      <input type="checkbox" th:name="'userRoleLis'" th:value="${role}" />
+      <label th:text="${role}"></label>
+    </div>
 
+    <br>
+    <label>Agreement:</label>
+    <div th:each="terms : ${signupRequestDto.termsAgreementList}">
+      <input type="checkbox" th:name="'termsAgreementList'" th:value="${terms}" />
+      <label th:text="${terms}"></label>
+    </div>
+
+    <br>
     <button type="submit">submit</button>
   </form>
 </div>
+
 </body>
 </html>

@@ -16,9 +16,11 @@
 <nav th:replace="~{common/fragment/navigation :: NavigationFragment}"></nav>
 
 <!--Content 내용 영역을 참조합니다-->
-<div>Content 영역입니다.<br>
+<div style="margin-left: 20px; margin-top: 20px;">
+    [ == Content 영역입니다. == ]<br>
     <th:block layout:fragment="Content"></th:block>
-    <br></div>
+    <br>
+</div>
 
 <!--Footer 영역을 참조합니다.-->
 <footer th:replace="~{common/fragment/footer :: FooterFragment}"></footer>
