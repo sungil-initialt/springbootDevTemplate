@@ -2,17 +2,12 @@ package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.config.springSecurity.extras.UserEntity;
 import com.sptek.webfw.config.springSecurity.extras.UserRepository;
-import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -35,7 +30,8 @@ class CustomUserDetailsService implements UserDetailsService {
                 .id(userEntity.getId())
                 .email(userEntity.getEmail())
                 .password(userEntity.getPassword())
-                .userRoleEntitySet(userEntity.getUserRoleEntitySet())
+                .roleEntitySet(userEntity.getRoleEntitySet())
+                .termsEntitySet(userEntity.getTermsEntitySet())
                 .build();
 
         /*

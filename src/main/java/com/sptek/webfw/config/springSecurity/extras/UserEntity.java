@@ -1,9 +1,9 @@
 package com.sptek.webfw.config.springSecurity.extras;
 
-import com.sptek.webfw.config.springSecurity.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -36,7 +36,7 @@ public class UserEntity {
     @Column
     @Enumerated(EnumType.ORDINAL) //순서의 index가 저장됨 (0 or 1)
     @Enumerated(EnumType.STRING)  //해당 값이 저장됨 ("ROLE_USER" or "ROLE_ADMIN")
-    private UserRole userRole;
+    private RoleEnum roleEnum;
      */
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -45,15 +45,15 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "user_id"), //각각의 테이블에서 사용될 조인 컬럼
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<UserRoleEntity> userRoleEntitySet; // 유저의 역할
+    private Set<RoleEntity> roleEntitySet;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "USER_TERMS_AGREEMENT_MAP", //만들어낼 매핑 테이블 이름
+            name = "USER_TERMS_MAP", //만들어낼 매핑 테이블 이름
             joinColumns = @JoinColumn(name = "user_id"), //각각의 테이블에서 사용될 조인 컬럼
             inverseJoinColumns = @JoinColumn(name = "terms_id")
     )
-    private Set<TermsAgreementEntity> termsAgreementEntitySet; // 유저의 역할
+    private Set<TermsEntity> termsEntitySet;
 
 
 }

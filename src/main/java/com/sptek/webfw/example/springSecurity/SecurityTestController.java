@@ -1,8 +1,9 @@
 package com.sptek.webfw.example.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.UserRoleEnum;
+import com.sptek.webfw.config.springSecurity.RoleEnum;
 import com.sptek.webfw.config.springSecurity.extras.SignupRequestDto;
 import com.sptek.webfw.config.springSecurity.extras.User;
+import com.sptek.webfw.config.springSecurity.extras.UserEntity;
 import com.sptek.webfw.config.springSecurity.extras.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -29,25 +30,38 @@ public class SecurityTestController {
     private UserService userService;
 
 
-    @GetMapping("/signup") //회원가입 입력 페이지
-    public String validationWithBindingResult(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
-        signupRequestDto.setUserRoleLis(Arrays.stream(UserRoleEnum.values())
-                .map(UserRoleEnum::getValue)
-                .collect(Collectors.toList()));
+    @GetMapping("/signup") //회원가입 입력
+    public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
+        signupRequestDto.setRoleNameList(userService.getAllRoles());
+        signupRequestDto.setTermsNameList(userService.getAllTerms());
+
+        log.debug("all Roles : {}", userService.getAllRoles());
+        log.debug("all Terms : {}", userService.getAllTerms());
+
+        //signupRequestDto.setRoleNameList(Arrays.stream(RoleEnum.values())
+        //        .map(RoleEnum::getValue)
+        //        .collect(Collectors.toList()));
 
         model.addAttribute("signupRequestDto", signupRequestDto);
         return baseUrl + "signup";
     }
 
     @PostMapping("/signup") //회원가입 처리
-    public String validationWithBindingResult(Model model, @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
+    public String signupWithValidation(Model model, @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             return baseUrl + "signup";
         }
 
-        userService.saveUser(signupRequestDto);
-        return "redirect:" + "login";
+        UserEntity savedUserEntity = userService.saveUser(signupRequestDto);
+        model.addAttribute("userName", savedUserEntity.getName());
+        //model.addAttribute("userRoleList", savedUserEntity.getRoleEntitySet().stream().map(roleEntity -> roleEntity.getRoleEnum().getValue()).collect(Collectors.toList()));
+        return baseUrl + "signin";
+    }
+
+    @GetMapping("/signin") //로그인 입력
+    public String login(Model model , SignupRequestDto signupRequestDto) {
+        return baseUrl + "signin";
     }
 
     @GetMapping("/User/{email}")

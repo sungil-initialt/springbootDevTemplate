@@ -1,5 +1,6 @@
 package com.sptek.webfw.common.code;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 //에러 DTO를 통해 넘어갈때는 exceptionMessage가 추가되는데 exceptionMessage는 실제 에러메시지에로 개발자 정보 측면이라면
 //ErrorCodeEnum의 resultMessage는 사용자 알림등의 활용에서 사용되는 용도로 보면 좋을것 같다(물론 result 코드를 이용해 처리할 수도 있음)
 @Getter
+@AllArgsConstructor
 public enum CommonErrorCodeEnum implements BaseCode {
     //범용적으로 사용되고 있는 httpstatus 와 관련된 에러 (httpstatuscode를 그에 맞게 내린다)
     BAD_REQUEST_ERROR(HttpStatus.BAD_REQUEST, "GE001", "BAD_REQUEST_ERROR"),
@@ -28,9 +30,4 @@ public enum CommonErrorCodeEnum implements BaseCode {
     private final String resultCode;
     private final String resultMessage;
 
-    CommonErrorCodeEnum(final HttpStatus httpStatusCode, final String resultCode, final String resultMessage) {
-        this.httpStatusCode = httpStatusCode;
-        this.resultCode = resultCode;
-        this.resultMessage = resultMessage;
-    }
 }
