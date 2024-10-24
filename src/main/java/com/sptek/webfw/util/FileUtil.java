@@ -28,7 +28,7 @@ public class FileUtil {
             , @Nullable Predicate<MultipartFile> exceptionFilter) throws ServiceException, IOException{
 
         additionalPath = Optional.ofNullable(additionalPath).orElse("");
-        List<FileUploadDto> uploadFileDtoList = new ArrayList<>();
+        List<FileUploadDto> uploadFileDtos = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
             //예외 조건 확인
@@ -49,10 +49,10 @@ public class FileUtil {
             Path finalPathNname = Paths.get(newFilePath + uuidForFileName + "_" + originFileName);
 
             multipartFile.transferTo(finalPathNname);
-            uploadFileDtoList.add(new FileUploadDto(uuidForFileName, originFileName));
+            uploadFileDtos.add(new FileUploadDto(uuidForFileName, originFileName));
         }
 
-        return  uploadFileDtoList;
+        return  uploadFileDtos;
     }
 
     //파일경로+파일명 구조에서 파일명만 추출(확장자포함)

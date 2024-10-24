@@ -241,9 +241,9 @@ public class ApiTestController extends CommonControllerSupport {
 
         String additionalPath = ""; //로그인계정번호등 필요한 구분 디렉토리가 있는다면 추가
         Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
-        List<FileUploadDto> FileUploadDtoList = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
+        List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto(FileUploadDtoList));
+        return ResponseEntity.ok(new ApiSuccessResponseDto(FileUploadDtos));
     }
 
     @GetMapping(value = "/byteForImage")
@@ -271,8 +271,7 @@ public class ApiTestController extends CommonControllerSupport {
     }
 
     @AnoRequestDeduplication
-    @PostMapping
-            ("/duplicatedRequest")
+    @PostMapping("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
         String result = "duplicatedRequest test";

@@ -28,7 +28,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Value("${secureOption.cors.defaultAccessControlAllowOrigin}")
     private String defaultAccessControlAllowOrigin;
     @Value("#{'${secureOption.cors.accessControlAllowOrigin}'.split(',')}")
-    private List<String> accessControlAllowOriginList;
+    private List<String> accessControlAllowOrigins;
     @Value("${secureOption.cors.accessControlAllowMethods}")
     private String accessControlAllowMethods;
     @Value("${secureOption.cors.accessControlAllowCredentials}")
@@ -44,8 +44,8 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
                 .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
 
-        log.debug("request origin({}) contained ? : {}", origin, accessControlAllowOriginList.contains(origin));
-        origin = accessControlAllowOriginList.contains(origin) ? origin : defaultAccessControlAllowOrigin;
+        log.debug("request origin({}) contained ? : {}", origin, accessControlAllowOrigins.contains(origin));
+        origin = accessControlAllowOrigins.contains(origin) ? origin : defaultAccessControlAllowOrigin;
 
         response.setHeader("Access-Control-Allow-Origin", origin);
         response.setHeader("Access-Control-Allow-Methods", accessControlAllowMethods);

@@ -50,10 +50,10 @@ public class DataSourceConfigForReplica {
                                         @Qualifier("readDataSource") DataSource readDataSource) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
 
-        Map<Object, Object> dataSourceMap = new HashMap<Object, Object>();
-        dataSourceMap.put("write", writeDataSource);
-        dataSourceMap.put("read", readDataSource);
-        routingDataSource.setTargetDataSources(dataSourceMap);
+        Map<Object, Object> dataSources = new HashMap<Object, Object>();
+        dataSources.put("write", writeDataSource);
+        dataSources.put("read", readDataSource);
+        routingDataSource.setTargetDataSources(dataSources);
         routingDataSource.setDefaultTargetDataSource(writeDataSource);
 
         return routingDataSource;

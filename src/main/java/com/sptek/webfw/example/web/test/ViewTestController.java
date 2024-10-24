@@ -107,8 +107,8 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping("/selectListWithResultHandler")
     //ResultHandler를 이용해서 db에서 result row를 하나씩 읽어와 각 row에 대한 처리가 가능함
     public String selectListWithResultHandler(Model model) {
-        List<TBZipcodeDto> tBZipcode = viewTestService.selectListWithResultHandler();
-        model.addAttribute("result", tBZipcode.toString());
+        List<TBZipcodeDto> tBZipcodes = viewTestService.selectListWithResultHandler();
+        model.addAttribute("result", tBZipcodes.toString());
         return baseUrl + "simpleModelView";
     }
 
@@ -234,18 +234,29 @@ public class ViewTestController extends CommonControllerSupport {
                 .quantity(10)
                 .isAvailableReturn(true)
                 .build();
+
+        //example 1
         ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsDto.class);
+
+        //example 2
         ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsNProductDto.class);
 
-        ExampleADto exampleADto = ExampleADto.builder().aDtoLastName("이").aDtoFirstName("성일").build();
+
+        ExampleADto exampleADto = ExampleADto.builder()
+                .aDtoLastName("이")
+                .aDtoFirstName("성일")
+                .build();
+
+        //example 3
         ExampleBDto exampleBDto = ModelMapperUtil.map(exampleADto, ExampleBDto.class);
 
         Map result = new HashMap();
-        result.put("exampleProductDto", exampleProductDto);
-        result.put("exampleGoodsDto", exampleGoodsDto);
-        result.put("exampleGoodsNProductDto", exampleGoodsNProductDto);
-        result.put("exampleADto", exampleADto);
-        result.put("exampleBDto", exampleBDto);
+        result.put("ExampleProductDto-origin", exampleProductDto);
+        result.put("ExampleProductDto-exampleGoodsDto", exampleGoodsDto);
+        result.put("ExampleProductDto-exampleGoodsNProductDto", exampleGoodsNProductDto);
+
+        result.put("ExampleADto-origin", exampleADto);
+        result.put("ExampleADto-exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
         return baseUrl + "simpleModelView";

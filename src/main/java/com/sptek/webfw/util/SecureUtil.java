@@ -18,7 +18,7 @@ public class SecureUtil {
         return orgStr == null ? orgStr : StringEscapeUtils.escapeHtml4(orgStr);
     }
 
-    public static List<String> getNotEssentialRequestPatternList(){
+    public static List<String> getNotEssentialRequestPatterns(){
         return Arrays.asList(
                 "/swagger-ui.html",
                 "/api-docs/**",
@@ -39,24 +39,24 @@ public class SecureUtil {
         );
     }
     public static String[] getNotEssentialRequestPatternsArray() {
-        List<String> patternList = getNotEssentialRequestPatternList();
-        String[] patternsArray = patternList.toArray(new String[0]);
+        List<String> patterns = getNotEssentialRequestPatterns();
+        String[] patternsArray = patterns.toArray(new String[0]);
         return patternsArray;
     }
 
     public static boolean isNotEssentialRequest(){
-        List<String> requestPatternList = getNotEssentialRequestPatternList();
+        List<String> requestPatterns = getNotEssentialRequestPatterns();
         String requestPath = ReqResUtil.getRequest().getServletPath();
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        for (String requestPattern : requestPatternList) {
+        for (String requestPattern : requestPatterns) {
             if(pathMatcher.match(requestPattern, requestPath))
                 return true;
         }
         return false;
     }
 
-    public static List<String> getStaticResourceRequestPatternList(){
+    public static List<String> getStaticResourceRequestPatterns(){
         return Arrays.asList(
                 "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**",
                 "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**",
@@ -66,17 +66,17 @@ public class SecureUtil {
     }
 
     public static String[] getStaticResourceRequestPatternArray() {
-        List<String> patternList = getStaticResourceRequestPatternList();
-        String[] patternsArray = patternList.toArray(new String[0]);
+        List<String> patterns = getStaticResourceRequestPatterns();
+        String[] patternsArray = patterns.toArray(new String[0]);
         return patternsArray;
     }
 
     public static boolean isStaticResourceRequest(){
-        List<String> requestPatternList = getStaticResourceRequestPatternList();
+        List<String> requestPatterns = getStaticResourceRequestPatterns();
         String requestPath = ReqResUtil.getRequest().getServletPath();
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        for (String requestPattern : requestPatternList) {
+        for (String requestPattern : requestPatterns) {
             if(pathMatcher.match(requestPattern, requestPath))
                 return true;
         }

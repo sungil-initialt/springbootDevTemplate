@@ -63,7 +63,6 @@ spring:
       static-locations: #static resource 에 대한 디폴트 경로 및 표기를 지정함(여러 모양으로 지정가능), 설정이 없다면 resource/static/xxx 를 /xxx로 접근할수 있음
         - classpath:/resources/ #/resource/static/xxx 를 /xxx로 접근함 (디폴트 설정과 같은 내용, 근데 이게 없으면 resource/favicon.ico 가 404가 나는 문제가 있어서 추가함)
         - classpath:/static/ #/resource/static/xxx 를 /static/xxx로 접근함
-        
   devtools: #코드 수정 실시간 반영
     livereload:
       enabled: true
@@ -90,11 +89,21 @@ spring:
       enabled: true #웹콘솔 사용 여부
       path: /h2-console #웹콘솔 url 경로, ex:https://localhost:8443/h2-console/
   datasource: #리플리카 구성이 아닌 단순 DS 사용
-    url: jdbc:h2:mem:local #메모리 모드로 실행됨 (휘발성, @Entity 클레스에 대해 자동으로 TB 구성, schema.sql, data.sql 자동 실행)
-    #url: jdbc:h2:D:\intellij_workspace\origin_springbootDevTemplate\src\main\resources\h2\local;AUTO_SERVER=TRUE  #서버 모드(파일)로 실행됨(최초에 해당 위치에서 cmd로 copy con local.mv.db 을해 초기 DB파일 생성 필요, 저장된 DB로 이어서 실행됨)
+    #메모리 모드로 실행됨 (휘발성, @Entity 클레스에 대해 자동으로 TB 구성, schema.sql, data.sql 자동 실행)
+    #url: jdbc:h2:mem:myDB
+    #서버 모드(파일)로 실행됨(최초에 해당 위치에서 cmd로 copy con local.mv.db 를 통해 초기 DB파일 생성 필요, 저장된 DB로 이어서 실행됨)
+    url: jdbc:h2:D:\intellij_workspace\origin_springbootDevTemplate\src\main\resources\h2\myDB;AUTO_SERVER=TRUE
     driverClassName: org.h2.Driver
     username: sa
     password:
+  jpa:
+    hibernate:
+      ddl-auto: update #(create, create-drop, update, none)
+  sql:
+    init:
+      mode: always #삭제후초기화(always, never, embedded)
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
 
 
 #PageInoSupport 클레스 관련 설정

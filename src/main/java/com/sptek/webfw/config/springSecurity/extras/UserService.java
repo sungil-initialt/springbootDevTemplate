@@ -27,10 +27,10 @@ public class UserService {
 
     public UserEntity saveUser(SignupRequestDto signupRequestDto){
 
-        Set<RoleEntity> roleEntitySet = roleRepository.findByRoleEnumIn(signupRequestDto.getRoleNameList())
+        Set<RoleEntity> roleEntitySet = roleRepository.findByRoleEnumIn(signupRequestDto.getRoleNames())
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.SERVICE_DEFAULT_ERROR, "no user role"));
 
-        Set<TermsEntity> termsEntitySet = termsRepository.findByTermsNameIn(signupRequestDto.getTermsNameList())
+        Set<TermsEntity> termsEntitySet = termsRepository.findByTermsNameIn(signupRequestDto.getTermsNames())
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.SERVICE_DEFAULT_ERROR, "no user terms"));
 
         UserEntity userEntity = UserEntity.builder()

@@ -20,26 +20,26 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private UvInterceptor uvInterceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(InterceptorRegistry interceptorRegistry) {
 
         //필요한 interceptor 등록 (exampleInterceptor 참고)
-        //registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(getNotEssentialRequestPatternList()).excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList());
-        registry.addInterceptor(this.uvInterceptor).addPathPatterns("/**")
+        //registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(getNotEssentialRequestPatterns()).excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList());
+        interceptorRegistry.addInterceptor(this.uvInterceptor).addPathPatterns("/**")
                 .excludePathPatterns("/api/**")
-                .excludePathPatterns(SecureUtil.getNotEssentialRequestPatternList())
-                .excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList());
+                .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
+                .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 
-        registry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**")
-                .excludePathPatterns(SecureUtil.getNotEssentialRequestPatternList())
-                .excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList());
+        interceptorRegistry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**")
+                .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
+                .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 
-        registry.addInterceptor(new MethodCheckInterceptorSupport(new MethodCheckInterceptorForXX())
+        interceptorRegistry.addInterceptor(new MethodCheckInterceptorSupport(new MethodCheckInterceptorForXX())
                 //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
                 .excludePathPattern("/api/**", HttpMethod.GET)
                 .excludePathPattern("/api/v2/**", HttpMethod.POST)
-                ).addPathPatterns("/api/**").excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList()); //1차 필터 조건
+                ).addPathPatterns("/api/**").excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns()); //1차 필터 조건
 
-        WebMvcConfigurer.super.addInterceptors(registry);
+        WebMvcConfigurer.super.addInterceptors(interceptorRegistry);
     }
 
 }

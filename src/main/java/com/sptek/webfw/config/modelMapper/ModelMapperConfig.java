@@ -1,27 +1,19 @@
-package com.sptek.webfw.util;
+package com.sptek.webfw.config.modelMapper;
 
 import com.sptek.webfw.example.dto.ExampleADto;
 import com.sptek.webfw.example.dto.ExampleBDto;
 import com.sptek.webfw.example.dto.ExampleGoodsDto;
 import com.sptek.webfw.example.dto.ExampleProductDto;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/* 
-ModelMapperConfig.java 를 통해 Bean 형태의 컨테이너 관리방식으로 설정되어 있음(둘중 사용성이 뭐가 좋을까??)
-Mapper의 TypeMap을 cache 한 상태로 유지하기 위해 singleton(static) 방식으로만 사용할것
-*/
-@Slf4j
-public class ModelMapperUtil {
-    public static final ModelMapper defaultModelMapper = createDefaultModelMapper();
-
-    public static ModelMapper getdefaultModelMapper() {
-        return defaultModelMapper;
-    }
-
-    public static ModelMapper createDefaultModelMapper() {
+@Configuration
+public class ModelMapperConfig {
+    @Bean
+    public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STANDARD) //MatchingStrategies.LOOSE, MatchingStrategies.STRICT
@@ -37,7 +29,7 @@ public class ModelMapperUtil {
                     mapper.map(ExampleProductDto::getQuantity, ExampleGoodsDto::setStock);
                     mapper.using((Converter<Boolean, String>) context -> context.getSource() ? "Y" : "N")
                             .map(ExampleProductDto::isAvailableReturn, ExampleGoodsDto::setAvailableSendBackYn);
-        });
+                });
 
         modelMapper.createTypeMap(ExampleADto.class, ExampleBDto.class).addMappings(
                 mapper -> {
@@ -47,18 +39,4 @@ public class ModelMapperUtil {
 
         return modelMapper;
     }
-
-    //for just execute time test.
-    public static <S, D> D map(S sourceObject, Class<D> destinationType) {
-        //for execute time test.
-        long starttime = System.currentTimeMillis();
-
-        ModelMapper modelMapper = getdefaultModelMapper();
-        D result = modelMapper.map(sourceObject, destinationType);
-        log.debug("Executed time : {}", (System.currentTimeMillis()-starttime));
-        return result;
-    }
-
 }
-
-

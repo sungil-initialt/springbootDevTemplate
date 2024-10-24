@@ -32,17 +32,14 @@ public class SecurityTestController {
 
     @GetMapping("/signup") //회원가입 입력
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
-        signupRequestDto.setRoleNameList(userService.getAllRoles());
-        signupRequestDto.setTermsNameList(userService.getAllTerms());
+        //체크박스를 그리기 위한 용도
+        model.addAttribute("allRoleNames", userService.getAllRoles());
+        model.addAttribute("allTermsNames", userService.getAllTerms());
 
-        log.debug("all Roles : {}", userService.getAllRoles());
-        log.debug("all Terms : {}", userService.getAllTerms());
+        log.debug("all Roles from db: {}", model.getAttribute("allRoleNames"));
+        log.debug("all Terms from db: {}", model.getAttribute("allTermsNames"));
 
-        //signupRequestDto.setRoleNameList(Arrays.stream(RoleEnum.values())
-        //        .map(RoleEnum::getValue)
-        //        .collect(Collectors.toList()));
-
-        model.addAttribute("signupRequestDto", signupRequestDto);
+        //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
         return baseUrl + "signup";
     }
 
@@ -50,12 +47,16 @@ public class SecurityTestController {
     public String signupWithValidation(Model model, @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
+            //체크박스를 그리기 위한 용도
+            model.addAttribute("allRoleNames", userService.getAllRoles());
+            model.addAttribute("allTermsNames", userService.getAllTerms());
+
             return baseUrl + "signup";
         }
 
         UserEntity savedUserEntity = userService.saveUser(signupRequestDto);
         model.addAttribute("userName", savedUserEntity.getName());
-        //model.addAttribute("userRoleList", savedUserEntity.getRoleEntitySet().stream().map(roleEntity -> roleEntity.getRoleEnum().getValue()).collect(Collectors.toList()));
+        //model.addAttribute("userRoles", savedUserEntity.getRoleEntitySet().stream().map(roleEntity -> roleEntity.getRoleEnum().getValue()).collect(Collectors.toList()));
         return baseUrl + "signin";
     }
 

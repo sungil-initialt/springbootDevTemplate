@@ -86,13 +86,13 @@ public class CookieUtil {
         return getCookies(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest(), name);
     }
     public static ArrayList<Cookie> getCookies(@NotNull HttpServletRequest request, @NotNull String name) {
-        ArrayList<Cookie> resultCookieList = Optional.ofNullable(request.getCookies())
+        ArrayList<Cookie> resultCookies = Optional.ofNullable(request.getCookies())
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
                 .filter(cookie -> name.equals(cookie.getName()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        return resultCookieList;
+        return resultCookies;
     }
 
 

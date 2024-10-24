@@ -38,15 +38,15 @@
 
     <br><br>
     <label>Select your roles:</label>
-    <div th:each="role : ${signupRequestDto.roleNameList}">
-      <input type="checkbox" th:name="'roleNameList'" th:value="${role}" />
+    <div th:each="role : ${allRoleNames}">
+      <input type="checkbox" name="roleNames" th:value="${role}" th:checked="${signupRequestDto.roleNames != null and #lists.contains(signupRequestDto.roleNames, role)}" />
       <label th:text="${role}"></label>
     </div>
 
     <br>
-    <label>Agreement:</label>
-    <div th:each="terms : ${signupRequestDto.termsNameList}">
-      <input type="checkbox" th:name="'termsNameList'" th:value="${terms}" />
+    <label>Terms Agreement:</label>
+    <div th:each="terms : ${allTermsNames}">
+      <input type="checkbox" name="termsNames" th:value="${terms}" th:checked="${signupRequestDto.termsNames != null and #lists.contains(signupRequestDto.termsNames, terms)}" />
       <label th:text="${terms}"></label>
     </div>
 

@@ -3,7 +3,6 @@ package com.sptek.webfw.config.springSecurity.extras;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.util.List;
 
 @Data
@@ -26,10 +25,11 @@ public class SignupRequestDto {
     private String password;
 
     @NotNull(message = "하나 이상의 Role을 선택해 주세요.")
-    private List<String> roleNameList;
+    private List<String> roleNames;
 
     @NotNull(message = "MEMBER_SHIP 약관은 필수 동의 사항 입니다.")
     //약관 동의
-    private List<String> termsNameList;
+    private List<String> termsNames;
+
 
 }
