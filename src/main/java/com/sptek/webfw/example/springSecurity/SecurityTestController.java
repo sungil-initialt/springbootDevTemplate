@@ -1,9 +1,8 @@
 package com.sptek.webfw.example.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.RoleEnum;
-import com.sptek.webfw.config.springSecurity.extras.SignupRequestDto;
-import com.sptek.webfw.config.springSecurity.extras.User;
-import com.sptek.webfw.config.springSecurity.extras.UserEntity;
+import com.sptek.webfw.config.springSecurity.extras.dto.SignupRequestDto;
+import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
+import com.sptek.webfw.config.springSecurity.extras.entity.User;
 import com.sptek.webfw.config.springSecurity.extras.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -54,8 +50,8 @@ public class SecurityTestController {
             return baseUrl + "signup";
         }
 
-        UserEntity savedUserEntity = userService.saveUser(signupRequestDto);
-        model.addAttribute("userName", savedUserEntity.getName());
+        User savedUser = userService.saveUser(signupRequestDto);
+        model.addAttribute("userName", savedUser.getName());
         //model.addAttribute("userRoles", savedUserEntity.getRoleEntitySet().stream().map(roleEntity -> roleEntity.getRoleEnum().getValue()).collect(Collectors.toList()));
         return baseUrl + "signin";
     }
@@ -65,16 +61,16 @@ public class SecurityTestController {
         return baseUrl + "signin";
     }
 
-    @GetMapping("/User/{email}")
-    public String user(@PathVariable String email, Model model) {
-        User resultUser = userService.getUserByEmail(email);
-        log.debug("{} user info search result : {}", email, resultUser);
+    @GetMapping("/user/{email}")
+    public String user(@PathVariable("email") String email, Model model) {
+        UserDto resultUserDto = userService.getUserByEmail(email);
+        log.debug("{} user info search result : {}", email, resultUserDto);
 
-        model.addAttribute("result", resultUser);
+        model.addAttribute("result", resultUserDto);
         return baseUrl + "simpleModelView";
     }
 
-    @GetMapping("/User/mypage")
+    @GetMapping("/user/mypage")
     public String user(Model model) {
         String myAuthInfo = SecurityContextHolder.getContext().getAuthentication().toString();
         log.debug("my Auth : {}", myAuthInfo);

@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.extras;
+package com.sptek.webfw.config.springSecurity.extras.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;

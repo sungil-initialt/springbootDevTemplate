@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.extras;
+package com.sptek.webfw.config.springSecurity.extras.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,20 +11,19 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString(exclude = "userEntitySet")
+@ToString(exclude = "userSet") // 서로 참조하고 있어서 toString() 때 재귀호출로 인한 stack overflow 나는것을 방지
 @Entity
 @Table(name = "TERMS")
-public class TermsEntity {
+public class Terms {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
 
     @Column(unique = true)
     private String termsName;
 
-    @ManyToMany(mappedBy = "termsEntitySet")
-    private Set<UserEntity> userEntitySet;  // User 엔티티와의 다대다 관계
+    @ManyToMany(mappedBy = "termsSet")
+    private Set<User> userSet;  // User 엔티티와의 다대다 관계
 
 }

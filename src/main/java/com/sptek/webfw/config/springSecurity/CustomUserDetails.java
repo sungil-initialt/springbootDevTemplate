@@ -1,7 +1,9 @@
 package com.sptek.webfw.config.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.extras.TermsEntity;
-import com.sptek.webfw.config.springSecurity.extras.RoleEntity;
+import com.sptek.webfw.config.springSecurity.extras.dto.TermsDto;
+import com.sptek.webfw.config.springSecurity.extras.entity.Terms;
+import com.sptek.webfw.config.springSecurity.extras.entity.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,23 +16,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class CustomUserDetails  implements UserDetails {
     private long id;
+    private String name; //사용자 이름
     private String email; //보여지는 계정 정보로 사용
     private String password;
-    private String name; //사용자 이름
-    private Set<RoleEntity> roleEntitySet;
-    private Set<TermsEntity> termsEntitySet; //추가적인 커스텀 요소
-
-    @Builder //특정 필드만 적용하기 위해
-    private CustomUserDetails(long id, String email, String password, Set<RoleEntity> roleEntitySet, Set<TermsEntity> termsEntitySet) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.roleEntitySet = roleEntitySet;
-        this.termsEntitySet = termsEntitySet;
-    }
+    private Set<RoleEnum> roleSet;
+    private Set<TermsDto> termsSet; //추가적인 커스텀 요소
 
     @Override
     public String getUsername() { //보통? 계정 정보를 의미함 그래서.. 사용자 이름이 아니라 계정 정보로 사용되는 email을 넘기도록 처리
@@ -49,8 +44,8 @@ public class CustomUserDetails  implements UserDetails {
         // 계정의 권한 목록
         Set<GrantedAuthority> grantedAuthoritySet = new HashSet<>();
 
-        for (RoleEntity roleEntity : roleEntitySet) {
-            grantedAuthoritySet.add(new SimpleGrantedAuthority(roleEntity.getRoleEnum().getValue())); // 역할 값을 GrantedAuthority로 변환하여 추가
+        for (RoleEnum role : roleSet) {
+            grantedAuthoritySet.add(new SimpleGrantedAuthority(role.getValue())); // 역할 값을 GrantedAuthority로 변환하여 추가
         }
         return grantedAuthoritySet;
     }

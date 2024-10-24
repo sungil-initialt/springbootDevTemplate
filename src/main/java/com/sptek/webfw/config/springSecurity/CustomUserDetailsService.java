@@ -1,13 +1,15 @@
 package com.sptek.webfw.config.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.extras.UserEntity;
-import com.sptek.webfw.config.springSecurity.extras.UserRepository;
+import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
+import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
+import com.sptek.webfw.config.springSecurity.extras.entity.User;
+import com.sptek.webfw.config.springSecurity.extras.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,23 +20,21 @@ class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String userEmail) {
-        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
-
-        // Optional의 orElseThrow를 사용해 예외 처리
-        UserEntity userEntity = userEntityOptional.orElseThrow(
-                () -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail))
-        );
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(String.format("email '%s' not found", userEmail)
+                ));
 
         // CustomUserDetails 생성 및 반환
         return CustomUserDetails.builder()
-                .id(userEntity.getId())
-                .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
-                .roleEntitySet(userEntity.getRoleEntitySet())
-                .termsEntitySet(userEntity.getTermsEntitySet())
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(user.getPassword())
                 .build();
 
         /*
+        //ModelMapperUtil에 의존하는게 별로인듯
         return ModelMapperUtil.map(userRepository.findByEmail(userEmail)
                         .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)))
                 , CustomUserDetails.class);

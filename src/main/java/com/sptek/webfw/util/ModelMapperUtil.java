@@ -48,7 +48,7 @@ public class ModelMapperUtil {
         return modelMapper;
     }
 
-    //for just execute time test.
+    //실행시간 테스트를 위해 임시로 만듬
     public static <S, D> D map(S sourceObject, Class<D> destinationType) {
         //for execute time test.
         long starttime = System.currentTimeMillis();
