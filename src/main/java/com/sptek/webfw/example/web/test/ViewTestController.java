@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class ViewTestController extends CommonControllerSupport {
-    private final String baseUrl = "pages/example/test/";
+    private final String pagePath = "pages/example/test/";
     @Autowired
     private ViewTestService viewTestService;
     @Autowired
@@ -48,7 +48,7 @@ public class ViewTestController extends CommonControllerSupport {
     @RequestMapping({"/welcome"})
     public String welcome(Model model) {
         model.addAttribute("message", "welcome");
-        return baseUrl + "welcome";
+        return pagePath + "welcome";
     }
 
     @RequestMapping("/interceptor")
@@ -56,16 +56,16 @@ public class ViewTestController extends CommonControllerSupport {
     public String interceptor(Model model) {
         log.debug("ran origin caller here.");
         model.addAttribute("message", "welcome");
-        return baseUrl + "interceptor";
+        return pagePath + "interceptor";
     }
 
     //내부 로직에직 발생한 EX에 대한 처리.
     @RequestMapping("/serviceErr")
     public String serviceErr(Model model) {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
-        if(1==1) throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DEFAULT_ERROR);
+        if(1==1) throw new ServiceException(ServiceErrorCodeEnum.XXX_ERROR);
 
-        return baseUrl + "xx"; //not to reach here
+        return pagePath + "xx"; //not to reach here
     }
 
     //Mybatis 를 통한 DB 테스트들
@@ -73,35 +73,35 @@ public class ViewTestController extends CommonControllerSupport {
     public String dbConnect(Model model) {
         int result = viewTestService.returnOne();
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/replicationMaster")
     public String replicationMaster(Model model) {
         int result = viewTestService.replicationMaster();
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/replicationSlave")
     public String replicationSlave(Model model) {
         int result = viewTestService.replicationSlave();
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectOne")
     public String selectOne(Model model) {
         TBTestDto tbTestDto = viewTestService.selectOne();
         model.addAttribute("result", tbTestDto.toString());
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectList")
     public String selectList(Model model) {
         List<TBTestDto> tbTestDtos = viewTestService.selectList();
         model.addAttribute("result", tbTestDtos.toString());
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectListWithResultHandler")
@@ -109,7 +109,7 @@ public class ViewTestController extends CommonControllerSupport {
     public String selectListWithResultHandler(Model model) {
         List<TBZipcodeDto> tBZipcodes = viewTestService.selectListWithResultHandler();
         model.addAttribute("result", tBZipcodes.toString());
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectMap")
@@ -117,7 +117,7 @@ public class ViewTestController extends CommonControllerSupport {
     public String selectMap(Model model) {
         Map<?, ?> resultMap = viewTestService.selectMap();
         model.addAttribute("result", resultMap.toString());
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectPaginate")
@@ -130,7 +130,7 @@ public class ViewTestController extends CommonControllerSupport {
 
         PageInfoSupport<TBZipcodeDto> pageInfoSupport = viewTestService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
         model.addAttribute("result", pageInfoSupport.toString());
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/insert")
@@ -142,7 +142,7 @@ public class ViewTestController extends CommonControllerSupport {
 
         int result = viewTestService.insert(tbTestDto);
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/update")
@@ -154,7 +154,7 @@ public class ViewTestController extends CommonControllerSupport {
 
         int result = viewTestService.update(tbTestDto);
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/delete")
@@ -164,7 +164,7 @@ public class ViewTestController extends CommonControllerSupport {
 
         int result = viewTestService.delete(tbTestDto);
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/i18n")
@@ -175,7 +175,7 @@ public class ViewTestController extends CommonControllerSupport {
 
         String connectTime = getI18nMessage("connectTime", new String[]{formattedDateTime});
         model.addAttribute("connectTime", connectTime);
-        return baseUrl + "i18n";
+        return pagePath + "i18n";
     }
 
     @AnoRequestDeduplication
@@ -183,7 +183,7 @@ public class ViewTestController extends CommonControllerSupport {
     public String duplicatedRequest(Model model) throws Exception {
         //테스트를 위한 강제 딜레이
         Thread.sleep(3000L);
-        return baseUrl + "welcome";
+        return pagePath + "welcome";
     }
 
     //thyleaf 에러 처리 테스트
@@ -192,7 +192,7 @@ public class ViewTestController extends CommonControllerSupport {
         //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
 
         log.debug("called by GET");
-        return baseUrl + "validationWithBindingResult";
+        return pagePath + "validationWithBindingResult";
     }
 
     @PostMapping("/validationWithBindingResult")
@@ -200,12 +200,12 @@ public class ViewTestController extends CommonControllerSupport {
         log.debug("called by POST");
 
         if (bindingResult.hasErrors()) {
-            return baseUrl + "validationWithBindingResult";
+            return pagePath + "validationWithBindingResult";
         }
 
         if (StringUtils.hasText(validationTestDto.getEmail()) && validationTestDto.getEmail().contains("@naver.com")) {
             bindingResult.rejectValue("email", "emailFail", "네이버 메일은 사용할 수 없습니다.");
-            return baseUrl + "validationWithBindingResult";
+            return pagePath + "validationWithBindingResult";
         }
 
         //do what you want.
@@ -221,7 +221,7 @@ public class ViewTestController extends CommonControllerSupport {
 
         model.addAttribute("result", result);
         response.setHeader("Cache-Control", cacheControl.getHeaderValue());
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/modelMapperTest")
@@ -241,7 +241,6 @@ public class ViewTestController extends CommonControllerSupport {
         //example 2
         ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsNProductDto.class);
 
-
         ExampleADto exampleADto = ExampleADto.builder()
                 .aDtoLastName("이")
                 .aDtoFirstName("성일")
@@ -259,14 +258,14 @@ public class ViewTestController extends CommonControllerSupport {
         result.put("ExampleADto-exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/viewServiceError")
     public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
         int result = apiTestService.raiseServiceError(errorType);
         model.addAttribute("result", result);
-        return baseUrl + "simpleModelView";
+        return pagePath + "simpleModelView";
     }
 }
 

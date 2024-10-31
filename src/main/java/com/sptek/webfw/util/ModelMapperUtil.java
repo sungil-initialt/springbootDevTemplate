@@ -15,13 +15,13 @@ Mapper의 TypeMap을 cache 한 상태로 유지하기 위해 singleton(static) �
 */
 @Slf4j
 public class ModelMapperUtil {
-    public static final ModelMapper defaultModelMapper = createDefaultModelMapper();
+    private static final ModelMapper defaultModelMapper = createDefaultModelMapper();
 
-    public static ModelMapper getdefaultModelMapper() {
+    private static ModelMapper getdefaultModelMapper() {
         return defaultModelMapper;
     }
 
-    public static ModelMapper createDefaultModelMapper() {
+    private static ModelMapper createDefaultModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STANDARD) //MatchingStrategies.LOOSE, MatchingStrategies.STRICT

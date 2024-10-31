@@ -1,33 +1,36 @@
 package com.sptek.webfw.config.springSecurity;
 
+import com.sptek.webfw.config.springSecurity.extras.dto.TermsDto;
+import com.sptek.webfw.config.springSecurity.extras.entity.Terms;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
 public enum RoleEnum {
-    ROLE_USER("ROLE_USER"),
-    ROLE_ADMIN("ROLE_ADMIN");
+    ROLE_NOR_USER("ROLE_NOR_USER"),
+    ROLE_VIP_USER("ROLE_VIP_USER"),
+    ROLE_ADMIN_MARKETING("ROLE_ADMIN_MARKETING"),
+    ROLE_ADMIN_DELIVERY("ROLE_ADMIN_DELIVERY");
 
-    private String value;
+    private String authorities;
 
     //해당 value 값의 RoleEnum을 반환함.
-    public static RoleEnum getRoleFromValue(String value) {
-        for (RoleEnum roleEnum : values()) {
-            if (roleEnum.getValue().equals(value)) {
-                return roleEnum;
-            }
-        }
-        throw new IllegalArgumentException("can not make RoleEnum from value. it's Unknown RoleEnum value: " + value);
+    public static RoleEnum getRoleFromAuthority(String authority) {
+        return Arrays.stream(values())
+                .filter(roleEnum -> roleEnum.getAuthorities().equals(authority))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Cannot make RoleEnum from value. Unknown RoleEnum value: " + authority));
     }
 
+
     //해당 name 값의 RoleEnum을 반환함.
-    public static RoleEnum getRoleEnumFromName(String name) {
-        for (RoleEnum roleEnum : values()) {
-            if (roleEnum.name().equals(name)) {
-                return roleEnum;
-            }
-        }
-        throw new IllegalArgumentException("can not make RoleEnum from name. it's Unknown RoleEnum name: " + name);
+    public static RoleEnum getRoleEnumFromName(String enumName) {
+        return Arrays.stream(values())
+                .filter(roleEnum -> roleEnum.name().equals(enumName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Cannot make RoleEnum from name. Unknown RoleEnum name: " + enumName));
     }
 }

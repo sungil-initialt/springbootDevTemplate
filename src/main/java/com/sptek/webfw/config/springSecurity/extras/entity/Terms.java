@@ -1,18 +1,18 @@
 package com.sptek.webfw.config.springSecurity.extras.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
+//todo: Entity는 setter를 막는것을 지향하는데 그러면 매번 DTO->Entity 변환을 Mapper를 사용하지 못하고 Builder로 해야하는데 이게 맞을까?
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@ToString(exclude = "userSet") // 서로 참조하고 있어서 toString() 때 재귀호출로 인한 stack overflow 나는것을 방지
+@Builder
 @Entity
+@ToString(exclude = "users") // 서로 참조로 인한 toStrig에서의 SOF 방지
 @Table(name = "TERMS")
 public class Terms {
 
@@ -23,7 +23,7 @@ public class Terms {
     @Column(unique = true)
     private String termsName;
 
-    @ManyToMany(mappedBy = "termsSet")
-    private Set<User> userSet;  // User 엔티티와의 다대다 관계
+    @ManyToMany(mappedBy = "terms")
+    private List<User> users;  // User 엔티티와의 다대다 관계
 
 }

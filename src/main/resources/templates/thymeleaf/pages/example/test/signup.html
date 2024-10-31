@@ -33,21 +33,32 @@
     <label for="email">email</label>
     <input type="text" th:field="*{email}">
 
-    <label for="password">password:</label>
+    <label for="password">password</label>
     <input type="text" th:field="*{password}">
+
+    <br><br>
+
+    <div th:each="userAddress : ${signupRequestDto.userAddresses}">
+      <label>Address Type:</label>
+      <input type="text" th:field="${signupRequestDto.userAddresses[__${userAddressStat.index}__].addressType}" />
+
+      <label>Address:</label>
+      <input type="text" th:field="${signupRequestDto.userAddresses[__${userAddressStat.index}__].address}" />
+      <br/>
+    </div>
 
     <br><br>
     <label>Select your roles:</label>
     <div th:each="role : ${allRoleNames}">
-      <input type="checkbox" name="roleNames" th:value="${role}" th:checked="${signupRequestDto.roleNames != null and #lists.contains(signupRequestDto.roleNames, role)}" />
-      <label th:text="${role}"></label>
+      <input type="checkbox" name="roles.roleNames" th:value="${role.roleName}" th:checked="${signupRequestDto.roleNames != null and #lists.contains(signupRequestDto.roleNames, role.roleName)}" />
+      <label th:text="${role.roleName}"></label>
     </div>
 
     <br>
     <label>Terms Agreement:</label>
     <div th:each="terms : ${allTermsNames}">
-      <input type="checkbox" name="termsNames" th:value="${terms}" th:checked="${signupRequestDto.termsNames != null and #lists.contains(signupRequestDto.termsNames, terms)}" />
-      <label th:text="${terms}"></label>
+      <input type="checkbox" name="terms.termsNames" th:value="${terms.termsName}" th:checked="${signupRequestDto.termsNames != null and #lists.contains(signupRequestDto.termsNames, terms.termsName)}" />
+      <label th:text="${terms.termsName}"></label>
     </div>
 
     <br>

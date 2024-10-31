@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras.dto;
 
+import com.sptek.webfw.config.springSecurity.extras.entity.UserAddress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -24,12 +25,14 @@ public class SignupRequestDto {
     @Pattern(message = "비밀번호는 최소6자, 최대20자, 숫자, 대문자, 특수문자가 각각 최소 1개 이상 들어가야 합니다.", regexp = "^(?=.*\\d)(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?/~`\"-])[가-힣0-9a-zA-Z!@#$%^&*()_+{}\\[\\]:;<>,.?/~`\"-]{6,20}$")
     private String password;
 
+    //주소
+    private List<UserAddressDto> userAddresses;
+
     @NotNull(message = "하나 이상의 Role을 선택해 주세요.")
-    private List<String> roleNames;
+    private List<RoleDto> roles;
 
     @NotNull(message = "MEMBER_SHIP 약관은 필수 동의 사항 입니다.")
     //약관 동의
-    private List<String> termsNames;
-
+    private List<TermsDto> terms;
 
 }

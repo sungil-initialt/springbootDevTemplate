@@ -13,10 +13,10 @@ public class ApiTestService extends CommonServiceSupport {
 
         switch (errorType) {
             case 1:
-                throw new ServiceException(ServiceErrorCodeEnum.SERVICE_001_ERROR);
+                throw new ServiceException(ServiceErrorCodeEnum.ALREADY_EXIST_RESOURCE_ERROR);
 
             case 2:
-                throw new ServiceException(ServiceErrorCodeEnum.SERVICE_002_ERROR, "해당 기간동안 주문내역이 없음");
+                throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "해당 기간동안의 주문 내역이 없습니다.");
         }
 
         return errorType;

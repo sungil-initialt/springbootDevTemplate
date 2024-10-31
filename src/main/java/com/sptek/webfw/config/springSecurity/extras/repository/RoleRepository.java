@@ -8,7 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Optional<Role> findById(Long id);
+    default Optional<List<Role>> findAllAsOptional() {
+        List<Role> roles = findAll();
+        return roles.isEmpty() ? Optional.empty() : Optional.of(roles);
+    }
 
-    Optional<Set<Role>> findByRoleEnumIn(List<String> roleNames);
+    Optional<List<Role>> findByRoleNameIn(List<String> roleNames);
 }

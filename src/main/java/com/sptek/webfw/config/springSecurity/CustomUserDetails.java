@@ -24,8 +24,8 @@ public class CustomUserDetails  implements UserDetails {
     private String name; //사용자 이름
     private String email; //보여지는 계정 정보로 사용
     private String password;
-    private Set<RoleEnum> roleSet;
-    private Set<TermsDto> termsSet; //추가적인 커스텀 요소
+    private Set<RoleEnum> roles;
+    private Set<TermsDto> terms; //추가적인 커스텀 요소
 
     @Override
     public String getUsername() { //보통? 계정 정보를 의미함 그래서.. 사용자 이름이 아니라 계정 정보로 사용되는 email을 넘기도록 처리
@@ -44,8 +44,8 @@ public class CustomUserDetails  implements UserDetails {
         // 계정의 권한 목록
         Set<GrantedAuthority> grantedAuthoritySet = new HashSet<>();
 
-        for (RoleEnum role : roleSet) {
-            grantedAuthoritySet.add(new SimpleGrantedAuthority(role.getValue())); // 역할 값을 GrantedAuthority로 변환하여 추가
+        for (RoleEnum role : roles) {
+            grantedAuthoritySet.add(new SimpleGrantedAuthority(role.getAuthorities())); // 역할 값을 GrantedAuthority로 변환하여 추가
         }
         return grantedAuthoritySet;
     }

@@ -81,7 +81,7 @@ public class RequestDeduplicationAspect
     }
 
     private Object handleDuplicationForRestController() throws ServiceException {
-        throw new ServiceException(ServiceErrorCodeEnum.SERVICE_DUPLICATION_REQUEST_ERROR);
+        throw new ServiceException(ServiceErrorCodeEnum.DUPLICATION_REQUEST_ERROR);
     }
 
     private boolean isDuplicatationCase(String requestSignature) {

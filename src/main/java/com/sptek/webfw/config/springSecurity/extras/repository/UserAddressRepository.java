@@ -1,12 +1,11 @@
 package com.sptek.webfw.config.springSecurity.extras.repository;
 
-import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
+import com.sptek.webfw.config.springSecurity.extras.entity.UserAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+public interface UserAddressRepository extends JpaRepository<UserAddress, Long> {
+
 }

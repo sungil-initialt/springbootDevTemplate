@@ -2,10 +2,8 @@ package com.sptek.webfw.config.springSecurity.extras.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.ibatis.annotations.One;
-import org.hibernate.mapping.ToOne;
 
-import java.util.Set;
+import java.util.List;
 
 //todo: Entity는 setter를 막는것을 지향하는데 그러면 매번 DTO->Entity 변환을 Mapper를 사용하지 못하고 Builder로 해야하는데 이게 맞을까?
 @Data
@@ -13,14 +11,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "USER_ADDRESS")
-public class UserAddress {
+@Table(name = "TEST")
+public class Test {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String addressType;
-    private String address;
 
+    @Column(unique = true)
+    private String myKey;
 
-
+    private String myValue;
 }
