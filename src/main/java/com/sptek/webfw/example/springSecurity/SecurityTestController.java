@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -33,24 +34,12 @@ public class SecurityTestController {
 
     @GetMapping("/signup") //회원가입 입력
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
-        //체크박스를 그리기 위한 용도
-        model.addAttribute("allRoleNames", userService.getAllRoles());
-        model.addAttribute("allTermsNames", userService.getAllTerms());
 
-        log.debug("all Roles from db: {}", model.getAttribute("allRoleNames"));
-        log.debug("all Terms from db: {}", model.getAttribute("allTermsNames"));
+        //화면에 그리기 위한 값들
+        signupRequestDto.setUserAddresses(List.of(new UserAddressDto()));
+        signupRequestDto.setAllRoles(userService.getAllRoles());
+        signupRequestDto.setAllTerms(userService.getAllTerms());
 
-        List<UserAddressDto> userAddresses = new ArrayList<>();
-        userAddresses.add(new UserAddressDto());
-        userAddresses.add(new UserAddressDto());
-        userAddresses.add(new UserAddressDto());
-        /*
-        userAddresses.add(UserAddressDto.builder().addressType("").address("").build());
-        userAddresses.add(UserAddressDto.builder().addressType("").address("").build());
-        userAddresses.add(UserAddressDto.builder().addressType("").address("").build());
-        */
-
-        signupRequestDto.setUserAddresses(userAddresses);
         log.debug("all signupRequestDto : {}", signupRequestDto);
         //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
         return pagePath + "signup";
@@ -62,18 +51,16 @@ public class SecurityTestController {
         //에러케이스 처리 : signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 그리기 위한 용도
-            model.addAttribute("allRoleNames", userService.getAllRoles());
-            model.addAttribute("allTermsNames", userService.getAllTerms());
+            signupRequestDto.setAllRoles(userService.getAllRoles());
+            signupRequestDto.setAllTerms(userService.getAllTerms());
+            model.addAttribute("signupRequestDto", signupRequestDto);
+            log.debug("all signupRequestDto : {}", signupRequestDto);
             return pagePath + "signup";
         }
-        //signupRequestDto.getUserAddresses().stream().forEach(userAddress -> log.debug("userAddress : {}", userAddress.toString()));
+
         User savedUser = userService.saveUser(signupRequestDto);
-
-        //model.addAttribute("userName", savedUser.getName()); //redirect 시에는 전달되지 않음
-        //redirectAttributes.addAttribute("userName", savedUser.getName()); // url 쿼리 string에 반영되어 전달
-        redirectAttributes.addFlashAttribute("userName", savedUser.getName()); //redirect 페이지로 1회성으로 전달됨
-
-        //return pagePath + "signin";
+        //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
+        redirectAttributes.addFlashAttribute("userName", savedUser.getName()); //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨), addAttribute를 사용지 쿼리 스트링을 통해 전달됨.
         return "redirect:/signin";
     }
 

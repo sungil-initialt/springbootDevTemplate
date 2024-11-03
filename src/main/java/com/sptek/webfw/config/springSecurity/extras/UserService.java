@@ -36,17 +36,17 @@ public class UserService {
 
     public User saveUser(SignupRequestDto signupRequestDto){  //-->여기수정필요
         List<Role> roles = roleRepository.findByRoleNameIn(
-                signupRequestDto.getRoles().stream()
+                signupRequestDto.getUserRoles().stream()
                         .map(role -> role.getRoleName())
                         .collect(Collectors.toList()))
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "no user role"));
         
         List<Terms> terms = termsRepository.findByTermsNameIn(
-                signupRequestDto.getTerms().stream()
+                signupRequestDto.getUserTerms().stream()
                         .map(term -> term.getTermsName())
                         .collect(Collectors.toList()))
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "no user terms"));
-/*
+
         List<UserAddress> userAddresses = signupRequestDto.getUserAddresses().stream()
                         .map(userAddress ->
                                 UserAddress.builder()
@@ -63,10 +63,10 @@ public class UserService {
                 .roles(roles)
                 .terms(terms)
                 .build();
-*/
-        log.debug("request signupRequestDto : {}", signupRequestDto);
-        User user = modelMapper.map(signupRequestDto, User.class);
-        log.debug("new userEntity : {}", user);
+
+//        log.debug("request signupRequestDto : {}", signupRequestDto);
+//        User user = modelMapper.map(signupRequestDto, User.class);
+//        log.debug("new userEntity : {}", user);
         return userRepository.save(user);
     }
 
