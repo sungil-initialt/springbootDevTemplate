@@ -47,6 +47,7 @@ logging:
       zaxxer.hikari.pool.HikariPool: info
     org:
       mybatis.spring: info
+      springframework: info
     jdbc:
       audit: info
       resultset: info

@@ -10,6 +10,7 @@ import com.sptek.webfw.config.springSecurity.extras.repository.TermsRepository;
 import com.sptek.webfw.config.springSecurity.extras.repository.TestRepository;
 import com.sptek.webfw.config.springSecurity.extras.repository.UserRepository;
 import com.sptek.webfw.util.ModelMapperUtil;
+import com.sptek.webfw.util.TypeConvertUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -34,45 +35,27 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private Map<String, String> strMap = new HashMap<>();
 
-    public User saveUser(SignupRequestDto signupRequestDto){  //-->여기수정필요
-        List<Role> roles = roleRepository.findByRoleNameIn(
-                signupRequestDto.getUserRoles().stream()
-                        .map(role -> role.getRoleName())
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "no user role"));
-        
-        List<Terms> terms = termsRepository.findByTermsNameIn(
-                signupRequestDto.getUserTerms().stream()
-                        .map(term -> term.getTermsName())
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "no user terms"));
+    public User saveUser(SignupRequestDto signupRequestDto){
+        List<RoleDto> roles = getRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(role -> role.getRoleName()).collect(Collectors.toList()));
+        List<TermsDto> terms = getTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(term -> term.getTermsName()).collect(Collectors.toList()));
 
-        List<UserAddress> userAddresses = signupRequestDto.getUserAddresses().stream()
-                        .map(userAddress ->
-                                UserAddress.builder()
-                                        .addressType(userAddress.getAddressType())
-                                        .address(userAddress.getAddress())
-                                        .build())
-                        .collect(Collectors.toList());
-
-        User user = User.builder()
-                .name(signupRequestDto.getName())
-                .email(signupRequestDto.getEmail())
-                .password(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()))
-                .userAddresses(userAddresses)
-                .roles(roles)
-                .terms(terms)
-                .build();
-
-//        log.debug("request signupRequestDto : {}", signupRequestDto);
-//        User user = modelMapper.map(signupRequestDto, User.class);
-//        log.debug("new userEntity : {}", user);
+        signupRequestDto.setRoles(roles);
+        signupRequestDto.setTerms(terms);
+        signupRequestDto.setPassword(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()));
+        User user = modelMapper.map(signupRequestDto, User.class);
+        log.debug("new userEntity : {}", user);
         return userRepository.save(user);
     }
 
     public List<RoleDto> getAllRoles(){
         return modelMapper.map(
                 roleRepository.findAllAsOptional().orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found"))
+                , new TypeToken<List<RoleDto>>() {}.getType());
+    }
+
+    public List<RoleDto> getRolesByRoleNameIn(List<String> roleNames){
+        return modelMapper.map(
+                roleRepository.findByRoleNameIn(roleNames).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found"))
                 , new TypeToken<List<RoleDto>>() {}.getType());
     }
 
@@ -89,6 +72,12 @@ public class UserService {
     public List<TermsDto> getAllTerms(){
         return modelMapper.map(
                 termsRepository.findAllAsOptional().orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Terms found"))
+                , new TypeToken<List<TermsDto>>() {}.getType());
+    }
+
+    public List<TermsDto> getTermsByTermsNameIn(List<String> termsNames){
+        return modelMapper.map(
+                termsRepository.findByTermsNameIn(termsNames).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Terms found"))
                 , new TypeToken<List<TermsDto>>() {}.getType());
     }
 

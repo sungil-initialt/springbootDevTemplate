@@ -48,9 +48,9 @@ public class SecurityTestController {
     @PostMapping("/signup") //회원가입 처리
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
 
-        //에러케이스 처리 : signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
+        //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
-            //체크박스를 그리기 위한 용도
+            //체크박스를 다시 그리기 위해
             signupRequestDto.setAllRoles(userService.getAllRoles());
             signupRequestDto.setAllTerms(userService.getAllTerms());
             model.addAttribute("signupRequestDto", signupRequestDto);

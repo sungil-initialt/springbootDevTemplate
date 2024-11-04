@@ -32,11 +32,11 @@ public class SignupRequestDto {
     private List<UserAddressDto> userAddresses;
 
     @NotNull(message = "하나 이상의 Role을 선택해 주세요.")
-    private List<RoleDto> userRoles;
+    private List<RoleDto> roles;
 
     @NotNull(message = "MEMBER_SHIP 약관은 필수 동의 사항 입니다.")
     //약관 동의
-    private List<TermsDto> userTerms;
+    private List<TermsDto> terms;
 
     private List<RoleDto> allRoles;
 
@@ -44,11 +44,11 @@ public class SignupRequestDto {
 
     private List<String> userRoleNames;
     public List<String> getUserRoleNames() {
-        return Optional.ofNullable(userRoles).orElseGet(Collections::emptyList).stream().map(role -> role.getRoleName()).collect(Collectors.toList());
+        return Optional.ofNullable(roles).orElseGet(Collections::emptyList).stream().map(role -> role.getRoleName()).collect(Collectors.toList());
     }
 
     private List<String> userTermsNames;
     public List<String> getUserTermsNames() {
-        return Optional.ofNullable(userTerms).orElseGet(Collections::emptyList).stream().map(terms -> terms.getTermsName()).collect(Collectors.toList());
+        return Optional.ofNullable(terms).orElseGet(Collections::emptyList).stream().map(terms -> terms.getTermsName()).collect(Collectors.toList());
     }
 }

@@ -50,14 +50,14 @@
     <br><br>
     <label>User Roles:</label>
     <div th:each="role : ${signupRequestDto.allRoles}">
-      <input type="checkbox" th:name="${'userRoles[' + roleStat.index + '].roleName'}" th:value="${role.roleName}" th:checked="${#lists.contains(signupRequestDto.userRoleNames, role.roleName)}"/>
+      <input type="checkbox" th:name="${'roles[' + roleStat.index + '].roleName'}" th:value="${role.roleName}" th:checked="${#lists.contains(signupRequestDto.userRoleNames, role.roleName)}"/>
       <label th:text="${role.roleName}"></label>
     </div>
 
     <br><br>
     <label>Terms Agreement:</label>
     <div th:each="terms : ${signupRequestDto.allTerms}">
-      <input type="checkbox" th:name="${'userTerms[' + termsStat.index + '].termsName'}" th:value="${terms.termsName}" th:checked="${#lists.contains(signupRequestDto.userTermsNames, terms.termsName)}"/>
+      <input type="checkbox" th:name="${'terms[' + termsStat.index + '].termsName'}" th:value="${terms.termsName}" th:checked="${#lists.contains(signupRequestDto.userTermsNames, terms.termsName)}"/>
       <label th:text="${terms.termsName}"></label>
     </div>
 

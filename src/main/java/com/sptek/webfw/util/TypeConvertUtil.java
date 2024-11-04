@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /*
@@ -87,5 +87,14 @@ public class TypeConvertUtil {
         return mapper.readValue(json, type);
     }
 
+    public static <T> List<T> findMatchingOrigins(List<T> origins, List<T> myThings, Function<T, ?> keyExtractor) {
+        List<?> myThingKyes = Optional.ofNullable(myThings).orElseGet(Collections::emptyList).stream()
+                .map(keyExtractor)
+                .collect(Collectors.toList());
+
+        return origins.stream()
+                .filter(origin -> myThingKyes.contains(keyExtractor.apply(origin)))
+                .collect(Collectors.toList());
+    }
 }
 
