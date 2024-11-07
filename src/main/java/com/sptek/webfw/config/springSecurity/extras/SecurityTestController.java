@@ -1,11 +1,9 @@
-package com.sptek.webfw.example.springSecurity;
+package com.sptek.webfw.config.springSecurity.extras;
 
-import com.sptek.webfw.config.springSecurity.extras.dto.SignupRequestDto;
-import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;
-import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
+import com.sptek.webfw.config.springSecurity.AuthorityEnum;
+import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
-import com.sptek.webfw.config.springSecurity.extras.UserService;
-import com.sptek.webfw.config.springSecurity.extras.repository.TestRepository;
+import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -88,10 +85,36 @@ public class SecurityTestController {
         return pagePath + "simpleModelView";
     }
 
+
+
+    @GetMapping("/roles")
+    public String roles(Model model, RoleMngRequestDto roleMngRequestDto) {
+        roleMngRequestDto.setAllRoles(userService.getAllRoles());
+        roleMngRequestDto.setAllAuthorities(userService.getAllAuthorities());
+
+        model.addAttribute("result", roleMngRequestDto);
+        return pagePath + "role";
+    }
+
+    //for test
     @GetMapping("/user/test/{key}")
     public String test(@PathVariable("key") String key, Model model) {
         Map<String, Object> resultMap = userService.testRepository(key);
         model.addAttribute("result", resultMap);
         return pagePath + "simpleModelView";
     }
+
+    //for test
+    @GetMapping("/user/test")
+    public String test(Model model) {
+        AuthorityEnum authority = AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
+        log.debug("AuthorityEnum origin: {}", authority);
+
+        AuthoritytDto authDto = ModelMapperUtil.map(authority, AuthoritytDto.class);
+        log.debug("AuthoritytDto mapped from origin : {}", authDto);
+
+        model.addAttribute("result", authDto);
+        return pagePath + "simpleModelView";
+    }
+
 }

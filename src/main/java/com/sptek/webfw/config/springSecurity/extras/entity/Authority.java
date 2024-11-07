@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import javax.swing.*;
+import java.util.List;
 import java.util.Set;
 
 //todo: Entity는 setter를 막는것을 지향하는데 그러면 매번 DTO->Entity 변환을 Mapper를 사용하지 못하고 Builder로 해야하는데 이게 맞을까?
@@ -14,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = "users") // 서로 참조로 인한 toStrig에서의 SOF 방지
 @Table(name = "AUTHORITY")
 public class Authority {
 
@@ -23,10 +23,8 @@ public class Authority {
     private Long id;
 
     @Column(unique = true)
-    //@Enumerated(EnumType.ORDINAL) //순서(index)가 저장됨 (0 or 1)
-//    @Enumerated(EnumType.STRING)  //Enum의 name값이 저장됨
-//    private AuthorityEnum auth;
-    private String auth;
+    @Enumerated(EnumType.STRING)
+    private AuthorityEnum authority;
 
     @Column(unique = true)
     private String code;
@@ -35,18 +33,19 @@ public class Authority {
     private String alias;
 
     private String desc;
+    private String status; //해당 권한의 상태(사용함/사용안함 등)
 
-    private String status; //해당 권한의 상태(사용안함 등)
+    @ManyToMany(mappedBy = "authorities")
+    private List<Role> roles;
 
     //@PostLoad
     //@PostPersist
-//    @PrePersist
-//    @PreUpdate
-//    private void initializeDerivedFields() {
-//        if (auth != null) {
-//            this.code = auth.getCode();
-//            this.alias = auth.getAlias();
-//            this.desc = auth.getDesc();
-//        }
-//    }
+    @PrePersist
+    @PreUpdate
+    private void initializeDerivedFields() {
+        //authority 객체를 기준으로 나머지 값들을 저장하기 위해
+        this.code = authority.getCode();
+        this.alias = authority.getAlias();
+        this.desc = authority.getDesc();
+    }
 }

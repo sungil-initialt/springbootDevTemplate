@@ -1,10 +1,12 @@
 package com.sptek.webfw.config.springSecurity.extras.dto;
 
+import com.sptek.webfw.config.springSecurity.AuthorityEnum;
 import com.sptek.webfw.config.springSecurity.extras.entity.UserAddress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,16 +41,15 @@ public class SignupRequestDto {
     private List<TermsDto> terms;
 
     private List<RoleDto> allRoles;
-
     private List<TermsDto> allTerms;
 
     private List<String> userRoleNames;
     public List<String> getUserRoleNames() {
-        return Optional.ofNullable(roles).orElseGet(Collections::emptyList).stream().map(role -> role.getRoleName()).collect(Collectors.toList());
+        return Optional.ofNullable(roles).orElseGet(Collections::emptyList).stream().map(RoleDto::getRoleName).collect(Collectors.toList());
     }
 
     private List<String> userTermsNames;
     public List<String> getUserTermsNames() {
-        return Optional.ofNullable(terms).orElseGet(Collections::emptyList).stream().map(terms -> terms.getTermsName()).collect(Collectors.toList());
+        return Optional.ofNullable(terms).orElseGet(Collections::emptyList).stream().map(TermsDto::getTermsName).collect(Collectors.toList());
     }
 }

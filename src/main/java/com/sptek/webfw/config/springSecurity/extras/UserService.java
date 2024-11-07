@@ -5,10 +5,7 @@ import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.*;
-import com.sptek.webfw.config.springSecurity.extras.repository.RoleRepository;
-import com.sptek.webfw.config.springSecurity.extras.repository.TermsRepository;
-import com.sptek.webfw.config.springSecurity.extras.repository.TestRepository;
-import com.sptek.webfw.config.springSecurity.extras.repository.UserRepository;
+import com.sptek.webfw.config.springSecurity.extras.repository.*;
 import com.sptek.webfw.util.ModelMapperUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import lombok.AllArgsConstructor;
@@ -32,6 +29,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final TermsRepository termsRepository;
     private final TestRepository testRepository;
+    private final AuthorityRepository authorityRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private Map<String, String> strMap = new HashMap<>();
 
@@ -85,6 +83,12 @@ public class UserService {
         return modelMapper.map(
                 userRepository.findByEmail(email).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", email)))
                 , UserDto.class);
+    }
+
+    public List<AuthoritytDto> getAllAuthorities() {
+        return modelMapper.map(
+                authorityRepository.findAllAsOptional().orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Authority found"))
+                , new TypeToken<List<AuthoritytDto>>() {}.getType());
     }
 
 

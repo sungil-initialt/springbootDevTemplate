@@ -25,6 +25,14 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
-    private List<User> users;  // User 엔티티와의 다대다 관계
+    private List<User> users;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "ROLE_AUTHORITY_MAP",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id")
+    )
+    private List<Authority> authorities;
 
 }

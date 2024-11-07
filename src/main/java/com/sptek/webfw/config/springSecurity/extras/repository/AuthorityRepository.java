@@ -9,5 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
-
+    default Optional<List< Authority>> findAllAsOptional() {
+        List< Authority>  Authorities = findAll();
+        return Authorities.isEmpty() ? Optional.empty() : Optional.of(Authorities);
+    }
 }

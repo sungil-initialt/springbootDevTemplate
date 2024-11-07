@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:inline="javascript" type="text/javascript">
+  </script>
+</head>
+
+<body>
+<div>
+  <div class="my-3 border-bottom">
+    <b>signup with spring security</b>
+  </div>
+
+  <form th:action="@{/role}" th:object="${roleMngRequestDto}" method="post">
+    <div th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
+
+    <div th:each="role : ${roleMngRequestDto.allRoles}">
+      <label for="roleName">role Name : </label>
+      <input type="text" style="width: 250px;" th:field="${roleMngRequestDto.allRoles[__${roleStat.index}__].roleName}" />
+
+      <div th:each="authorityDto : ${roleMngRequestDto.allAuthorities}">
+        <input type="checkbox" th:name="${'roleMngRequestDto.allAuthorities[' + authorityDtoStat.index + '].authority'}" th:value="${authorityDto}" />
+        <label th:text="${authorityDto}"></label>
+      </div>
+
+      <br>
+    </div>
+
+
+    <br>
+    <button type="submit">submit</button>
+  </form>
+</div>
+</body>
+</html>

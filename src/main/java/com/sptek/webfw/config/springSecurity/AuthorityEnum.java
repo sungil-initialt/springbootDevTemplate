@@ -36,8 +36,4 @@ public enum AuthorityEnum implements BaseAuthority{
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make RoleEnum from name. Unknown RoleEnum name: " + desc));
     }
-
-    static void main(String[] args) {
-        System.out.println("d");
-    }
 }
