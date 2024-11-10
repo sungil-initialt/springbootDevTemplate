@@ -31,11 +31,10 @@ public class UserService {
     private final TestRepository testRepository;
     private final AuthorityRepository authorityRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private Map<String, String> strMap = new HashMap<>();
 
     public User saveUser(SignupRequestDto signupRequestDto){
-        List<RoleDto> roles = getRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(role -> role.getRoleName()).collect(Collectors.toList()));
-        List<TermsDto> terms = getTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(term -> term.getTermsName()).collect(Collectors.toList()));
+        List<RoleDto> roles = getRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
+        List<TermsDto> terms = getTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
 
         signupRequestDto.setRoles(roles);
         signupRequestDto.setTerms(terms);
@@ -91,6 +90,20 @@ public class UserService {
                 , new TypeToken<List<AuthoritytDto>>() {}.getType());
     }
 
+//    public User saveRole(RoleMngRequestDto roleMngRequestDto){
+//        roleRepository.update
+//        Role role = Role.builder().roleName("")
+//
+//        List<RoleDto> roles = getRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
+//        List<TermsDto> terms = getTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
+//
+//        signupRequestDto.setRoles(roles);
+//        signupRequestDto.setTerms(terms);
+//        signupRequestDto.setPassword(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()));
+//        User user = modelMapper.map(signupRequestDto, User.class);
+//        log.debug("new userEntity : {}", user);
+//        return userRepository.save(user);
+//    }
 
 
 
@@ -118,7 +131,7 @@ public class UserService {
             returnMap.put("returnListOpt", returnListOpt);
         }
 
-        log.debug("strMap : {}", strMap);
+        log.debug("strMap : {}", new HashMap<String, String>());
         return returnMap;
     }
 

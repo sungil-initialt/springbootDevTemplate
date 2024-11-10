@@ -31,13 +31,11 @@ public class SecurityTestController {
 
     @GetMapping("/signup") //회원가입 입력
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
-
         //화면에 그리기 위한 값들
         signupRequestDto.setUserAddresses(List.of(new UserAddressDto()));
         signupRequestDto.setAllRoles(userService.getAllRoles());
         signupRequestDto.setAllTerms(userService.getAllTerms());
 
-        log.debug("all signupRequestDto : {}", signupRequestDto);
         //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
         return pagePath + "signup";
     }
@@ -50,8 +48,6 @@ public class SecurityTestController {
             //체크박스를 다시 그리기 위해
             signupRequestDto.setAllRoles(userService.getAllRoles());
             signupRequestDto.setAllTerms(userService.getAllTerms());
-            model.addAttribute("signupRequestDto", signupRequestDto);
-            log.debug("all signupRequestDto : {}", signupRequestDto);
             return pagePath + "signup";
         }
 
@@ -63,15 +59,12 @@ public class SecurityTestController {
 
     @GetMapping("/signin") //로그인 입력
     public String login(Model model , SignupRequestDto signupRequestDto) {
-        //log.debug("redirectAttributes(userName) : {}", model.getAttribute("userName"));
         return pagePath + "signin";
     }
 
     @GetMapping("/user/{email}")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = userService.getUserByEmail(email);
-        log.debug("{} user info search result : {}", email, resultUserDto);
-
         model.addAttribute("result", resultUserDto);
         return pagePath + "simpleModelView";
     }
@@ -79,8 +72,6 @@ public class SecurityTestController {
     @GetMapping("/user/mypage")
     public String user(Model model) {
         String myAuthInfo = SecurityContextHolder.getContext().getAuthentication().toString();
-        log.debug("my Auth : {}", myAuthInfo);
-
         model.addAttribute("result", myAuthInfo);
         return pagePath + "simpleModelView";
     }
@@ -91,10 +82,25 @@ public class SecurityTestController {
     public String roles(Model model, RoleMngRequestDto roleMngRequestDto) {
         roleMngRequestDto.setAllRoles(userService.getAllRoles());
         roleMngRequestDto.setAllAuthorities(userService.getAllAuthorities());
-
-        model.addAttribute("result", roleMngRequestDto);
-        return pagePath + "role";
+        return pagePath + "roles";
     }
+
+    @PostMapping("/roles")
+    public String roleWithAuthority(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
+
+        //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
+        if (bindingResult.hasErrors()) {
+            roleMngRequestDto.setAllRoles(userService.getAllRoles());
+            roleMngRequestDto.setAllAuthorities(userService.getAllAuthorities());
+            return pagePath + "roles";
+        }
+
+        //User savedUser = userService.saveUser(signupRequestDto);
+        //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
+        //redirectAttributes.addFlashAttribute("userName", savedUser.getName()); //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨), addAttribute를 사용지 쿼리 스트링을 통해 전달됨.
+        return "redirect:/roles";
+    }
+
 
     //for test
     @GetMapping("/user/test/{key}")
@@ -108,11 +114,7 @@ public class SecurityTestController {
     @GetMapping("/user/test")
     public String test(Model model) {
         AuthorityEnum authority = AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
-        log.debug("AuthorityEnum origin: {}", authority);
-
         AuthoritytDto authDto = ModelMapperUtil.map(authority, AuthoritytDto.class);
-        log.debug("AuthoritytDto mapped from origin : {}", authDto);
-
         model.addAttribute("result", authDto);
         return pagePath + "simpleModelView";
     }

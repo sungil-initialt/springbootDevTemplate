@@ -6,21 +6,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
+
+import java.util.Map;
+
 
 @Component
 @Slf4j
-public class RequestInfoInterceptor implements HandlerInterceptor {
+public class ResponseInfoInterceptor implements HandlerInterceptor {
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
         String session = request.getSession().getId();
         String url = ReqResUtil.getRequestUrlString(request);
         String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
         String datas = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
+        Map<String, Object> modelMap = modelAndView.getModel();
 
-        log.debug("\n----------\nRequest Info Interceptor\nsession : {}\nurl : {}\nheader : {}\ndatas : {}\n----------", session, url, header, datas);
-        return true;
+        log.debug("\n----------\nResponse Info Interceptor\nsession : {}\nurlInfo : {}\nheader : {}\ndatas : {}\nmodel: {}\n----------", session, url, header, datas, modelMap);
     }
 }
 

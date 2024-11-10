@@ -17,6 +17,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Autowired
     private RequestInfoInterceptor requestInfoInterceptor;
     @Autowired
+    private ResponseInfoInterceptor responseInfoInterceptor;
+    @Autowired
     private UvInterceptor uvInterceptor;
 
     @Override
@@ -30,6 +32,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 
         interceptorRegistry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**")
+                .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
+                .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
+
+        interceptorRegistry.addInterceptor(this.responseInfoInterceptor).addPathPatterns("/**")
                 .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
                 .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 
