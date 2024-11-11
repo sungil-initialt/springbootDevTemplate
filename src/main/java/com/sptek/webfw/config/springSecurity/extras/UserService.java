@@ -107,13 +107,12 @@ public class UserService {
         List<Role> orgRoles = roleRepository.findAllById(reqRolesMap.keySet());
 
         for(Role orgRole : orgRoles){
-            Optional.ofNullable(reqRolesMap.get(orgRole.getId())).ifPresent(reqRoleDto -> {
-                List<AuthorityEnum> authorityEnums = Optional.ofNullable(reqRoleDto.getAuthorities())
-                        .ifPresentOrElse(authorities -> authorities.stream().map(AuthoritytDto::getAuthority).collect(Collectors.toList());
-                        orgRole.setAuthorities(authorityRepository.findByAuthorityIn(authorityEnums));}
-                    , () -> { //여기 수정
-                orgRole.setAuthorities(Collections.emptyList());
-            });
+            orgRole.setRoleName(reqRolesMap.get(orgRole.getId()).getRoleName());
+
+            Optional.ofNullable(reqRolesMap.get(orgRole.getId()).getAuthorities())
+                    .ifPresentOrElse(authorities -> orgRole.setAuthorities(authorityRepository.findByAuthorityIn(authorities.stream().map(AuthoritytDto::getAuthority).toList()))
+                    , () -> orgRole.setAuthorities(Collections.emptyList())
+                    );
         }
 
         return modelMapper.map(roleRepository.saveAll(orgRoles), new TypeToken<List<RoleDto>>() {}.getType());
