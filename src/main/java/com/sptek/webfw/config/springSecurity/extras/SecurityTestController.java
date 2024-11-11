@@ -76,8 +76,6 @@ public class SecurityTestController {
         return pagePath + "simpleModelView";
     }
 
-
-
     @GetMapping("/roles")
     public String roles(Model model, RoleMngRequestDto roleMngRequestDto) {
         roleMngRequestDto.setAllRoles(userService.getAllRoles());
@@ -95,9 +93,7 @@ public class SecurityTestController {
             return pagePath + "roles";
         }
 
-        //User savedUser = userService.saveUser(signupRequestDto);
-        //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
-        //redirectAttributes.addFlashAttribute("userName", savedUser.getName()); //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨), addAttribute를 사용지 쿼리 스트링을 통해 전달됨.
+        userService.saveRoles(roleMngRequestDto);
         return "redirect:/roles";
     }
 

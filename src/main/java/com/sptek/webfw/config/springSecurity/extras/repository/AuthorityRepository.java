@@ -1,16 +1,17 @@
 package com.sptek.webfw.config.springSecurity.extras.repository;
 
+import com.sptek.webfw.config.springSecurity.AuthorityEnum;
 import com.sptek.webfw.config.springSecurity.extras.entity.Authority;
-import com.sptek.webfw.config.springSecurity.extras.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
     default Optional<List< Authority>> findAllAsOptional() {
-        List< Authority>  Authorities = findAll();
-        return Authorities.isEmpty() ? Optional.empty() : Optional.of(Authorities);
+        List< Authority>  authorities = findAll();
+        return authorities.isEmpty() ? Optional.empty() : Optional.of(authorities);
     }
+
+    List<Authority> findByAuthorityIn(List<AuthorityEnum> authorities);
 }

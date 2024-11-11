@@ -3,6 +3,7 @@ package com.sptek.webfw.config.springSecurity.extras;
 import com.sptek.webfw.common.code.BaseCode;
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.config.springSecurity.AuthorityEnum;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.*;
 import com.sptek.webfw.config.springSecurity.extras.repository.*;
@@ -13,11 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.ast.OpNE;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -45,9 +48,18 @@ public class UserService {
     }
 
     public List<RoleDto> getAllRoles(){
-        return modelMapper.map(
-                roleRepository.findAllAsOptional().orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found"))
-                , new TypeToken<List<RoleDto>>() {}.getType());
+        List<Role> roles = roleRepository.findAll();
+        if(roles.isEmpty()) {
+            throw new  ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found");
+        }
+        return modelMapper.map(roles, new TypeToken<List<RoleDto>>() {}.getType());
+
+//        return Optional.ofNullable(roleRepository.findAll())
+//                .filter(roles -> !roles.isEmpty())
+//                .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found"))
+//                .stream()
+//                .map(role -> modelMapper.map(role, RoleDto.class))
+//                .collect(Collectors.toList());
     }
 
     public List<RoleDto> getRolesByRoleNameIn(List<String> roleNames){
@@ -90,20 +102,22 @@ public class UserService {
                 , new TypeToken<List<AuthoritytDto>>() {}.getType());
     }
 
-//    public User saveRole(RoleMngRequestDto roleMngRequestDto){
-//        roleRepository.update
-//        Role role = Role.builder().roleName("")
-//
-//        List<RoleDto> roles = getRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
-//        List<TermsDto> terms = getTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
-//
-//        signupRequestDto.setRoles(roles);
-//        signupRequestDto.setTerms(terms);
-//        signupRequestDto.setPassword(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()));
-//        User user = modelMapper.map(signupRequestDto, User.class);
-//        log.debug("new userEntity : {}", user);
-//        return userRepository.save(user);
-//    }
+    public List<RoleDto> saveRoles(RoleMngRequestDto roleMngRequestDto){
+        Map<Long, RoleDto> reqRolesMap = roleMngRequestDto.getAllRoles().stream().collect(Collectors.toMap(RoleDto::getId, role -> role));
+        List<Role> orgRoles = roleRepository.findAllById(reqRolesMap.keySet());
+
+        for(Role orgRole : orgRoles){
+            Optional.ofNullable(reqRolesMap.get(orgRole.getId())).ifPresent(reqRoleDto -> {
+                List<AuthorityEnum> authorityEnums = Optional.ofNullable(reqRoleDto.getAuthorities())
+                        .ifPresentOrElse(authorities -> authorities.stream().map(AuthoritytDto::getAuthority).collect(Collectors.toList());
+                        orgRole.setAuthorities(authorityRepository.findByAuthorityIn(authorityEnums));}
+                    , () -> { //여기 수정
+                orgRole.setAuthorities(Collections.emptyList());
+            });
+        }
+
+        return modelMapper.map(roleRepository.saveAll(orgRoles), new TypeToken<List<RoleDto>>() {}.getType());
+    }
 
 
 
