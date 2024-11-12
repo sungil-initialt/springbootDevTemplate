@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
-    default Optional<List< Authority>> findAllAsOptional() {
-        List< Authority>  authorities = findAll();
-        return authorities.isEmpty() ? Optional.empty() : Optional.of(authorities);
-    }
 
     List<Authority> findByAuthorityIn(List<AuthorityEnum> authorities);
 }

@@ -282,7 +282,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<Long>> httpCache() {
-        //todo : 현재 cache가 되지 않음, 이유확인이 필요함
+        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
         long cacheSec = 60L;
         CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
         long result = System.currentTimeMillis();

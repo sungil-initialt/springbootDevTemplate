@@ -9,10 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface TermsRepository extends JpaRepository<Terms, Long> {
-    default Optional<List<Terms>> findAllAsOptional() {
-        List<Terms> terms = findAll();
-        return terms.isEmpty() ? Optional.empty() : Optional.of(terms);
-    }
 
-    Optional<List<Terms>> findByTermsNameIn(List<String> termsName);
+    List<Terms> findByTermsNameIn(List<String> termsName);
 }

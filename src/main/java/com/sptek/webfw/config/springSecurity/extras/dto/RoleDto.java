@@ -4,7 +4,6 @@ import com.sptek.webfw.config.springSecurity.AuthorityEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.sql.ast.tree.expression.Collation;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,13 +21,13 @@ public class RoleDto {
     @Schema(description = "롤 이름", example = "ROLE_USER")
     private String roleName;
 
-    private List<AuthoritytDto> authorities;
+    private List<AuthorityDto> authorities;
 
     @Setter(AccessLevel.NONE)
     private List<AuthorityEnum> authorityEnums;
 
     public List<AuthorityEnum> getAuthorityEnums() {
         return Optional.ofNullable(authorities).orElseGet(Collections::emptyList).stream()
-                .map(AuthoritytDto::getAuthority).collect(Collectors.toList());
+                .map(AuthorityDto::getAuthority).collect(Collectors.toList());
     }
 }
