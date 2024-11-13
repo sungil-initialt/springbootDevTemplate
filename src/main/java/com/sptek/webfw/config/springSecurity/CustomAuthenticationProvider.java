@@ -31,11 +31,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     //for login by web page
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //spring security 의 AuthenticaionFilter 에서 UsernamePasswordAuthenticationToken를 생성해줌
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationTokenToken = (UsernamePasswordAuthenticationToken) authentication;
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) authentication;
 
         //email 값을 Name(일반적id개념) 으로 사용하는 케이스
-        String email = usernamePasswordAuthenticationTokenToken.getName();
-        String password = (String) usernamePasswordAuthenticationTokenToken.getCredentials();
+        String email = usernamePasswordAuthenticationToken.getName();
+        String password = (String) usernamePasswordAuthenticationToken.getCredentials();
         log.debug("request user info : {} , {}", email, password);
 
         // DB 에서 사용자 정보가 실제로 유효한지 확인 후 인증된 Authentication 리턴
