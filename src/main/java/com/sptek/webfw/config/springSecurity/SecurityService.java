@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.extras;
+package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;

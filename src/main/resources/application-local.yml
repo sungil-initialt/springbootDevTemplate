@@ -126,6 +126,13 @@ jasypt:
     secretKey: JasyptStringEncryptor_key_Hello
 
 
+jwt:
+  headerName: Authorization
+  secret: yB^%DhG7rP8*Tbw96#Uqz9LpxM@aBcDe1$9x2QoWs3Z4y5w67&FoLpQ1 #512byte, 64자
+  tokenValidityInSec: 86400 #1day
+
+
+
 # Swagger springdoc-ui Configuration
 springdoc:
   packages-to-scan: com.sptek.webfw.example.api.api1

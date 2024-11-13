@@ -67,7 +67,6 @@ public class ApiTestController extends CommonControllerSupport {
     RestTemplateSupport restTemplateSupport;
     @Autowired
     ObjectMapper objectMapper;
-
     @Autowired
     private ApiTestService apiTestService;
 

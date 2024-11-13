@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.extras;
+package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
@@ -21,7 +21,7 @@ import java.util.*;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class SecurityController {
+public class SecurityViewController {
     private final String pagePath = "pages/example/test/";
     @Autowired
     private SecurityService securityService;

@@ -55,11 +55,14 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.26'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4' //코드 수정 실시간 반영
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
-	//testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-
+	// JWT
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 }
 
 tasks.named('test') {
