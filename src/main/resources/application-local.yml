@@ -128,7 +128,7 @@ jasypt:
 
 jwt:
   headerName: Authorization
-  secret: yBddDhG7rP8sTbw964Uqz9LpxM0aBcDe1x9x2QoWs3Z4y5w67qFoLpQ1 #512byte, 64자
+  secretKey: yBddDhG7rP8sTbw964Uqz9LpxM0aBcDe1x9x2QoWs3Z4y5w67qFoLpQ1 #512byte, 64자
   tokenValidityInSec: 86400 #1day
 
 

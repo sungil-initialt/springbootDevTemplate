@@ -53,7 +53,7 @@ public class CustomJwtFilter extends GenericFilterBean {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(JWT_TPYE)){
             log.debug("token : " + bearerToken);
-            return bearerToken.substring(7);
+            return bearerToken.substring(JWT_TPYE.length());
         }
         return null;
     }
