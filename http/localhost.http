@@ -118,3 +118,12 @@ Content-Type: application/json
 GET {{api-server-ver}}/duplicatedRequest
 Content-Type: application/json
 
+
+### API 방식 인증 요청 테스트
+POST {{api-server-ver}}/signin
+Content-Type: application/json
+
+{
+  "email": "sungilry@naver.com",
+  "password" : "1q2w3e4rA!"
+}

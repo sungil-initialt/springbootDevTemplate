@@ -1,16 +1,11 @@
-package com.sptek.webfw.config.springSecurity;
+package com.sptek.webfw.config.springSecurity.spt;
 
-import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
-import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
 import com.sptek.webfw.config.springSecurity.extras.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service("userDetailsService")

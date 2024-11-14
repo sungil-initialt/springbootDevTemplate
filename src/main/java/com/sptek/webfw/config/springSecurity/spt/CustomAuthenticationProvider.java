@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity;
+package com.sptek.webfw.config.springSecurity.spt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

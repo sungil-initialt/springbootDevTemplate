@@ -21,27 +21,25 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class TokenProvider implements InitializingBean {
+public class GeneralTokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long tokenValidityInMilliseconds;
     private Key key;
 
-    public TokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
+    public GeneralTokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }
 
-    // Bean의 실제 생성(생성자이후) 이후 동작
+    // Bean의 실제 생성(생성자) 이후 동작
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //Authentication 필터에 의해
     public String createToken(Authentication authentication){
-
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -58,11 +56,8 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
-    // 토큰에 담겨있는 정보를 이용해 Authentication 객체 리턴
-    public Authentication getAuthentication(String token){
-
-        System.out.println("getAuthentication");
-
+    // 토큰에 정보를 이용해 Authentication 변환
+    public Authentication convertJwtToAuthentication(String token){
         // 토큰을 이용하여 claim 생성
         Claims claims = Jwts
                 .parserBuilder()
@@ -78,7 +73,6 @@ public class TokenProvider implements InitializingBean {
                         .collect(Collectors.toList());
 
         User principal = new User(claims.getSubject(), "", authorities);
-
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 

@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity;
+package com.sptek.webfw.config.springSecurity.spt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

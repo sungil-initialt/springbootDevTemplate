@@ -56,7 +56,7 @@ public class SecurityViewController {
     }
 
     @GetMapping("/signin") //로그인 입력
-    public String login(Model model , SignupRequestDto signupRequestDto) {
+    public String signin(Model model , SignupRequestDto signupRequestDto) {
         return pagePath + "signin";
     }
 
