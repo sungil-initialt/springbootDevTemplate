@@ -23,19 +23,19 @@ import java.util.stream.Collectors;
 @Component
 public class GeneralTokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
-    private final String secret;
+    private final String secreKey;
     private final long tokenValidityInMilliseconds;
     private Key key;
 
-    public GeneralTokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
-        this.secret = secret;
+    public GeneralTokenProvider(@Value("${jwt.secreKey}") String secreKey, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
+        this.secreKey = secreKey;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }
 
     // Bean의 실제 생성(생성자) 이후 동작
     @Override
     public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        byte[] keyBytes = Decoders.BASE64.decode(secreKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
