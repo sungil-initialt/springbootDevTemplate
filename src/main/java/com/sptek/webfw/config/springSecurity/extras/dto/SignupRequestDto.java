@@ -1,12 +1,9 @@
 package com.sptek.webfw.config.springSecurity.extras.dto;
 
-import com.sptek.webfw.config.springSecurity.AuthorityEnum;
-import com.sptek.webfw.config.springSecurity.extras.entity.UserAddress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

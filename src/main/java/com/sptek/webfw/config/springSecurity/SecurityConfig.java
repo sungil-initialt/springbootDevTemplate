@@ -27,15 +27,13 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final GeneralTokenProvider generalTokenProvider;
 
-    //비밀번호 암호화에 사용할 Bean
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    //인증 방식을 구현한 AuthenticationProvider의 impl 를 ProviderManager(AuthenticationManager의 impl)에 등록
-    //WebSecurityConfigurerAdapter 가 deprecated 되면서 방식이 변경됨
+    //AuthenticationManager(=ProviderManager)에 AuthenticationProvider(custom하게 만든것들)을 추가함.
     public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);

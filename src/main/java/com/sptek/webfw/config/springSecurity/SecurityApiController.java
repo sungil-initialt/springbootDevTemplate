@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,23 +27,24 @@ public class SecurityApiController {
     @Autowired
     private GeneralTokenProvider generalTokenProvider;
     @Autowired
-    private AuthenticationManagerBuilder authenticationManagerBuilder;
+    private AuthenticationManager authenticationManager;
 
     //API 방식의 인증 요청
     @PostMapping("/signin")
     public ResponseEntity<ApiSuccessResponseDto<String>> signin(@RequestBody SigninRequestDto signinRequestDto) {
         // RequestBody 에서 id, pw 항목을 선정하여 UsernamePasswordAuthenticationToken 를 만들어 낸후
         // authenticationManager의 절차를 통해 Authentication을 생성하고 SecurityContextHolder 에 저장하고
-        // Authentication을 JWT로 변환하여 해더에 더해주는것 까치 처리함
+        // Authentication을 JWT로 변환하여 해더에 더해주는것 까지 처리함
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signinRequestDto.getEmail(), signinRequestDto.getPassword());
-        log.debug("new authenticationToken: {}", authenticationToken);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signinRequestDto.getEmail(), signinRequestDto.getPassword());
 
-        // authenticationToken이 만들어 지면 Spring Security f/w의 authenticationManager 의 동장 방식을 그데로 따르면 된다.
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        // usernamePasswordAuthenticationToken 이 만들어 지면 Spring Security f/w의 절차대로 authenticationManager에 인증요청을 하면된다.
+        //결과 처리 (api jwt 방식이기 때문에 SecurityContextHolder에 저장할 필요가 없으면 하지 않아도 된다, 결과는 호출자 필요에 따라 처리하면 된다.)
+        //form 방식의 경우는 방방식을 처리해 주는 자체 필터 usernamePasswordAuthenticationFilter 내부에서 SecurityContextHolder에 저장해 줄것으로 예상함
+
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = generalTokenProvider.createToken(authentication);
-
+        String jwt = generalTokenProvider.convertAuthenticationToJwt(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CustomJwtFilter.AUTHORIZATION_HEADER, CustomJwtFilter.JWT_TPYE + jwt);
 

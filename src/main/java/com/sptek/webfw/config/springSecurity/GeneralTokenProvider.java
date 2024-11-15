@@ -39,7 +39,7 @@ public class GeneralTokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication){
+    public String convertAuthenticationToJwt(Authentication authentication){
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -56,7 +56,7 @@ public class GeneralTokenProvider implements InitializingBean {
                 .compact();
     }
 
-    // 토큰에 정보를 이용해 Authentication 변환
+    // 토큰에 정보를 이용해 Authentication (UsernamePasswordAuthenticationToken) 변환
     public Authentication convertJwtToAuthentication(String token){
         // 토큰을 이용하여 claim 생성
         Claims claims = Jwts

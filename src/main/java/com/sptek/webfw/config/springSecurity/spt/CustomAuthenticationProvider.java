@@ -25,38 +25,35 @@ ex:
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    //for login by web page
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        //spring security 의 AuthenticaionFilter 에서 UsernamePasswordAuthenticationToken를 생성해줌
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) authentication;
 
-        //email 값을 Name(일반적id개념) 으로 사용하는 케이스
+        // email 값을 Name(일반적id개념) 으로 사용하는 케이스
         String email = usernamePasswordAuthenticationToken.getName();
         String password = (String) usernamePasswordAuthenticationToken.getCredentials();
-        log.debug("request user info : {} , {}", email, password);
+        log.debug("request authentication info : {} , {}", email, password);
 
         // DB 에서 사용자 정보가 실제로 유효한지 확인 후 인증된 Authentication 리턴
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
         log.debug("customUserDetails info : {} , {}, {}", customUserDetails.getUsername(), customUserDetails.getPassword(), customUserDetails.getAuthorities());
 
-        if (password.equals(customUserDetails.getPassword()) == false) {
-            throw new BadCredentialsException(customUserDetails.getUsername() + " : password does not match.");
+        if (!bCryptPasswordEncoder.matches(password, customUserDetails.getPassword())) {
+            throw new BadCredentialsException(customUserDetails.getUsername() + " : Password does not match.");
         }
 
-        //if (bCryptPasswordEncoder.matches(password, customUserDetails.getPassword()) == false) {
-        //    throw new BadCredentialsException(customUserDetails.getUsername() + " : Password does not match.");
-        //}
-
-        //todo : principal 로 customUserDetails 전체를 주는게 맞을까? name만 주는게 맞을까?
-        //return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), password, customUserDetails.getAuthorities());
+        // Provider는 생성한 Authentication을 리턴할뿐 SecurityContextHolder에 저장하는 역할은 하지 않아야 함
+        // todo : principal 로 customUserDetails 전체를 주는게 맞을까? name만 주는게 맞을까?
+        // return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), password, customUserDetails.getAuthorities());
         return new UsernamePasswordAuthenticationToken(customUserDetails, password, customUserDetails.getAuthorities());
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
+        // 내가 어떤 종류의 Token을 받았을때 처리할수 있는지를 알려주는 것이다.
+        // authenticationManager는 자기에 등록되어 있는 authenticationProvider 목록에서 해당 token을 지원하는 provider 들에게 인증 처리를 요청하게 된다.
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

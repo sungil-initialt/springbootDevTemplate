@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras.dto;
 
-import com.sptek.webfw.config.springSecurity.AuthorityEnum;
+import com.sptek.webfw.config.springSecurity.AuthorityIfEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -12,5 +12,5 @@ public class AuthorityDto {
     private Long id;
 
     @NotNull
-    private AuthorityEnum authority;
+    private AuthorityIfEnum authority;
 }

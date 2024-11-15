@@ -1,8 +1,6 @@
 package com.sptek.webfw.config.springSecurity;
 
-import org.springframework.http.HttpStatus;
-
-public interface BaseAuthority {
+public interface AuthorityIf {
     String getCode();
     String getAlias();
     String getDesc();

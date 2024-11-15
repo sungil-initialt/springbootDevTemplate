@@ -1,38 +1,27 @@
 package com.sptek.webfw.config.springSecurity.spt;
 
+import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
 import com.sptek.webfw.config.springSecurity.extras.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
+//todo : custom하다고다 볼수 있나? custom이란 관점에서 UserDetailsService가 여러개 존재 할수 있지만 현재는 하나 임으로 "userDetailsService" 라는 기본형 네임을 여기에 달아줌
 @Service("userDetailsService")
-class CustomUserDetailsService implements UserDetailsService {
+@RequiredArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public CustomUserDetails loadUserByUsername(String userEmail) {
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException(String.format("email '%s' not found", userEmail)
-                ));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)));
 
-        // CustomUserDetails 생성 및 반환
-        return CustomUserDetails.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .build();
-
-        /*
-        //ModelMapperUtil에 의존하는게 별로인듯
-        return ModelMapperUtil.map(userRepository.findByEmail(userEmail)
-                        .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)))
-                , CustomUserDetails.class);
-         */
+        return CustomUserDetails.builder().userDto(modelMapper.map(user, UserDto.class)).build();
     }
 }

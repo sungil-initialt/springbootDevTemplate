@@ -3,28 +3,36 @@ package com.sptek.webfw.config.springSecurity;
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
-import com.sptek.webfw.config.springSecurity.extras.entity.*;
-import com.sptek.webfw.config.springSecurity.extras.repository.*;
-import lombok.AllArgsConstructor;
+import com.sptek.webfw.config.springSecurity.extras.entity.Authority;
+import com.sptek.webfw.config.springSecurity.extras.entity.Role;
+import com.sptek.webfw.config.springSecurity.extras.entity.Terms;
+import com.sptek.webfw.config.springSecurity.extras.entity.User;
+import com.sptek.webfw.config.springSecurity.extras.repository.AuthorityRepository;
+import com.sptek.webfw.config.springSecurity.extras.repository.RoleRepository;
+import com.sptek.webfw.config.springSecurity.extras.repository.TermsRepository;
+import com.sptek.webfw.config.springSecurity.extras.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityService {
 
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TermsRepository termsRepository;
-    private final TestRepository testRepository;
     private final AuthorityRepository authorityRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 

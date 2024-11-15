@@ -60,14 +60,14 @@ public class SecurityViewController {
         return pagePath + "signin";
     }
 
-    @GetMapping("/user/{email}")
+    @GetMapping("/my/{email}")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
         model.addAttribute("result", resultUserDto);
         return pagePath + "simpleModelView";
     }
 
-    @GetMapping("/user/mypage")
+    @GetMapping("/my/mypage")
     public String user(Model model) {
         String myAuthInfo = SecurityContextHolder.getContext().getAuthentication().toString();
         model.addAttribute("result", myAuthInfo);
