@@ -41,8 +41,6 @@ public class CustomJwtFilter extends GenericFilterBean {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("Authentication({}) has been saved in SecurityContextHolder, uri: {}",authentication.getName(),requestUri);
 
-        // 비인증 상태로 JWT가 없거나 유효하지 않은경우 SecurityContext에 저장되는게 없음
-        // 적접 에러 처리를 하지 않고 다른 필터에 의해 인증 페이지로 갔는데 SecurityContext에 authentication이 없는 경우 그때 EX가 발생함
         } else {
             //jwt가 없거나 유효하지 않다도 직접 별다른 처리를 하지 않음(다른 필터에 맡김)
             log.debug("fail to convert jwt to authentication, uri: {}", requestUri);
