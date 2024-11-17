@@ -1,7 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras.entity;
 
 import com.sptek.webfw.config.springSecurity.AuthorityIfEnum;
-import com.sptek.webfw.config.springSecurity.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

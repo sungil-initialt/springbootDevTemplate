@@ -1,7 +1,5 @@
 package com.sptek.webfw.config.springSecurity.extras.dto;
 
-import com.sptek.webfw.config.springSecurity.RoleEnum;
-import com.sptek.webfw.config.springSecurity.extras.entity.Terms;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

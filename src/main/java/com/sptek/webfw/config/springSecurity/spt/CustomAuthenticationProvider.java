@@ -2,6 +2,7 @@ package com.sptek.webfw.config.springSecurity.spt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,8 +25,10 @@ ex:
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
