@@ -22,6 +22,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)));
 
-        return CustomUserDetails.builder().userDto(modelMapper.map(user, UserDto.class)).build();
+        return CustomUserDetails.builder().userDto(
+                modelMapper.map(user, UserDto.class)
+        ).build();
     }
 }

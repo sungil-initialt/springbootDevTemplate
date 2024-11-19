@@ -36,7 +36,7 @@ public class SecurityApiController {
         // authenticationManager의 절차를 통해 Authentication을 생성하고 SecurityContextHolder 에 저장하고
         // Authentication을 JWT로 변환하여 해더에 더해주는것 까지 처리함
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signinRequestDto.getEmail(), signinRequestDto.getPassword());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signinRequestDto.getUserName(), signinRequestDto.getPassword());
 
         // usernamePasswordAuthenticationToken 이 만들어 지면 Spring Security f/w의 절차대로 authenticationManager에 인증요청을 하면된다.
         //결과 처리 (api jwt 방식이기 때문에 SecurityContextHolder에 저장할 필요가 없으면 하지 않아도 된다, 결과는 호출자 필요에 따라 처리하면 된다.)

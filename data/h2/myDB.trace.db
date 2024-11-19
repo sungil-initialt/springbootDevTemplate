@@ -4,3 +4,9 @@ INSERT INTO ROLE (ROLE_NAME) VALUES ('role2’); [42000-214]
 2024-11-11 10:18:23 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO ROLE (ROLE_NAME) VALUES ([*]'role2’);"; SQL statement:
 INSERT INTO ROLE (ROLE_NAME) VALUES ('role2’); [42000-214]
+2024-11-19 22:57:42 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]delere from ROLE where 1=1"; expected "DELETE, DROP, DECLARE, DEALLOCATE"; SQL statement:
+delere from ROLE where 1=1 [42001-214]
+2024-11-19 23:31:46 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete from [*]user where 1=1"; expected "identifier"; SQL statement:
+delete from user where 1=1 [42001-214]

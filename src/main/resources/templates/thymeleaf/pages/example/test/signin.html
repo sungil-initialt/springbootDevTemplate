@@ -31,10 +31,10 @@
     <div th:replace="/common/fragment/formError :: FormErrorFragment"></div>
 
     <label for="email">email</label>
-    <input type="text" th:field="*{email}">
+    <input type="text" name="username">
 
     <label for="password">password:</label>
-    <input type="text" th:field="*{password}">
+    <input type="text" name="password">
 
     <button type="submit">submit</button>
   </form>

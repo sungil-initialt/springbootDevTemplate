@@ -35,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) authentication;
 
         // email 값을 Name(일반적id개념) 으로 사용하는 케이스
-        String email = usernamePasswordAuthenticationToken.getName();
+        String email = "sungilry@naver.com";//usernamePasswordAuthenticationToken.getName();
         String password = (String) usernamePasswordAuthenticationToken.getCredentials();
         log.debug("request authentication info : {} , {}", email, password);
 
