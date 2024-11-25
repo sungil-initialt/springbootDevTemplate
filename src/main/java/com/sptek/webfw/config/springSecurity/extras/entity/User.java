@@ -1,11 +1,12 @@
 package com.sptek.webfw.config.springSecurity.extras.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.awt.print.Book;
 import java.util.List;
-import java.util.Set;
 //Entity를 DTO 용도로 활용하지 말것(Entity는 TB와 연결되는 주채로 TB컬럼외 다른 필드를 가지 안도록 하고 그렇게 때문에 필요에 따라 DTO 처럼 임의 필드를 널수 없다)
 //todo: Entity는 setter를 막는것을 지향하는데 그러면 매번 DTO->Entity 변환을 Mapper를 사용하지 못하고 Builder로 해야하는데 이게 맞을까?
 @Data
@@ -26,7 +27,7 @@ public class User {
 
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL) //one쪽에 작업이 이루어지면(삭제등) many 쪽도 처리됨
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //one쪽에 작업이 이루어지면(삭제등) many 쪽도 처리됨
     @JoinColumn(name = "user_id") //해당 컬림은 UserAddrress 테이블에 자동으로 생성됨(UserAddress Entity에 명시적으로 컬럼을 만들수 없음, JPA에서는 매핑을 위한 컬럼은 데이터로써의 의미를 두지 않음)
     private List<UserAddress> userAddresses;
 

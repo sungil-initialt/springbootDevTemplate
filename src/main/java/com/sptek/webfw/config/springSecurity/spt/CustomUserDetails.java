@@ -2,9 +2,7 @@ package com.sptek.webfw.config.springSecurity.spt;
 
 import com.sptek.webfw.config.springSecurity.extras.dto.RoleDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +15,7 @@ import java.util.Set;
 
 @Slf4j
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomUserDetails  implements UserDetails {

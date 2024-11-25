@@ -78,6 +78,11 @@ public class SecurityConfig {
                 //.formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
                 .formLogin(form -> form
                         .loginPage("/signin") //custom 로그인 폼
+                )
+
+                //로그아웃 url
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
                 );
 
         return httpSecurity.build();

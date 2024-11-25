@@ -35,14 +35,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) authentication;
 
         // email 값을 Name(일반적id개념) 으로 사용하는 케이스
-        String email = "sungilry@naver.com";//usernamePasswordAuthenticationToken.getName();
+        String email = usernamePasswordAuthenticationToken.getName();
         String password = (String) usernamePasswordAuthenticationToken.getCredentials();
-        log.debug("request authentication info : {} , {}", email, password);
+        log.debug("requested authentication info : {} , {}", email, password);
 
-        // DB 에서 사용자 정보가 실제로 유효한지 확인 후 인증된 Authentication 리턴
+        // 해당 계정이 존재하는지 확인(password 확인은 하지 않음)
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
         log.debug("customUserDetails info : {} , {}, {}", customUserDetails.getUsername(), customUserDetails.getPassword(), customUserDetails.getAuthorities());
 
+        // password 가 일치 하지 않으면 BadCredentialsException 처리
         if (!bCryptPasswordEncoder.matches(password, customUserDetails.getPassword())) {
             throw new BadCredentialsException(customUserDetails.getUsername() + " : Password does not match.");
         }
@@ -50,7 +51,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // Provider는 생성한 Authentication을 리턴할뿐 SecurityContextHolder에 저장하는 역할은 하지 않아야 함
         // todo : principal 로 customUserDetails 전체를 주는게 맞을까? name만 주는게 맞을까?
         // return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), password, customUserDetails.getAuthorities());
-        return new UsernamePasswordAuthenticationToken(customUserDetails, password, customUserDetails.getAuthorities());
+        customUserDetails.getUserDto().setPassword("[PROTECTED]"); //비밀번호는 민감정보로 매칭 확인 후 유출을 막기 위에 처리함
+        return new UsernamePasswordAuthenticationToken(customUserDetails, password, customUserDetails.getAuthorities()); //principal 은 Object 타입으로 서비스상 필요한 적절한 객체로 전달하면 됨
     }
 
     @Override

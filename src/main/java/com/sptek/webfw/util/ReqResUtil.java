@@ -17,12 +17,17 @@ public class ReqResUtil {
     //request에서 요청 uri를 가져옴
     public static String getRequestUrlString(HttpServletRequest request) {
         StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append("request_url=").append(request.getRequestURL());
+        urlBuilder.append(request.getRequestURL());
         String queryString = request.getQueryString();
         if (queryString != null) {
             urlBuilder.append("?").append(queryString);
         }
         return urlBuilder.toString();
+    }
+
+    //request에서 요청 메소드 가져옴
+    public static String getRequestMethodType(HttpServletRequest request) {
+        return request.getMethod();
     }
 
     //request에서 모든 해더 정보를 추출해 Map으로 반환

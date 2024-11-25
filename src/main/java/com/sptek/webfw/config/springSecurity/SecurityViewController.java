@@ -60,7 +60,7 @@ public class SecurityViewController {
         return pagePath + "signin";
     }
 
-    @GetMapping("/my/{email}")
+    @GetMapping("/user/{email}")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
         model.addAttribute("result", resultUserDto);
@@ -68,9 +68,11 @@ public class SecurityViewController {
     }
 
     @GetMapping("/my/mypage")
-    public String user(Model model) {
-        String myAuthInfo = SecurityContextHolder.getContext().getAuthentication().toString();
-        model.addAttribute("result", myAuthInfo);
+    public String mypage(Model model) {
+        String myContextAuthentication = SecurityContextHolder.getContext().getAuthentication().toString();
+        //myContextAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인을 요청했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
+
+        model.addAttribute("result", myContextAuthentication);
         return pagePath + "simpleModelView";
     }
 

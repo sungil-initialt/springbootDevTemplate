@@ -15,11 +15,12 @@ public class RequestInfoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String session = request.getSession().getId();
+        String methodType = ReqResUtil.getRequestMethodType(request);
         String url = ReqResUtil.getRequestUrlString(request);
         String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
         String datas = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
 
-        log.debug("\n----------\nRequest Info Interceptor\nsession : {}\nurl : {}\nheader : {}\ndatas : {}\n----------", session, url, header, datas);
+        log.debug("\n----------\nRequest Info Interceptor\nsession : {}\n({}) url : {}\nheader : {}\ndatas : {}\n----------", session, methodType, url, header, datas);
         return true;
     }
 }
