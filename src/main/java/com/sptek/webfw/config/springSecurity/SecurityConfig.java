@@ -58,9 +58,9 @@ public class SecurityConfig {
                 //path별 Role을 지정함
                 .authorizeHttpRequests(authorize ->
                     authorize
-                            .requestMatchers("/signup", "/signin", "/login").permitAll()  //인증 처리를 위한 오픈 경로(signin은 커스텀하게 만든 페이지, login은 디폴트로 있던..)
-                            .requestMatchers("/admin/marketing/**").hasAnyRole("ADMIN_MARKETING", "SYSTEM")
-                            .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN_DEFAULT", "SYSTEM")
+                            .requestMatchers("/","/signup", "/signin", "/login", "/logout", "/signout").permitAll()  //기본으로 오픈할 경로
+                            .requestMatchers("/admin/marketing/**").hasAnyRole("SYSTEM", "ADMIN")
+                            .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN", "ADMIN_MARKETING", "SYSTEM")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
                             .anyRequest().permitAll() //그외
                             //.anyRequest().authenticated() //그외
@@ -80,9 +80,22 @@ public class SecurityConfig {
                         .loginPage("/signin") //custom 로그인 폼
                 )
 
-                //로그아웃 url
+
+                // 로그아웃 처리
+                // 1. SecurityContext에 저장된 인증 정보 제거
+                // 2. 기본적으로 JSESSIONID 쿠키를 삭제
+                // 3. /login?logout 으로 리다이렉트 처리 (logoutSuccessHandler 추가시에는 logoutSuccessHandler 에서 해줘야함)
                 .logout(logout -> logout
+                        // 로그아웃 처리 url 설정 (해당 req 매핑이 존재할 필요는 없음)
                         .logoutUrl("/logout")
+
+                        //추가적인 로직이 필요한 경우
+                        /*
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            log.debug("User has logged out: " + (authentication != null ? authentication.getName() : "Anonymous"));
+                            response.sendRedirect("/signin?logout"); //마지막 리다이렉트 처리를 직접 해줘야함
+                        })
+                        */
                 );
 
         return httpSecurity.build();

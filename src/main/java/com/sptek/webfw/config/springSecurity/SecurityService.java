@@ -3,10 +3,7 @@ package com.sptek.webfw.config.springSecurity;
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
-import com.sptek.webfw.config.springSecurity.extras.entity.Authority;
-import com.sptek.webfw.config.springSecurity.extras.entity.Role;
-import com.sptek.webfw.config.springSecurity.extras.entity.Terms;
-import com.sptek.webfw.config.springSecurity.extras.entity.User;
+import com.sptek.webfw.config.springSecurity.extras.entity.*;
 import com.sptek.webfw.config.springSecurity.extras.repository.AuthorityRepository;
 import com.sptek.webfw.config.springSecurity.extras.repository.RoleRepository;
 import com.sptek.webfw.config.springSecurity.extras.repository.TermsRepository;
@@ -15,9 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +44,28 @@ public class SecurityService {
         User user = modelMapper.map(signupRequestDto, User.class);
         log.debug("new userEntity : {}", user);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUser(UserUpdateRequestDto userUpdateRequestDto){
+        List<RoleDto> roles = findRolesByRoleNameIn(userUpdateRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
+        List<TermsDto> terms = findTermsByTermsNameIn(userUpdateRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
+
+        userUpdateRequestDto.setRoles(roles);
+        userUpdateRequestDto.setTerms(terms);
+        userUpdateRequestDto.setPassword(bCryptPasswordEncoder.encode(userUpdateRequestDto.getPassword()));
+
+        User originUser = userRepository.findByEmail(userUpdateRequestDto.getEmail()).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", userUpdateRequestDto.getEmail())));
+        originUser.setName(userUpdateRequestDto.getName());
+        originUser.setEmail(userUpdateRequestDto.getEmail());
+        originUser.setPassword(userUpdateRequestDto.getPassword());
+        originUser.setUserAddresses(modelMapper.map(userUpdateRequestDto.getUserAddresses(), new TypeToken<List<UserAddress>>() {}.getType()));
+        originUser.setRoles(modelMapper.map(userUpdateRequestDto.getRoles(), new TypeToken<List<Role>>() {}.getType()));
+        originUser.setTerms(modelMapper.map(userUpdateRequestDto.getTerms(), new TypeToken<List<Terms>>() {}.getType()));
+
+
+        log.debug("update userEntity : {}", originUser);
+        return originUser;
     }
 
     public List<RoleDto> findAllRoles(){
@@ -89,8 +108,7 @@ public class SecurityService {
     }
 
     public UserDto findUserByEmail(String email) {
-        return modelMapper.map(
-                userRepository.findByEmail(email).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", email)))
+        return modelMapper.map(userRepository.findByEmail(email).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", email)))
                 , UserDto.class);
     }
 

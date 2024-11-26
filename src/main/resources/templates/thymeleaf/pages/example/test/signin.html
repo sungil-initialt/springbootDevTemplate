@@ -24,6 +24,7 @@
     <b>login with spring security</b>
   </div>
 
+  <p th:if="${param.logout != null}" style="color: red;">정상적으로 로그아웃 되었습니다.</p>
   <p th:if="${userName} != null"><span th:text="${userName}"></span>님 회원가입을 축하 드립니다!</p>
   <h1> 로그인해 주세요.</h1>
 
