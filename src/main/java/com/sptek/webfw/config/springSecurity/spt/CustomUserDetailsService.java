@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetails loadUserByUsername(String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)));
-        log.debug("user info: {}", user);
+        //log.debug("user info: {}", user);
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
         return CustomUserDetails.builder().userDto(userDto).build();

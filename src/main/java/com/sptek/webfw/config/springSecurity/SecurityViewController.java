@@ -33,7 +33,7 @@ public class SecurityViewController {
     private SecurityService securityService;
 
 
-    @GetMapping("/signup") //회원가입 입력
+    @GetMapping("/signup")
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         //화면에 그리기 위한 값들
         signupRequestDto.setUserAddresses(List.of(new UserAddressDto()));
@@ -44,7 +44,7 @@ public class SecurityViewController {
         return pagePath + "signup";
     }
 
-    @PostMapping("/signup") //회원가입 처리
+    @PostMapping("/signup")
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
@@ -54,14 +54,16 @@ public class SecurityViewController {
             signupRequestDto.setAllTerms(securityService.findAllTerms());
             return pagePath + "signup";
         }
-
         User savedUser = securityService.saveUser(signupRequestDto);
+
+        //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨)
+        redirectAttributes.addFlashAttribute("userName", savedUser.getName());
+
         //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
-        redirectAttributes.addFlashAttribute("userName", savedUser.getName()); //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨), addAttribute를 사용지 쿼리 스트링을 통해 전달됨.
         return "redirect:/signin";
     }
 
-    @GetMapping("/signin") //로그인 입력
+    @GetMapping("/signin")
     public String signin(Model model , SigninRequestDto signinRequestDto) {
         return pagePath + "signin";
     }
@@ -83,11 +85,11 @@ public class SecurityViewController {
         userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
         userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
-        model.addAttribute("userUpdateRequestDto", userUpdateRequestDto); //파람에 들어 있음으로 addAttribute 불필요
+        model.addAttribute("userUpdateRequestDto", userUpdateRequestDto);
         return pagePath + "userUpdate";
     }
 
-    @PostMapping("/user/update") //회원가입 처리
+    @PostMapping("/user/update")
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
@@ -98,10 +100,9 @@ public class SecurityViewController {
 
             return pagePath + "userUpdate";
         }
-
         User savedUser = securityService.updateUser(userUpdateRequestDto);
-        //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
-        redirectAttributes.addFlashAttribute("userName", savedUser.getEmail());
+
+        redirectAttributes.addFlashAttribute("userEmail", savedUser.getEmail());
         return "redirect:/user/update/" + userUpdateRequestDto.getEmail();
     }
 
@@ -128,10 +129,10 @@ public class SecurityViewController {
 
     @GetMapping("/my/mypage")
     public String mypage(Model model) {
-        String myContextAuthentication = SecurityContextHolder.getContext().getAuthentication().toString();
-        //myContextAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인을 요청했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
+        String myAuthentication = SecurityContextHolder.getContext().getAuthentication().toString();
+        //myAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인을 요청했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
 
-        model.addAttribute("result", myContextAuthentication);
+        model.addAttribute("result", myAuthentication);
         return pagePath + "simpleModelView";
     }
 

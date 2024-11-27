@@ -2,7 +2,6 @@ package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.SigninRequestDto;
-import com.sptek.webfw.config.springSecurity.spt.CustomJwtFilter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

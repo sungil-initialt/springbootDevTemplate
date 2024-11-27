@@ -21,8 +21,9 @@
 <body>
 <div>
   <div class="my-3 border-bottom">
-    <b>signup with spring security</b>
+    <b>user information update</b>
   </div>
+  <p th:if="${userEmail} != null" style="color: blueviolet;"><span th:text="${userEmail}"></span>님 정보를 수정 했습니다.!</p>
 
   <form th:action="@{/user/update}" th:object="${userUpdateRequestDto}" method="post">
     <div th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->

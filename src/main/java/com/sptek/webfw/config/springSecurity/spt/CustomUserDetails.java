@@ -23,19 +23,16 @@ public class CustomUserDetails  implements UserDetails {
 
     @Override
     public String getUsername() { //보통? 계정 정보를 의미함 그래서.. 사용자 이름이 아니라 계정 정보로 사용되는 email을 넘기도록 처리
-        log.debug("username : {} ", userDto.getEmail());
         return userDto.getEmail();
     }
 
     @Override
     public String getPassword() {
-        log.debug("password : {} ", userDto.getPassword());
         return userDto.getPassword();
     }
 
     //UserDetails 인터페이스에는 없어서 사람의 실제 이름을 추가함
     public String getUserRealName() {
-        log.debug("userRealName : {} ", userDto.getName());
         return userDto.getName();
     }
 

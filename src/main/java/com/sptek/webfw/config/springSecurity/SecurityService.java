@@ -21,6 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+/*
+readonly=true 트랜젝션에서 가져온 엔티티를 readonly=false 트랜젝션에서 수정해도 더티체킹되어 db에 반영됨
+그러나 reaonly로 가져온 엔티티가 업데이트에 관여하는 구조가 코드상 모호해 보일수 있음.
+해결로.. 별도의 findUserForUpdate 이런식의 중복?되지만 별도 find를 만들어서 readonly=false로 해서 쓰던가..
+그런면에서 서비스는 return은 entity가 아닌 entityDto 형태로 전달해 주는 구조가 젤 좋을듯하다... (번거러운 코드가 생기겠지만..)
+*/
 
 @Slf4j
 @Service
@@ -34,6 +40,7 @@ public class SecurityService {
     private final AuthorityRepository authorityRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Transactional
     public User saveUser(SignupRequestDto signupRequestDto){
         List<RoleDto> roles = findRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
         List<TermsDto> terms = findTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
@@ -55,7 +62,9 @@ public class SecurityService {
         userUpdateRequestDto.setTerms(terms);
         userUpdateRequestDto.setPassword(bCryptPasswordEncoder.encode(userUpdateRequestDto.getPassword()));
 
-        User originUser = userRepository.findByEmail(userUpdateRequestDto.getEmail()).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", userUpdateRequestDto.getEmail())));
+        User originUser = userRepository.findByEmail(userUpdateRequestDto.getEmail())
+                .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", userUpdateRequestDto.getEmail())));
+
         originUser.setName(userUpdateRequestDto.getName());
         originUser.setEmail(userUpdateRequestDto.getEmail());
         originUser.setPassword(userUpdateRequestDto.getPassword());
@@ -68,6 +77,7 @@ public class SecurityService {
         return originUser;
     }
 
+    @Transactional(readOnly = true)
     public List<RoleDto> findAllRoles(){
         List<Role> roles = Optional.of(roleRepository.findAll())
                 .filter(list -> !list.isEmpty())
@@ -83,6 +93,7 @@ public class SecurityService {
 //                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<RoleDto> findRolesByRoleNameIn(List<String> roleNames){
         List<Role> roles = Optional.of(roleRepository.findByRoleNameIn(roleNames))
                 .filter(list -> !list.isEmpty())
@@ -91,6 +102,7 @@ public class SecurityService {
         return modelMapper.map(roles, new TypeToken<List<RoleDto>>() {}.getType());
     }
 
+    @Transactional(readOnly = true)
     public List<TermsDto> findAllTerms(){
         List<Terms> terms = Optional.of(termsRepository.findAll())
                 .filter(list -> !list.isEmpty())
@@ -99,6 +111,7 @@ public class SecurityService {
         return modelMapper.map(terms, new TypeToken<List<TermsDto>>() {}.getType());
     }
 
+    @Transactional(readOnly = true)
     public List<TermsDto> findTermsByTermsNameIn(List<String> termsNames){
         List<Terms> terms = Optional.of(termsRepository.findByTermsNameIn(termsNames))
                 .filter(list -> !list.isEmpty())
@@ -107,11 +120,15 @@ public class SecurityService {
         return modelMapper.map(terms, new TypeToken<List<TermsDto>>() {}.getType());
     }
 
+    @Transactional(readOnly = true)
     public UserDto findUserByEmail(String email) {
-        return modelMapper.map(userRepository.findByEmail(email).orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", email)))
+        return modelMapper
+                .map(userRepository.findByEmail(email)
+                        .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", email)))
                 , UserDto.class);
     }
 
+    @Transactional(readOnly = true)
     public List<AuthorityDto> findAllAuthorities() {
         List<Authority> authorities = Optional.of(authorityRepository.findAll())
                 .filter(list -> !list.isEmpty())
@@ -120,26 +137,27 @@ public class SecurityService {
         return modelMapper.map(authorities, new TypeToken<List<AuthorityDto>>() {}.getType());
     }
 
+    @Transactional
     public List<RoleDto> saveRoles(RoleMngRequestDto roleMngRequestDto){
         Map<Long, RoleDto> reqRolesMap = roleMngRequestDto.getAllRoles().stream().collect(Collectors.toMap(RoleDto::getId, role -> role));
-        List<Role> orgRoles = roleRepository.findAllById(reqRolesMap.keySet());
+        List<Role> originRoles = roleRepository.findAllById(reqRolesMap.keySet());
 
-        for(Role orgRole : orgRoles){
-            orgRole.setRoleName(reqRolesMap.get(orgRole.getId()).getRoleName());
+        for(Role originRole : originRoles){
+            originRole.setRoleName(reqRolesMap.get(originRole.getId()).getRoleName());
 
-            Optional.ofNullable(reqRolesMap.get(orgRole.getId()).getAuthorities())
+            Optional.ofNullable(reqRolesMap.get(originRole.getId()).getAuthorities())
                     .ifPresentOrElse(
-                            authorities -> orgRole.setAuthorities(
+                            authorities -> originRole.setAuthorities(
                                     authorityRepository.findByAuthorityIn(
                                             authorities.stream()
                                                     .map(AuthorityDto::getAuthority)
                                                     .toList()
                                     )
                             ),
-                            () -> orgRole.setAuthorities(Collections.emptyList())
+                            () -> originRole.setAuthorities(Collections.emptyList())
                     );
         }
 
-        return modelMapper.map(roleRepository.saveAll(orgRoles), new TypeToken<List<RoleDto>>() {}.getType());
+        return modelMapper.map(originRoles, new TypeToken<List<RoleDto>>() {}.getType());
     }
 }

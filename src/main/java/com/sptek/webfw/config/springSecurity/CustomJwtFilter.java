@@ -1,6 +1,5 @@
-package com.sptek.webfw.config.springSecurity.spt;
+package com.sptek.webfw.config.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

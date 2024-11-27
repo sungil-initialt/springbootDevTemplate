@@ -20,7 +20,7 @@ public class RequestInfoInterceptor implements HandlerInterceptor {
         String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
         String datas = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
 
-        log.debug("\n----------\nRequest Info Interceptor\nsession : {}\n({}) url : {}\nheader : {}\ndatas : {}\n----------", session, methodType, url, header, datas);
+        log.debug("\n----------\n--> Request Info Interceptor\nsession : {}\n({}) url : {}\nheader : {}\ndatas : {}\n----------", session, methodType, url, header, datas);
         return true;
     }
 }

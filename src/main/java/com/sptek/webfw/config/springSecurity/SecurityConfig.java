@@ -1,7 +1,6 @@
 package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.config.springSecurity.spt.CustomAuthenticationProvider;
-import com.sptek.webfw.config.springSecurity.spt.CustomJwtFilter;
 import com.sptek.webfw.util.SecureUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +21,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final CustomJwtAuthenticationEntryPoint customJwtAuthenticationEntryPoint;
+    private final CustomLoginSuccessHandler customLoginSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final CustomJwtAccessDeniedHandler customJwtAccessDeniedHandler;
     private final GeneralTokenProvider generalTokenProvider;
 
     @Bean
     //로그인 전체 스템을 관리할 AuthenticationManager(=ProviderManager)에 AuthenticationProvider을 추가하여 반환. (필요에 따라 만들어진 AuthenticationProvider)
     public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {
+        //AuthenticationProvider 가 여러개 설정된 상황에 대해서 어떤 전략?으로 처리할지 커스텀이 필요하다면
+        //AuthenticationManager 에 대한 custom 작업이 필요함!
+
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(new CustomAuthenticationProvider());
         return authenticationManagerBuilder.build();
@@ -54,13 +58,15 @@ public class SecurityConfig {
     @Bean
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
     public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
+        customLoginSuccessHandler.setDefaultTargetUrl("/"); // --> 여기처리
+        
         httpSecurity
                 //path별 Role을 지정함
                 .authorizeHttpRequests(authorize ->
                     authorize
                             .requestMatchers("/","/signup", "/signin", "/login", "/logout", "/signout").permitAll()  //기본으로 오픈할 경로
-                            .requestMatchers("/admin/marketing/**").hasAnyRole("SYSTEM", "ADMIN")
                             .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN", "ADMIN_MARKETING", "SYSTEM")
+                            .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SYSTEM")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
                             .anyRequest().permitAll() //그외
                             //.anyRequest().authenticated() //그외
@@ -71,13 +77,16 @@ public class SecurityConfig {
                         exceptionHandling
                                 //인증 오류를 케치하여 처리(todo : 비설정시 login 페이지로 이동됨, 반대로 설정되면 로그인 페이지로 자동 연결되지 않음, 필터의 순서상의 이유가 있는 듯, 자세한건 확인 필요)
                                 //.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(jwtAccessDeniedHandler) //인가 오류 진입점
+                                .accessDeniedHandler(customJwtAccessDeniedHandler) //인가 오류 진입점
                 )
 
                 //.httpBasic(Customizer.withDefaults()) //얼럿창형
                 //.formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
                 .formLogin(form -> form
                         .loginPage("/signin") //custom 로그인 폼
+                        .successHandler(customLoginSuccessHandler)
+                        .failureHandler(customAuthenticationFailureHandler)
+                        
                 )
 
 
@@ -119,8 +128,8 @@ public class SecurityConfig {
 
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(jwtAccessDeniedHandler) //인가 오류 진입점
+                                .authenticationEntryPoint(customJwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(customJwtAccessDeniedHandler) //인가 오류 진입점
                 )
 
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
