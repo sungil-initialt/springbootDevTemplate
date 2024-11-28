@@ -2,6 +2,9 @@ package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
+import com.sptek.webfw.config.springSecurity.spt.LoginHelper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -60,12 +63,13 @@ public class SecurityViewController {
         redirectAttributes.addFlashAttribute("userName", savedUser.getName());
 
         //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
-        return "redirect:/signin";
+        return "redirect:/login";
     }
 
-    @GetMapping("/signin")
-    public String signin(Model model , SigninRequestDto signinRequestDto) {
-        return pagePath + "signin";
+    @GetMapping("/login")
+    public String login(Model model , LoginRequestDto loginRequestDto, HttpServletRequest request) {
+        model.addAttribute("redirectTo", LoginHelper.getRedirectQuery(request));
+        return pagePath + "login";
     }
 
     @GetMapping("/user/{email}")

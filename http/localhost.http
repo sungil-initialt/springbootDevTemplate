@@ -120,7 +120,7 @@ Content-Type: application/json
 
 
 ### API 방식 인증 요청 테스트
-POST {{api-server-ver}}/signin
+POST {{api-server-ver}}/login
 Content-Type: application/json
 
 {

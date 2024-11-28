@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SigninRequestDto {
+public class LoginRequestDto {
 
     @NotEmpty(message = "email을 입력해 주세요.")
     @Email(message = "email이 이메일 형식에 맞지 않습니다.")

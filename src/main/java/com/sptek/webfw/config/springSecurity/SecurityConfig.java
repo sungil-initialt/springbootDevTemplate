@@ -58,13 +58,12 @@ public class SecurityConfig {
     @Bean
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
     public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
-        customLoginSuccessHandler.setDefaultTargetUrl("/"); // --> 여기처리
         
         httpSecurity
                 //path별 Role을 지정함
                 .authorizeHttpRequests(authorize ->
                     authorize
-                            .requestMatchers("/","/signup", "/signin", "/login", "/logout", "/signout").permitAll()  //기본으로 오픈할 경로
+                            .requestMatchers("/","/signup", "/login", "/logout").permitAll()  //기본으로 오픈할 경로
                             .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN", "ADMIN_MARKETING", "SYSTEM")
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SYSTEM")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
@@ -83,7 +82,8 @@ public class SecurityConfig {
                 //.httpBasic(Customizer.withDefaults()) //얼럿창형
                 //.formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
                 .formLogin(form -> form
-                        .loginPage("/signin") //custom 로그인 폼
+                        .loginPage("/login")
+                        //.defaultSuccessUrl("/")
                         .successHandler(customLoginSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                         
@@ -102,7 +102,7 @@ public class SecurityConfig {
                         /*
                         .logoutSuccessHandler((request, response, authentication) -> {
                             log.debug("User has logged out: " + (authentication != null ? authentication.getName() : "Anonymous"));
-                            response.sendRedirect("/signin?logout"); //마지막 리다이렉트 처리를 직접 해줘야함
+                            response.sendRedirect("/login?logout"); //마지막 리다이렉트 처리를 직접 해줘야함
                         })
                         */
                 );
@@ -119,7 +119,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/**/signup", "/api/**/signin").permitAll()
+                                .requestMatchers("/api/**/signup", "/api/**/login").permitAll()
                                 .requestMatchers("/api/**/admin/marketing/**").hasAnyRole("ADMIN_MARKETING", "SYSTEM")
                                 .requestMatchers("/api/**/my/**", "/api/**/mypage/**").hasAnyRole("USER", "ADMIN_DEFAULT", "SYSTEM")
                                 .requestMatchers("/api/**/system/**").hasAnyRole("SYSTEM")

@@ -1,7 +1,7 @@
 package com.sptek.webfw.config.springSecurity;
 
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
-import com.sptek.webfw.config.springSecurity.extras.dto.SigninRequestDto;
+import com.sptek.webfw.config.springSecurity.extras.dto.LoginRequestDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +30,12 @@ public class SecurityApiController {
 
     //API 방식의 인증 요청
     @PostMapping("/signin")
-    public ResponseEntity<ApiSuccessResponseDto<String>> signin(@RequestBody SigninRequestDto signinRequestDto) {
+    public ResponseEntity<ApiSuccessResponseDto<String>> signin(@RequestBody LoginRequestDto loginRequestDto) {
         // RequestBody 에서 id, pw 항목을 선정하여 UsernamePasswordAuthenticationToken 를 만들어 낸후
         // authenticationManager의 절차를 통해 Authentication을 생성하고 SecurityContextHolder 에 저장하고
         // Authentication을 JWT로 변환하여 해더에 더해주는것 까지 처리함
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signinRequestDto.getUserName(), signinRequestDto.getPassword());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUserName(), loginRequestDto.getPassword());
 
         // usernamePasswordAuthenticationToken 이 만들어 지면 Spring Security f/w의 절차대로 authenticationManager에 인증요청을 하면된다.
         //결과 처리 (api jwt 방식이기 때문에 SecurityContextHolder에 저장할 필요가 없으면 하지 않아도 된다, 결과는 호출자 필요에 따라 처리하면 된다.)

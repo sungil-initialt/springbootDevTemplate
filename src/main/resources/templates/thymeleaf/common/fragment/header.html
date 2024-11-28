@@ -25,7 +25,7 @@
             </form>
 
             <p th:if="${#authentication?.getPrincipal() == null or #authentication?.getPrincipal() == 'anonymousUser'}">
-                <a th:href="@{/signin}">signin</a>
+                <a th:href="@{/login}">login</a>
             </p>
         </div>
 
