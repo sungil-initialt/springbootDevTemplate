@@ -28,10 +28,8 @@ import java.util.List;
 public class SecurityViewController {
 
     private final String pagePath = "pages/example/test/";
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private SecurityService securityService;
 
@@ -67,8 +65,8 @@ public class SecurityViewController {
     }
 
     @GetMapping("/login")
-    public String login(Model model , LoginRequestDto loginRequestDto, HttpServletRequest request) {
-        model.addAttribute("redirectTo", LoginHelper.getRedirectQuery(request));
+    public String login(Model model , LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
+        model.addAttribute("redirectTo", LoginHelper.getRedirectUrlAfterLogging(request, response));
         return pagePath + "login";
     }
 

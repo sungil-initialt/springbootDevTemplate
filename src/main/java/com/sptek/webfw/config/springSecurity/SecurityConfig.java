@@ -58,7 +58,6 @@ public class SecurityConfig {
     @Bean
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
     public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
-        
         httpSecurity
                 //path별 Role을 지정함
                 .authorizeHttpRequests(authorize ->
@@ -86,9 +85,7 @@ public class SecurityConfig {
                         //.defaultSuccessUrl("/")
                         .successHandler(customLoginSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
-                        
                 )
-
 
                 // 로그아웃 처리
                 // 1. SecurityContext에 저장된 인증 정보 제거
@@ -102,7 +99,7 @@ public class SecurityConfig {
                         /*
                         .logoutSuccessHandler((request, response, authentication) -> {
                             log.debug("User has logged out: " + (authentication != null ? authentication.getName() : "Anonymous"));
-                            response.sendRedirect("/login?logout"); //마지막 리다이렉트 처리를 직접 해줘야함
+                            response.sendRedirect("/login?logout"); // custom 코드를 넣었다면 마지막 리다이렉션 처리까지 직접 해줘야함.
                         })
                         */
                 );
