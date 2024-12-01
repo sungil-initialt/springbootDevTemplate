@@ -2,9 +2,11 @@ package com.sptek.webfw.common.exceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 //@Profile(value = { "notused" })
@@ -26,6 +28,13 @@ public class WebGlobalExceptionHandler {
     public String handleNoResourceFoundException(Exception ex) {
         log.error(ex.getMessage());
         return "error/commonInternalErrorView";
+    }
+
+    @ExceptionHandler({AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAccessDeniedException(Exception ex) {
+        log.error(ex.getMessage());
+        return "error/commonAuthenticationErrorView";
     }
 
     @ExceptionHandler(Exception.class)

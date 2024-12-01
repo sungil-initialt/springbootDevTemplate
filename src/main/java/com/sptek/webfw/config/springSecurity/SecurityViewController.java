@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,6 +71,7 @@ public class SecurityViewController {
         return pagePath + "login";
     }
 
+    @PreAuthorize("hasRole('USER') and #email == authentication.principal.userDto.email")
     @GetMapping("/user/{email}")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
@@ -146,8 +148,13 @@ public class SecurityViewController {
 
     @GetMapping("/admin/marketing/event")
     public String adminMarketing(Model model) {
-        model.addAttribute("result", "Admin marketing event page for only admin who has AUTH_RETRIEVE_USER_ALL_FOR_MARKETING");
+        model.addAttribute("result", "Admin marketing event page for only the admin who has AUTH_RETRIEVE_USER_ALL_FOR_MARKETING");
         return pagePath + "simpleModelView";
     }
 
+    @GetMapping("/system/env")
+    public String systemEnv(Model model) {
+        model.addAttribute("result", "system env page for only the system admin");
+        return pagePath + "simpleModelView";
+    }
 }

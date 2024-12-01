@@ -3,7 +3,9 @@ package com.sptek.webfw.config.springSecurity.spt;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,14 +14,16 @@ import java.util.Optional;
 @Slf4j
 public class LoginHelper {
 
-    public final static String LOGIN_SUCCESS_TARGETURL_PARAMETER = "redirectTo";
+    private final static String LOGIN_SUCCESS_REDIRECT_URL = "LOGIN_SUCCESS_REDIRECT_URL";
+    private final static String THE_TIME_SPRING_OWN_REDIRECT_URL = "THE_TIME_SPRING_OWN_REDIRECT_URL";
+
     private final static HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
 
     public static String getRedirectUrlAfterLogging(HttpServletRequest request, HttpServletResponse response) {
         String referer = request.getHeader("referer");
         String refererPath = "";
         String refererQuery = "";
-        String directTo = "";
+        String redirectParam = "";
 
         if(referer != null) {
             try {
@@ -27,35 +31,63 @@ public class LoginHelper {
                 refererPath = uri.getPath() == null ? "" : uri.getPath(); // 경로 (/ 이후 부분)
                 refererQuery = uri.getQuery() == null ? "" : uri.getQuery(); // 쿼리 문자열 (? 이후 부분)
 
-                directTo = !refererQuery.isEmpty() ? refererPath + "?" + refererQuery : refererPath;
+                log.debug("referer uri({}), refererPath({}), refererQuery({})", referer, refererPath, refererQuery);
+                redirectParam = refererQuery.isEmpty() ? refererPath : refererPath + "?" + refererQuery;
+
             } catch (URISyntaxException e) {
                 log.debug(e.getMessage());
             }
         }
 
-        //-----------------------------------------------------------------------------------------------------
-        // 한가지 처리하지 못한케이스 :
-        // 인증이 필요한 url을 브라우저에 직접쳐서.. 로그인 페이지로 자동 이동된 후... 로그인 처리후 처음에 입력한 페이지로 가지 못하고 root로 가는 케이스
-        // (다른 사이트도 이런경우는 많은 것 같음.. 처리가 애매함)
-        if (refererPath.equals("/login")) {
-            if (requestCache.getRequest(request, response) != null) {
-                request.getSession().removeAttribute(LOGIN_SUCCESS_TARGETURL_PARAMETER);
-            }
-
-        } else {
-            request.getSession().setAttribute(LOGIN_SUCCESS_TARGETURL_PARAMETER, directTo);
-            requestCache.removeRequest(request, response);
+        //url 로 직접 치고 들어온 케이스 (referer 가 없는 경우)
+        if(refererPath.equals("")) {
+            removeRedirectUrlSpringOwn(request, response);
+            request.getSession().removeAttribute(LOGIN_SUCCESS_REDIRECT_URL);
+            log.debug("came into the login by typing the login url.");
         }
 
-        String result =  (request.getSession().getAttribute(LOGIN_SUCCESS_TARGETURL_PARAMETER) != null)
-                ? request.getSession().getAttribute(LOGIN_SUCCESS_TARGETURL_PARAMETER).toString()
-                : null;
+        //로그인 버튼을 클릭해서 들어온 케이스
+        if(request.getParameter("button") != null) {
+            removeRedirectUrlSpringOwn(request, response);
+            log.debug("came into the login by click the login button.");
+        }
 
-        Optional<String> resultOpt = Optional.ofNullable(result);
-        resultOpt.ifPresentOrElse(
-                value -> log.debug("this login will redirect to " + value),
-                () -> log.debug("this login will redirect to root(/) or saved request's redirectUrl"));
+        //referer 를 로그인 성공시 redirect url 설정 (단 로그인 페이지에서 로그인 실패 또는 logout 등 이유로.. referer 가 login 자신이 되는 케이스는 제외하고)
+        if (!refererPath.equals("/login")) {
+            request.getSession().setAttribute(LOGIN_SUCCESS_REDIRECT_URL, redirectParam);
+        }
 
-        return result;
+        String attrLoginSuccessRedirectUrl = request.getSession().getAttribute(LOGIN_SUCCESS_REDIRECT_URL) != null ? request.getSession().getAttribute(LOGIN_SUCCESS_REDIRECT_URL).toString() : "";
+        log.debug("helper's redirect url : {}", attrLoginSuccessRedirectUrl);
+        log.debug("spring's redirect url : {}", getRedirectUrlSpringOwn(request, response));
+
+        //위 케이스별 처리에도 불고하고 SpringOwn RedirectUrl 이 존재한다면 spring 에게 Redirect 처리를 맞기기 위해 redirectParam 을 null 로 내림
+        return hasOkRedirectUrlSpringOwn(request, response) ? null :  attrLoginSuccessRedirectUrl;
+    }
+
+    public static boolean hasOkRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
+        SavedRequest savedRequest =  requestCache.getRequest(request, response);
+        String savedRequestRedirectPath = "";
+
+         if(savedRequest != null) {
+           String url = savedRequest.getRedirectUrl();
+             try {
+                 URI uri = new URI(url);
+                 savedRequestRedirectPath = uri.getPath() == null ? "" : uri.getPath(); // 경로 (/ 이후 부분)
+             } catch (URISyntaxException e) {
+                 log.debug(e.getMessage());
+             }
+         }
+
+         return savedRequest != null && (!savedRequestRedirectPath.equals("/login") && !savedRequestRedirectPath.equals("login"));
+    }
+
+    public static String getRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
+        return requestCache.getRequest(request, response) == null ? null : requestCache.getRequest(request, response).getRedirectUrl();
+    }
+
+    public static void removeRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
+        //request.getSession().removeAttribute("SPRING_SECURITY_SAVED_REQUEST"); // todo : 어떤게 더 좋은 방법일까?
+        requestCache.removeRequest(request, response);
     }
 }

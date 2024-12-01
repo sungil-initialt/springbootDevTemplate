@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 // 현재는 SavedRequestAwareAuthenticationSuccessHandler 의 옵션 설정 외 그데로 사용.
 
+    private final static String LOGIN_SUCCESS_TARGETURL_PARAMETER = "redirectTo";
+
     //필요 옵션 설정
     CustomLoginSuccessHandler() {
         this.setDefaultTargetUrl("/");
-        this.setTargetUrlParameter(LoginHelper.LOGIN_SUCCESS_TARGETURL_PARAMETER);
+        this.setTargetUrlParameter(LOGIN_SUCCESS_TARGETURL_PARAMETER);
     }
 
 //    @Override
