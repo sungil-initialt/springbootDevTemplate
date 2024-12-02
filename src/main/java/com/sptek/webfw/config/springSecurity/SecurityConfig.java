@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomJwtAuthenticationEntryPoint customJwtAuthenticationEntryPoint;
-    private final CustomLoginSuccessHandler customLoginSuccessHandler;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final CustomJwtAccessDeniedHandler customJwtAccessDeniedHandler;
     private final GeneralTokenProvider generalTokenProvider;
@@ -62,12 +61,16 @@ public class SecurityConfig {
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
     public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                //path별 Role을 지정함
+                //path별 Role을 지정함 (controller 의  @PreAuthorize와의 차이점은 여기서 path에 지정하는 방식은 spring security fillter 에 의해 관리되고.. controller 에 지정된 것은 servlet 에서 관리됨)
+                //다시말해.. path에 지정하면.. 인증이 필요할때 spring-security-fillter가 로그인 페이지로 자동 이동해 주거나.. 권한이 없을때 filter 레벨에서 403 페이지로 전환해 준다.
+                //@PreAuthorize 방식은 인증이 필요한 경우나 권한이 없는경우 관련 EX가 발생되고.. 그에 따른 처리는 Sevlet 내에서 개발자가 알아서 처리해 주어야 한다.(로그인페이지로 자동 연결해주는거 없음)
                 .authorizeHttpRequests(authorize ->
-                    authorize
-                            .requestMatchers("/","/signup", "/login", "/logout").permitAll()  //기본으로 오픈할 경로
+                    authorize //-->fillter 방식과 @PreAuthorize 방식의 선택 기준 고민 필요
+
+                            .requestMatchers("/","/signup", "/login", "/logout").permitAll()
                             .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN", "ADMIN_MARKETING", "SYSTEM")
-                            .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SYSTEM")
+                            .requestMatchers("/user/**").hasAnyRole("USER")
+                            .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
                             .anyRequest().permitAll() //그외
                             //.anyRequest().authenticated() //그외
@@ -86,7 +89,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         //.defaultSuccessUrl("/")
-                        .successHandler(customLoginSuccessHandler)
+                        .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                 )
 

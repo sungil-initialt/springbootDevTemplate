@@ -3,13 +3,11 @@ package com.sptek.webfw.config.springSecurity.spt;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
 @Slf4j
 public class LoginHelper {
@@ -66,6 +64,10 @@ public class LoginHelper {
     }
 
     public static boolean hasOkRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
+        //Spring-security는 post 요청에 대해서는 인증 후 saveRequest를 생성하지 않는다.. 보안상 민감할수도 있는 데이터를 session 등에 저장 하지 않기 위해.
+        //이걸 custom 클레스에서 overwirte 해서 강제로 savedRequest를 만들수도 있지만... CSRF토큰을 사용하는 경우 최초 form 의 csrf 토큰값이 로그인후 변경되기 때문에 또 문제가 있다.
+        //억지로 구현하려하지 말고 가능하면... 이런 한계를 그데로 그데로 받아드리는게 좋을듯 함
+
         SavedRequest savedRequest =  requestCache.getRequest(request, response);
         String savedRequestRedirectPath = "";
 

@@ -71,7 +71,7 @@ public class SecurityViewController {
         return pagePath + "login";
     }
 
-    @PreAuthorize("hasRole('USER') and #email == authentication.principal.userDto.email")
+    @PreAuthorize("(hasRole('USER') and #email == authentication.principal.userDto.email) || hasRole('ADMIN')")
     @GetMapping("/user/{email}")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
@@ -79,6 +79,7 @@ public class SecurityViewController {
         return pagePath + "simpleModelView";
     }
 
+    @PreAuthorize("(hasRole('USER') and #email == authentication.principal.userDto.email) || hasRole('ADMIN')")
     @GetMapping("/user/update/{email}")
     public String userUpdate(@PathVariable("email") String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         UserDto userDto = securityService.findUserByEmail(email);
@@ -93,6 +94,7 @@ public class SecurityViewController {
         return pagePath + "userUpdate";
     }
 
+    @PreAuthorize("(hasRole('USER') and #userUpdateRequestDto.email == authentication.principal.userDto.email) || hasRole('ADMIN')")
     @PostMapping("/user/update")
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
 
@@ -117,7 +119,7 @@ public class SecurityViewController {
         return pagePath + "roles";
     }
 
-    @PostMapping("/roles")
+    @PostMapping("/admin/roles")
     public String roleWithAuthority(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
