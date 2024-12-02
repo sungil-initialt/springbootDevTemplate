@@ -79,7 +79,11 @@ public class SecurityViewController {
         return pagePath + "simpleModelView";
     }
 
-    @PreAuthorize("(hasRole('USER') and #email == authentication.principal.userDto.email) || hasRole('ADMIN')")
+    //hasRole 과 hasAuthority 차이는 둘다 Authentication 의 authorities 에서 찾는데 hasRole('USER') 은 내부적으로 ROLE_USER 처럼 ROLE_ 를 붙여서 찾고 hasAuthority 는 그대로 찾는다.
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING) " +
+            "|| #email == authentication.principal.userDto.email"
+    )
     @GetMapping("/user/update/{email}")
     public String userUpdate(@PathVariable("email") String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         UserDto userDto = securityService.findUserByEmail(email);
@@ -94,7 +98,10 @@ public class SecurityViewController {
         return pagePath + "userUpdate";
     }
 
-    @PreAuthorize("(hasRole('USER') and #userUpdateRequestDto.email == authentication.principal.userDto.email) || hasRole('ADMIN')")
+    @PreAuthorize(
+            "hasAuthority('AUTH_RETRIEVE_USER_ALL_FOR_MARKETING') " +
+            "|| #userUpdateRequestDto.email == authentication.principal.userDto.email"
+    )
     @PostMapping("/user/update")
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
 
