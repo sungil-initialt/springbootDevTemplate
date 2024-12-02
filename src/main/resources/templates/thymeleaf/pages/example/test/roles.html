@@ -24,7 +24,7 @@
     <b>signup with spring security</b>
   </div>
 
-  <form th:action="@{/roles}" th:object="${roleMngRequestDto}" method="post">
+  <form th:action="@{/admin/roles}" th:object="${roleMngRequestDto}" method="post">
     <div th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
 
     <div th:each="role : ${roleMngRequestDto.allRoles}">
