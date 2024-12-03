@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RoleMngRequestDto {
     @Valid //내부 객체에 대해서도 Valid 기능을 동작하게 함
-    private List<RoleDto> allRoles;
+    private List<RoleAuthorityDto> allRoleAuthorities;
 
     @Valid
     private List<AuthorityDto> allAuthorities;

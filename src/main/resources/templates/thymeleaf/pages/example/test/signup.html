@@ -49,9 +49,9 @@
 
     <br><br>
     <label>User Roles:</label>
-    <div th:each="role : ${signupRequestDto.allRoles}">
-      <input type="checkbox" th:name="${'roles[' + roleStat.index + '].roleName'}" th:value="${role.roleName}" th:checked="${#lists.contains(signupRequestDto.userRoleNames, role.roleName)}"/>
-      <label th:text="${role.roleName}"></label>
+    <div th:each="roleAuthority : ${signupRequestDto.allRoleAuthorities}">
+      <input type="checkbox" th:name="${'roleAuthorities[' + roleAuthorityStat.index + '].roleName'}" th:value="${roleAuthority.roleName}" th:checked="${#lists.contains(signupRequestDto.userRoleNames, roleAuthority.roleName)}"/>
+      <label th:text="${roleAuthority.roleName}"></label>
     </div>
 
     <br><br>

@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity.spt;
 
-import com.sptek.webfw.config.springSecurity.extras.dto.RoleDto;
+import com.sptek.webfw.config.springSecurity.extras.dto.RoleAuthorityDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class CustomUserDetails  implements UserDetails {
         // 모두 Authentication 의  getAuthorities() 를 통해 제공되며 Role 경우 이름에 프리픽스로 ROLE_xx 를 관습적으로 남김
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-        for (RoleDto role : userDto.getRoles()) {
+        for (RoleAuthorityDto role : userDto.getRoleAuthorities()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleName())); //Role을 auth에 추가
             Optional.ofNullable(role.getAuthorityEnums()) //auth도 auth에 추가
                     .ifPresent(authorityEnums -> {

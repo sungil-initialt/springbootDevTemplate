@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoleDto {
+public class RoleAuthorityDto {
     private Long id;
 
     @Size(min = 2, max = 20, message = "role Name 은 2자 이상 20자 이하로 입력해 주세요.")
@@ -27,7 +27,7 @@ public class RoleDto {
     private List<AuthorityIfEnum> authorityEnums;
 
     public List<AuthorityIfEnum> getAuthorityEnums() {
-        return Optional.ofNullable(authorities).orElseGet(Collections::emptyList).stream()
-                .map(AuthorityDto::getAuthority).collect(Collectors.toList());
+        return Optional.ofNullable(authorities).orElseGet(Collections::emptyList)
+                .stream().map(AuthorityDto::getAuthority).collect(Collectors.toList());
     }
 }

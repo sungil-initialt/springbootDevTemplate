@@ -18,7 +18,7 @@ public class UserDto {
     private String email;
     private String password;
     private List<UserAddressDto> userAddresses;
-    private Set<RoleDto> roles;
+    private Set<RoleAuthorityDto> roleAuthorities;
     private Set<TermsDto> terms;
 
 }

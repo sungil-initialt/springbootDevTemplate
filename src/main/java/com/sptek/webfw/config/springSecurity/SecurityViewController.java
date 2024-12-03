@@ -15,10 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -39,7 +36,7 @@ public class SecurityViewController {
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         //화면에 그리기 위한 값들
         signupRequestDto.setUserAddresses(List.of(new UserAddressDto()));
-        signupRequestDto.setAllRoles(securityService.findAllRoles());
+        signupRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
         signupRequestDto.setAllTerms(securityService.findAllTerms());
 
         //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
@@ -52,7 +49,7 @@ public class SecurityViewController {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 다시 그리기 위해
-            signupRequestDto.setAllRoles(securityService.findAllRoles());
+            signupRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
             signupRequestDto.setAllTerms(securityService.findAllTerms());
             return pagePath + "signup";
         }
@@ -93,7 +90,7 @@ public class SecurityViewController {
         userUpdateRequestDto.setPassword("");
 
         //화면에 그리기 위한 값들
-        userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
+        userUpdateRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
         userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
         model.addAttribute("userUpdateRequestDto", userUpdateRequestDto);
@@ -110,7 +107,7 @@ public class SecurityViewController {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 다시 그리기 위해
-            userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
+            userUpdateRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
             userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
             return pagePath + "userUpdate";
@@ -123,17 +120,31 @@ public class SecurityViewController {
 
     @GetMapping("/roles")
     public String roles(Model model, RoleMngRequestDto roleMngRequestDto) {
-        roleMngRequestDto.setAllRoles(securityService.findAllRoles());
+        roleMngRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
         roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
         return pagePath + "roles";
     }
 
-    @PostMapping("/admin/roles")
+    @PostMapping("/roles")
     public String roleWithAuthority(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
-            roleMngRequestDto.setAllRoles(securityService.findAllRoles());
+            roleMngRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+            roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
+            return pagePath + "roles";
+        }
+
+        securityService.saveRoles(roleMngRequestDto);
+        return "redirect:/roles";
+    }
+
+    @PostMapping("/role/createRole")
+    public String makeNewRole(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
+
+        //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
+        if (bindingResult.hasErrors()) {
+            roleMngRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
             roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
             return pagePath + "roles";
         }

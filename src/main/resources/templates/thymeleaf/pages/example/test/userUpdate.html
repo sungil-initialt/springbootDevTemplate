@@ -50,9 +50,9 @@
 
     <br><br>
     <label>User Roles:</label>
-    <div th:each="role : ${userUpdateRequestDto.allRoles}">
-      <input type="checkbox" th:name="${'roles[' + roleStat.index + '].roleName'}" th:value="${role.roleName}" th:checked="${#lists.contains(userUpdateRequestDto.userRoleNames, role.roleName)}"/>
-      <label th:text="${role.roleName}"></label>
+    <div th:each="roleAuthorities : ${userUpdateRequestDto.allRoleAuthorities}">
+      <input type="checkbox" th:name="${'roleAuthorities[' + roleAuthoritiesStat.index + '].roleName'}" th:value="${roleAuthorities.roleName}" th:checked="${#lists.contains(userUpdateRequestDto.userRoleNames, roleAuthorities.roleName)}"/>
+      <label th:text="${roleAuthorities.roleName}"></label>
     </div>
 
     <br><br>
