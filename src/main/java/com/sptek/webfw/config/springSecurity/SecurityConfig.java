@@ -64,9 +64,9 @@ public class SecurityConfig {
                 //path별 Role을 지정함 (controller 의  @PreAuthorize와의 차이점은 여기서 path에 지정하는 방식은 spring security fillter 에 의해 관리되고.. controller 에 지정된 것은 servlet 에서 관리됨)
                 //다시말해.. path에 지정하면.. 인증이 필요할때 spring-security-fillter가 로그인 페이지로 자동 이동해 주거나.. 권한이 없을때 filter 레벨에서 403 페이지로 전환해 준다.
                 //@PreAuthorize 방식은 인증이 필요한 경우나 권한이 없는경우 관련 EX가 발생되고.. 그에 따른 처리는 Sevlet 내에서 개발자가 알아서 처리해 주어야 한다.(로그인페이지로 자동 연결해주는거 없음)
+                //1차적으로 Role에 따라 path를 구분하여 권한처리를 하고 특정 페이지에 조회 기능과 수정 기능이 각각의 별도 권한이 필요하다면 이런 경우는 컨트롤러에 권한 설정을 하는 방식이 적합하지 않을까..
                 .authorizeHttpRequests(authorize ->
                     authorize //-->fillter 방식과 @PreAuthorize 방식의 선택 기준 고민 필요
-
                             .requestMatchers("/","/signup", "/login", "/logout").permitAll()
                             .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN", "ADMIN_MARKETING", "SYSTEM")
                             .requestMatchers("/user/**").hasAnyRole("USER")
