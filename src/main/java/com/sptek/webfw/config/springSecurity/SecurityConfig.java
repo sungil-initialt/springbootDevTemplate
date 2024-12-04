@@ -68,7 +68,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                     authorize //-->fillter 방식과 @PreAuthorize 방식의 선택 기준 고민 필요
                             .requestMatchers("/","/signup", "/login", "/logout").permitAll()
-                            .requestMatchers("/my/**", "/mypage/**").hasAnyRole("USER", "ADMIN", "ADMIN_MARKETING", "SYSTEM")
+                            .requestMatchers("/my/**", "/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
+                            .requestMatchers("/auth/**", "/mypage/**").authenticated()
                             .requestMatchers("/user/**").hasAnyRole("USER")
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")

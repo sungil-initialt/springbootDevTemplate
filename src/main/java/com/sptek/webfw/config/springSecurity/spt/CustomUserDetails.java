@@ -54,6 +54,9 @@ public class CustomUserDetails  implements UserDetails {
         return grantedAuthorities;
     }
 
+    //아래 계정 상태와 관련된 메소드를 각 사이트에 맞게 처리하여 리턴하도록 함
+    //DaoAuthenticationProvider 와 같은 제공되는? Provider 들은 내부의 additionalAuthenticationChecks 메소드를 통해 검증 절차를 진행함
+    //custom으로 Provider 를 만드는 경우 Provider 내부에서 호출해서 처리하로독 한다. (DaoAuthenticationProvider 내부를 참고)
     @Override
     public boolean isAccountNonExpired() {
         return true; // 계정의 만료 여부

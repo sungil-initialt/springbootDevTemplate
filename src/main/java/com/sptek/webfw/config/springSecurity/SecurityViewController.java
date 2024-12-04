@@ -72,9 +72,7 @@ public class SecurityViewController {
     }
 
     @PreAuthorize("(#email == authentication.principal.userDto.email) || hasRole('ADMIN')")
-    @GetMapping({"/user/{email}"
-            , "/admin/{email}"
-            , "/system/{email}"})
+    @GetMapping("/auth/user/info/{email}")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
         model.addAttribute("result", resultUserDto);
@@ -83,10 +81,10 @@ public class SecurityViewController {
 
     //hasRole 과 hasAuthority 차이는 둘다 Authentication 의 authorities 에서 찾는데 hasRole('USER') 은 내부적으로 ROLE_USER 처럼 ROLE_ 를 붙여서 찾고 hasAuthority 는 그대로 찾는다.
     @PreAuthorize(
-            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING) "
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING)"
                     + "|| #email == authentication.principal.userDto.email"
     )
-    @GetMapping("/user/update/{email}")
+    @GetMapping("/auth/user/update/{email}")
     public String userUpdate(@PathVariable("email") String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         UserDto userDto = securityService.findUserByEmail(email);
         userUpdateRequestDto = modelMapper.map(userDto, UserUpdateRequestDto.class);
@@ -104,7 +102,7 @@ public class SecurityViewController {
             "hasAuthority('AUTH_RETRIEVE_USER_ALL_FOR_MARKETING') "
                     + "|| #userUpdateRequestDto.email == authentication.principal.userDto.email"
     )
-    @PostMapping("/user/update")
+    @PostMapping("/auth/user/update")
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
@@ -118,7 +116,7 @@ public class SecurityViewController {
         User savedUser = securityService.updateUser(userUpdateRequestDto);
 
         redirectAttributes.addFlashAttribute("userEmail", savedUser.getEmail());
-        return "redirect:/user/update/" + userUpdateRequestDto.getEmail();
+        return "redirect:/auth/user/update/" + userUpdateRequestDto.getEmail();
     }
 
     @GetMapping("/roles")
@@ -128,7 +126,7 @@ public class SecurityViewController {
         return pagePath + "roles";
     }
 
-    @PostMapping("/admin/roles")
+    @PostMapping("/roles")
     public String roleWithAuthority(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
