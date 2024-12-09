@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,10 +24,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final CustomJwtAuthenticationEntryPoint customJwtAuthenticationEntryPoint;
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    private final CustomJwtAccessDeniedHandler customJwtAccessDeniedHandler;
+    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
+    private final CustomAuthenticationSuccessHandlerForWeb customAuthenticationSuccessHandlerForWeb;
+    private final CustomAuthenticationFailureHandlerForWeb customAuthenticationFailureHandlerForWeb;
+    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
     private final GeneralTokenProvider generalTokenProvider;
 
     @Bean
@@ -82,7 +83,7 @@ public class SecurityConfig {
                         exceptionHandling
                                 //인증 오류를 케치하여 처리(todo : 비설정시 login 페이지로 이동됨, 반대로 설정되면 로그인 페이지로 자동 연결되지 않음, 필터의 순서상의 이유가 있는 듯, 자세한건 확인 필요)
                                 //.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(customJwtAccessDeniedHandler) //인가 오류 진입점
+                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
                 )
 
                 //.httpBasic(Customizer.withDefaults()) //얼럿창형
@@ -90,8 +91,8 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         //.defaultSuccessUrl("/")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .failureHandler(customAuthenticationFailureHandler)
+                        .successHandler(customAuthenticationSuccessHandlerForWeb)
+                        .failureHandler(customAuthenticationFailureHandlerForWeb)
                 )
 
                 // 로그아웃 처리
@@ -118,27 +119,29 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChainForApi(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 // JWT를 사용하는 경우 CSRF방지 기능을 사용 할 필요가 없음.(CSRF 공격이 session 쿠키 방식의 문제 점에 기인한 것으로 JWT만 사용하여 세션을 사용하지 않는다면 disable 처리)
-                .csrf(csrf ->
-                        csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/api/**/signup", "/api/**/login").permitAll()
-                                .requestMatchers("/api/**/admin/marketing/**").hasAnyRole("ADMIN_MARKETING", "SYSTEM")
-                                .requestMatchers("/api/**/my/**", "/api/**/mypage/**").hasAnyRole("USER", "ADMIN_DEFAULT", "SYSTEM")
+                                .requestMatchers("/api/**/my/**", "/api/**/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
+                                .requestMatchers("/api/**/auth/**", "/api/**/mypage/**").authenticated()
+                                .requestMatchers("/api/**/user/**").hasAnyRole("USER")
+                                .requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/**/system/**").hasAnyRole("SYSTEM")
                                 .anyRequest().permitAll()
                 )
 
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .authenticationEntryPoint(customJwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(customJwtAccessDeniedHandler) //인가 오류 진입점
+                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
+                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
                 )
 
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
-                //(UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 req post로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함)
+                //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
                 .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                -->여기 부터 봐야 함(핸들로쪽 에러도 바로 response를 나가는게 아니라 api 글로벌 핸들러를 타도록 수정 필요)
 
         return httpSecurity.build();
     }
