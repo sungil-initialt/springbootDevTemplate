@@ -127,3 +127,8 @@ Content-Type: application/json
   "email": "sungilry@naver.com",
   "password" : "1q2w3e4rA!"
 }
+
+
+### public echo 테스트
+GET {{api-server-ver}}/public/hello?message=hi
+Content-Type: application/json

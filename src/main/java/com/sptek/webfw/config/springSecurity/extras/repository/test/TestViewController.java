@@ -3,6 +3,8 @@ package com.sptek.webfw.config.springSecurity.extras.repository.test;
 import com.sptek.webfw.config.springSecurity.AuthorityIfEnum;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.util.ModelMapperUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class TestViewController {
+    @NonFinal //생성자 주입 대상에서 제외
     private final String pagePath = "pages/example/test/";
-    @Autowired
-    private TestService testService;
+    private final TestService testService;
 
     //for test
     @GetMapping("/user/test/{key}")

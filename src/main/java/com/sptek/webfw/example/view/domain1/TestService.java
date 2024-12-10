@@ -6,6 +6,7 @@ import com.sptek.webfw.persistence.dao.MyBatisCommonDao;
 import com.sptek.webfw.support.CommonServiceSupport;
 import com.sptek.webfw.support.MybatisResultHandlerSupport;
 import com.sptek.webfw.support.PageInfoSupport;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class TestService extends CommonServiceSupport {
 
-    @Autowired
-    private MyBatisCommonDao myBatisCommonDao;
+    private final MyBatisCommonDao myBatisCommonDao;
 
     @Transactional(readOnly = true)
     public int returnOne(){

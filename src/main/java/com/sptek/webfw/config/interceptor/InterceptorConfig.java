@@ -3,23 +3,21 @@ package com.sptek.webfw.config.interceptor;
 
 import com.sptek.webfw.support.MethodCheckInterceptorSupport;
 import com.sptek.webfw.util.SecureUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@RequiredArgsConstructor
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private ExampleInterceptor exampleInterceptor;
-    @Autowired
-    private RequestInfoInterceptor requestInfoInterceptor;
-    @Autowired
-    private ResponseInfoInterceptor responseInfoInterceptor;
-    @Autowired
-    private UvInterceptor uvInterceptor;
+    private final ExampleInterceptor exampleInterceptor;
+    private final RequestInfoInterceptor requestInfoInterceptor;
+    private final ResponseInfoInterceptor responseInfoInterceptor;
+    private final UvInterceptor uvInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {

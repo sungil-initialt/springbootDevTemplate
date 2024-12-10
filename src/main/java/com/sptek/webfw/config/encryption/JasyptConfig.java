@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.encryption;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
@@ -11,11 +12,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class JasyptConfig {
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
     private String jasyptSecretKey = System.getenv("JASYPT_SECRET_KEY");
 
     @Bean("jasyptStringEncryptor")

@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -55,20 +57,13 @@ import java.util.function.Predicate;
 public class TestApiController extends CommonControllerSupport {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
-    @Autowired
-    private PropertyVos.ProjectInfoVo projectInfoVo;
-    @Autowired
-    CloseableHttpClient closeableHttpClient;
-    @Autowired
-    CloseableHttpClientSupport closeableHttpClientSupport;
-    @Autowired
-    RestTemplate restTemplate;
-    @Autowired
-    RestTemplateSupport restTemplateSupport;
-    @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    private TestService testService;
+    private final PropertyVos.ProjectInfoVo projectInfoVo;
+    private final CloseableHttpClient closeableHttpClient;
+    private final CloseableHttpClientSupport closeableHttpClientSupport;
+    private final RestTemplate restTemplate;
+    private final RestTemplateSupport restTemplateSupport;
+    private final ObjectMapper objectMapper;
+    private final TestService testService;
 
     @GetMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
@@ -76,14 +71,14 @@ public class TestApiController extends CommonControllerSupport {
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) {
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto(message));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
     }
 
     @GetMapping("/projectinfo")
     @Operation(summary = "projectinfo", description = "projectinfo 테스트", tags = {""})
     //단순 프로젝트 정보 확인
     public ResponseEntity<ApiSuccessResponseDto<PropertyVos.ProjectInfoVo>> projectinfo() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto(projectInfoVo));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(projectInfoVo));
     }
 
     @PostMapping("/swaggerExample")
@@ -93,7 +88,7 @@ public class TestApiController extends CommonControllerSupport {
             @RequestParam String message,
             @RequestBody ValidationTestDto validationTestDto) {
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto(validationTestDto));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(validationTestDto));
     }
 
     @GetMapping("/XssProtectSupportGet")
@@ -105,7 +100,7 @@ public class TestApiController extends CommonControllerSupport {
 
         //XssProtectFilter를 통해 response body 내 스크립트 일괄 제거.
         String message = "XssProtectedText = " + originText;
-        return ResponseEntity.ok(new ApiSuccessResponseDto(message));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
     }
 
     @PostMapping("/XssProtectSupportPost")
@@ -116,7 +111,7 @@ public class TestApiController extends CommonControllerSupport {
             @RequestBody String originText) {
 
         String message = "XssProtectedText = " + originText;
-        return ResponseEntity.ok(new ApiSuccessResponseDto(message));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
     }
 
     @RequestMapping("/interceptor")
@@ -124,33 +119,33 @@ public class TestApiController extends CommonControllerSupport {
     //인터셉터들을 테스트 하기 위한 용도
     public ResponseEntity<ApiSuccessResponseDto<String>> interceptor() {
         String message = "see the interceptor message in log";
-        return ResponseEntity.ok(new ApiSuccessResponseDto(message));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
     }
 
     @RequestMapping("/closeableHttpClient")
     @Operation(summary = "closeableHttpClient", description = "closeableHttpClient 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
     public ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClient() throws Exception{
-        log.debug("identityHashCode : {}", System.identityHashCode(closeableHttpClient));
+        log.debug("closeableHttpClient identityHashCode : {}", System.identityHashCode(closeableHttpClient));
 
         HttpGet httpGet = new HttpGet(fooResponseUrl);
         httpGet.addHeader("X-test-id", "xyz");
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet);
 
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
-        return ResponseEntity.ok(new ApiSuccessResponseDto(EntityUtils.toString(httpEntity)));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(EntityUtils.toString(httpEntity)));
     }
 
     @RequestMapping("/closeableHttpClientSupport")
     @Operation(summary = "closeableHttpClientSupport", description = "closeableHttpClientSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
     public ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClientSupport() throws Exception{
-        log.debug("identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
+        log.debug("closeableHttpClientSupport identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
         HttpEntity httpEntity = closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto(CloseableHttpClientSupport.convertResponseToString(httpEntity)));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(CloseableHttpClientSupport.convertResponseToString(httpEntity)));
     }
 
     @RequestMapping("/restTemplate")
@@ -164,7 +159,7 @@ public class TestApiController extends CommonControllerSupport {
                 .build();
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
-        return ResponseEntity.ok(new ApiSuccessResponseDto(responseEntity.getBody()));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(responseEntity.getBody()));
     }
 
     @RequestMapping("/restTemplateSupport")
@@ -172,7 +167,7 @@ public class TestApiController extends CommonControllerSupport {
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
     public ResponseEntity<ApiSuccessResponseDto<String>> restTemplateSupport() {
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(fooResponseUrl, null, null);
-        return ResponseEntity.ok(new ApiSuccessResponseDto(responseEntity.getBody()));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(responseEntity.getBody()));
     }
 
     @RequestMapping("/reqResUtil")
@@ -190,27 +185,27 @@ public class TestApiController extends CommonControllerSupport {
         resultMap.put("heades", heades);
         resultMap.put("params", params);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto(resultMap));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(resultMap));
     }
 
     @PostMapping("/validationAnnotationPost")
     @Operation(summary = "validationAnnotationPost", description = "validationAnnotationPost 테스트", tags = {""})
     //request input 값에대한 validation 처리 테스트
     public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
-        return ResponseEntity.ok(new ApiSuccessResponseDto(validationTestDto));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(validationTestDto));
     }
 
     @GetMapping("/validationAnnotationGet")
     @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
-        return ResponseEntity.ok(new ApiSuccessResponseDto(validationTestDto));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(validationTestDto));
     }
 
     @GetMapping("/propertyConfigImport")
     @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
     //컨트롤러 진입시 특정 property값을 가져올수 있다.
     public ResponseEntity<ApiSuccessResponseDto<String>> propertyConfigImport(@Value("${specific.value}") String specificValue) {
-        return ResponseEntity.ok(new ApiSuccessResponseDto(specificValue));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(specificValue));
     }
 
     @GetMapping("/argumentResolverForMyUser")
@@ -219,14 +214,14 @@ public class TestApiController extends CommonControllerSupport {
     //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
     public ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser(ArgumentResolverForMyUser.MyUser myUser) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
-        return ResponseEntity.ok(new ApiSuccessResponseDto(myUser));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUser));
     }
 
     @GetMapping("/argumentResolverForMyUser2")
     @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser2(@AnoCustomArgument ArgumentResolverForMyUser.MyUser myUser) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
-        return ResponseEntity.ok(new ApiSuccessResponseDto(myUser));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUser));
     }
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -242,7 +237,7 @@ public class TestApiController extends CommonControllerSupport {
         Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
         List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto(FileUploadDtos));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(FileUploadDtos));
     }
 
     @GetMapping(value = "/byteForImage")
@@ -275,7 +270,7 @@ public class TestApiController extends CommonControllerSupport {
     public ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
         String result = "duplicatedRequest test";
         Thread.sleep(3000L);
-        return ResponseEntity.ok(new ApiSuccessResponseDto(result));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(result));
     }
 
     @RequestMapping("/httpCache")
@@ -286,13 +281,13 @@ public class TestApiController extends CommonControllerSupport {
         CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
         long result = System.currentTimeMillis();
 
-        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiSuccessResponseDto(result));
+        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiSuccessResponseDto<>(result));
     }
 
     @RequestMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) {
         int result = testService.raiseServiceError(errorType);
-        return ResponseEntity.ok(new ApiSuccessResponseDto(result));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(result));
     }
 }

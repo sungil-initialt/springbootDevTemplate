@@ -3,6 +3,7 @@ package com.sptek.webfw.support;
 import com.sptek.webfw.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,7 +24,7 @@ Controller에서 이용할수 있는 공통 기능을 추가해 나가면 됨
 @Slf4j
 public class CommonWebSupport {
 
-    @Autowired
+    @Autowired // todo : final로 생성자 주입 받으면 에러나는 이유 확인 필요
     private MessageSource messageSource;
 
     //현재 Locale에 해당하는 메시지로 제공한다.

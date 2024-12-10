@@ -1,6 +1,7 @@
 package com.sptek.webfw.support;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,16 +16,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 
 /*
-RestTemplate을 쉽게 사용하기 위한 클레스로 직접 생성(new) 하지 않고 @Autowired로 주입받아 사용해야 한다.
+RestTemplate을 쉽게 사용하기 위한 클레스로 직접 생성(new) 하지 않고 spring을 통해 주입받아 사용해야 한다.
  */
 @Slf4j
+@RequiredArgsConstructor
 public class RestTemplateSupport{
 
-    private RestTemplate restTemplate;
-
-    public RestTemplateSupport(RestTemplate restTemplate){
-        this.restTemplate = restTemplate;
-    }
+    private final RestTemplate restTemplate;
 
     public ResponseEntity<String> requestGet(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders) {
         log.debug("requestUri = ({}), queryParams = ({}), httpHeaders = ({})", requestUri, queryParams, httpHeaders);

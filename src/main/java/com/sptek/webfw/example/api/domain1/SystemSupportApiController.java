@@ -18,7 +18,7 @@ public class SystemSupportApiController extends CommonControllerSupport {
     @GetMapping("/health/healthCheck")
     @Operation(summary = "healthCheck", description = "healthCheck 테스트", tags = {""}) //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> healthCheck() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto("ok"));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("ok"));
     }
 
 }

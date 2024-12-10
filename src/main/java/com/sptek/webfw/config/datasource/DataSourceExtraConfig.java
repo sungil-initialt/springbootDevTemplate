@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.datasource;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -16,11 +17,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.sql.DataSource;
 
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class DataSourceExtraConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Bean
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {

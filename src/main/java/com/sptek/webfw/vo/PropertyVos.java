@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class PropertyVos {
 
-    //프로젝트에서 자주 사용되는 프로퍼티 정보를 아래와 같이 클레스를 구성하여 필요할때 @Autowired하여 사용하면 된다.
+    //프로젝트에서 자주 사용되는 프로퍼티 정보를 아래와 같이 클레스를 구성하여 필요할때 spring 주입을 통해 사용하면 된다.
     @Data
     @Component
     @ConfigurationProperties(prefix = "project-info") //property에서 해당 prefix 값 이하의 항목과 클레스 내부 변수를 매핑해 준다.

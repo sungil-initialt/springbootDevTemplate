@@ -6,6 +6,8 @@ import com.sptek.webfw.config.springSecurity.spt.LoginHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +23,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class SecurityViewController {
 
+    @NonFinal
     private final String pagePath = "pages/example/test/";
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private SecurityService securityService;
-
+    private final ModelMapper modelMapper;
+    private final SecurityService securityService;
 
     @GetMapping("/signup")
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함

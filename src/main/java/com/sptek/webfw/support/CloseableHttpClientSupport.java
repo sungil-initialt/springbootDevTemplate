@@ -22,7 +22,7 @@ import java.util.Optional;
 
 /*
 closeableHttpClient 사용을 쉽게 할수있도록 만듬.
-해당 클레스는 직접 생성(new)하지 않고 @Autowired 통해 사용해야 함
+해당 클레스는 직접 생성(new)하지 않고 spring 주입을 통해 사용해야 함
  */
 
 @Slf4j

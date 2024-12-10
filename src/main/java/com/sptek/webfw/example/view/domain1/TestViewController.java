@@ -11,6 +11,8 @@ import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -19,10 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -33,14 +32,14 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class TestViewController extends CommonControllerSupport {
+    @NonFinal
     private final String pagePath = "pages/example/test/";
-    @Autowired
-    private TestService testService;
-    @Autowired
-    private com.sptek.webfw.example.api.domain1.TestService testService;
+    private final TestService testViewService;
+    private final com.sptek.webfw.example.api.domain1.TestService testApiService;
 
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
@@ -70,35 +69,35 @@ public class TestViewController extends CommonControllerSupport {
     //Mybatis 를 통한 DB 테스트들
     @RequestMapping("/dbConnect")
     public String dbConnect(Model model) {
-        int result = testService.returnOne();
+        int result = testViewService.returnOne();
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/replicationMaster")
     public String replicationMaster(Model model) {
-        int result = testService.replicationMaster();
+        int result = testViewService.replicationMaster();
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/replicationSlave")
     public String replicationSlave(Model model) {
-        int result = testService.replicationSlave();
+        int result = testViewService.replicationSlave();
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectOne")
     public String selectOne(Model model) {
-        TBTestDto tbTestDto = testService.selectOne();
+        TBTestDto tbTestDto = testViewService.selectOne();
         model.addAttribute("result", tbTestDto.toString());
         return pagePath + "simpleModelView";
     }
 
     @RequestMapping("/selectList")
     public String selectList(Model model) {
-        List<TBTestDto> tbTestDtos = testService.selectList();
+        List<TBTestDto> tbTestDtos = testViewService.selectList();
         model.addAttribute("result", tbTestDtos.toString());
         return pagePath + "simpleModelView";
     }
@@ -106,7 +105,7 @@ public class TestViewController extends CommonControllerSupport {
     @RequestMapping("/selectListWithResultHandler")
     //ResultHandler를 이용해서 db에서 result row를 하나씩 읽어와 각 row에 대한 처리가 가능함
     public String selectListWithResultHandler(Model model) {
-        List<TBZipcodeDto> tBZipcodes = testService.selectListWithResultHandler();
+        List<TBZipcodeDto> tBZipcodes = testViewService.selectListWithResultHandler();
         model.addAttribute("result", tBZipcodes.toString());
         return pagePath + "simpleModelView";
     }
@@ -114,7 +113,7 @@ public class TestViewController extends CommonControllerSupport {
     @RequestMapping("/selectMap")
     //result 결과 list를 map 형태로 받아올수 있다.
     public String selectMap(Model model) {
-        Map<?, ?> resultMap = testService.selectMap();
+        Map<?, ?> resultMap = testViewService.selectMap();
         model.addAttribute("result", resultMap.toString());
         return pagePath + "simpleModelView";
     }
@@ -127,7 +126,7 @@ public class TestViewController extends CommonControllerSupport {
                                      @RequestParam(name = "setButtomPageNavigationSize", required = false, defaultValue = "0") int setButtomPageNavigationSize,
                                      Model model) {
 
-        PageInfoSupport<TBZipcodeDto> pageInfoSupport = testService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
+        PageInfoSupport<TBZipcodeDto> pageInfoSupport = testViewService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
         model.addAttribute("result", pageInfoSupport.toString());
         return pagePath + "simpleModelView";
     }
@@ -139,7 +138,7 @@ public class TestViewController extends CommonControllerSupport {
                 .c2(42)
                 .c3(43).build();
 
-        int result = testService.insert(tbTestDto);
+        int result = testViewService.insert(tbTestDto);
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }
@@ -151,7 +150,7 @@ public class TestViewController extends CommonControllerSupport {
                 .c2(422)
                 .c3(433).build();
 
-        int result = testService.update(tbTestDto);
+        int result = testViewService.update(tbTestDto);
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }
@@ -161,7 +160,7 @@ public class TestViewController extends CommonControllerSupport {
         TBTestDto tbTestDto = TBTestDto.builder()
                 .c1(41).build();
 
-        int result = testService.delete(tbTestDto);
+        int result = testViewService.delete(tbTestDto);
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }
@@ -262,7 +261,7 @@ public class TestViewController extends CommonControllerSupport {
 
     @RequestMapping("/viewServiceError")
     public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
-        int result = testService.raiseServiceError(errorType);
+        int result = testApiService.raiseServiceError(errorType);
         model.addAttribute("result", result);
         return pagePath + "simpleModelView";
     }

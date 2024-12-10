@@ -4,7 +4,10 @@ import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.CustomJwtFilter;
 import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;
 import com.sptek.webfw.config.springSecurity.extras.dto.LoginRequestDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,22 +16,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RestController
+@RequiredArgsConstructor
 @RequestMapping(value = {"/api/v1/"})
 @Tag(name = "security", description = "인증/인가 api 그룹")
 public class SecurityApiController {
-    @Autowired
-    private SecurityService securityService;
-    @Autowired
-    private GeneralTokenProvider generalTokenProvider;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final SecurityService securityService;
+    private final GeneralTokenProvider generalTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     //API 방식의 인증 요청
     @PostMapping("/login")
@@ -44,7 +41,25 @@ public class SecurityApiController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CustomJwtFilter.AUTHORIZATION_HEADER, CustomJwtFilter.AUTHORIZATION_PREFIX + jwt);
 
-        return ResponseEntity.ok().headers(httpHeaders).body(new ApiSuccessResponseDto(jwt));
+        return ResponseEntity.ok().headers(httpHeaders).body(new ApiSuccessResponseDto<>(jwt));
+    }
+
+    @GetMapping("/auth/hello")
+    @Operation(summary = "auth hello", description = "auth hello 테스트", tags = {"echo"}) //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> authHello(
+            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
+            @RequestParam String message) {
+
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+    }
+
+    @GetMapping("/public/hello")
+    @Operation(summary = "public hello", description = "public hello 테스트", tags = {"echo"}) //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> publicHello(
+            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
+            @RequestParam String message) {
+
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
     }
 
 }

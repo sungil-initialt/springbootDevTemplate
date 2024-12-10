@@ -29,6 +29,7 @@ public class SecurityConfig {
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
     private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
     private final GeneralTokenProvider generalTokenProvider;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     //로그인 전체 스템을 관리할 AuthenticationManager(=ProviderManager)에 AuthenticationProvider을 추가하여 반환. (필요에 따라 만들어진 AuthenticationProvider)
@@ -37,7 +38,7 @@ public class SecurityConfig {
         //AuthenticationManager 에 대한 custom 작업이 필요함!
 
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(new CustomAuthenticationProvider());
+        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
         return authenticationManagerBuilder.build();
     }
 
@@ -122,7 +123,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/**/signup", "/api/**/login").permitAll()
+                                .requestMatchers("/api/**/signup", "/api/**/login", "/api/**/logout", "/api/**/public/**").permitAll()
                                 .requestMatchers("/api/**/auth/**", "/api/**/my/**", "/api/**/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
                                 .requestMatchers("/api/**/user/**").hasAnyRole("USER")
                                 .requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN")
@@ -139,7 +140,7 @@ public class SecurityConfig {
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
                 .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
-                -->여기 부터 봐야 함(핸들로쪽 에러도 바로 response를 나가는게 아니라 api 글로벌 핸들러를 타도록 수정 필요)
+                //-->여기 부터 봐야 함(핸들로쪽 에러도 바로 response를 나가는게 아니라 api 글로벌 핸들러를 타도록 수정 필요) + testService 이런거 이름이 동일해서 변경필요, 바로위 패키지명을 붙이는 방향으로
 
         return httpSecurity.build();
     }
