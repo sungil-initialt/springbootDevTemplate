@@ -16,7 +16,7 @@ import java.io.IOException;
 @Slf4j
 public class CustomJwtFilter extends GenericFilterBean {
     public static String AUTHORIZATION_HEADER = "Authorization";
-    public static String JWT_TYPE = "Bearer ";
+    public static String AUTHORIZATION_PREFIX  = "Bearer ";
     private final GeneralTokenProvider generalTokenProvider;
 
     public CustomJwtFilter(GeneralTokenProvider generalTokenProvider){
@@ -49,9 +49,9 @@ public class CustomJwtFilter extends GenericFilterBean {
     // Request Header에서 토큰 정보를 꺼내오기
     private String getJwtFromRequest(HttpServletRequest request){
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(JWT_TYPE)){
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(AUTHORIZATION_PREFIX)){
             log.debug("Bearer : " + bearerToken);
-            return bearerToken.substring(JWT_TYPE.length());
+            return bearerToken.substring(AUTHORIZATION_PREFIX.length());
         }
         return null;
     }

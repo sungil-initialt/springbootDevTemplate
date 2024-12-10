@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.api.api1;
+package com.sptek.webfw.example.api.domain1;
 
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class ApiTestService extends CommonServiceSupport {
+public class TestService extends CommonServiceSupport {
     public int raiseServiceError(int errorType) throws ServiceException {
 
         switch (errorType) {

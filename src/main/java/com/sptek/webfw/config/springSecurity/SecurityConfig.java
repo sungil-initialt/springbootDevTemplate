@@ -25,8 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
-    private final CustomAuthenticationSuccessHandlerForWeb customAuthenticationSuccessHandlerForWeb;
-    private final CustomAuthenticationFailureHandlerForWeb customAuthenticationFailureHandlerForWeb;
+    private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
+    private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
     private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
     private final GeneralTokenProvider generalTokenProvider;
 
@@ -69,8 +69,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                     authorize //-->fillter 방식과 @PreAuthorize 방식의 선택 기준 고민 필요
                             .requestMatchers("/","/signup", "/login", "/logout").permitAll()
-                            .requestMatchers("/my/**", "/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
-                            .requestMatchers("/auth/**", "/mypage/**").authenticated()
+                            .requestMatchers("/auth/**", "/my/**", "/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
                             .requestMatchers("/user/**").hasAnyRole("USER")
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
@@ -91,8 +90,8 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         //.defaultSuccessUrl("/")
-                        .successHandler(customAuthenticationSuccessHandlerForWeb)
-                        .failureHandler(customAuthenticationFailureHandlerForWeb)
+                        .successHandler(customAuthenticationSuccessHandlerForView)
+                        .failureHandler(customAuthenticationFailureHandlerForView)
                 )
 
                 // 로그아웃 처리
@@ -124,8 +123,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/api/**/signup", "/api/**/login").permitAll()
-                                .requestMatchers("/api/**/my/**", "/api/**/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
-                                .requestMatchers("/api/**/auth/**", "/api/**/mypage/**").authenticated()
+                                .requestMatchers("/api/**/auth/**", "/api/**/my/**", "/api/**/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
                                 .requestMatchers("/api/**/user/**").hasAnyRole("USER")
                                 .requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/**/system/**").hasAnyRole("SYSTEM")

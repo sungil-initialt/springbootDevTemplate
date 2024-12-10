@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.api.api1;
+package com.sptek.webfw.example.api.domain1;
 
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.support.CommonControllerSupport;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 //swagger
 @Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹")
-public class SystemSupportController extends CommonControllerSupport {
+public class SystemSupportApiController extends CommonControllerSupport {
 
     @GetMapping("/health/healthCheck")
     @Operation(summary = "healthCheck", description = "healthCheck 테스트", tags = {""}) //swagger

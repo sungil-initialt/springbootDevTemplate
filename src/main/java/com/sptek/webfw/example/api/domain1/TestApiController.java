@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.api.api1;
+package com.sptek.webfw.example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.anotation.AnoCustomArgument;
@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 @RequestMapping(value = {"/api/v1/"})
 //swagger
 @Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹")
-public class ApiTestController extends CommonControllerSupport {
+public class TestApiController extends CommonControllerSupport {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
     @Autowired
@@ -68,7 +68,7 @@ public class ApiTestController extends CommonControllerSupport {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    private ApiTestService apiTestService;
+    private TestService testService;
 
     @GetMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
@@ -292,7 +292,7 @@ public class ApiTestController extends CommonControllerSupport {
     @RequestMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) {
-        int result = apiTestService.raiseServiceError(errorType);
+        int result = testService.raiseServiceError(errorType);
         return ResponseEntity.ok(new ApiSuccessResponseDto(result));
     }
 }
