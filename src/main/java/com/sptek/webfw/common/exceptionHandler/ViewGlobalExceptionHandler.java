@@ -12,7 +12,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 //@Profile(value = { "notused" })
 @Slf4j
 @ControllerAdvice
-public class WebGlobalExceptionHandler {
+public class ViewGlobalExceptionHandler {
 
     /*
     ExceptionHandler에  Exception(최상위) 타입을 포함했기 때문에 발생하는 모든 Exception은 이곳 한곳에서 처리된다.

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 @Slf4j
 @Component
-public class CustomJwtAccessDeniedHandler implements AccessDeniedHandler {
+public class CustomJwtAccessDeniedHandlerForApi implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         log.error(accessDeniedException.getMessage());

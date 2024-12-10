@@ -1,4 +1,4 @@
-package com.sptek.webfw.config.springSecurity.extras;
+package com.sptek.webfw.config.springSecurity.extras.repository.test;
 
 import com.sptek.webfw.config.springSecurity.AuthorityIfEnum;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class TestController {
+public class TestViewController {
     private final String pagePath = "pages/example/test/";
     @Autowired
     private TestService testService;

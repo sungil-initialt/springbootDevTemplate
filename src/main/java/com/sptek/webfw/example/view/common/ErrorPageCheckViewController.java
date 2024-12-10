@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.web.common;
+package com.sptek.webfw.example.view.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Slf4j
 @Controller
-public class ErrorViewCheckController {
+public class ErrorPageCheckViewController {
     @RequestMapping("/error/{errorCode}")
     public String error(@PathVariable("errorCode") String errorCode) {
         //해당 RequestMapping은 UI확인등 에러 페이지를 눈으로 확인하기 위한 용도이며 실제 상황에서 ex 발생시 정상적인 메커니즘을 통해 에러 페이지로 연결된다.

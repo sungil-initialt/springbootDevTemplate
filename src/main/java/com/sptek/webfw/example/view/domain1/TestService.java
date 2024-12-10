@@ -1,4 +1,4 @@
-package com.sptek.webfw.example.web.test;
+package com.sptek.webfw.example.view.domain1;
 
 import com.sptek.webfw.example.dto.TBTestDto;
 import com.sptek.webfw.example.dto.TBZipcodeDto;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class ViewTestService extends CommonServiceSupport {
+public class TestService extends CommonServiceSupport {
 
     @Autowired
     private MyBatisCommonDao myBatisCommonDao;

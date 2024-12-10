@@ -77,9 +77,9 @@ public class GeneralTokenProvider implements InitializingBean {
     }
 
     // 토큰의 유효성 검사
-    public boolean validateToken(String token){
+    public boolean validateJwt(String jwt){
         try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
             return true;
         }
         catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { log.info("Invalid JWT signature"); }

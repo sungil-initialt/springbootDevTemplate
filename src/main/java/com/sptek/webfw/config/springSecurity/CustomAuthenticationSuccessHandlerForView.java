@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandlerForView extends SavedRequestAwareAuthenticationSuccessHandler {
 // 현재는 SavedRequestAwareAuthenticationSuccessHandler 의 옵션 설정 외 그데로 사용.
 
     private final static String LOGIN_SUCCESS_TARGETURL_PARAMETER = "redirectTo";
 
     //필요 옵션 설정
-    CustomAuthenticationSuccessHandler() {
+    CustomAuthenticationSuccessHandlerForView() {
         this.setDefaultTargetUrl("/");
         this.setTargetUrlParameter(LOGIN_SUCCESS_TARGETURL_PARAMETER);
     }
