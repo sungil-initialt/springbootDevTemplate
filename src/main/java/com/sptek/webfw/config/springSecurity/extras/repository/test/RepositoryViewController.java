@@ -6,7 +6,6 @@ import com.sptek.webfw.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,15 +19,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class TestViewController {
+public class RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외
     private final String pagePath = "pages/example/test/";
-    private final TestService testService;
+    private final RepositoryService repositoryService;
 
     //for test
     @GetMapping("/user/test/{key}")
     public String test(@PathVariable("key") String key, Model model) {
-        Map<String, Object> resultMap = testService.testRepository(key);
+        Map<String, Object> resultMap = repositoryService.testRepository(key);
         model.addAttribute("result", resultMap);
         return pagePath + "simpleModelView";
     }

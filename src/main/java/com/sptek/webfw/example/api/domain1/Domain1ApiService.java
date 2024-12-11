@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class TestService extends CommonServiceSupport {
+public class Domain1ApiService extends CommonServiceSupport {
     public int raiseServiceError(int errorType) throws ServiceException {
 
         switch (errorType) {

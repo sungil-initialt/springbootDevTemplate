@@ -13,7 +13,7 @@ import java.util.*;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class TestService {
+public class RepositoryService {
 
     private final TestRepository testRepository;
 
