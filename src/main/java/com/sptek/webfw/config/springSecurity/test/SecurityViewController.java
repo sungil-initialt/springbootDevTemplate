@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +36,7 @@ public class SecurityViewController {
     public String signup(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         //화면에 그리기 위한 값들
         signupRequestDto.setUserAddresses(List.of(new UserAddressDto()));
-        signupRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+        signupRequestDto.setAllRoles(securityService.findAllRoles());
         signupRequestDto.setAllTerms(securityService.findAllTerms());
 
         //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
@@ -50,7 +49,7 @@ public class SecurityViewController {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 다시 그리기 위해
-            signupRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+            signupRequestDto.setAllRoles(securityService.findAllRoles());
             signupRequestDto.setAllTerms(securityService.findAllTerms());
             return pagePath + "signup";
         }
@@ -79,7 +78,7 @@ public class SecurityViewController {
 
     //hasRole 과 hasAuthority 차이는 둘다 Authentication 의 authorities 에서 찾는데 hasRole('USER') 은 내부적으로 ROLE_USER 처럼 ROLE_ 를 붙여서 찾고 hasAuthority 는 그대로 찾는다.
     @PreAuthorize(
-            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING)"
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
                     + "|| #email == authentication.principal.userDto.email"
     )
     @GetMapping("/auth/user/update/{email}")
@@ -89,7 +88,7 @@ public class SecurityViewController {
         userUpdateRequestDto.setPassword("");
 
         //화면에 그리기 위한 값들
-        userUpdateRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+        userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
         userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
         model.addAttribute("userUpdateRequestDto", userUpdateRequestDto);
@@ -97,7 +96,7 @@ public class SecurityViewController {
     }
 
     @PreAuthorize(
-            "hasAuthority('AUTH_RETRIEVE_USER_ALL_FOR_MARKETING') "
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
                     + "|| #userUpdateRequestDto.email == authentication.principal.userDto.email"
     )
     @PostMapping("/auth/user/update")
@@ -106,7 +105,7 @@ public class SecurityViewController {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 다시 그리기 위해
-            userUpdateRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+            userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
             userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
             return pagePath + "userUpdate";
@@ -119,8 +118,10 @@ public class SecurityViewController {
 
     @GetMapping("/roles")
     public String roles(Model model, RoleMngRequestDto roleMngRequestDto) {
-        roleMngRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+        roleMngRequestDto.setAllRoles(securityService.findAllRoles());
         roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
+
+
         return pagePath + "roles";
     }
 
@@ -129,21 +130,7 @@ public class SecurityViewController {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
-            roleMngRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
-            roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
-            return pagePath + "roles";
-        }
-
-        securityService.saveRoles(roleMngRequestDto);
-        return "redirect:/roles";
-    }
-
-    @PostMapping("/role/createRole")
-    public String makeNewRole(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
-
-        //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
-        if (bindingResult.hasErrors()) {
-            roleMngRequestDto.setAllRoleAuthorities(securityService.findAllRoles());
+            roleMngRequestDto.setAllRoles(securityService.findAllRoles());
             roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
             return pagePath + "roles";
         }
@@ -161,21 +148,33 @@ public class SecurityViewController {
         return pagePath + "simpleModelView";
     }
 
-    @GetMapping("/admin/anyone/default")
-    public String adminDefault(Model model) {
-        model.addAttribute("result", "Admin default page for admin anyone");
+    @GetMapping("/admin/anyone")
+    public String adminAnyone(Model model) {
+        model.addAttribute("result", "adminAnyone page for admin anyone");
         return pagePath + "simpleModelView";
     }
 
-    @GetMapping("/admin/marketing/event")
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING)"
+    )
+    @GetMapping("/admin/marketing")
     public String adminMarketing(Model model) {
-        model.addAttribute("result", "Admin marketing event page for only the admin who has AUTH_RETRIEVE_USER_ALL_FOR_MARKETING");
+        model.addAttribute("result", "adminMarketing page");
         return pagePath + "simpleModelView";
     }
 
-    @GetMapping("/system/env")
-    public String systemEnv(Model model) {
-        model.addAttribute("result", "system env page for only the system admin");
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY)"
+    )
+    @GetMapping("/admin/delivery")
+    public String adminDelivery(Model model) {
+        model.addAttribute("result", "adminDelivery page");
+        return pagePath + "simpleModelView";
+    }
+
+    @GetMapping("/system/anyone")
+    public String systemAnyone(Model model) {
+        model.addAttribute("result", "systemAnyone page");
         return pagePath + "simpleModelView";
     }
 }

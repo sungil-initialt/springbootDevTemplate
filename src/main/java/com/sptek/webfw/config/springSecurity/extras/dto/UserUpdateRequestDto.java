@@ -35,18 +35,18 @@ public class UserUpdateRequestDto {
     private List<UserAddressDto> userAddresses;
 
     @NotNull(message = "하나 이상의 Role을 선택해 주세요.")
-    private List<RoleAuthorityDto> roleAuthorities;
+    private List<RoleDto> roles;
 
     @NotNull(message = "MEMBER_SHIP 약관은 필수 동의 사항 입니다.")
     //약관 동의
     private List<TermsDto> terms;
 
-    private List<RoleAuthorityDto> allRoleAuthorities;
+    private List<RoleDto> allRoles;
     private List<TermsDto> allTerms;
 
     private List<String> userRoleNames;
     public List<String> getUserRoleNames() {
-        return Optional.ofNullable(roleAuthorities).orElseGet(Collections::emptyList).stream().map(RoleAuthorityDto::getRoleName).collect(Collectors.toList());
+        return Optional.ofNullable(roles).orElseGet(Collections::emptyList).stream().map(RoleDto::getRoleName).collect(Collectors.toList());
     }
 
     private List<String> userTermsNames;

@@ -42,10 +42,10 @@ public class SecurityService {
 
     @Transactional
     public User saveUser(SignupRequestDto signupRequestDto){
-        List<RoleAuthorityDto> roles = findRolesByRoleNameIn(signupRequestDto.getRoleAuthorities().stream().map(RoleAuthorityDto::getRoleName).collect(Collectors.toList()));
+        List<RoleDto> roles = findRolesByRoleNameIn(signupRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
         List<TermsDto> terms = findTermsByTermsNameIn(signupRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
 
-        signupRequestDto.setRoleAuthorities(roles);
+        signupRequestDto.setRoles(roles);
         signupRequestDto.setTerms(terms);
         signupRequestDto.setPassword(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()));
         User user = modelMapper.map(signupRequestDto, User.class);
@@ -55,10 +55,10 @@ public class SecurityService {
 
     @Transactional
     public User updateUser(UserUpdateRequestDto userUpdateRequestDto){
-        List<RoleAuthorityDto> roles = findRolesByRoleNameIn(userUpdateRequestDto.getRoleAuthorities().stream().map(RoleAuthorityDto::getRoleName).collect(Collectors.toList()));
+        List<RoleDto> roles = findRolesByRoleNameIn(userUpdateRequestDto.getRoles().stream().map(RoleDto::getRoleName).collect(Collectors.toList()));
         List<TermsDto> terms = findTermsByTermsNameIn(userUpdateRequestDto.getTerms().stream().map(TermsDto::getTermsName).collect(Collectors.toList()));
 
-        userUpdateRequestDto.setRoleAuthorities(roles);
+        userUpdateRequestDto.setRoles(roles);
         userUpdateRequestDto.setTerms(terms);
         userUpdateRequestDto.setPassword(bCryptPasswordEncoder.encode(userUpdateRequestDto.getPassword()));
 
@@ -69,7 +69,7 @@ public class SecurityService {
         originUser.setEmail(userUpdateRequestDto.getEmail());
         originUser.setPassword(userUpdateRequestDto.getPassword());
         originUser.setUserAddresses(modelMapper.map(userUpdateRequestDto.getUserAddresses(), new TypeToken<List<UserAddress>>() {}.getType()));
-        originUser.setRoles(modelMapper.map(userUpdateRequestDto.getRoleAuthorities(), new TypeToken<List<Role>>() {}.getType()));
+        originUser.setRoles(modelMapper.map(userUpdateRequestDto.getRoles(), new TypeToken<List<Role>>() {}.getType()));
         originUser.setTerms(modelMapper.map(userUpdateRequestDto.getTerms(), new TypeToken<List<Terms>>() {}.getType()));
 
 
@@ -78,12 +78,12 @@ public class SecurityService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoleAuthorityDto> findAllRoles(){
+    public List<RoleDto> findAllRoles(){
         List<Role> roles = Optional.of(roleRepository.findAll())
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found"));
 
-        return modelMapper.map(roles, new TypeToken<List<RoleAuthorityDto>>() {}.getType());
+        return modelMapper.map(roles, new TypeToken<List<RoleDto>>() {}.getType());
 
 //        return Optional.ofNullable(roleRepository.findAll())
 //                .filter(roles -> !roles.isEmpty())
@@ -94,12 +94,12 @@ public class SecurityService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoleAuthorityDto> findRolesByRoleNameIn(List<String> roleNames){
+    public List<RoleDto> findRolesByRoleNameIn(List<String> roleNames){
         List<Role> roles = Optional.of(roleRepository.findByRoleNameIn(roleNames))
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "any Role found"));
 
-        return modelMapper.map(roles, new TypeToken<List<RoleAuthorityDto>>() {}.getType());
+        return modelMapper.map(roles, new TypeToken<List<RoleDto>>() {}.getType());
     }
 
     @Transactional(readOnly = true)
@@ -138,8 +138,8 @@ public class SecurityService {
     }
 
     @Transactional
-    public List<RoleAuthorityDto> saveRoles(RoleMngRequestDto roleMngRequestDto){
-        Map<Long, RoleAuthorityDto> reqRolesMap = roleMngRequestDto.getAllRoleAuthorities().stream().collect(Collectors.toMap(RoleAuthorityDto::getId, role -> role));
+    public List<RoleDto> saveRoles(RoleMngRequestDto roleMngRequestDto){
+        Map<Long, RoleDto> reqRolesMap = roleMngRequestDto.getAllRoles().stream().collect(Collectors.toMap(RoleDto::getId, role -> role));
         List<Role> originRoles = roleRepository.findAllById(reqRolesMap.keySet());
 
         for(Role originRole : originRoles){
@@ -158,6 +158,6 @@ public class SecurityService {
                     );
         }
 
-        return modelMapper.map(originRoles, new TypeToken<List<RoleAuthorityDto>>() {}.getType());
+        return modelMapper.map(originRoles, new TypeToken<List<RoleDto>>() {}.getType());
     }
 }

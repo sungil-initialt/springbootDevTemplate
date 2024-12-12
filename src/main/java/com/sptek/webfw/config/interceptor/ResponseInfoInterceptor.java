@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Component
@@ -21,7 +24,7 @@ public class ResponseInfoInterceptor implements HandlerInterceptor {
         String url = ReqResUtil.getRequestUrlString(request);
         String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
         String datas = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
-        Map<String, Object> modelMap = modelAndView.getModel();
+        Map<String, Object> modelMap = Optional.ofNullable(modelAndView).map(ModelAndView::getModel).orElse(Collections.emptyMap());
 
         log.debug("\n----------\n<-- Response Info Interceptor\nsession : {}\nurlInfo : {}\nheader : {}\ndatas : {}\nmodel: {}\n----------", session, url, header, datas, modelMap);
     }

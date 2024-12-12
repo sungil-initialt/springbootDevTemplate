@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoleAuthorityDto {
+public class RoleDto {
     private Long id;
 
     @Size(min = 2, max = 20, message = "role Name 은 2자 이상 20자 이하로 입력해 주세요.")

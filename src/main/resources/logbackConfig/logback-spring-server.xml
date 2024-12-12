@@ -10,7 +10,7 @@
 
     <springProperty scope="context" name="root_log_level" source="logging.level.root"/>
 
-    <property name="base_log_path" value="c:/log/logback"/>
+    <property name="base_log_path" value="/log/logback"/>
     <property name="default_log_max_history" value="30"/>
     <property name="default_log_max_filesize" value="10MB"/>
     <property name="default_log_pattern"

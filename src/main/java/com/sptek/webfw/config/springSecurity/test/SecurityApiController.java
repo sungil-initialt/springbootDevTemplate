@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping(value = {"/api/v1/"})
 @Tag(name = "security", description = "인증/인가 api 그룹")
+@RestController
 public class SecurityApiController {
     private final SecurityService securityService;
     private final GeneralTokenProvider generalTokenProvider;
@@ -44,22 +46,45 @@ public class SecurityApiController {
         return ResponseEntity.ok().headers(httpHeaders).body(new ApiSuccessResponseDto<>(jwt));
     }
 
+    @GetMapping("/notAuth/hello")
+    @Operation(summary = "security notAuthHello", description = "security notAuthHello 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> notAuthHello() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("notAuthHello"));
+    }
+
     @GetMapping("/auth/hello")
-    @Operation(summary = "auth hello", description = "auth hello 테스트", tags = {"echo"}) //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> authHello(
-            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
-            @RequestParam String message) {
-
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+    @Operation(summary = "security authHello", description = "security authHello 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> authHello() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("authHello"));
     }
 
-    @GetMapping("/public/hello")
-    @Operation(summary = "public hello", description = "public hello 테스트", tags = {"echo"}) //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> publicHello(
-            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
-            @RequestParam String message) {
-
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+    @GetMapping("/admin/anyone")
+    @Operation(summary = "security adminAnyone", description = "security adminAnyone 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> adminAnyone() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("adminAnyone"));
     }
 
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING)"
+    )
+    @GetMapping("/admin/marketing")
+    @Operation(summary = "security adminMarketing", description = "security adminMarketing 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> adminMarketing() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("adminMarketing"));
+    }
+
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY)"
+    )
+    @GetMapping("/admin/delivery")
+    @Operation(summary = "security adminDelivery", description = "security adminDelivery 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> adminDelivery() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("adminDelivery"));
+    }
+
+    @GetMapping("/system/anyone")
+    @Operation(summary = "security systemAnyone", description = "security systemAnyone 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> systemAnyone() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("systemAnyone"));
+    }
 }

@@ -55,6 +55,9 @@ public class SecurityConfig {
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
     public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                // api/** 로 시작하지 않은 경우만 필터 적용
+                .securityMatcher(request -> !request.getRequestURI().startsWith("/api"))
+
                 //path별 Role을 지정함 (controller 의  @PreAuthorize와의 차이점은 여기서 path에 지정하는 방식은 spring security fillter 에 의해 관리되고.. controller 에 지정된 것은 servlet 에서 관리됨)
                 //다시말해.. path에 지정하면.. 인증이 필요할때 spring-security-fillter가 로그인 페이지로 자동 이동해 주거나.. 권한이 없을때 filter 레벨에서 403 페이지로 전환해 준다.
                 //@PreAuthorize 방식은 인증이 필요한 경우나 권한이 없는경우 관련 EX가 발생되고.. 그에 따른 처리는 Sevlet 내에서 개발자가 알아서 처리해 주어야 한다.(로그인페이지로 자동 연결해주는거 없음)
@@ -64,18 +67,10 @@ public class SecurityConfig {
                             .requestMatchers("/","/signup", "/login", "/logout").permitAll()
                             .requestMatchers("/auth/**", "/my/**", "/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
                             .requestMatchers("/user/**").hasAnyRole("USER")
-                            .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                            .requestMatchers("/admin/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
                             .anyRequest().permitAll() //그외
                             //.anyRequest().authenticated() //그외
-                )
-
-                //인증과 관련된 EX 처리 주체 설정
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling
-                                //인증 오류를 케치하여 처리(todo : 비설정시 login 페이지로 이동됨, 반대로 설정되면 로그인 페이지로 자동 연결되지 않음, 필터의 순서상의 이유가 있는 듯, 자세한건 확인 필요)
-                                //.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
                 )
 
                 //.httpBasic(Customizer.withDefaults()) //얼럿창형
@@ -110,19 +105,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChainForApi(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                // api/** 에 적용되는 경우만 필터 적용
+                .securityMatcher("/api/**")
+
                 // JWT를 사용하는 경우 CSRF방지 기능을 사용 할 필요가 없음.(CSRF 공격이 session 쿠키 방식의 문제 점에 기인한 것으로 JWT만 사용하여 세션을 사용하지 않는다면 disable 처리)
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/**/signup", "/api/**/login", "/api/**/logout", "/api/**/public/**").permitAll()
-                                .requestMatchers("/api/**/auth/**", "/api/**/my/**", "/api/**/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
-                                .requestMatchers("/api/**/user/**").hasAnyRole("USER")
-                                .requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN")
-                                .requestMatchers("/api/**/system/**").hasAnyRole("SYSTEM")
+                                .requestMatchers("/api/*/signup", "/api/*/login", "/api/*/logout", "/api/*/public/**").permitAll()
+                                .requestMatchers("/api/*/auth/**", "/api/*/my/**", "/api/*/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
+                                .requestMatchers("/api/*/user/**").hasAnyRole("USER")
+                                .requestMatchers("/api/*/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/*/system/**").hasAnyRole("SYSTEM")
                                 .anyRequest().permitAll()
                 )
 
+                //---> 여기 부터 봐야 함 아래가 없어도 동작이 됨... 이유 확인과 에러 응답이 기존 api 에러 플로우를 타도록 수정
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
                                 .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
@@ -132,7 +131,6 @@ public class SecurityConfig {
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
                 .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
-                //-->여기 부터 봐야 함(핸들로쪽 에러도 바로 response를 나가는게 아니라 api 글로벌 핸들러를 타도록 수정 필요) + testService 이런거 이름이 동일해서 변경필요, 바로위 패키지명을 붙이는 방향으로
 
         return httpSecurity.build();
     }

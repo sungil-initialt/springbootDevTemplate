@@ -13,12 +13,9 @@ if (eTag) {
     client.log("eTag not found in header");
 }
 %}
-
-
 ### 서버정보
 GET {{api-server-ver}}/projectinfo
 Content-Type: application/json
-ETag: {{eTag}}
 
 
 
@@ -129,6 +126,11 @@ Content-Type: application/json
 }
 
 
-### public echo 테스트
-GET {{api-server-ver}}/public/hello?message=hi
+### Security ---------------------------------
+###notAuth/hello 테스트
+GET {{api-server-ver}}/notAuth/hello
+Content-Type: application/json
+
+###auth/hello 테스트
+GET {{api-server-ver}}/auth/hello
 Content-Type: application/json
