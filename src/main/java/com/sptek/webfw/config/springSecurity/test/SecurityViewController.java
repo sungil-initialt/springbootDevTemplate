@@ -177,4 +177,22 @@ public class SecurityViewController {
         model.addAttribute("result", "systemAnyone page");
         return pagePath + "simpleModelView";
     }
+
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Role 제약이 걸려 있는 상황에 대한 test 를 위해
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/public/anyone/butNeedRole")
+    public String butNeedRole(Model model) {
+        model.addAttribute("result", "butNeedRole page");
+        return pagePath + "simpleModelView";
+    }
+
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
+    )
+    @GetMapping("/public/anyone/butNeedAuth")
+    public String butNeedAuth(Model model) {
+        model.addAttribute("result", "butNeedAuth page");
+        return pagePath + "simpleModelView";
+    }
 }

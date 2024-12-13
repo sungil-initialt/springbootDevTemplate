@@ -5,11 +5,9 @@ import com.sptek.webfw.config.springSecurity.CustomJwtFilter;
 import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;
 import com.sptek.webfw.config.springSecurity.extras.dto.LoginRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,7 +44,7 @@ public class SecurityApiController {
         return ResponseEntity.ok().headers(httpHeaders).body(new ApiSuccessResponseDto<>(jwt));
     }
 
-    @GetMapping("/notAuth/hello")
+    @GetMapping("/public/hello")
     @Operation(summary = "security notAuthHello", description = "security notAuthHello 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> notAuthHello() {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("notAuthHello"));
@@ -86,5 +84,23 @@ public class SecurityApiController {
     @Operation(summary = "security systemAnyone", description = "security systemAnyone 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> systemAnyone() {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("systemAnyone"));
+    }
+
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Role 제약이 걸려 있는 상황에 대한 test 를 위해
+    @GetMapping("/public/anyone/butNeedRole")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "security butNeedRole", description = "security butNeedRole 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedRole() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedRole"));
+    }
+
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
+    @GetMapping("/public/anyone/butNeedAuth")
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
+    )
+    @Operation(summary = "security butNeedAuth", description = "security butNeedAuth 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth"));
     }
 }

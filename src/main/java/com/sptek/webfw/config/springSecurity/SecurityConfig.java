@@ -69,6 +69,7 @@ public class SecurityConfig {
                             .requestMatchers("/user/**").hasAnyRole("USER")
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
+                            //.requestMatchers("/public/anyone/butNeedRole").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //여기서 걸리면 403 에러페이지를 직접 찾아감
                             .anyRequest().permitAll() //그외
                             //.anyRequest().authenticated() //그외
                 )
@@ -121,12 +122,12 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
                 )
 
-                //---> 여기 부터 봐야 함 아래가 없어도 동작이 됨... 이유 확인과 에러 응답이 기존 api 에러 플로우를 타도록 수정
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling
-                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
-                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
-                )
+                // API 에러 플로우가 그데로 적용되도록 수정 필요 (여기부터!!)
+                //.exceptionHandling(exceptionHandling ->
+                //        exceptionHandling
+                //                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
+                //                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
+                //)
 
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함

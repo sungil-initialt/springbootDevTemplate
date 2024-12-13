@@ -30,10 +30,19 @@ public class ViewGlobalExceptionHandler {
         return "error/commonInternalErrorView";
     }
 
+    //controller 에서 hasRole 이든 hasAuthority 든 AccessDeniedException 이 발생됨 (hasRole인 경우는 401 같지는 403이 나옴)
     @ExceptionHandler({AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String handleAccessDeniedException(Exception ex) {
         log.error(ex.getMessage());
+
+        //로그인 자체가 되어 있지 않다면 로그인 페이지로 이동해줌
+//        if(SecurityContextHolder.getContext().getAuthentication() != null
+//                && SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equalsIgnoreCase("anonymousUser")
+//        ) {
+//            // todo : 뭔가해줘??
+//        }
+
         return "error/commonAuthenticationErrorView";
     }
 
