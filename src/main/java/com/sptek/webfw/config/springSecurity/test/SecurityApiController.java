@@ -6,6 +6,7 @@ import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;
 import com.sptek.webfw.config.springSecurity.extras.dto.LoginRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -29,14 +30,15 @@ public class SecurityApiController {
 
     //API 방식의 인증 요청
     @PostMapping("/login")
-    public ResponseEntity<ApiSuccessResponseDto<String>> signin(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<ApiSuccessResponseDto<String>> signin(@RequestBody @Valid LoginRequestDto loginRequestDto) {
         // RequestBody 에서 id, pw 항목을 선정하여 UsernamePasswordAuthenticationToken 를 만들어 낸후
         // authenticationManager의 절차를 통해 Authentication을 생성하고 SecurityContextHolder 에 직접 저장하고 (form UI 방식의 경우는 직접 저장하지 않음)
         // Authentication을 JWT로 변환하여 해더에 넣어주는 것 까지 처리함
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUserName(), loginRequestDto.getPassword());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String jwt = generalTokenProvider.convertAuthenticationToJwt(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CustomJwtFilter.AUTHORIZATION_HEADER, CustomJwtFilter.AUTHORIZATION_PREFIX + jwt);
@@ -47,7 +49,7 @@ public class SecurityApiController {
     @GetMapping("/public/hello")
     @Operation(summary = "security notAuthHello", description = "security notAuthHello 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> notAuthHello() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>("notAuthHello"));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("publicHello"));
     }
 
     @GetMapping("/auth/hello")
@@ -94,13 +96,20 @@ public class SecurityApiController {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedRole"));
     }
 
-    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
+    //secure filter chain 에서 특정 authority 제약이 걸린 케이스 테스트
     @GetMapping("/public/anyone/butNeedAuth")
-    @PreAuthorize(
-            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
-    )
     @Operation(summary = "security butNeedAuth", description = "security butNeedAuth 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth() {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth"));
+    }
+
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
+    @GetMapping("/public/anyone/butNeedAuth2")
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
+    )
+    @Operation(summary = "security butNeedAuth2", description = "security butNeedAuth2 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth2() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth2"));
     }
 }

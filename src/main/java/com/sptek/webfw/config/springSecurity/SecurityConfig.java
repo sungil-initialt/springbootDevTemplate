@@ -66,6 +66,7 @@ public class SecurityConfig {
                     authorize //-->fillter 방식과 @PreAuthorize 방식의 선택 기준 고민 필요
                             .requestMatchers("/","/signup", "/login", "/logout").permitAll()
                             .requestMatchers("/auth/**", "/my/**", "/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
+                            .requestMatchers("/public/anyone/butNeedAuth").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터에서 특정 authority를 직접 확인하는 케이스(비로그인시 로그인페이지로, 로그인되어 있으나 권한이 없을때는 403 페이지로 이동)
                             .requestMatchers("/user/**").hasAnyRole("USER")
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
@@ -116,6 +117,7 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("/api/*/signup", "/api/*/login", "/api/*/logout", "/api/*/public/**").permitAll()
                                 .requestMatchers("/api/*/auth/**", "/api/*/my/**", "/api/*/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
+                                .requestMatchers("/api/*/public/anyone/butNeedAutho").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터에서 특정 authority를 직접 확인하는 케이스
                                 .requestMatchers("/api/*/user/**").hasAnyRole("USER")
                                 .requestMatchers("/api/*/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/*/system/**").hasAnyRole("SYSTEM")
@@ -123,11 +125,11 @@ public class SecurityConfig {
                 )
 
                 // API 에러 플로우가 그데로 적용되도록 수정 필요 (여기부터!!)
-                //.exceptionHandling(exceptionHandling ->
-                //        exceptionHandling
-                //                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
-                //                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
-                //)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
+                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
+                )
 
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함

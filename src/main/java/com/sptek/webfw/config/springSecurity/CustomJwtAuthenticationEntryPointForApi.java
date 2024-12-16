@@ -15,6 +15,7 @@ public class CustomJwtAuthenticationEntryPointForApi implements AuthenticationEn
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         log.error(authException.getMessage());
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        throw authException;
+        //response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

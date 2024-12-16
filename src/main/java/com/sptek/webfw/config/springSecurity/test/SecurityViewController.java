@@ -1,8 +1,10 @@
 package com.sptek.webfw.config.springSecurity.test;
 
+import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
 import com.sptek.webfw.config.springSecurity.spt.LoginHelper;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -11,12 +13,16 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -56,14 +62,14 @@ public class SecurityViewController {
         User savedUser = securityService.saveUser(signupRequestDto);
 
         //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨)
-        redirectAttributes.addFlashAttribute("userName", savedUser.getName());
+        redirectAttributes.addFlashAttribute("username", savedUser.getName());
 
         //저장 후 페이지 뒤로가기에서 데이터를 다시 전달하려 하는것을 막기위해 redirect를 사용함
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String login(Model model , LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
+    public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("redirectTo", LoginHelper.getRedirectUrlAfterLogging(request, response));
         return pagePath + "login";
     }
@@ -186,13 +192,20 @@ public class SecurityViewController {
         return pagePath + "simpleModelView";
     }
 
-    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
-    @PreAuthorize(
-            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
-    )
+    //secure filter chain 에서 특정 authority 제약이 걸린 케이스 테스트
     @GetMapping("/public/anyone/butNeedAuth")
     public String butNeedAuth(Model model) {
         model.addAttribute("result", "butNeedAuth page");
         return pagePath + "simpleModelView";
+    }
+
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
+    @GetMapping("/public/anyone/butNeedAuth2")
+    @PreAuthorize(
+            "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
+    )
+    @Operation(summary = "security butNeedAuth2", description = "security butNeedAuth2 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth2() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth2"));
     }
 }
