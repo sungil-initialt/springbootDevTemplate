@@ -4,7 +4,6 @@ import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
 import com.sptek.webfw.config.springSecurity.spt.LoginHelper;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -74,20 +73,20 @@ public class SecurityViewController {
         return pagePath + "login";
     }
 
-    @PreAuthorize("(#email == authentication.principal.userDto.email) || hasRole('ADMIN')")
     @GetMapping("/auth/user/info/{email}")
+    @PreAuthorize("(#email == authentication.principal.userDto.email) || hasRole('ADMIN')")
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
         model.addAttribute("result", resultUserDto);
         return pagePath + "simpleModelView";
     }
 
+    @GetMapping("/auth/user/update/{email}")
     //hasRole 과 hasAuthority 차이는 둘다 Authentication 의 authorities 에서 찾는데 hasRole('USER') 은 내부적으로 ROLE_USER 처럼 ROLE_ 를 붙여서 찾고 hasAuthority 는 그대로 찾는다.
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
                     + "|| #email == authentication.principal.userDto.email"
     )
-    @GetMapping("/auth/user/update/{email}")
     public String userUpdate(@PathVariable("email") String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         UserDto userDto = securityService.findUserByEmail(email);
         userUpdateRequestDto = modelMapper.map(userDto, UserUpdateRequestDto.class);
@@ -101,11 +100,11 @@ public class SecurityViewController {
         return pagePath + "userUpdate";
     }
 
+    @PostMapping("/auth/user/update")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
                     + "|| #userUpdateRequestDto.email == authentication.principal.userDto.email"
     )
-    @PostMapping("/auth/user/update")
     public String signupWithValidation(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
@@ -156,56 +155,55 @@ public class SecurityViewController {
 
     @GetMapping("/admin/anyone")
     public String adminAnyone(Model model) {
-        model.addAttribute("result", "adminAnyone page for admin anyone");
+        model.addAttribute("result", "adminAnyone");
         return pagePath + "simpleModelView";
     }
 
+    @GetMapping("/admin/marketing")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING)"
     )
-    @GetMapping("/admin/marketing")
     public String adminMarketing(Model model) {
-        model.addAttribute("result", "adminMarketing page");
+        model.addAttribute("result", "adminMarketing");
         return pagePath + "simpleModelView";
     }
 
+    @GetMapping("/admin/delivery")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY)"
     )
-    @GetMapping("/admin/delivery")
     public String adminDelivery(Model model) {
-        model.addAttribute("result", "adminDelivery page");
+        model.addAttribute("result", "adminDelivery");
         return pagePath + "simpleModelView";
     }
 
     @GetMapping("/system/anyone")
     public String systemAnyone(Model model) {
-        model.addAttribute("result", "systemAnyone page");
+        model.addAttribute("result", "systemAnyone");
         return pagePath + "simpleModelView";
     }
 
-    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Role 제약이 걸려 있는 상황에 대한 test 를 위해
+    @GetMapping("/public/anyone/butNeedControllRole")
+    //secure filter chain 에서는 제약이 없지만 컨트럴로에 Role 제약이 걸려 있는 상황에 대한 test 를 위해, 401이 나야 할것 같지만.. 403 발생
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/public/anyone/butNeedRole")
-    public String butNeedRole(Model model) {
-        model.addAttribute("result", "butNeedRole page");
+    public String butNeedControllRole(Model model) {
+        model.addAttribute("result", "butNeedControllRole");
         return pagePath + "simpleModelView";
     }
 
     //secure filter chain 에서 특정 authority 제약이 걸린 케이스 테스트
-    @GetMapping("/public/anyone/butNeedAuth")
-    public String butNeedAuth(Model model) {
-        model.addAttribute("result", "butNeedAuth page");
+    @GetMapping("/public/anyone/butNeedFilterAuth")
+    public String butNeedFilterAuth(Model model) {
+        model.addAttribute("result", "butNeedFilterAuth");
         return pagePath + "simpleModelView";
     }
 
     //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
-    @GetMapping("/public/anyone/butNeedAuth2")
+    @GetMapping("/public/anyone/butNeedControllAuth")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
     )
-    @Operation(summary = "security butNeedAuth2", description = "security butNeedAuth2 테스트") //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth2() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth2"));
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedControllAuth() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedControllAuth"));
     }
 }

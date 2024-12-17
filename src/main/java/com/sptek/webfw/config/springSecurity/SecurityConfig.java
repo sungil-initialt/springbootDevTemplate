@@ -1,6 +1,5 @@
 package com.sptek.webfw.config.springSecurity;
 
-import com.sptek.webfw.config.springSecurity.spt.CustomAuthenticationProvider;
 import com.sptek.webfw.util.SecureUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,7 @@ public class SecurityConfig {
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
     private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
     private final GeneralTokenProvider generalTokenProvider;
-    private final CustomAuthenticationProvider customAuthenticationProvider;
+    //private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     //로그인 전체 스템을 관리할 AuthenticationManager(=ProviderManager)에 AuthenticationProvider을 추가하여 반환. (필요에 따라 만들어진 AuthenticationProvider)
@@ -37,7 +36,9 @@ public class SecurityConfig {
         //AuthenticationManager 에 대한 custom 작업이 필요함!
 
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
+        //customAuthenticationProvider가 @Component로 구성되서 그런지.. 자동으로 감지해서 설정이 되는듯 함(이코드를 넣으면 프로바이드가 두번 설정됨)
+        //authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
+        authenticationManagerBuilder.eraseCredentials(true);
         return authenticationManagerBuilder.build();
     }
 
@@ -66,11 +67,11 @@ public class SecurityConfig {
                     authorize //-->fillter 방식과 @PreAuthorize 방식의 선택 기준 고민 필요
                             .requestMatchers("/","/signup", "/login", "/logout").permitAll()
                             .requestMatchers("/auth/**", "/my/**", "/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
-                            .requestMatchers("/public/anyone/butNeedAuth").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터에서 특정 authority를 직접 확인하는 케이스(비로그인시 로그인페이지로, 로그인되어 있으나 권한이 없을때는 403 페이지로 이동)
+                            .requestMatchers("/public/anyone/butNeedFilterAuth").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터에서 특정 authority를 직접 확인하는 케이스(비로그인시 로그인페이지로, 로그인되어 있으나 권한이 없을때는 403 페이지로 이동)
                             .requestMatchers("/user/**").hasAnyRole("USER")
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
                             .requestMatchers("/system/**").hasAnyRole("SYSTEM")
-                            //.requestMatchers("/public/anyone/butNeedRole").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //여기서 걸리면 403 에러페이지를 직접 찾아감
+                            //.requestMatchers("/public/anyone/butNeedControllRole").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //여기서 걸리면 403 에러페이지를 직접 찾아감
                             .anyRequest().permitAll() //그외
                             //.anyRequest().authenticated() //그외
                 )
@@ -115,9 +116,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/*/signup", "/api/*/login", "/api/*/logout", "/api/*/public/**").permitAll()
+                                .requestMatchers("/api/*/signup", "/api/*/login", "/api/*/logout").permitAll()
                                 .requestMatchers("/api/*/auth/**", "/api/*/my/**", "/api/*/mypage/**").authenticated() //권한은 필요하지만 특정 Role로 지정이 어려울때
-                                .requestMatchers("/api/*/public/anyone/butNeedAutho").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터에서 특정 authority를 직접 확인하는 케이스
+                                .requestMatchers("/api/*/public/anyone/butNeedFilterAuth").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터에서 특정 authority를 직접 확인하는 케이스
                                 .requestMatchers("/api/*/user/**").hasAnyRole("USER")
                                 .requestMatchers("/api/*/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/*/system/**").hasAnyRole("SYSTEM")

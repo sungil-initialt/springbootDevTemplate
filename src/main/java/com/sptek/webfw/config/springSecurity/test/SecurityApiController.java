@@ -64,19 +64,19 @@ public class SecurityApiController {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("adminAnyone"));
     }
 
+    @GetMapping("/admin/marketing")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_MARKETING)"
     )
-    @GetMapping("/admin/marketing")
     @Operation(summary = "security adminMarketing", description = "security adminMarketing 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> adminMarketing() {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("adminMarketing"));
     }
 
+    @GetMapping("/admin/delivery")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY)"
     )
-    @GetMapping("/admin/delivery")
     @Operation(summary = "security adminDelivery", description = "security adminDelivery 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> adminDelivery() {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("adminDelivery"));
@@ -89,27 +89,27 @@ public class SecurityApiController {
     }
 
     //secure filter chain 에서는 제약이 없지만 컨트럴로에 Role 제약이 걸려 있는 상황에 대한 test 를 위해
-    @GetMapping("/public/anyone/butNeedRole")
+    @GetMapping("/public/anyone/butNeedControllRole")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "security butNeedRole", description = "security butNeedRole 테스트") //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedRole() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedRole"));
+    @Operation(summary = "security butNeedControllRole", description = "security butNeedControllRole 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedControllRole() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedControllRole"));
     }
 
     //secure filter chain 에서 특정 authority 제약이 걸린 케이스 테스트
-    @GetMapping("/public/anyone/butNeedAuth")
-    @Operation(summary = "security butNeedAuth", description = "security butNeedAuth 테스트") //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth"));
+    @GetMapping("/public/anyone/butNeedFilterAuth")
+    @Operation(summary = "security butNeedFilterAuth", description = "security butNeedFilterAuth 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedFilterAuth() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedFilterAuth"));
     }
 
     //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해
-    @GetMapping("/public/anyone/butNeedAuth2")
+    @GetMapping("/public/anyone/butNeedControllAuth")
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
     )
-    @Operation(summary = "security butNeedAuth2", description = "security butNeedAuth2 테스트") //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedAuth2() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedAuth2"));
+    @Operation(summary = "security butNeedControllAuth", description = "security butNeedControllAuth 테스트") //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedControllAuth() {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedControllAuth"));
     }
 }

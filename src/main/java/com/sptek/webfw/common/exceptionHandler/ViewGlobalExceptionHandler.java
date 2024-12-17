@@ -27,8 +27,8 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNoResourceFoundException(Exception ex) {
         log.error(ex.getMessage());
-        return "error/commonInternalErrorView";
-        //return "error/5xx"; // spring 호출용과 통일할 경우
+        return "error/commonNotfoundErrorView";
+        //return "error/404"; // spring 호출과 통일할 경우
     }
 
     //controller 에서 hasRole 이든 hasAuthority 든 AccessDeniedException 이 발생됨 (hasRole인 경우는 401 같지는 403이 나옴)
@@ -43,8 +43,9 @@ public class ViewGlobalExceptionHandler {
 //        ) {
 //            // todo : 뭔가해줘??
 //        }
-        //return "error/403";
-        return "error/commonAuthenticationErrorView"; // spring 호출용과 통일할 경우
+
+        return "error/commonAuthenticationErrorView";
+        //return "error/403"; // spring 호출과 통일할 경우
     }
 
     @ExceptionHandler(Exception.class)
@@ -52,7 +53,7 @@ public class ViewGlobalExceptionHandler {
     public String handleUnExpectedException(Exception ex) {
         log.error(ex.getMessage());
         return "error/commonInternalErrorView";
-        //return "error/5xx"; // spring 호출용과 통일할 경우
+        //return "error/5xx"; // spring 호출과 통일할 경우
     }
 
 }

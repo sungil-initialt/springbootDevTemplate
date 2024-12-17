@@ -29,7 +29,7 @@ server:
   #     --> WAS 에러 페이지 (스프링 내부에서 처리하지 못하면 was가 제공하는 기봄폼으로 노출)
   error: #스프링에서 제공하는 에러 기본 처리 설정
     include-exception: true #exception 정보를 보여줄지
-    include-stacktrace: always #stacktrace 를 보여줄지
+    include-stacktrace: on_param #stacktrace 를 보여줄지
     path: error #에러 처리에 대한 뷰 경로
     whitelabel.enabled: false #스프링의 기본 에러 페이지(Whitelabel Error Page)를 사용할지
 

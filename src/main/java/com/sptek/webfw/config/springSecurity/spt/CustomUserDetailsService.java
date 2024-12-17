@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUserDetails loadUserByUsername(String userEmail) {
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("email '%s' not found", userEmail)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User(%s) not found.", userEmail)));
         //log.debug("user info: {}", user);
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
