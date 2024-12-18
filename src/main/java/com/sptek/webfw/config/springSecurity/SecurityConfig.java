@@ -22,10 +22,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
-    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
+    //private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
+    //private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
     private final GeneralTokenProvider generalTokenProvider;
     //private final CustomAuthenticationProvider customAuthenticationProvider;
 
@@ -93,13 +93,12 @@ public class SecurityConfig {
                         // 로그아웃 처리 url 설정 (해당 req 매핑이 존재할 필요는 없음)
                         .logoutUrl("/logout")
 
-                        //추가적인 로직이 필요한 경우
-                        /*
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            log.debug("User has logged out: " + (authentication != null ? authentication.getName() : "Anonymous"));
-                            response.sendRedirect("/login?logout"); // custom 코드를 넣었다면 마지막 리다이렉션 처리까지 직접 해줘야함.
-                        })
-                        */
+                        // 추가적인 로직이 필요한 경우
+                        //.logoutSuccessHandler((request, response, authentication) -> {
+                        //    log.debug("User has logged out: " + (authentication != null ? authentication.getName() : "Anonymous"));
+                        //    response.sendRedirect("/login?logout"); // custom 코드를 넣었다면 마지막 리다이렉션 처리까지 직접 해줘야함.
+                        //})
+
                 );
 
         return httpSecurity.build();
@@ -125,15 +124,16 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
                 )
 
-                // API 에러 플로우가 그데로 적용되도록 수정 필요 (여기부터!!)
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling
-                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
-                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
-                )
+                // CustomErrorController 를 이용해서 Controller 외부 에러(필터쪽이나.. 기타 등등) 상황에 대한 처리를 하고 있어서 사용할 필요가 없음 (Controller 에러 처리 흐름과 동일하게 처리되도록 함)
+                //.exceptionHandling(exceptionHandling ->
+                //        exceptionHandling
+                //                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
+                //                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
+                //)
 
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
+                //api 방식일 경우 UsernamePasswordAuthenticationFilter 가 동작하면 안됨으로 그 앞에 CustomJwtFilter 두어 인증 관련 처리를 먼저 하도록 처리함
                 .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

@@ -8,6 +8,7 @@ import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.io.IOException;
 /*
 RestController 의 GlobalException 처리를 담당함 (실행중 예상하지 않은 Exception에 대한 처리로 ServiceException과 비교할 수 있음)
@@ -25,7 +26,8 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
 최종 Response 응답까지 처리해 준다.
  */
 @Slf4j
-@RestControllerAdvice(annotations = RestController.class)
+//RestController.class 를 설정하지 않으면 @RestControllerAdvice 와 @ControllerAdvice 서로 등록된 순서에 따라 한쪽에서 모두 처리하려는 걼으로 보임..
+@RestControllerAdvice(annotations = RestController.class) 
 public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -76,8 +78,9 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.BAD_REQUEST_ERROR.getHttpStatusCode());
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ApiErrorResponseDto> handleNoHandlerFoundException(Exception ex) {
+    //web/api 가 동시에 구성된 상태에서는 해당 ex는 web으로 호출될 것임, web/api 공용일때는 불려지지 않을 것임
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    public ResponseEntity<ApiErrorResponseDto> handleNoResourceFoundException(Exception ex) {
         log.error(ex.getMessage());
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.NOT_FOUND_ERROR, ex.getMessage());
@@ -114,6 +117,14 @@ public class ApiGlobalExceptionHandler {
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.JACKSON_PROCESS_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.JACKSON_PROCESS_ERROR.getHttpStatusCode());
+    }
+
+    @ExceptionHandler({AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
+    public ResponseEntity<ApiErrorResponseDto> handleAccessDeniedException(Exception ex) {
+        log.error(ex.getMessage());
+
+        final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.FORBIDDEN_ERROR, ex.getMessage());
+        return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.FORBIDDEN_ERROR.getHttpStatusCode());
     }
 
     @ExceptionHandler(Exception.class)
