@@ -13,13 +13,13 @@ import java.nio.charset.StandardCharsets;
 Controller 이전단계(필터등)에서 request의 ioStream이 읽어진 경우 이를 대체하기 위한 대체 request 용도임
 (한번 읽어진 request는 controller 에서 다시 읽을수 없음)
  */
-public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper {
+public class RequestWrapperSupportForExchange extends HttpServletRequestWrapper {
 
     private byte[] rawData;
     private HttpServletRequest request;
     private ResettableServletInputStream servletInputStream;
 
-    public HttpServletRequestWrapperSupport(HttpServletRequest request) {
+    public RequestWrapperSupportForExchange(HttpServletRequest request) {
         super(request);
         this.request = request;
         this.servletInputStream = new ResettableServletInputStream();

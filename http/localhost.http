@@ -31,8 +31,6 @@ Content-Type: application/json
   "originText": "<javascript>alert('hello');</javascript>"
 }
 
-
-
 ### interceptor 테스트
 GET https://back.localhost:8080/api/v1/interceptor
 Content-Type: application/json

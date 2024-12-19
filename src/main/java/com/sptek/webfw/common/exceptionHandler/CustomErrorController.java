@@ -60,7 +60,7 @@ public class CustomErrorController implements ErrorController {
 
         // 단순히 에러 처리만을 위해 사용되는 RestController로 바로 에러를 throw 하게하여 RestController 에러 처리 흐름을 타도록 만듬
         @GetMapping("/api/restErrorForward")
-        public String restErrorForward(HttpServletRequest request) throws Exception {
+        public void restErrorForward(HttpServletRequest request) throws Exception {
             String originUri = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
             int errorStatusCode = Integer.parseInt(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)));
             String message = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_MESSAGE));

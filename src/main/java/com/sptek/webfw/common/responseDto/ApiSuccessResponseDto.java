@@ -9,7 +9,7 @@ import lombok.Getter;
 HttpStatus.OK(200)
 {
   "resultCode": "S000",
-  "resultMessage": "Success",
+  "resultMessage": "success",
   "result": { -->> T 객체에 선언된 내용으로 구성됨.
     "name": "myProject",
     "version": "v1",

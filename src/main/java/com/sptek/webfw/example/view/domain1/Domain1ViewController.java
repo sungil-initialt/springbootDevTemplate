@@ -52,7 +52,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     @RequestMapping("/interceptor")
     @AnoInterceptorCheck
     public String interceptor(Model model) {
-        log.debug("ran origin caller here.");
+        log.debug("origin caller here.");
         model.addAttribute("message", "welcome");
         return pagePath + "interceptor";
     }
@@ -247,7 +247,7 @@ public class Domain1ViewController extends CommonControllerSupport {
         //example 3
         ExampleBDto exampleBDto = ModelMapperUtil.map(exampleADto, ExampleBDto.class);
 
-        Map result = new HashMap();
+        Map<String, Object> result = new HashMap();
         result.put("ExampleProductDto-origin", exampleProductDto);
         result.put("ExampleProductDto-exampleGoodsDto", exampleGoodsDto);
         result.put("ExampleProductDto-exampleGoodsNProductDto", exampleGoodsNProductDto);
