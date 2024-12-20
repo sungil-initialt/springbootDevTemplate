@@ -28,16 +28,23 @@ todo : redis 연동후 실제 동작 확인 필요!!
 //@Component
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
+    final boolean IS_FILTER_ON = true;
 
     @Override
-     public void doFilterInternal(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain filterChain) throws ServletException, IOException {
-        log.debug("[Filter >>> ]");
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
-            //해당 이름의 Attribute가 True이면 spring은 해당 request에 대한 세션 생성을 하지 않는다.
-            httpRequest.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE);
-            log.debug("setAttribute for ExcludeSessionRepository of {}", httpRequest.getServletPath());
-        }
+     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if(IS_FILTER_ON) {
+            log.info("#### Filter Notice : ExcludeSessionRepositoryFilter is On ####");
 
-        filterChain.doFilter(httpRequest, httpResponse);
+            if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+                //해당 이름의 Attribute가 True이면 spring은 해당 request에 대한 세션 생성을 하지 않는다.
+                request.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE);
+                log.debug("setAttribute for ExcludeSessionRepository of {}", request.getServletPath());
+            }
+
+            filterChain.doFilter(request, response);
+        } else {
+            log.info("#### Filter Notice : ExcludeSessionRepositoryFilter is OFF ####");
+            filterChain.doFilter(request, response);
+        }
     }
 }

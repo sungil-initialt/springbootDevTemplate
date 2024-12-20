@@ -20,22 +20,22 @@ public class SecureUtil {
 
     public static List<String> getNotEssentialRequestPatterns(){
         return Arrays.asList(
-                "/swagger-ui.html",
-                "/api-docs/**",
-                "/v2/api-docs/**",
-                "/configuration/ui/**",
-                "/configuration/security/**",
-                "/swagger-resources/**",
-                "/swagger-ui/**",
-                "/swagger/**",
-                "/webjars/**",
-                "/error/**",
-                "/err/**",
-                "/static/**",
-                "/health/**",
-                "/github-markdown-css/**",
-                "/h2-console/**",
-                "/favicon.ico"
+                "/swagger-ui.html"
+                , "/api-docs/**"
+                , "/v2/api-docs/**"
+                , "/configuration/ui/**"
+                , "/configuration/security/**"
+                , "/swagger-resources/**"
+                , "/swagger-ui/**"
+                , "/swagger/**"
+                , "/webjars/**"
+                , "/error/**"
+                , "/err/**"
+                , "/static/**"
+                , "/health/**"
+                , "/github-markdown-css/**"
+                , "/h2-console/**"
+                , "/favicon.ico"
         );
     }
     public static String[] getNotEssentialRequestPatternsArray() {
@@ -58,10 +58,10 @@ public class SecureUtil {
 
     public static List<String> getStaticResourceRequestPatterns(){
         return Arrays.asList(
-                "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**",
-                "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**",
-                "/**/*.woff**", "/**/*.woff2**", "/**/*.ttf**", "/**/*.otf**", "/**/*.eot**", "/**/*.pdf**", "/**/*.xml**", "/**/*.json**",
-                "/**/*.csv**", "/**/*.txt**"
+                "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**"
+                , "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**"
+                , "/**/*.woff**", "/**/*.woff2**", "/**/*.ttf**", "/**/*.otf**", "/**/*.eot**", "/**/*.pdf**", "/**/*.xml**", "/**/*.json**"
+                , "/**/*.csv**", "/**/*.txt**"
         );
     }
 

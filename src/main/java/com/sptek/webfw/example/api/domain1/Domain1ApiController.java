@@ -107,7 +107,7 @@ public class Domain1ApiController extends CommonControllerSupport {
     //post Req에 대한 xss 처리 결과 확인
     public ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportPost(
             @Parameter(name = "originText", description = "원본 텍스트", required = true)
-            @RequestBody String originText) {
+            @RequestBody String originText, HttpServletRequest request) {
 
         String message = "XssProtectedText = " + originText;
         return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));

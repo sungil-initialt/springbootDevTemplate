@@ -12,8 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     private final ExampleInterceptor exampleInterceptor;
-    private final RequestInfoInterceptor requestInfoInterceptor;
-    private final ResponseInfoInterceptor responseInfoInterceptor;
+    private final ReqResLoggingInterceptor reqResLoggingInterceptor;
     private final UvInterceptor uvInterceptor;
 
     @Override
@@ -26,11 +25,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
                 .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 
-        interceptorRegistry.addInterceptor(this.requestInfoInterceptor).addPathPatterns("/**")
-                .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
-                .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
-
-        interceptorRegistry.addInterceptor(this.responseInfoInterceptor).addPathPatterns("/**")
+        interceptorRegistry.addInterceptor(this.reqResLoggingInterceptor).addPathPatterns("/**")
                 .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
                 .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 

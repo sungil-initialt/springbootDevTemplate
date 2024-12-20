@@ -38,24 +38,39 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Value("${secureOption.cors.accessControlAllowHeaders}")
     private String accessControlAllowHeaders;
 
+    final boolean IS_FILTER_ON = true;
+
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.debug("[Filter >>> ]");
-        String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
-                .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
+        if(IS_FILTER_ON) {
+            log.info("#### Filter Notice : CorsPolicyFilter is On ####");
 
-        log.debug("request origin({}) contained ? : {}", origin, accessControlAllowOrigins.contains(origin));
-        origin = accessControlAllowOrigins.contains(origin) ? origin : defaultAccessControlAllowOrigin;
+            String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
+                    .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
 
-        response.setHeader("Access-Control-Allow-Origin", origin);
-        response.setHeader("Access-Control-Allow-Methods", accessControlAllowMethods);
-        response.setHeader("Access-Control-Allow-Credentials", accessControlAllowCredentials);
-        response.setHeader("Access-Control-Max-Age", accessControlMaxAge);
-        response.setHeader("Access-Control-Allow-Headers", accessControlAllowHeaders);
+            log.debug("The request origin is {}", origin);
+            if(accessControlAllowOrigins.contains(origin)){
+                log.debug("The request origin is part of our system");
+            } else {
+                log.debug("The request origin is not our system");
+            }
 
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
+            origin = accessControlAllowOrigins.contains(origin) ? origin : defaultAccessControlAllowOrigin;
+            response.setHeader("Access-Control-Allow-Origin", origin);
+            response.setHeader("Access-Control-Allow-Methods", accessControlAllowMethods);
+            response.setHeader("Access-Control-Allow-Credentials", accessControlAllowCredentials);
+            response.setHeader("Access-Control-Max-Age", accessControlMaxAge);
+            response.setHeader("Access-Control-Allow-Headers", accessControlAllowHeaders);
+
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                // todo : 필터체인 연결이 필요없나 확인 필요!
+            } else {
+                filterChain.doFilter(request, response);
+            }
+
         } else {
+            log.info("#### Notice : CorsPolicyFilter is OFF ####");
             filterChain.doFilter(request, response);
         }
     }

@@ -8,7 +8,7 @@ objectMapper 셋팅에서 XssProtectSupport 클레스를 적용하는 방식으�
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.support.RequestWrapperSupportForExchange;
+import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,16 +31,15 @@ import java.util.Map;
 //@Component
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class XssProtectFilter extends OncePerRequestFilter {
+    final boolean IS_FILTER_ON = false;
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if(IS_FILTER_ON) {
+            log.info("#### Filter Notice : XssProtectFilter is On ####");
 
-        boolean availabel = false; //필요한경우만 사용하기 위해
-
-        if(availabel) {
-            log.debug("[Filter >>> ]");
-            RequestWrapperSupportForExchange requestWrapperSupportForExchange = new RequestWrapperSupportForExchange(request);
-            String reqBody = IOUtils.toString(requestWrapperSupportForExchange.getReader()); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 아래에서 대체 request를 생성해서 넘겨줘야 함
+            HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = new HttpServletRequestWrapperSupport(request);
+            String reqBody = IOUtils.toString(httpServletRequestWrapperSupport.getReader()); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 아래에서 대체 request를 생성해서 넘겨줘야 함
 
             if (!StringUtils.hasText(reqBody)) {
                 Map<String, Object> orgJsonObject = new ObjectMapper().readValue(reqBody, HashMap.class);
@@ -48,12 +47,13 @@ public class XssProtectFilter extends OncePerRequestFilter {
                 orgJsonObject.forEach((key, value) -> newJsonObject.put(key, SecureUtil.charEscape(value.toString())));
 
                 //대체 request를 생성해서 넘김
-                requestWrapperSupportForExchange.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());
+                httpServletRequestWrapperSupport.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());
             }
 
-            filterChain.doFilter(requestWrapperSupportForExchange, response);
+            filterChain.doFilter(httpServletRequestWrapperSupport, response);
 
         }else{
+            log.info("#### Filter Notice : XssProtectFilter is OFF ####");
             filterChain.doFilter(request, response);
         }
     }
