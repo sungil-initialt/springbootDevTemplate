@@ -7,7 +7,9 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,12 +20,15 @@ import java.util.Optional;
 /*
 MVC 인터셉터 방법보다 Fiter 방식이 추후 커스텀하기에 좋음
  */
-@Slf4j
-@Order(1)
+
 //@WebFilter적용시 @Component 사용하지 않아야함(@Component 적용시 모든 요청에 적용됨)
 //@Component
+@Profile(value = { "stg", "prd" }) //프로파일이 stg, prd 일때만 적용
+@Slf4j
+@Order(1)
 @WebFilter(urlPatterns = "/api/*") //ant 표현식 사용 불가 ex: /**
 public class CorsPolicyFilter extends OncePerRequestFilter {
+    final boolean IS_FILTER_ON = true;
 
     @Value("${secureOption.cors.defaultAccessControlAllowOrigin}")
     private String defaultAccessControlAllowOrigin;
@@ -38,10 +43,8 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Value("${secureOption.cors.accessControlAllowHeaders}")
     private String accessControlAllowHeaders;
 
-    final boolean IS_FILTER_ON = true;
-
     @Override
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if(IS_FILTER_ON) {
             log.info("#### Filter Notice : CorsPolicyFilter is On ####");
 
@@ -64,7 +67,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
 
             if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
                 response.setStatus(HttpServletResponse.SC_OK);
-                // todo : 필터체인 연결이 필요없나 확인 필요!
+                // todo : 필터체인 연결이 필요없나 확인 필요! (option은 실제 요청이 아니라 확인용임으로 특별한 후 처리가 필요해 보이지는 않음!)
             } else {
                 filterChain.doFilter(request, response);
             }

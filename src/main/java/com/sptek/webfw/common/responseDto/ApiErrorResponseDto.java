@@ -1,12 +1,17 @@
 package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
+import com.sptek.webfw.util.ReqResUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +39,9 @@ public class ApiErrorResponseDto {
     private String resultMessage;
     private List<InValidFieldInfo> inValidFieldInfos;
     private String exceptionMessage;
+    private String requestTimestamp;
+    private String responseTimestamp;
+    private String durationMsec;
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum) {
         this.resultCode = errorCodeEnum.getResultCode();
@@ -89,6 +97,16 @@ public class ApiErrorResponseDto {
                             error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
                             error.getDefaultMessage()))
                     .collect(Collectors.toList());
+        }
+    }
+
+    //@PostConstruct
+    public void makeTimestamp(@Value("${request.reserved.attribute.requestTimeStamp}") String requestTimeStampAttributeName) {
+        this.requestTimestamp = String.valueOf(ReqResUtil.getRequest().getAttribute(requestTimeStampAttributeName));
+        this.responseTimestamp = String.valueOf(Instant.now());
+
+        if(StringUtils.hasText(requestTimestamp)) {
+            this.durationMsec = Duration.between(Instant.parse(requestTimestamp), Instant.parse(responseTimestamp)).toMillis() + " ms";
         }
     }
 }

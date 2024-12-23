@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import java.io.IOException;
 
-@Profile(value = { "notused" })
+@Profile(value = { "xxx" }) //우선 항상 사용하지 않는 것으로
 @Slf4j
 @Configuration
 public class EtagFilterConfiguration {
@@ -32,7 +33,7 @@ public class EtagFilterConfiguration {
         filterRegistrationBean.setFilter(new OncePerRequestFilter() {
             private final ShallowEtagHeaderFilter shallowEtagHeaderFilter = new ShallowEtagHeaderFilter();
             @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException, ServletException {
+            protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException, ServletException, ServletException {
                 //Etag response 해더 조건
                 if ("GET".equalsIgnoreCase(request.getMethod()) && request.getRequestURI().matches("/api/.*")) {
                     log.debug("shallowEtagHeaderFilter applied for this request");

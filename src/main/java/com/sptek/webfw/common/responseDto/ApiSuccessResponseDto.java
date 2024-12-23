@@ -2,7 +2,13 @@ package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
 import com.sptek.webfw.common.code.SuccessCodeEnum;
+import com.sptek.webfw.util.ReqResUtil;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
+
+import java.time.Duration;
+import java.time.Instant;
 
 /*
 //rest Api에서 성공 응답 규격
@@ -22,6 +28,9 @@ public class ApiSuccessResponseDto<T> {
     private String resultCode;
     private String resultMessage;
     private T result;
+    private String requestTimestamp;
+    private String responseTimestamp;
+    private String durationMsec;
 
     public ApiSuccessResponseDto(final T result) {
         this.resultCode = SuccessCodeEnum.DEFAULT_SUCCESS.getResultCode();
@@ -42,4 +51,15 @@ public class ApiSuccessResponseDto<T> {
         this.resultMessage = resultMessage;
         this.result = result;
     }
+
+    //@PostConstruct
+    public void makeTimestamp(@Value("${request.reserved.attribute.requestTimeStamp}") String requestTimeStampAttributeName) {
+        this.requestTimestamp = String.valueOf(ReqResUtil.getRequest().getAttribute(requestTimeStampAttributeName));
+        this.responseTimestamp = String.valueOf(Instant.now());
+
+        if(StringUtils.hasText(requestTimestamp)) {
+            this.durationMsec = Duration.between(Instant.parse(requestTimestamp), Instant.parse(responseTimestamp)).toMillis() + " ms";
+        }
+    }
+
 }

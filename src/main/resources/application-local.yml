@@ -129,7 +129,6 @@ jasypt:
 
 
 jwt:
-  headerName: Authorization
   secureKey: yBddDhG7rP8sT22b4fwh1h964Uqz9Lde3pxMh0yaBc3De1x49x2QofWs3Z4y5w67qk4lf8ioe9332FoLp1xd4xk2382jd320 #512byte, 64자 이상
   tokenValidityInSec: 86400 #1day
 
@@ -150,3 +149,10 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+
+
+request:
+  reserved:
+    attribute:
+      requestTimeStamp: REQUEST_TIME_STAMP

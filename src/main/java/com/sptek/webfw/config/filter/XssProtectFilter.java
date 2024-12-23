@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,14 +28,12 @@ import java.util.Map;
 
 @Slf4j
 @Order(1)
-//@WebFilter적용시 @Component 사용하지 않아야함(@Component 적용시 모든 요청에 적용됨)
-//@Component
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class XssProtectFilter extends OncePerRequestFilter {
     final boolean IS_FILTER_ON = false;
 
     @Override
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if(IS_FILTER_ON) {
             log.info("#### Filter Notice : XssProtectFilter is On ####");
 

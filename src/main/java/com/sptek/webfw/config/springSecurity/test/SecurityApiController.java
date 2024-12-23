@@ -41,7 +41,7 @@ public class SecurityApiController {
 
         String jwt = generalTokenProvider.convertAuthenticationToJwt(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CustomJwtFilter.AUTHORIZATION_HEADER, CustomJwtFilter.AUTHORIZATION_PREFIX + jwt);
+        httpHeaders.add(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
 
         return ResponseEntity.ok().headers(httpHeaders).body(new ApiSuccessResponseDto<>(jwt));
     }

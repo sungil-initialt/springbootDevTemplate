@@ -15,12 +15,20 @@ import java.io.IOException;
 
 @Slf4j
 public class CustomJwtFilter extends GenericFilterBean {
-    public static String AUTHORIZATION_HEADER = "Authorization";
-    public static String AUTHORIZATION_PREFIX  = "Bearer ";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String AUTHORIZATION_PREFIX  = "Bearer ";
     private final GeneralTokenProvider generalTokenProvider;
 
     public CustomJwtFilter(GeneralTokenProvider generalTokenProvider){
         this.generalTokenProvider = generalTokenProvider;
+    }
+
+    public static String getAuthorizationHeader() {
+        return AUTHORIZATION_HEADER;
+    }
+
+    public static String getAuthorizationPrefix() {
+        return AUTHORIZATION_PREFIX;
     }
 
     // 해더에 jwt가 있는 경우 jwt를 authentication으로 변환하여 SecurityContextHolder에 저장하는 역할을 해야함
