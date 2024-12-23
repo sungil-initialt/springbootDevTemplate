@@ -121,7 +121,7 @@ Content-Type: application/json
 
 {
   "username": "admin1@naver.com",
-  "password": "1q2w3e4r5t!Q"
+  "password": "1q2w3e4r5t!Qx"
 }
 > {%
     client.global.set("jwt", response.body.result);

@@ -50,16 +50,16 @@ public class CustomErrorController implements ErrorController {
         //API 요청
         } else {
             // api 요청의 경우는 rest 에러 응답으로 처리해야 하기에 restController 쪽으로 재 호출(forward)을 하는 방식으로 처림함
-            return "forward:restErrorForward/error";
+            return "forward:/api/v1/restErrorForward";
         }
     }
 
-    @RequestMapping(value = {"/restErrorForward"})
+    @RequestMapping(value = {"/api/v1/"})
     @RestController
     public class RestErrorRedirectController {
 
         // 단순히 에러 처리만을 위해 사용되는 RestController로 바로 에러를 throw 하게하여 RestController 에러 처리 흐름을 타도록 만듬
-        @GetMapping("/error")
+        @GetMapping("/restErrorForward")
         public void restErrorForward(HttpServletRequest request) throws Exception {
             String originUri = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
             int errorStatusCode = Integer.parseInt(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)));

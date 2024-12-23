@@ -3,8 +3,10 @@ package com.sptek.webfw.config.interceptor;
 import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,17 +23,17 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
     // !!! 해당 Interceptor 를 사용하기 위해서는 ConvertReqResToContentCachingReqResWrapperFilter 가 적용되어 있어야 함
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
         return true;
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable ModelAndView modelAndView) throws Exception {
         request.setAttribute("modelAndViewForLogging", modelAndView != null ? modelAndView.getModel() : Collections.emptyMap());
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable Exception ex) throws Exception {
         //afterCompletion는 controller 레이어에서 에러가 나더라도 호출됨으로 이곳에서 로킹하는 것이 적합함
 
         String session = request.getSession().getId();
@@ -39,6 +41,9 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
         String url = ReqResUtil.getRequestUrlString(request);
         String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
         String params = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
+
+        // --> 여기 수정해야 함
+        //HttpServletRequest unwrappedRequest = unwrapRequest(request);
         String requestBody = new String(((ContentCachingRequestWrapper)request).getContentAsByteArray());
 
         if(request.getRequestURI().startsWith("/api")) {
@@ -51,6 +56,16 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
             log.debug("\n--------------------\n[Request Info Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {} \n--> requestBody : {}\n<-- modelAndView : {}\n--------------------\n"
                     , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", StringUtils.hasText(responseModel)? "\n" + responseModel : "");
         }
+    }
+
+    private HttpServletRequest unwrapRequest(HttpServletRequest request) {
+        while (request instanceof HttpServletRequestWrapper) {
+            if (request instanceof ContentCachingRequestWrapper) {
+                return (ContentCachingRequestWrapper) request; // 원래 래퍼에 도달
+            }
+            request = (HttpServletRequest) ((HttpServletRequestWrapper) request).getRequest();
+        }
+        return request; // 래퍼를 모두 벗겨도 ContentCachingRequestWrapper가 없으면 원본 반환
     }
 }
 
