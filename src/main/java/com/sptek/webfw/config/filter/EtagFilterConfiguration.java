@@ -30,19 +30,20 @@ public class EtagFilterConfiguration {
     @Bean
     public FilterRegistrationBean<OncePerRequestFilter> shallowEtagHeaderFilter() {
         FilterRegistrationBean<OncePerRequestFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new OncePerRequestFilter() {
-            private final ShallowEtagHeaderFilter shallowEtagHeaderFilter = new ShallowEtagHeaderFilter();
-            @Override
-            protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException, ServletException, ServletException {
-                //Etag response 해더 조건
-                if ("GET".equalsIgnoreCase(request.getMethod()) && request.getRequestURI().matches("/api/.*")) {
-                    log.debug("shallowEtagHeaderFilter applied for this request");
-                    shallowEtagHeaderFilter.doFilter(request, response, filterChain);
-                } else {
-                    filterChain.doFilter(request, response);
-                }
-            }
-        });
+        filterRegistrationBean.setFilter(
+                new OncePerRequestFilter() {
+                    private final ShallowEtagHeaderFilter shallowEtagHeaderFilter = new ShallowEtagHeaderFilter();
+                    @Override
+                    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException, ServletException, ServletException {
+                        //Etag response 해더 조건
+                        if ("GET".equalsIgnoreCase(request.getMethod()) && request.getRequestURI().matches("/api/.*")) {
+                            log.debug("shallowEtagHeaderFilter applied for this request");
+                            shallowEtagHeaderFilter.doFilter(request, response, filterChain);
+                        } else {
+                            filterChain.doFilter(request, response);
+                        }
+                    }
+                });
         //todo : /**로 해야 할것 같은데 /* 로 해야 적용되는 이유 확인 필요
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;

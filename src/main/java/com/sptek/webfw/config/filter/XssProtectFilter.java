@@ -35,8 +35,13 @@ public class XssProtectFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if(IS_FILTER_ON) {
-            log.info("#### Filter Notice : XssProtectFilter is On ####");
+            //필터 제외 케이스
+            if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
+            log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
             HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = new HttpServletRequestWrapperSupport(request);
             String reqBody = IOUtils.toString(httpServletRequestWrapperSupport.getReader()); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 아래에서 대체 request를 생성해서 넘겨줘야 함
 
@@ -52,7 +57,7 @@ public class XssProtectFilter extends OncePerRequestFilter {
             filterChain.doFilter(httpServletRequestWrapperSupport, response);
 
         }else{
-            log.info("#### Filter Notice : XssProtectFilter is OFF ####");
+            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

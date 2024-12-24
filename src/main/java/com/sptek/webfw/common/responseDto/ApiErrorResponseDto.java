@@ -2,6 +2,7 @@ package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
 import com.sptek.webfw.util.ReqResUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -100,7 +101,7 @@ public class ApiErrorResponseDto {
         }
     }
 
-    //@PostConstruct
+    @PostConstruct
     public void makeTimestamp(@Value("${request.reserved.attribute.requestTimeStamp}") String requestTimeStampAttributeName) {
         this.requestTimestamp = String.valueOf(ReqResUtil.getRequest().getAttribute(requestTimeStampAttributeName));
         this.responseTimestamp = String.valueOf(Instant.now());

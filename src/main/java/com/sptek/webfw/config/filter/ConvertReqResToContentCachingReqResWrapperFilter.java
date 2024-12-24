@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.filter;
 
+import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -26,14 +27,20 @@ public class ConvertReqResToContentCachingReqResWrapperFilter  extends OncePerRe
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 읽기 위한 용도로 ReqResLoggingInterceptor 에서 활용됨)
 
         if(IS_FILTER_ON) {
-            log.info("#### Filter Notice : ConvertReqResToContentCachingReqResWrapperFilter is On ####");
+            //필터 제외 케이스
+            if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
             ContentCachingRequestWrapper contentCachingRequestWrapper = new ContentCachingRequestWrapper(request);
             ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
 
             filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
             contentCachingResponseWrapper.copyBodyToResponse();
         } else {
-            log.info("#### Filter Notice : ConvertReqResToContentCachingReqResWrapperFilter is OFF ####");
+            log.info("#### Filter Notice : {}} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

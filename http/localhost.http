@@ -121,7 +121,7 @@ Content-Type: application/json
 
 {
   "username": "admin1@naver.com",
-  "password": "1q2w3e4r5t!Qx"
+  "password": "1q2w3e4r5t!Q"
 }
 > {%
     client.global.set("jwt", response.body.result);
@@ -133,7 +133,7 @@ Content-Type: application/json
 
 ### 테스트
 GET {{api-server-ver}}/auth/hello
-Authorization: Bearer {{jwt}}
+//Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트

@@ -1,6 +1,7 @@
 package com.sptek.webfw.config.filter;
 
 import com.sptek.webfw.util.ReqResUtil;
+import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -46,8 +47,13 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if(IS_FILTER_ON) {
-            log.info("#### Filter Notice : CorsPolicyFilter is On ####");
+            // todo: 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
+            if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
+            log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
             String origin = Optional.ofNullable(ReqResUtil.getRequestHeaderMap(request).get("Origin"))
                     .orElseGet(() -> ReqResUtil.getRequestHeaderMap(request).get("origin"));
 
@@ -73,7 +79,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
             }
 
         } else {
-            log.info("#### Notice : CorsPolicyFilter is OFF ####");
+            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }
