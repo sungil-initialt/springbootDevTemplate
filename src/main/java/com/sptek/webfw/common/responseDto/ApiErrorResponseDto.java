@@ -2,19 +2,20 @@ package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
 import com.sptek.webfw.util.ReqResUtil;
-import jakarta.annotation.PostConstruct;
+import com.sptek.webfw.util.SpringUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*
@@ -33,26 +34,29 @@ HttpStatus.BAD_REQUEST(400)
   "exceptionMessage": "Validation failed for argument [0] in protected org.springframework.http.ResponseEntity&lt;com.sptek.webfw.dto.ApiSuccessResponseDto&lt;com.sptek.webfw.example.dto.ValidationTestDto&gt;&gt; com.sptek.webfw.example.api.api1.ApiTestController.validationAnnotationPost(com.sptek.webfw.example.dto.ValidationTestDto): [Field error in object 'validationTestDto' on field 'userName': rejected value [s]; codes [Size.validationTestDto.userName,Size.userName,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [validationTestDto.userName,userName]; arguments []; default message [userName],20,2]; default message [Size error]] "
 }
  */
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiErrorResponseDto {
     private String resultCode;
     private String resultMessage;
-    private List<InValidFieldInfo> inValidFieldInfos;
-    private String exceptionMessage;
     private String requestTimestamp;
     private String responseTimestamp;
     private String durationMsec;
+    private List<InValidFieldInfo> inValidFieldInfos;
+    private String exceptionMessage;
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
+        this.makeTimestamp();
     }
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage) {
         this.resultCode = errorCodeEnum.getResultCode();
         this.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
+        this.makeTimestamp();
     }
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
@@ -60,6 +64,7 @@ public class ApiErrorResponseDto {
         this.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
         this.inValidFieldInfos = inValidFieldInfos;
+        this.makeTimestamp();
     }
 
     public static ApiErrorResponseDto of(final BaseCode errorCodeEnum) {
@@ -74,6 +79,11 @@ public class ApiErrorResponseDto {
         return new ApiErrorResponseDto(errorCodeEnum, exceptionMessage, InValidFieldInfo.of(bindingResult));
     }
 
+    public void makeTimestamp() {
+        this.requestTimestamp = Optional.ofNullable(ReqResUtil.getRequest().getAttribute(SpringUtil.getProperty("request.reserved.attribute.requestTimeStamp", "REQUEST_TIME_STAMP"))).map(Object::toString).orElse("");
+        this.responseTimestamp = LocalDateTime.now().toString();
+        this.durationMsec = StringUtils.hasText(requestTimestamp) ? Duration.between(LocalDateTime.parse(requestTimestamp), LocalDateTime.parse(responseTimestamp)).toMillis() + " ms" : "";
+    }
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -98,16 +108,6 @@ public class ApiErrorResponseDto {
                             error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
                             error.getDefaultMessage()))
                     .collect(Collectors.toList());
-        }
-    }
-
-    @PostConstruct
-    public void makeTimestamp(@Value("${request.reserved.attribute.requestTimeStamp}") String requestTimeStampAttributeName) {
-        this.requestTimestamp = String.valueOf(ReqResUtil.getRequest().getAttribute(requestTimeStampAttributeName));
-        this.responseTimestamp = String.valueOf(Instant.now());
-
-        if(StringUtils.hasText(requestTimestamp)) {
-            this.durationMsec = Duration.between(Instant.parse(requestTimestamp), Instant.parse(responseTimestamp)).toMillis() + " ms";
         }
     }
 }

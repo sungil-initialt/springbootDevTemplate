@@ -2,8 +2,11 @@ package com.sptek.webfw.common.exceptionHandler;
 
 import com.sptek.webfw.common.code.CommonErrorCodeEnum;
 import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
+import com.sptek.webfw.util.ReqResUtil;
+import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +33,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     //요청에 대한 url 매핑이 없는 경우 web/api 구분없이 이쪽(web쪽)으로 들어옴 (매핑이 없기때문에 web/api 구분 자체가 불가능함)
     //api 입장에서는 api 규격과 다르게 페이지 컨텐츠가 내려가겠지만.. status 404를 통해 404의 경우 내용을 보지 말고 status 코드로 처리해야함, 분리해 볼수도 있겠지만 불필요해 보임
-    public Object handleNoResourceFoundException(Exception ex, HttpServletRequest request) {
+    public Object handleNoResourceFoundException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         String requestUri = request.getRequestURI();
         String errUri = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
-        log.error("message: {}, requestUri: {}, errUri: {}", ex.getMessage(), requestUri, errUri);
+
+        //errUri는 controller 영역 박에서 에러가 발생한 경우에 생성
+        if(!errUri.equals("null")) {
+            this.logReqResInfo(request, response, ex);
+        }
 
         if(requestUri.startsWith("/api") || errUri.startsWith("/api")) {
             final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.NOT_FOUND_ERROR, ex.getMessage());
@@ -47,7 +54,7 @@ public class GlobalExceptionHandler {
     //controller 에서 hasRole 이든 hasAuthority 든 AccessDeniedException 이 발생됨 (hasRole인 경우는 401 같지는 403이 나옴)
     @ExceptionHandler({AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Object handleAccessDeniedException(Exception ex, HttpServletRequest request) {
+    public Object handleAccessDeniedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         //todo : 뭔가 더 친절히 처리해??
         //if(SecurityContextHolder.getContext().getAuthentication() != null
         //        && SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equalsIgnoreCase("anonymousUser")
@@ -57,7 +64,11 @@ public class GlobalExceptionHandler {
 
         String requestUri = request.getRequestURI();
         String errUri = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
-        log.error("message: {}, requestUri: {}, errUri: {}", ex.getMessage(), requestUri, errUri);
+
+        //errUri는 controller 영역 박에서 에러가 발생한 경우에 생성
+        if(!errUri.equals("null")) {
+            this.logReqResInfo(request, response, ex);
+        }
 
         if(requestUri.startsWith("/api") || errUri.startsWith("/api")) {
             final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.FORBIDDEN_ERROR, ex.getMessage());
@@ -70,10 +81,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Object handleUnExpectedException(Exception ex, HttpServletRequest request) {
+    public Object handleUnExpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         String requestUri = request.getRequestURI();
         String errUri = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
-        log.error("message: {}, requestUri: {}, errUri: {}", ex.getMessage(), requestUri, errUri);
+
+        //errUri는 controller 영역 박에서 에러가 발생한 경우에 생성
+        if(!errUri.equals("null")) {
+            this.logReqResInfo(request, response, ex);
+        }
 
         if(requestUri.startsWith("/api") || errUri.startsWith("/api")) {
             final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
@@ -82,5 +97,19 @@ public class GlobalExceptionHandler {
             return "error/commonInternalErrorView";
             //return "error/5xx"; // spring 호출과 통일할 경우
         }
+    }
+
+    //ReqResLoggingInterceptor 가 동작할 수 없는 상태에서 에러가 발생한 경우를 위해 (ex: security 필터 에러등)
+    private void logReqResInfo(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+        String session = request.getSession().getId();
+        String methodType = ReqResUtil.getRequestMethodType(request);
+        String url = ReqResUtil.getRequestUrlString(request);
+        String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
+        String params = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
+
+        log.debug("\n--------------------\n[ReqRes Info from GlobalExceptionHandler]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\n--> exceptionMsg : {}\n<-- responseStatus : {}\n--------------------\n"
+                    , session, methodType, url, header, params, ex.getMessage(), response.getStatus());
+
+        //-->여기까지 처리함(잘 돌아가는지 확인 필요)
     }
 }

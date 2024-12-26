@@ -8,6 +8,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 @Slf4j
 public class LoginHelper {
@@ -55,7 +56,7 @@ public class LoginHelper {
             request.getSession().setAttribute(LOGIN_SUCCESS_REDIRECT_URL, redirectParam);
         }
 
-        String attrLoginSuccessRedirectUrl = request.getSession().getAttribute(LOGIN_SUCCESS_REDIRECT_URL) != null ? request.getSession().getAttribute(LOGIN_SUCCESS_REDIRECT_URL).toString() : "";
+        String attrLoginSuccessRedirectUrl = Optional.ofNullable(request.getSession().getAttribute(LOGIN_SUCCESS_REDIRECT_URL)).map(Object::toString).orElse("");
         log.debug("helper's redirect url : {}", attrLoginSuccessRedirectUrl);
         log.debug("spring's redirect url : {}", getRedirectUrlSpringOwn(request, response));
 

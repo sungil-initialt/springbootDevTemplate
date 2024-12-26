@@ -8,23 +8,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
-import java.io.IOException;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+//@Profile(value = { "xxx" })
 @Slf4j
-@Order(Ordered.LOWEST_PRECEDENCE) //response의 가장 최종 정보를 얻기 위해 가능하면 가장 순위가 낮은 필터에 적용함
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-public class ConvertReqResToContentCachingReqResWrapperFilter extends OncePerRequestFilter {
+@Order(Ordered.HIGHEST_PRECEDENCE) //최상위 필터로 적용 (최대한 실제 요청에 가깝게 timestamp를 만들기 위해)
+@WebFilter(urlPatterns = "/api/*") //ant 표현식 사용 불가 ex: /**
+public class MakeRequestTimestampFilter extends OncePerRequestFilter {
     final boolean IS_FILTER_ON = true;
+    private final String requestTimeStampAttributeName;
+
+    public MakeRequestTimestampFilter(@Value("${request.reserved.attribute.requestTimeStamp}") String requestTimeStampAttributeName) {
+        this.requestTimeStampAttributeName = requestTimeStampAttributeName;
+    }
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 읽기 위한 용도로 ReqResLoggingInterceptor 에서 활용됨)
-
         if(IS_FILTER_ON) {
             //필터 제외 케이스
             if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
@@ -33,13 +38,11 @@ public class ConvertReqResToContentCachingReqResWrapperFilter extends OncePerReq
             }
 
             log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
-            ContentCachingRequestWrapper contentCachingRequestWrapper = new ContentCachingRequestWrapper(request);
-            ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
+            request.setAttribute(this.requestTimeStampAttributeName, LocalDateTime.now());
+            filterChain.doFilter(request, response);
 
-            filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
-            contentCachingResponseWrapper.copyBodyToResponse();
-        } else {
-            log.info("#### Filter Notice : {}} is OFF ####", this.getClass().getSimpleName());
+        }else{
+            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

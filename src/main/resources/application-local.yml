@@ -156,3 +156,7 @@ request:
   reserved:
     attribute:
       requestTimeStamp: REQUEST_TIME_STAMP
+      modelAndViewForLogging: MODEL_AND_VIEW_FOR_LOGGING
+
+
+

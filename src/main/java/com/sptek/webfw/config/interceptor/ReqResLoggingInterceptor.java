@@ -1,6 +1,7 @@
 package com.sptek.webfw.config.interceptor;
 
 import com.sptek.webfw.util.ReqResUtil;
+import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable ModelAndView modelAndView) throws Exception {
         //log.debug("postHandle called");
-        request.setAttribute("modelAndViewForLogging", modelAndView != null ? modelAndView.getModel() : Collections.emptyMap());
+        request.setAttribute(SpringUtil.getProperty("request.reserved.attribute.modelAndViewForLogging", "MODEL_AND_VIEW_FOR_LOGGING"), modelAndView != null ? modelAndView.getModel() : Collections.emptyMap());
     }
 
     @Override
@@ -48,13 +49,13 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
 
         if(request.getRequestURI().startsWith("/api")) {
             String responseBody = new String(((ContentCachingResponseWrapper)response).getContentAsByteArray());
-            log.debug("\n--------------------\n[Request Info Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {} \n--> requestBody : {}\n<-- responseBody : {}\n--------------------\n"
-                    , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", StringUtils.hasText(responseBody)? "\n" + responseBody : "");
+            log.debug("\n--------------------\n[ReqRes Info from Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\n--> requestBody : {}\n<-- responseBody({}) : {}\n--------------------\n"
+                    , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : "");
 
         } else {
             String responseModel = String.valueOf(request.getAttribute("modelAndViewForLogging"));
-            log.debug("\n--------------------\n[Request Info Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {} \n--> requestBody : {}\n<-- modelAndView : {}\n--------------------\n"
-                    , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", StringUtils.hasText(responseModel)? "\n" + responseModel : "");
+            log.debug("\n--------------------\n[ReqRes Info from Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\n--> requestBody : {}\n<-- modelAndView({}) : {}\n--------------------\n"
+                    , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", response.getStatus(), StringUtils.hasText(responseModel)? "\n" + responseModel : "");
         }
     }
 

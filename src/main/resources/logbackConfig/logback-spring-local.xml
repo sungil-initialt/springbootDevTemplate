@@ -14,7 +14,7 @@
     <property name="default_log_max_history" value="1"/>
     <property name="default_log_max_filesize" value="10MB"/>
     <property name="default_log_pattern"
-              value="%-5level %d{yy-MM-dd HH:mm:ss.SSS'Z'}[%thread] [%logger{0}.%method:%line] - %msg%n"/>
+              value="%-5level %d{yy-MM-dd HH:mm:ss.SSS}[%thread] [%logger{0}.%method:%line] %X{sessionId} - %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
