@@ -33,7 +33,7 @@ import java.util.List;
 public class SecurityViewController {
 
     @NonFinal
-    private final String pagePath = "pages/example/test/";
+    private final String pageBasePath = "pages/example/test/";
     private final ModelMapper modelMapper;
     private final SecurityService securityService;
 
@@ -45,7 +45,7 @@ public class SecurityViewController {
         signupRequestDto.setAllTerms(securityService.findAllTerms());
 
         //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
-        return pagePath + "signup";
+        return pageBasePath + "signup";
     }
 
     @PostMapping("/signup")
@@ -56,7 +56,7 @@ public class SecurityViewController {
             //체크박스를 다시 그리기 위해
             signupRequestDto.setAllRoles(securityService.findAllRoles());
             signupRequestDto.setAllTerms(securityService.findAllTerms());
-            return pagePath + "signup";
+            return pageBasePath + "signup";
         }
         User savedUser = securityService.saveUser(signupRequestDto);
 
@@ -70,7 +70,7 @@ public class SecurityViewController {
     @GetMapping("/login")
     public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("redirectTo", LoginHelper.getRedirectUrlAfterLogging(request, response));
-        return pagePath + "login";
+        return pageBasePath + "login";
     }
 
     @GetMapping("/auth/user/info/{email}")
@@ -78,7 +78,7 @@ public class SecurityViewController {
     public String user(@PathVariable("email") String email, Model model) {
         UserDto resultUserDto = securityService.findUserByEmail(email);
         model.addAttribute("result", resultUserDto);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @GetMapping("/auth/user/update/{email}")
@@ -97,7 +97,7 @@ public class SecurityViewController {
         userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
         model.addAttribute("userUpdateRequestDto", userUpdateRequestDto);
-        return pagePath + "userUpdate";
+        return pageBasePath + "userUpdate";
     }
 
     @PostMapping("/auth/user/update")
@@ -113,7 +113,7 @@ public class SecurityViewController {
             userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
             userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
 
-            return pagePath + "userUpdate";
+            return pageBasePath + "userUpdate";
         }
         User savedUser = securityService.updateUser(userUpdateRequestDto);
 
@@ -127,7 +127,7 @@ public class SecurityViewController {
         roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
 
 
-        return pagePath + "roles";
+        return pageBasePath + "roles";
     }
 
     @PostMapping("/roles")
@@ -137,7 +137,7 @@ public class SecurityViewController {
         if (bindingResult.hasErrors()) {
             roleMngRequestDto.setAllRoles(securityService.findAllRoles());
             roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
-            return pagePath + "roles";
+            return pageBasePath + "roles";
         }
 
         securityService.saveRoles(roleMngRequestDto);
@@ -150,13 +150,13 @@ public class SecurityViewController {
         //myAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인을 요청했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
 
         model.addAttribute("result", myAuthentication);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @GetMapping("/admin/anyone")
     public String adminAnyone(Model model) {
         model.addAttribute("result", "adminAnyone");
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @GetMapping("/admin/marketing")
@@ -165,7 +165,7 @@ public class SecurityViewController {
     )
     public String adminMarketing(Model model) {
         model.addAttribute("result", "adminMarketing");
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @GetMapping("/admin/delivery")
@@ -174,13 +174,13 @@ public class SecurityViewController {
     )
     public String adminDelivery(Model model) {
         model.addAttribute("result", "adminDelivery");
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @GetMapping("/system/anyone")
     public String systemAnyone(Model model) {
         model.addAttribute("result", "systemAnyone");
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @GetMapping("/public/anyone/butNeedControllRole")
@@ -188,14 +188,14 @@ public class SecurityViewController {
     @PreAuthorize("hasRole('ADMIN')")
     public String butNeedControllRole(Model model) {
         model.addAttribute("result", "butNeedControllRole");
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     //secure filter chain 에서 특정 authority 제약이 걸린 케이스 테스트
     @GetMapping("/public/anyone/butNeedFilterAuth")
     public String butNeedFilterAuth(Model model) {
         model.addAttribute("result", "butNeedFilterAuth");
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     //secure filter chain 에서는 제약이 없지만 컨트럴로에 Authority 제약이 걸려 있는 상황에 대한 test 를 위해

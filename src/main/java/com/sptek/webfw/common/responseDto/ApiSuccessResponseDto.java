@@ -2,7 +2,6 @@ package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
 import com.sptek.webfw.common.code.SuccessCodeEnum;
-import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.SpringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,9 @@ HttpStatus.OK(200)
 {
   "resultCode": "S000",
   "resultMessage": "success",
+  "requestTime" : "2024-12-27T14:29:31.827941",
+  "responseTime" : "2024-12-27T14:29:31.848168",
+  "durationMsec" : "20",
   "result": { -->> T 객체에 선언된 내용으로 구성됨.
     "name": "myProject",
     "version": "v1",
@@ -28,12 +30,12 @@ HttpStatus.OK(200)
 @Slf4j
 @Getter
 public class ApiSuccessResponseDto<T> {
-    private String resultCode;
-    private String resultMessage;
-    private String requestTimestamp;
-    private String responseTimestamp;
+    private final String resultCode;
+    private final String resultMessage;
+    private String requestTime;
+    private String responseTime;
     private String durationMsec;
-    private T result;
+    private final T result;
 
     public ApiSuccessResponseDto(final T result) {
         this.resultCode = SuccessCodeEnum.DEFAULT_SUCCESS.getResultCode();
@@ -59,8 +61,8 @@ public class ApiSuccessResponseDto<T> {
     }
 
     public void makeTimestamp() {
-        this.requestTimestamp = Optional.ofNullable(ReqResUtil.getRequest().getAttribute(SpringUtil.getProperty("request.reserved.attribute.requestTimeStamp", "REQUEST_TIME_STAMP"))).map(Object::toString).orElse("");
-        this.responseTimestamp = LocalDateTime.now().toString();
-        this.durationMsec = StringUtils.hasText(requestTimestamp) ? Duration.between(LocalDateTime.parse(requestTimestamp), LocalDateTime.parse(responseTimestamp)).toMillis() + " ms" : "";
+        this.requestTime = Optional.ofNullable(SpringUtil.getRequest().getAttribute(SpringUtil.getProperty("request.reserved.attribute.requestTimeStamp", "REQUEST_TIME_STAMP"))).map(Object::toString).orElse("");
+        this.responseTime = LocalDateTime.now().toString();
+        this.durationMsec = StringUtils.hasText(requestTime) ? String.valueOf(Duration.between(LocalDateTime.parse(requestTime), LocalDateTime.parse(responseTime)).toMillis()) : "";
     }
 }

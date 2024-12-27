@@ -127,16 +127,6 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.FORBIDDEN_ERROR.getHttpStatusCode());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponseDto> handleUnExpectedException(Exception ex) {
-        log.error(ex.getMessage());
-
-        final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
-        return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR.getHttpStatusCode());
-    }
-
-
-
     //개발자가 의도적으로 생성한 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ApiErrorResponseDto> handleServiceException(ServiceException ex) {
@@ -144,5 +134,13 @@ public class ApiGlobalExceptionHandler {
 
         final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(ex.getServiceErrorCodeEnum(), ex.getMessage());
         return new ResponseEntity<>(apiErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponseDto> handleUnExpectedException(Exception ex) {
+        log.error(ex.getMessage());
+
+        final ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return new ResponseEntity<>(apiErrorResponseDto, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR.getHttpStatusCode());
     }
 }

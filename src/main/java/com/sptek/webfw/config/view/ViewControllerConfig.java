@@ -21,8 +21,8 @@ public class ViewControllerConfig implements WebMvcConfigurer {
         viewControllerRegistry.addViewController("/temporaryParkingPageForXXX").setViewName("/pages/example/test/temporaryParkingView");
         viewControllerRegistry.addViewController("/sorry").setViewName("/pages/example/test/temporaryParkingView");
         viewControllerRegistry.addViewController("/fileUpload").setViewName("/pages/example/test/fileUpload");
-        viewControllerRegistry.addViewController("/pageWithPost").setViewName("/pages/example/test/pageWithPost");
-        viewControllerRegistry.addViewController("/apiWithAjax").setViewName("/pages/example/test/apiWithAjax");
+        viewControllerRegistry.addViewController("/pageForSubmitTest").setViewName("/pages/example/test/pageForSubmitTest");
+        viewControllerRegistry.addViewController("/pageForApiTest").setViewName("/pages/example/test/pageForApiTest");
 
     }
 

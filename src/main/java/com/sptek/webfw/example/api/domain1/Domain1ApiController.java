@@ -11,7 +11,7 @@ import com.sptek.webfw.support.CloseableHttpClientSupport;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.RestTemplateSupport;
 import com.sptek.webfw.util.FileUtil;
-import com.sptek.webfw.util.ReqResUtil;
+import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import com.sptek.webfw.vo.PropertyVos;
 import io.swagger.v3.oas.annotations.Operation;
@@ -173,10 +173,10 @@ public class Domain1ApiController extends CommonControllerSupport {
     @Operation(summary = "reqResUtil", description = "reqResUtil 테스트", tags = {""})
     //ReqResUtil 검증 테스트
     public ResponseEntity<ApiSuccessResponseDto<Map<String, String>>> reqResUtil(HttpServletRequest request) {
-        String reqFullUrl = ReqResUtil.getRequestUrlString(request);
-        String reqIp = ReqResUtil.getReqUserIp(request);
-        String heades = ReqResUtil.getRequestHeaderMap(request).toString();
-        String params = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
+        String reqFullUrl = SpringUtil.getRequestUrlQuery();
+        String reqIp = SpringUtil.getReqUserIp();
+        String heades = SpringUtil.getRequestHeaderMap().toString();
+        String params = TypeConvertUtil.strArrMapToString(SpringUtil.getRequestParameterMap());
 
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("reqFullUrl", reqFullUrl);
@@ -264,9 +264,10 @@ public class Domain1ApiController extends CommonControllerSupport {
     }
 
     @AnoRequestDeduplication
-    @PostMapping("/duplicatedRequest")
+    @RequestMapping("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
+        log.debug("AOP order : ??");
         String result = "duplicatedRequest test";
         Thread.sleep(3000L);
         return ResponseEntity.ok(new ApiSuccessResponseDto<>(result));

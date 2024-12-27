@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class Domain1ViewController extends CommonControllerSupport {
     @NonFinal
-    private final String pagePath = "pages/example/test/";
+    private final String pageBasePath = "pages/example/test/";
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
 
@@ -46,7 +46,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     @RequestMapping({"/welcome"})
     public String welcome(Model model) {
         model.addAttribute("message", "welcome");
-        return pagePath + "welcome";
+        return pageBasePath + "welcome";
     }
 
     @RequestMapping("/interceptor")
@@ -54,7 +54,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     public String interceptor(Model model) {
         log.debug("origin caller here.");
         model.addAttribute("message", "welcome");
-        return pagePath + "interceptor";
+        return pageBasePath + "interceptor";
     }
 
     //내부 로직에직 발생한 EX에 대한 처리.
@@ -63,7 +63,7 @@ public class Domain1ViewController extends CommonControllerSupport {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
         if(1==1) throw new ServiceException(ServiceErrorCodeEnum.XXX_ERROR);
 
-        return pagePath + "xx"; //not to reach here
+        return pageBasePath + "xx"; //not to reach here
     }
 
     //Mybatis 를 통한 DB 테스트들
@@ -71,35 +71,35 @@ public class Domain1ViewController extends CommonControllerSupport {
     public String dbConnect(Model model) {
         int result = domain1ViewService.returnOne();
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/replicationMaster")
     public String replicationMaster(Model model) {
         int result = domain1ViewService.replicationMaster();
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/replicationSlave")
     public String replicationSlave(Model model) {
         int result = domain1ViewService.replicationSlave();
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/selectOne")
     public String selectOne(Model model) {
         TBTestDto tbTestDto = domain1ViewService.selectOne();
         model.addAttribute("result", tbTestDto.toString());
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/selectList")
     public String selectList(Model model) {
         List<TBTestDto> tbTestDtos = domain1ViewService.selectList();
         model.addAttribute("result", tbTestDtos.toString());
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/selectListWithResultHandler")
@@ -107,7 +107,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     public String selectListWithResultHandler(Model model) {
         List<TBZipcodeDto> tBZipcodes = domain1ViewService.selectListWithResultHandler();
         model.addAttribute("result", tBZipcodes.toString());
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/selectMap")
@@ -115,7 +115,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     public String selectMap(Model model) {
         Map<?, ?> resultMap = domain1ViewService.selectMap();
         model.addAttribute("result", resultMap.toString());
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/selectPaginate")
@@ -128,7 +128,7 @@ public class Domain1ViewController extends CommonControllerSupport {
 
         PageInfoSupport<TBZipcodeDto> pageInfoSupport = domain1ViewService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
         model.addAttribute("result", pageInfoSupport.toString());
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/insert")
@@ -140,7 +140,7 @@ public class Domain1ViewController extends CommonControllerSupport {
 
         int result = domain1ViewService.insert(tbTestDto);
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/update")
@@ -152,7 +152,7 @@ public class Domain1ViewController extends CommonControllerSupport {
 
         int result = domain1ViewService.update(tbTestDto);
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/delete")
@@ -162,7 +162,7 @@ public class Domain1ViewController extends CommonControllerSupport {
 
         int result = domain1ViewService.delete(tbTestDto);
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/i18n")
@@ -173,15 +173,16 @@ public class Domain1ViewController extends CommonControllerSupport {
 
         String connectTime = getI18nMessage("connectTime", new String[]{formattedDateTime});
         model.addAttribute("connectTime", connectTime);
-        return pagePath + "i18n";
+        return pageBasePath + "i18n";
     }
 
     @AnoRequestDeduplication
     @RequestMapping("/duplicatedRequest")
     public String duplicatedRequest(Model model) throws Exception {
-        //테스트를 위한 강제 딜레이
+        // 테스트를 위한 강제 딜레이
         Thread.sleep(3000L);
-        return pagePath + "welcome";
+        model.addAttribute("result", "duplicatedRequest Test");
+        return pageBasePath + "simpleModelView";
     }
 
     //thyleaf 에러 처리 테스트
@@ -190,7 +191,7 @@ public class Domain1ViewController extends CommonControllerSupport {
         //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
 
         log.debug("called by GET");
-        return pagePath + "validationWithBindingResult";
+        return pageBasePath + "validationWithBindingResult";
     }
 
     @PostMapping("/validationWithBindingResult")
@@ -198,12 +199,12 @@ public class Domain1ViewController extends CommonControllerSupport {
         log.debug("called by POST");
 
         if (bindingResult.hasErrors()) {
-            return pagePath + "validationWithBindingResult";
+            return pageBasePath + "validationWithBindingResult";
         }
 
         if (StringUtils.hasText(validationTestDto.getEmail()) && validationTestDto.getEmail().contains("@naver.com")) {
             bindingResult.rejectValue("email", "emailFail", "네이버 메일은 사용할 수 없습니다.");
-            return pagePath + "validationWithBindingResult";
+            return pageBasePath + "validationWithBindingResult";
         }
 
         //do what you want.
@@ -219,7 +220,7 @@ public class Domain1ViewController extends CommonControllerSupport {
 
         model.addAttribute("result", result);
         response.setHeader("Cache-Control", cacheControl.getHeaderValue());
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/modelMapperTest")
@@ -256,14 +257,14 @@ public class Domain1ViewController extends CommonControllerSupport {
         result.put("ExampleADto-exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/viewServiceError")
     public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
         int result = domain1ApiService.raiseServiceError(errorType);
         model.addAttribute("result", result);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 }
 

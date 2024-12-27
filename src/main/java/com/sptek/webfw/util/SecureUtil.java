@@ -46,7 +46,7 @@ public class SecureUtil {
 
     public static boolean isNotEssentialRequest(){
         List<String> requestPatterns = getNotEssentialRequestPatterns();
-        String requestPath = ReqResUtil.getRequest().getServletPath();
+        String requestPath = SpringUtil.getRequest().getServletPath();
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (String requestPattern : requestPatterns) {
@@ -73,7 +73,7 @@ public class SecureUtil {
 
     public static boolean isStaticResourceRequest(){
         List<String> requestPatterns = getStaticResourceRequestPatterns();
-        String requestPath = ReqResUtil.getRequest().getServletPath();
+        String requestPath = SpringUtil.getRequest().getServletPath();
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (String requestPattern : requestPatterns) {

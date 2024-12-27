@@ -113,6 +113,18 @@ Content-Type: application/json
 GET {{api-server-ver}}/duplicatedRequest
 Content-Type: application/json
 
+### duplicatedRequest 테스트2
+POST {{api-server-ver}}/duplicatedRequest
+Content-Type: application/json
+
+### duplicatedRequest 테스트(View)
+GET {{web-server}}/duplicatedRequest
+Content-Type: text/html
+
+### duplicatedRequest 테스트2(View)
+POST {{web-server}}/duplicatedRequest
+Content-Type: text/html
+
 
 ### Security ---------------------------------
 ### API 방식 인증 요청 테스트
@@ -132,7 +144,7 @@ GET {{api-server-ver}}/public/hello
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/auth/hello
+GET {{api-server-ver}}/auth/hello?a=a
 //Authorization: Bearer {{jwt}}
 Content-Type: application/json
 

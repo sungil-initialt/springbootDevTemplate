@@ -21,7 +21,7 @@ import java.util.Map;
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외
-    private final String pagePath = "pages/example/test/";
+    private final String pageBasePath = "pages/example/test/";
     private final RepositoryService repositoryService;
 
     //for test
@@ -29,7 +29,7 @@ public class RepositoryViewController {
     public String test(@PathVariable("key") String key, Model model) {
         Map<String, Object> resultMap = repositoryService.testRepository(key);
         model.addAttribute("result", resultMap);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
     //for test
@@ -38,7 +38,7 @@ public class RepositoryViewController {
         AuthorityIfEnum authority = AuthorityIfEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
         AuthorityDto authDto = ModelMapperUtil.map(authority, AuthorityDto.class);
         model.addAttribute("result", authDto);
-        return pagePath + "simpleModelView";
+        return pageBasePath + "simpleModelView";
     }
 
 }

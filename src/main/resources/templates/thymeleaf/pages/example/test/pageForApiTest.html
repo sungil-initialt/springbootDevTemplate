@@ -15,13 +15,14 @@
 
     <!-- inline JS 영역-->
     <script>
-        var host = 'https://back.localhost:8080/api/v1/';
+        //var host = 'https://back.localhost:8080/api/v1/';
+        var host = 'https://localhost:8443/api/v1/';
     </script>
 </head>
 
 <body>
 <div>
-    <button id="btn1">duplicatedRequest(sync)</button>
+    <button id="btn1">duplicatedRequest(sync방식)</button> <br>요청은 동시에 여럿 가능하나.. 첫 요청응답을 받을때까지 동작하지 않으며 첫요청 응답 후 기존에 보낸 요청에 때해 실패 처리함<br>
     <script th:inline="javascript" type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('btn1').addEventListener('click', async function() {
@@ -35,9 +36,10 @@
         });
 
     </script>
+    <br>
 
 
-    <button id="btn2">duplicatedRequest(async)</button>
+    <button id="btn2">duplicatedRequest(async방식)</button> <br>실시간으로 요청이 가능하며 첫 요청이 실행중인 동안 이후 요청은 실시간으로 실패로 응답함, 첫 요청은 처리후 성공 응답함<br>
     <script>
         document.getElementById('btn2').addEventListener('click', function() {
             const apiUrl = host + 'duplicatedRequest'; // 실제 API 주소로 변경 필요
@@ -61,6 +63,8 @@
                 .catch(error => console.error('Error:', error));
         });
     </script>
+    <br>
+
 
     <button id="btn3">httpCache(async)</button>
     <script>

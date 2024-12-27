@@ -57,7 +57,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 // api/** 로 시작하지 않은 경우만 필터 적용
-                .securityMatcher(request -> !request.getRequestURI().startsWith("/api"))
+                .securityMatcher(request -> !request.getRequestURI().startsWith("/api/"))
+
+                // CSRF를 비활성화할 경로 지정
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/public")
+                )
 
                 //path별 Role을 지정함 (controller 의  @PreAuthorize와의 차이점은 여기서 path에 지정하는 방식은 spring security fillter 에 의해 관리되고.. controller 에 지정된 것은 servlet 에서 관리됨)
                 //다시말해.. path에 지정하면.. 인증이 필요할때 spring-security-fillter가 로그인 페이지로 자동 이동해 주거나.. 권한이 없을때 filter 레벨에서 403 페이지로 전환해 준다.

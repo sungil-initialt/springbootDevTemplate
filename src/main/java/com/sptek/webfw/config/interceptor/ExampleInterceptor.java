@@ -45,7 +45,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
 
     @Override
     //컨트롤러 처리후 view 렌더링 전(모델에 데이터 추가, 응답 수정 등)
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+    public void postHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, ModelAndView modelAndView) {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
@@ -65,7 +65,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
 
     @Override
     //View가 렌더링되고 요청이 완료된 후 (주요 자원 정리, 예외 처리 로깅 등)
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 

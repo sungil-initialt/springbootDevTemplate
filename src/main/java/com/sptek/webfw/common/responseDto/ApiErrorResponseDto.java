@@ -1,7 +1,6 @@
 package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
-import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.SpringUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,6 +23,9 @@ HttpStatus.BAD_REQUEST(400)
 {
   "resultCode": "GE011",
   "resultMessage": "NOT_VALID_ERROR",
+  "requestTime" : "2024-12-27T14:29:31.827941",
+  "responseTime" : "2024-12-27T14:29:31.848168",
+  "durationMsec" : "20",
   "inValidFieldInfos": [
     {
       "field": "userName",
@@ -40,8 +42,8 @@ HttpStatus.BAD_REQUEST(400)
 public class ApiErrorResponseDto {
     private String resultCode;
     private String resultMessage;
-    private String requestTimestamp;
-    private String responseTimestamp;
+    private String requestTime;
+    private String responseTime;
     private String durationMsec;
     private List<InValidFieldInfo> inValidFieldInfos;
     private String exceptionMessage;
@@ -80,9 +82,9 @@ public class ApiErrorResponseDto {
     }
 
     public void makeTimestamp() {
-        this.requestTimestamp = Optional.ofNullable(ReqResUtil.getRequest().getAttribute(SpringUtil.getProperty("request.reserved.attribute.requestTimeStamp", "REQUEST_TIME_STAMP"))).map(Object::toString).orElse("");
-        this.responseTimestamp = LocalDateTime.now().toString();
-        this.durationMsec = StringUtils.hasText(requestTimestamp) ? Duration.between(LocalDateTime.parse(requestTimestamp), LocalDateTime.parse(responseTimestamp)).toMillis() + " ms" : "";
+        this.requestTime = Optional.ofNullable(SpringUtil.getRequest().getAttribute(SpringUtil.getProperty("request.reserved.attribute.requestTimeStamp", "REQUEST_TIME_STAMP"))).map(Object::toString).orElse("");
+        this.responseTime = LocalDateTime.now().toString();
+        this.durationMsec = StringUtils.hasText(requestTime) ? String.valueOf(Duration.between(LocalDateTime.parse(requestTime), LocalDateTime.parse(responseTime)).toMillis()) : "";
     }
 
     @Getter

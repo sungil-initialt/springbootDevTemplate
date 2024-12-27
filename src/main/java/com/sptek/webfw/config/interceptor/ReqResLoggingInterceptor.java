@@ -1,6 +1,5 @@
 package com.sptek.webfw.config.interceptor;
 
-import com.sptek.webfw.util.ReqResUtil;
 import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,13 +40,13 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
         //log.debug("afterCompletion called");
 
         String session = request.getSession().getId();
-        String methodType = ReqResUtil.getRequestMethodType(request);
-        String url = ReqResUtil.getRequestUrlString(request);
-        String header = TypeConvertUtil.strMapToString(ReqResUtil.getRequestHeaderMap(request));
-        String params = TypeConvertUtil.strArrMapToString(ReqResUtil.getRequestParameterMap(request));
+        String methodType = SpringUtil.getRequestMethodType();
+        String url = SpringUtil.getRequestUrlQuery();
+        String header = TypeConvertUtil.strMapToString(SpringUtil.getRequestHeaderMap());
+        String params = TypeConvertUtil.strArrMapToString(SpringUtil.getRequestParameterMap());
         String requestBody = new String(((ContentCachingRequestWrapper)request).getContentAsByteArray());
 
-        if(request.getRequestURI().startsWith("/api")) {
+        if(request.getRequestURI().startsWith("/api/")) {
             String responseBody = new String(((ContentCachingResponseWrapper)response).getContentAsByteArray());
             log.debug("\n--------------------\n[ReqRes Info from Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\n--> requestBody : {}\n<-- responseBody({}) : {}\n--------------------\n"
                     , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : "");
