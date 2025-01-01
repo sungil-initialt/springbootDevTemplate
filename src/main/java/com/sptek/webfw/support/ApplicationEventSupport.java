@@ -1,5 +1,6 @@
 package com.sptek.webfw.support;
 
+import com.sptek.webfw.util.SpringUtil;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,8 @@ public class ApplicationEventSupport {
         //test for LogbackKeywordFilterForXXX, this below info log will be saved in specific file.
         log.info("XXX >> systemStart: message here!");
 
-        final Environment environment = event.getApplicationContext().getEnvironment();
         //현재 프로파일 확인
+        final Environment environment = event.getApplicationContext().getEnvironment();
         String[] activeProfiles = environment.getActiveProfiles();
         log.debug("activeProfiles = {}", Arrays.toString(activeProfiles));
 

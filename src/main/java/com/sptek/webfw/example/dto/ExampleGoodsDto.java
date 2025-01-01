@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class ExampleGoodsDto {
     private String manufacturerName;
     private String name;
-    private long originPrice = 0;
-    private int weight = 1;
+    private long originPrice ;
+    private int weight;
     private long discountedPrice;
     private int stock;
     private String availableSendBackYn;

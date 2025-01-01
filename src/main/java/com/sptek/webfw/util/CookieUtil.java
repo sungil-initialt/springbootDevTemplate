@@ -57,8 +57,8 @@ public class CookieUtil {
         cookie.setHttpOnly(isHttpOnly);
         cookie.setSecure(secure);
 
-        cookie.setDomain(!StringUtils.isEmpty(domain) ? domain : "");
-        cookie.setPath(!StringUtils.isEmpty(path) ? path : DEFAULT_COOKIE_PATH);
+        cookie.setDomain(!StringUtils.hasText(domain) ? domain : "");
+        cookie.setPath(StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
 
         return cookie;
     }

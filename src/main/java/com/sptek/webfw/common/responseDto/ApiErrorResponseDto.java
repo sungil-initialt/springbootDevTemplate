@@ -39,34 +39,30 @@ HttpStatus.BAD_REQUEST(400)
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ApiErrorResponseDto {
-    private String resultCode;
-    private String resultMessage;
-    private String requestTime;
-    private String responseTime;
-    private String durationMsec;
+public class ApiErrorResponseDto extends CommonApiResponse{
+
     private List<InValidFieldInfo> inValidFieldInfos;
     private String exceptionMessage;
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum) {
-        this.resultCode = errorCodeEnum.getResultCode();
-        this.resultMessage = errorCodeEnum.getResultMessage();
-        this.makeTimestamp();
+        super.resultCode = errorCodeEnum.getResultCode();
+        super.resultMessage = errorCodeEnum.getResultMessage();
+        super.makeTimestamp();
     }
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage) {
-        this.resultCode = errorCodeEnum.getResultCode();
-        this.resultMessage = errorCodeEnum.getResultMessage();
+        super.resultCode = errorCodeEnum.getResultCode();
+        super.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
-        this.makeTimestamp();
+        super.makeTimestamp();
     }
 
     ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
-        this.resultCode = errorCodeEnum.getResultCode();
-        this.resultMessage = errorCodeEnum.getResultMessage();
+        super.resultCode = errorCodeEnum.getResultCode();
+        super.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
         this.inValidFieldInfos = inValidFieldInfos;
-        this.makeTimestamp();
+        super.makeTimestamp();
     }
 
     public static ApiErrorResponseDto of(final BaseCode errorCodeEnum) {
@@ -79,12 +75,6 @@ public class ApiErrorResponseDto {
 
     public static ApiErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage, final BindingResult bindingResult) {
         return new ApiErrorResponseDto(errorCodeEnum, exceptionMessage, InValidFieldInfo.of(bindingResult));
-    }
-
-    public void makeTimestamp() {
-        this.requestTime = Optional.ofNullable(SpringUtil.getRequest().getAttribute(SpringUtil.getProperty("request.reserved.attribute.requestTimeStamp", "REQUEST_TIME_STAMP"))).map(Object::toString).orElse("");
-        this.responseTime = LocalDateTime.now().toString();
-        this.durationMsec = StringUtils.hasText(requestTime) ? String.valueOf(Duration.between(LocalDateTime.parse(requestTime), LocalDateTime.parse(responseTime)).toMillis()) : "";
     }
 
     @Getter

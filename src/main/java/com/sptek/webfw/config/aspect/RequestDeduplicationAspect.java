@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 // 정상적인 동작이 되려면 해당 사용자에 대한 session이 이미 존재한 상태여야 함(대부분의 경우 이미 존재할듯)
 public class RequestDeduplicationAspect
 {
-    private long DEDUPLICATION_DEFAULT_MS = 1000L*10; //해당 메소드 처리 시간이 실제 얼마가 걸릴지 알수 없기 때문에 우선 이 Sec 동안 중복 요청 불가 처리함 (해당 시간 내에도 처리 되지 못하면 중복 방어가 더이상 안됨)
-    private long DEDUPLICATION_EXTRA_MS = 1000L; //해당 메소드 처리가 종료되면 남은 초기 시간과 관계 없이 새로운 시간으로 중복 처리 방어함 (종료가 되었더라도 1초 정도는 중복 방어함)
-
     //@Controller 또는 @RestController 가 적용된 클레스, 그리고 @AnoRequestDeduplication 가 적용된 클레스 또는 @AnoRequestDeduplication 가 적용된 메소드에서 실행됨
     //@Pointcut("(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController)) " +
     //        "&& (@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || @annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
@@ -31,8 +28,12 @@ public class RequestDeduplicationAspect
             "&& (@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || @annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
     public void myPointCut() {}
 
+
     @Around("myPointCut()")
     public Object duplicateRequestCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+        long DEDUPLICATION_DEFAULT_MS = 1000L*10; //해당 메소드 처리 시간이 실제 얼마가 걸릴지 알수 없기 때문에 우선 이 Sec 동안 중복 요청 불가 처리함 (해당 시간 내에도 처리 되지 못하면 중복 방어가 더이상 안됨)
+        long DEDUPLICATION_EXTRA_MS = 1000L; //해당 메소드 처리가 종료되면 남은 초기 시간과 관계 없이 새로운 시간으로 중복 처리 방어함 (종료가 되었더라도 1초 정도는 중복 방어함)
+
         log.debug("AOP order : 1");
         //log.debug("sessionAttributeAll : {}", ReqResUtil.getSessionAttributesAll(true));
         HttpServletRequest currentRequest = SpringUtil.getRequest();
@@ -72,11 +73,13 @@ public class RequestDeduplicationAspect
         }
     }
 
+
     @Before("myPointCut()")
     public void beforeRequest(JoinPoint joinPoint) {
         log.debug("AOP order : 3");
         //to do what you need.
     }
+
 
     @After("myPointCut()")
     public void AfterRequest(JoinPoint joinPoint) {
@@ -85,10 +88,10 @@ public class RequestDeduplicationAspect
     }
 
 
-
     private Object handleDuplicationForRestController() throws ServiceException {
         throw new ServiceException(ServiceErrorCodeEnum.DUPLICATION_REQUEST_ERROR);
     }
+
 
     private boolean isDuplicatationCase(String requestSignature) {
         long expiryTime = SpringUtil.getSessionAttribute(requestSignature) == null ? 0: (long) SpringUtil.getSessionAttribute(requestSignature);

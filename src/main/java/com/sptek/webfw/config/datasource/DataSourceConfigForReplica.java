@@ -21,11 +21,12 @@ import java.util.Map;
 @Configuration
 @Profile(value = { "dev", "stg" })
 public class DataSourceConfigForReplica {
+
     @Bean(name = "writeDataSource", destroyMethod = "")
     @ConfigurationProperties(prefix = "spring.datasource.write")
-    //HikariCP를 이용하여 datasource를 관리한다.
-    //Spring이 DataSource를 필요로하는 시점에 여러개가 존재할수 있기때문에 별도의 이름을 추가해 줄수 있다. (기본은 return 타입)
-    //Spring이 bean 소멸시 자동으로 dataSource의 close를 기본으로 호출해줌으로 destroyMethod를 따로 선언하지 않아도 된다(필요한경우 사용)
+    // HikariCP를 이용하여 datasource를 관리한다.
+    // Spring이 DataSource를 필요로하는 시점에 여러개가 존재할수 있기때문에 별도의 이름을 추가해 줄수 있다. (기본은 return 타입)
+    // Spring이 bean 소멸시 자동으로 dataSource의 close를 기본으로 호출해줌으로 destroyMethod를 따로 선언하지 않아도 된다(필요한경우 사용)
     // write용 리프리케이션.
     public DataSource writeDataSource() {
         return DataSourceBuilder
@@ -44,8 +45,8 @@ public class DataSourceConfigForReplica {
     }
 
     @Bean(name = "routingDataSource")
-    //DataSource 가 여럿 존재할수 있기 때문에 @Qualifier통해 그 중 명확한 이름으로 선언된 것을 주입해 줄수 있다.
-    //write, read를 나눠 사용할수 있도록 ReplicationRoutingDataSource 생성
+    // DataSource 가 여럿 존재할수 있기 때문에 @Qualifier통해 그 중 명확한 이름으로 선언된 것을 주입해 줄수 있다.
+    // write, read를 나눠 사용할수 있도록 ReplicationRoutingDataSource 생성
     public DataSource routingDataSource(@Qualifier("writeDataSource") DataSource writeDataSource,
                                         @Qualifier("readDataSource") DataSource readDataSource) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
@@ -61,14 +62,15 @@ public class DataSourceConfigForReplica {
 
     @Bean(name = "dataSource")
     @DependsOn({"routingDataSource"})
-    //실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
+    // 실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
     public DataSource routingLazyDataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 
     public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+        // @Transactional(readOnly = true) 를 사용하는 경우 read용 dataSource를 활용하도록 처리함으로써 속도 계선 가능.
+
         @Override
-        //@Transactional(readOnly = true) 를 사용하는 경우 read용 dataSource를 활용하도록 처리함으로써 속도 계선 가능.
         protected Object determineCurrentLookupKey() {
             boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
             return isReadOnly ? "read" : "write";

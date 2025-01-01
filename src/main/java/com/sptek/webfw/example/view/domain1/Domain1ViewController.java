@@ -49,6 +49,18 @@ public class Domain1ViewController extends CommonControllerSupport {
         return pageBasePath + "welcome";
     }
 
+    @GetMapping({"/welcomeGet"})
+    public String welcomeGet(Model model) {
+        model.addAttribute("message", "welcome");
+        return pageBasePath + "welcome";
+    }
+
+    @PostMapping({"/welcomePost"})
+    public String welcomePost(Model model) {
+        model.addAttribute("message", "welcome");
+        return pageBasePath + "welcome";
+    }
+
     @RequestMapping("/interceptor")
     @AnoInterceptorCheck
     public String interceptor(Model model) {
@@ -261,8 +273,8 @@ public class Domain1ViewController extends CommonControllerSupport {
     }
 
     @RequestMapping("/viewServiceError")
-    public String viewServiceError(@RequestParam("errorType") int errorType, Model model) {
-        int result = domain1ApiService.raiseServiceError(errorType);
+    public String viewServiceError(@RequestParam("errorCaseNum") int errorCaseNum, Model model) {
+        int result = domain1ApiService.raiseServiceError(errorCaseNum);
         model.addAttribute("result", result);
         return pageBasePath + "simpleModelView";
     }

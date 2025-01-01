@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
-import com.sptek.webfw.config.argumentResolver.ArgumentResolverForMyUser;
+import com.sptek.webfw.config.argumentResolver.ExampleArgumentResolverForMyUserDto;
 import com.sptek.webfw.example.dto.FileUploadDto;
 import com.sptek.webfw.example.dto.ValidationTestDto;
 import com.sptek.webfw.support.CloseableHttpClientSupport;
@@ -64,9 +64,27 @@ public class Domain1ApiController extends CommonControllerSupport {
     private final ObjectMapper objectMapper;
     private final Domain1ApiService domain1ApiService;
 
-    @GetMapping("/hello")
+    @RequestMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> hello(
+            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
+            @RequestParam String message) {
+
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+    }
+
+    @GetMapping("/helloGet")
+    @Operation(summary = "helloGet", description = "helloGet 테스트", tags = {"echo"}) //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> helloGet(
+            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
+            @RequestParam String message) {
+
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+    }
+
+    @PostMapping("/helloPost")
+    @Operation(summary = "helloPost", description = "helloPost 테스트", tags = {"echo"}) //swagger
+    public ResponseEntity<ApiSuccessResponseDto<String>> helloPost(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) {
 
@@ -211,16 +229,16 @@ public class Domain1ApiController extends CommonControllerSupport {
     @Operation(summary = "argumentResolverForMyUser", description = "argumentResolverForMyUser 테스트", tags = {""})
     //HandlerMethodArgumentResolver 를 implement 한 ArgumentResolverForMyUser에 의해 ArgumentResolverForMyUser.MyUser에 데이터가 바인딩 될때 미리 코딩된 로직에 따라 변형처리 되어 바인딩 할수 있다.
     //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
-    public ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser(ArgumentResolverForMyUser.MyUser myUser) {
+    public ResponseEntity<ApiSuccessResponseDto<ExampleArgumentResolverForMyUserDto.MyUserDto>> argumentResolverForMyUser(ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUser));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUserDto));
     }
 
     @GetMapping("/argumentResolverForMyUser2")
     @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<ArgumentResolverForMyUser.MyUser>> argumentResolverForMyUser2(@AnoCustomArgument ArgumentResolverForMyUser.MyUser myUser) {
+    public ResponseEntity<ApiSuccessResponseDto<ExampleArgumentResolverForMyUserDto.MyUserDto>> argumentResolverForMyUser2(@AnoCustomArgument ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUser));
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUserDto));
     }
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -286,8 +304,8 @@ public class Domain1ApiController extends CommonControllerSupport {
 
     @RequestMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorType") int errorType) {
-        int result = domain1ApiService.raiseServiceError(errorType);
+    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorCaseNum") int errorCaseNum) {
+        int result = domain1ApiService.raiseServiceError(errorCaseNum);
         return ResponseEntity.ok(new ApiSuccessResponseDto<>(result));
     }
 }

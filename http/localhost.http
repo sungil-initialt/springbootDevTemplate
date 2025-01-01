@@ -1,6 +1,25 @@
+### view Test
+GET {{web-server}}/welcome
+Content-Type: text/html
 
 ### hello
 GET {{api-server-ver}}/hello?message=hi
+Content-Type: application/json
+
+### helloGet
+GET {{api-server-ver}}/helloGet?message=hi
+Content-Type: application/json
+
+### helloGet
+POST {{api-server-ver}}/helloGet?message=hi
+Content-Type: application/json
+
+### helloPost
+GET {{api-server-ver}}/helloPost?message=hi
+Content-Type: application/json
+
+### helloPost
+POST {{api-server-ver}}/helloPost?message=hi
 Content-Type: application/json
 
 > {%

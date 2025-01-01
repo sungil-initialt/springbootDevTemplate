@@ -38,14 +38,14 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
 
-        //-->클레스페스에서는 로딩이 안되는 이유가 뭐지?? (resource쪽에서만 됨)
+        // todo: 클레스페스에서는 로딩이 안되는 이유가 뭐지?? (resource 쪽에서만 됨, 일단은 resource 쪽에 위치 시킴)
         sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*-config.xml")[0]);
 
-        //위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
-        //org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-        //configuration.setMapUnderscoreToCamelCase(true);
-        //configuration.setJdbcTypeForNull(JdbcType.NULL);
-        //sqlSessionFactoryBean.setConfiguration(configuration);
+        // 위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
+        // org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        // configuration.setMapUnderscoreToCamelCase(true);
+        // configuration.setJdbcTypeForNull(JdbcType.NULL);
+        // sqlSessionFactoryBean.setConfiguration(configuration);
 
         sqlSessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mapper/*Mapper.xml"));
         return sqlSessionFactoryBean.getObject();
@@ -53,7 +53,6 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
 
     @Bean(name = "sqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
-        return sqlSessionTemplate;
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

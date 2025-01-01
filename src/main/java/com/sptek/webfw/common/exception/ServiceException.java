@@ -12,6 +12,7 @@ throw new ServiceException(ErrorCode.SERVICE_XXXX_ERROR, "최근 구매내역 �
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+// todo : RuntimeException 과 Exception 중 어느 것을 상속받을지에 대해 고민이 있음..
 public class ServiceException extends RuntimeException {
     private BaseCode serviceErrorCodeEnum;
 

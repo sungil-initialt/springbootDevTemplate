@@ -3,6 +3,7 @@ package com.sptek.webfw.util;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -14,10 +15,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 @Slf4j
 @Component
 public class SpringUtil {
+    @Getter
     private static Environment environment;
+
 
     @Autowired
     SpringUtil(Environment environment) {
@@ -25,6 +30,7 @@ public class SpringUtil {
     }
 
     public static String getProperty(String key) {
+        // 프로퍼티 조회 순서 : jvm 시스템 속상 > OS 환경 변수 > 프로퍼티 파일
         return SpringUtil.environment.getProperty(key);
     }
 

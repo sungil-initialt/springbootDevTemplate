@@ -107,8 +107,9 @@ pagehelper:
 
 jasypt:
   encryptor:
-    bean=encryptorBean: jasyptStringEncryptor
-    secretKey: JasyptStringEncryptor_key_Hello
+    bean: jasyptStringEncryptor
+    PBEpassword: JasyptStringEncryptor_password_mySecret # PRD 환경에서는 보안상 반드시 프로퍼티가 아닌 JVM 또는 OS 환경변수로 설정할 것!!
+    PBEalgorithm: PBEWITHHMACSHA512ANDAES_256 # PBEWithMD5AndDES or PBEWITHHMACSHA512ANDAES_256(권장)
 
 # Swagger springdoc-ui Configuration
 springdoc:

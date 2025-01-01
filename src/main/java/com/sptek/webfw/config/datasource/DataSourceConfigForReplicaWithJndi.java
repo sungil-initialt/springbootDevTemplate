@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.datasource;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +20,11 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @Profile(value = { "prd" })
-
+@RequiredArgsConstructor
 //todo: JNDI 방식에 대한 테스트 필요
 public class DataSourceConfigForReplicaWithJndi {
+
+
     @Value("${jndi.datasource.lookup.write.name}") //프로퍼티 항목 정의
     private String jndiWriteDatasourceLookupName;
     @Value("${jndi.datasource.lookup.read.name}")
@@ -45,8 +48,8 @@ public class DataSourceConfigForReplicaWithJndi {
     }
 
     @Bean(name = "routingDataSource")
-    //DataSource 가 여럿 존재할수 있기 때문에 @Qualifier통해 그 중 명확한 이름으로 선언된 것을 주입해 줄수 있다.
-    //write, read를 나눠 사용할수 있도록 ReplicationRoutingDataSource 생성
+    // DataSource 가 여럿 존재할수 있기 때문에 @Qualifier통해 그 중 명확한 이름으로 선언된 것을 주입해 줄수 있다.
+    // write, read를 나눠 사용할수 있도록 ReplicationRoutingDataSource 생성
     public DataSource routingDataSource(@Qualifier("writeDataSource") DataSource writeDataSource,
                                         @Qualifier("readDataSource") DataSource readDataSource) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
@@ -62,14 +65,15 @@ public class DataSourceConfigForReplicaWithJndi {
 
     @Bean(name = "dataSource")
     @DependsOn({"routingDataSource"})
-    //실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
+    // 실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
     public DataSource routingLazyDataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 
     public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
-        @Override
         //@Transactional(readOnly = true) 를 사용하는 경우 read용 dataSource를 활용하도록 처리함으로써 속도 계선 가능.
+
+        @Override
         protected Object determineCurrentLookupKey() {
             boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
             return isReadOnly ? "read" : "write";
