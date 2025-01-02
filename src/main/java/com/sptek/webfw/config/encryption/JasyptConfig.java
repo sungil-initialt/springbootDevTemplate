@@ -6,11 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
@@ -25,28 +24,25 @@ public class JasyptConfig {
     
     //--> 여기 내용 정리 필요함, 상세 설명과.. 알고리즘 업데이트등.. 추가로 웹상에서 사용할수 있는 DES, AES 코드 추가하자!
 
-    @Bean("jasyptStringEncryptor")
+    @DependsOn({"SpringUtil"}) //SpringUtil 기능을 사용하고 있기 때문에
+    @Primary
+    @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        String PBEpassword = Optional.ofNullable(System.getenv("JASYPT_ENCRYPTOR_PBEPASSWORD")).map(String::trim)
-                .orElse(SpringUtil.getProperty("jasypt.encryptor.PBEpassword"));
+        String pbePassword = Optional.ofNullable(System.getenv("JASYPT_ENCRYPTOR_PBEPASSWORD")).map(String::trim)
+                    .orElse(SpringUtil.getProperty("jasypt.encryptor.PBEpassword", ""));
 
-        if(!StringUtils.hasText(PBEpassword)) {
+        String pbeAlgorithm = SpringUtil.getProperty("jasypt.encryptor.PBEalgorithm", "PBEWITHHMACSHA512ANDAES_256");
+        log.debug("JasyptConfig : PBEpassword({}) PBEalgorithm({})", pbePassword, pbeAlgorithm);
+
+        if(!StringUtils.hasText(pbePassword)) {
             log.error(">>#### Secure Notice : JASYPT_ENCRYPTOR_PBEPASSWORD 시스템 설정이 필요 합니다.");
-            throw new IllegalStateException(String.format("Required configuration value is missing: JASYPT_ENCRYPTOR_PBEPASSWORD = %s", PBEpassword));
+            throw new IllegalStateException(String.format("Required configuration value is missing: JASYPT_ENCRYPTOR_PBEPASSWORD = %s", pbePassword));
         }
-
-        String PBEalgorithm = SpringUtil.getProperty("jasypt.encryptor.PBEalgorithm", "PBEWITHHMACSHA512ANDAES_256");
-        log.debug("JasyptConfig : PBEpassword({}) PBEalgorithm({})", PBEpassword, PBEalgorithm);
-
-        return getPooledPBEStringEncryptor(PBEpassword, PBEalgorithm);
-    }
-
-    private @NotNull PooledPBEStringEncryptor getPooledPBEStringEncryptor(String PBEpassword, String PBEalgorithm) {
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
 
         SimpleStringPBEConfig simpleStringPBEConfig = new SimpleStringPBEConfig();
-        simpleStringPBEConfig.setPassword(PBEpassword); // 암호화에 사용할 대칭키
-        simpleStringPBEConfig.setAlgorithm(PBEalgorithm); // 사용할 알고리즘
+        simpleStringPBEConfig.setPassword(pbePassword); // 암호화에 사용할 대칭키
+        simpleStringPBEConfig.setAlgorithm(pbeAlgorithm); // 사용할 알고리즘
         simpleStringPBEConfig.setKeyObtentionIterations("10000"); // 복호화 어렵게 하기 위해 해싱을 몇번 돌릴지의 설정 5000 이상 권장(늘릴수록 시간이 늘어남으로 적절히 조절)
         simpleStringPBEConfig.setPoolSize("1"); // 해당 모듈의 pool로 디볼트1, 멀티스레드 환경에서는 늘릴수 있음
         simpleStringPBEConfig.setProviderName("SunJCE"); // 암호화 제공자 설정, 비 설정시 디폴트 설정으로 선택됨

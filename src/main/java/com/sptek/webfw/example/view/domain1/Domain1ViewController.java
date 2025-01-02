@@ -15,13 +15,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,6 +44,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     private final String pageBasePath = "pages/example/test/";
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
+    private final StringEncryptor stringEncryptor;
 
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
@@ -76,6 +81,13 @@ public class Domain1ViewController extends CommonControllerSupport {
         if(1==1) throw new ServiceException(ServiceErrorCodeEnum.XXX_ERROR);
 
         return pageBasePath + "xx"; //not to reach here
+    }
+
+    @RequestMapping("/jasyptEnc")
+    public String jasyptEnc(Model model, @RequestParam(name = "text") String text) {
+        String encryptedText = stringEncryptor.encrypt(text);
+        model.addAttribute("result", encryptedText);
+        return pageBasePath + "simpleModelView";
     }
 
     //Mybatis 를 통한 DB 테스트들
