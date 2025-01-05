@@ -14,10 +14,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Slf4j
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class JasyptConfigTest {
+class JasyptStringEncryptorTest {
 
     @Autowired
-    @Qualifier(value = "jasyptStringEncryptor")
     private StringEncryptor stringEncryptor;
 
 
@@ -25,6 +24,7 @@ class JasyptConfigTest {
     void testStringEncryptionAndDecryption() {
         // 테스트용 문자열
         String plainText = "plainTest-abc";
+        log.debug("plain Text: {}", plainText);
 
         // 암호화
         String encryptedText = stringEncryptor.encrypt(plainText);

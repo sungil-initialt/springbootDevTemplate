@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.interceptor;
 
+import com.sptek.webfw.common.constant.CommonConstants;
 import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable ModelAndView modelAndView) {
         //log.debug("postHandle called");
-        request.setAttribute(SpringUtil.getProperty("request.reserved.attribute.modelAndViewForLogging", "MODEL_AND_VIEW_FOR_LOGGING"), modelAndView != null ? modelAndView.getModel() : Collections.emptyMap());
+        request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_MODEL_LOGGING, modelAndView != null ? modelAndView.getModel() : Collections.emptyMap());
     }
 
     @Override
@@ -50,13 +51,13 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
 
         if(request.getRequestURI().startsWith("/api/")) {
             String responseBody = new String(((ContentCachingResponseWrapper)response).getContentAsByteArray());
-            log.debug("\n--------------------\n[ReqRes Info from Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\n--> requestBody : {}\n<-- responseBody({}) : {}\n--------------------\n"
+            log.debug("\n--------------------\n[ReqRes Info from ReqResLoggingInterceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\n--> requestBody : {}\n<-- responseBody({}) : {}\n--------------------\n"
                     , session, methodType, url, header, params, StringUtils.hasText(requestBody)? "\n" + requestBody : "", response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : "");
 
         } else {
-            String exceptionMsg = ex != null ? ex.getMessage() : Optional.ofNullable(request.getAttribute(SpringUtil.getProperty("request.reserved.attribute.exceptionMsgForLogging", "EXCEPTION_MSG_FOR_LOGGING"))).map(Object::toString).orElse("");
-            String responseModel = Optional.ofNullable(request.getAttribute("modelAndViewForLogging")).map(Object::toString).orElse("");
-            log.debug("\n--------------------\n[ReqRes Info from Interceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\nexceptionMsg : {}\n--> requestBody : {}\n<-- modelAndView({}) : {}\n--------------------\n"
+            String exceptionMsg = ex != null ? ex.getMessage() : Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING)).map(Object::toString).orElse("");
+            String responseModel = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_MODEL_LOGGING)).map(Object::toString).orElse("");
+            log.debug("\n--------------------\n[ReqRes Info from ReqResLoggingInterceptor]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\nexceptionMsg : {}\n--> requestBody : {}\n<-- modelAndView({}) : {}\n--------------------\n"
                     , session, methodType, url, header, params, exceptionMsg, StringUtils.hasText(requestBody)? "\n" + requestBody : "", response.getStatus(), StringUtils.hasText(responseModel)? "\n" + responseModel : "");
         }
     }

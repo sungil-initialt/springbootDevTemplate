@@ -16,16 +16,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class Domain1ViewController extends CommonControllerSupport {
@@ -45,6 +44,12 @@ public class Domain1ViewController extends CommonControllerSupport {
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
     private final StringEncryptor stringEncryptor;
+
+    public Domain1ViewController(Domain1ViewService domain1ViewService, Domain1ApiService domain1ApiService, @Qualifier("jasyptStringEncryptor") StringEncryptor stringEncryptor) {
+        this.domain1ViewService = domain1ViewService;
+        this.domain1ApiService = domain1ApiService;
+        this.stringEncryptor = stringEncryptor;
+    }
 
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
@@ -83,10 +88,39 @@ public class Domain1ViewController extends CommonControllerSupport {
         return pageBasePath + "xx"; //not to reach here
     }
 
-    @RequestMapping("/jasyptEnc")
-    public String jasyptEnc(Model model, @RequestParam(name = "text") String text) {
-        String encryptedText = stringEncryptor.encrypt(text);
+    @GetMapping("/jasyptEnc")
+    public String jasyptEnc(Model model, @RequestParam(name = "plainText") String plainText) {
+        String encryptedText = stringEncryptor.encrypt(plainText);
         model.addAttribute("result", encryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @GetMapping("/jasyptDec")
+    public String jasyptDec(Model model, @RequestParam(name = "encryptedText") String encryptedText) {
+        String decryptedText = stringEncryptor.decrypt(encryptedText);
+        model.addAttribute("result", decryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/jasyptEnc")
+    public String jasyptEncPost(Model model, @RequestBody String plainText) {
+        log.debug(plainText);
+        String encryptedText = stringEncryptor.encrypt(plainText);
+        model.addAttribute("result", encryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/jasyptDec") //csrf 무시 경로
+    public String jasyptDecPost(Model model, @RequestBody String encryptedText) {
+        log.debug(encryptedText);
+        String decryptedText = stringEncryptor.decrypt(encryptedText);
+        model.addAttribute("result", decryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @RequestMapping("/checkJasyptWorking")
+    public String checkJasyptWorking(@Value("${test.jasyptTest.encValue}") String encValue, Model model) {
+        model.addAttribute("result", encValue);
         return pageBasePath + "simpleModelView";
     }
 

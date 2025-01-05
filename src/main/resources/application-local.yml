@@ -121,12 +121,21 @@ pagehelper:
   close-conn: true
   default-count: true
 
-
+# jasyptStringEncryptor 로 선언된 Bean을 스프링의 기본 StringEncryptor 으로 사용 하겠다는 의미
+# (프로퍼티에서 값을 decryption 할때 기본으로 선언된 bean을 사용하겠다는 것이지 코드상에서 StringEncryptor 을 빈에서 가져다 써야할 결우는 Bean 이름으로 정확히 선택해야함)
 jasypt:
   encryptor:
-    bean: jasyptStringEncryptor
-    PBEpassword: JasyptStringEncryptor_password_mySecret # PRD 환경에서는 보안상 반드시 프로퍼티가 아닌 JVM 또는 OS 환경변수로 설정할 것!!
-    PBEalgorithm: PBEWITHHMACSHA512ANDAES_256 # PBEWithMD5AndDES or PBEWITHHMACSHA512ANDAES_256(권장)
+    bean: jasyptStringEncryptor # 이 프로퍼티가 없어도 실제 jasyptStringEncryptor 이름으로 등록된 Bean이 있으면 해당 Bean이 동작함
+    password: ${PBE_PASSWORD} # 시스템 환경 변수에서 가져와 매핑 (보안이슈)
+    #algorithm: PBEWithMD5AndDES # 보안성 낮음
+    algorithm: PBEWITHHMACSHA512ANDAES_256 #보안성 높음
+
+# jasyptStringEncryptor 으로 선언된 Bean 이 없다면 아래 설정으로 기분 StringEncryptor 을 설정할수 있다 (CustomJasyptConfig 에서 jasyptStringEncryptor 가 Bean으로 설정되면 의미가 없음)
+#jasypt:
+#  encryptor:
+#    password: default_encryption_password_abc
+
+
 
 
 jwt:
@@ -153,15 +162,6 @@ springdoc:
 
 
 
-request:
-  reserved:
-    attribute:
-      requestTimeStamp: REQUEST_TIME_STAMP
-      modelAndViewForLogging: MODEL_AND_VIEW_FOR_LOGGING
-      exceptionMsgForLogging: EXCEPTION_MSG_FOR_LOGGING
-
-
-
 test:
-  jasypt:
-    value: ENC()
+  jasyptTest:
+    encValue: ENC(P4rL5Xai1CB5NS7Qy8g49K7GWs1N7ltWUfgZ0ScEmlNZxFMFrtFHBIVEi4t/nr/F) # 원문 : "originPlainText"

@@ -1,6 +1,7 @@
 package com.sptek.webfw.common.exceptionHandler;
 
 import com.sptek.webfw.common.code.CommonErrorCodeEnum;
+import com.sptek.webfw.common.constant.CommonConstants;
 import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
 import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
@@ -60,7 +61,7 @@ public class GlobalExceptionHandler {
     }
 
     private void logOnCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
-        log.error(ex.getMessage());
+        log.error("Exception message : {}", ex.getMessage());
 
         // ReqResLoggingInterceptor 에서 로깅처리를 할수 없는 케이스가 있다면 이곳에 조건을 추가할 것
         // ERROR_REQUEST_URI 는 controller 영역 밖에서 에러가 발생한 경우에 셋팅됨 (ReqResLoggingInterceptor 가 동작할수 없기때문에 이곳에서 프리 로깅함)
@@ -99,7 +100,7 @@ public class GlobalExceptionHandler {
             return new ResponseEntity<>(apiErrorResponseDto, errorCode.getHttpStatusCode());
         } else {
             //view 요청에 발생한 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(SpringUtil.getProperty("request.reserved.attribute.exceptionMsgForLogging", "EXCEPTION_MSG_FOR_LOGGING"), ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
             return viewName;
             //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
         }

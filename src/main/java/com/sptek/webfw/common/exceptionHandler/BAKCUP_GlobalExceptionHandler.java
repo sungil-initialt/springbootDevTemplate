@@ -1,6 +1,7 @@
 package com.sptek.webfw.common.exceptionHandler;
 
 import com.sptek.webfw.common.code.CommonErrorCodeEnum;
+import com.sptek.webfw.common.constant.CommonConstants;
 import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
 import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
@@ -49,7 +50,7 @@ public class BAKCUP_GlobalExceptionHandler {
 
         } else {
             //view 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(SpringUtil.getProperty("request.reserved.attribute.exceptionMsgForLogging", "EXCEPTION_MSG_FOR_LOGGING"), ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
             return "error/commonNotfoundErrorView";
             //return "error/404"; // spring 호출과 통일할 경우
         }
@@ -79,7 +80,7 @@ public class BAKCUP_GlobalExceptionHandler {
 
         } else {
             //view 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(SpringUtil.getProperty("request.reserved.attribute.exceptionMsgForLogging", "EXCEPTION_MSG_FOR_LOGGING"), ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
             return "error/commonAuthenticationErrorView";
             //return "error/403"; // spring 호출과 통일할 경우
         }
@@ -102,7 +103,7 @@ public class BAKCUP_GlobalExceptionHandler {
 
         } else {
             //view 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(SpringUtil.getProperty("request.reserved.attribute.exceptionMsgForLogging", "EXCEPTION_MSG_FOR_LOGGING"), ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
             return "error/commonInternalErrorView";
             //return "error/5xx"; // spring 호출과 통일할 경우
         }

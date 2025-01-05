@@ -22,6 +22,19 @@ Content-Type: application/json
 POST {{api-server-ver}}/helloPost?message=hi
 Content-Type: application/json
 
+
+### jasyptEnc 테스트
+POST {{web-server}}/public/jasyptEnc
+Content-Type: text/html
+
+originPlainText
+
+### jasyptDec 테스트
+POST {{web-server}}/public/jasyptDec
+Content-Type: text/html
+
+P4rL5Xai1CB5NS7Qy8g49K7GWs1N7ltWUfgZ0ScEmlNZxFMFrtFHBIVEi4t/nr/F
+
 > {%
 //동적 변수 set 테스트
 const eTag = response.headers.valueOf("ETag");
@@ -43,7 +56,7 @@ GET {{api-server-ver}}/XssProtectSupportGet?originText=<javascript>alert('hello'
 Content-Type: application/json
 
 ### XssProtectSupport 테스트
-POST {{api-server-ver}}XssProtectSupportPost
+POST {{api-server-ver}}/XssProtectSupportPost
 Content-Type: application/json
 
 {

@@ -17,25 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
 public class SpringUtil {
-    @Getter
-    private static Environment environment;
-
-
-    @Autowired
-    SpringUtil(Environment environment) {
-        SpringUtil.environment = environment;
-    }
-
-    public static String getProperty(String key) {
-        // 프로퍼티 조회 순서 : jvm 시스템 속상 > OS 환경 변수 > 프로퍼티 파일
-        return SpringUtil.environment.getProperty(key);
-    }
-
-    public static String getProperty(String key, String defaultValue) {
-        return SpringUtil.environment.getProperty(key, defaultValue);
-    }
 
     //request에서 도메인 정보를 가져옴
     public static String getRequestDomain() {
