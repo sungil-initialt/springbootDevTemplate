@@ -4,6 +4,8 @@ import com.sptek.webfw.anotation.AnoInterceptorCheck;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.config.encryption.AesEncryptor;
+import com.sptek.webfw.config.encryption.DesEncryptor;
 import com.sptek.webfw.example.api.domain1.Domain1ApiService;
 import com.sptek.webfw.example.dto.*;
 import com.sptek.webfw.support.CommonControllerSupport;
@@ -12,11 +14,9 @@ import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
@@ -44,11 +44,17 @@ public class Domain1ViewController extends CommonControllerSupport {
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
     private final StringEncryptor stringEncryptor;
+    private final AesEncryptor aesEncryptor;
+    private final DesEncryptor desEncryptor;
 
-    public Domain1ViewController(Domain1ViewService domain1ViewService, Domain1ApiService domain1ApiService, @Qualifier("jasyptStringEncryptor") StringEncryptor stringEncryptor) {
+    public Domain1ViewController(Domain1ViewService domain1ViewService, Domain1ApiService domain1ApiService
+            , @Qualifier("customJasyptStringEncryptor") StringEncryptor stringEncryptor
+            , AesEncryptor aesEncryptor, DesEncryptor desEncryptor) {
         this.domain1ViewService = domain1ViewService;
         this.domain1ApiService = domain1ApiService;
         this.stringEncryptor = stringEncryptor;
+        this.aesEncryptor = aesEncryptor;
+        this.desEncryptor = desEncryptor;
     }
 
     //기본 테스트
@@ -88,20 +94,6 @@ public class Domain1ViewController extends CommonControllerSupport {
         return pageBasePath + "xx"; //not to reach here
     }
 
-    @GetMapping("/jasyptEnc")
-    public String jasyptEnc(Model model, @RequestParam(name = "plainText") String plainText) {
-        String encryptedText = stringEncryptor.encrypt(plainText);
-        model.addAttribute("result", encryptedText);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @GetMapping("/jasyptDec")
-    public String jasyptDec(Model model, @RequestParam(name = "encryptedText") String encryptedText) {
-        String decryptedText = stringEncryptor.decrypt(encryptedText);
-        model.addAttribute("result", decryptedText);
-        return pageBasePath + "simpleModelView";
-    }
-
     @PostMapping("/public/jasyptEnc")
     public String jasyptEncPost(Model model, @RequestBody String plainText) {
         log.debug(plainText);
@@ -121,6 +113,38 @@ public class Domain1ViewController extends CommonControllerSupport {
     @RequestMapping("/checkJasyptWorking")
     public String checkJasyptWorking(@Value("${test.jasyptTest.encValue}") String encValue, Model model) {
         model.addAttribute("result", encValue);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/aesEnc")
+    public String aesEncPost(Model model, @RequestBody String plainText) {
+        log.debug(plainText);
+        String encryptedText = aesEncryptor.encrypt(plainText);
+        model.addAttribute("result", encryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/aesDec") //csrf 무시 경로
+    public String aesDecPost(Model model, @RequestBody String encryptedText) {
+        log.debug(encryptedText);
+        String decryptedText = aesEncryptor.decrypt(encryptedText);
+        model.addAttribute("result", decryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/desEnc")
+    public String desEncPost(Model model, @RequestBody String plainText) {
+        log.debug(plainText);
+        String encryptedText = desEncryptor.encrypt(plainText);
+        model.addAttribute("result", encryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/desDec") //csrf 무시 경로
+    public String desDecPost(Model model, @RequestBody String encryptedText) {
+        log.debug(encryptedText);
+        String decryptedText = desEncryptor.decrypt(encryptedText);
+        model.addAttribute("result", decryptedText);
         return pageBasePath + "simpleModelView";
     }
 

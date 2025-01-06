@@ -1,20 +1,15 @@
 package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
-import com.sptek.webfw.util.SpringUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*

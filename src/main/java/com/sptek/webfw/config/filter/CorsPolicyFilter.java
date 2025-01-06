@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.filter;
 
-import com.sptek.webfw.util.SpringUtil;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -54,8 +54,8 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
             }
 
             log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
-            String origin = Optional.ofNullable(SpringUtil.getRequestHeaderMap().get("Origin"))
-                    .orElseGet(() -> SpringUtil.getRequestHeaderMap().get("origin"));
+            String origin = Optional.ofNullable(RequestUtil.getRequestHeaderMap(request).get("Origin"))
+                    .orElseGet(() -> RequestUtil.getRequestHeaderMap(request).get("origin"));
 
             log.debug("The request origin is {}", origin);
             if(accessControlAllowOrigins.contains(origin)){

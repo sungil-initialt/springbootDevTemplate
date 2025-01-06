@@ -3,7 +3,7 @@ package com.sptek.webfw.common.exceptionHandler;
 import com.sptek.webfw.common.code.CommonErrorCodeEnum;
 import com.sptek.webfw.common.constant.CommonConstants;
 import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
-import com.sptek.webfw.util.SpringUtil;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -114,10 +114,10 @@ public class BAKCUP_GlobalExceptionHandler {
     //ReqResLoggingInterceptor 가 동작할 수 없는 상태에서 에러가 발생한 경우를 위해 (ex: security 필터 에러등)
     private void logReqResInfo(HttpServletRequest request, HttpServletResponse response, Exception ex) {
         String session = request.getSession().getId();
-        String methodType = SpringUtil.getRequestMethodType();
-        String url = SpringUtil.getRequestDomain() + request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) + (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : ""); //에러를 발생시킨 origin url
-        String header = TypeConvertUtil.strMapToString(SpringUtil.getRequestHeaderMap());
-        String params = TypeConvertUtil.strArrMapToString(SpringUtil.getRequestParameterMap());
+        String methodType = RequestUtil.getRequestMethodType(request);
+        String url = RequestUtil.getRequestDomain(request) + request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) + (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : ""); //에러를 발생시킨 origin url
+        String header = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request));
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
         log.debug("\n--------------------\n[ReqRes Info from GlobalExceptionHandler]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\nexceptionMsg : {}\n<-- responseStatus : {}\n--------------------\n"
                     , session, methodType, url, header, params, ex.getMessage(), response.getStatus());

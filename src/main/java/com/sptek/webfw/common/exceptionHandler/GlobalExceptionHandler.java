@@ -3,7 +3,7 @@ package com.sptek.webfw.common.exceptionHandler;
 import com.sptek.webfw.common.code.CommonErrorCodeEnum;
 import com.sptek.webfw.common.constant.CommonConstants;
 import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
-import com.sptek.webfw.util.SpringUtil;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,13 +77,13 @@ public class GlobalExceptionHandler {
         // ReqResLoggingInterceptor 에서 로깅처리를 할수 없는 케이스에 대해서는 이곳에서 선 로깅 처리로 대치한다. ((ex: security 필터, 405 에러등)
 
         String session = request.getSession().getId();
-        String methodType = SpringUtil.getRequestMethodType();
-        String url = SpringUtil.getRequestDomain() +
+        String methodType = RequestUtil.getRequestMethodType(request);
+        String url = RequestUtil.getRequestDomain(request) +
                 Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI)).orElse(request.getRequestURI()) +
                 (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
 
-        String header = TypeConvertUtil.strMapToString(SpringUtil.getRequestHeaderMap());
-        String params = TypeConvertUtil.strArrMapToString(SpringUtil.getRequestParameterMap());
+        String header = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request));
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
         log.debug("\n--------------------\n[ReqRes Info from GlobalExceptionHandler]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\nexceptionMsg : {}\n<-- responseStatus : {}\n--------------------\n",
                 session, methodType, url, header, params, ex.getMessage(), httpStatus);

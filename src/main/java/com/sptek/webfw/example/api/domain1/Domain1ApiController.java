@@ -11,7 +11,7 @@ import com.sptek.webfw.support.CloseableHttpClientSupport;
 import com.sptek.webfw.support.CommonControllerSupport;
 import com.sptek.webfw.support.RestTemplateSupport;
 import com.sptek.webfw.util.FileUtil;
-import com.sptek.webfw.util.SpringUtil;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import com.sptek.webfw.vo.PropertyVos;
 import io.swagger.v3.oas.annotations.Operation;
@@ -191,10 +191,10 @@ public class Domain1ApiController extends CommonControllerSupport {
     @Operation(summary = "reqResUtil", description = "reqResUtil 테스트", tags = {""})
     //ReqResUtil 검증 테스트
     public ResponseEntity<ApiSuccessResponseDto<Map<String, String>>> reqResUtil(HttpServletRequest request) {
-        String reqFullUrl = SpringUtil.getRequestUrlQuery();
-        String reqIp = SpringUtil.getReqUserIp();
-        String heades = SpringUtil.getRequestHeaderMap().toString();
-        String params = TypeConvertUtil.strArrMapToString(SpringUtil.getRequestParameterMap());
+        String reqFullUrl = RequestUtil.getRequestUrlQuery(request);
+        String reqIp = RequestUtil.getReqUserIp(request);
+        String heades = RequestUtil.getRequestHeaderMap(request).toString();
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("reqFullUrl", reqFullUrl);

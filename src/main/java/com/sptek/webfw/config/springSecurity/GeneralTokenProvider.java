@@ -27,7 +27,7 @@ public class GeneralTokenProvider implements InitializingBean {
     private final long tokenValidityInMilliseconds;
     private Key key;
 
-    public GeneralTokenProvider(@Value("${jwt.secureKey}") String secureKey, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
+    public GeneralTokenProvider(@Value("${jwt.base64SecretKey}") String secureKey, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
         this.secureKey = secureKey;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }

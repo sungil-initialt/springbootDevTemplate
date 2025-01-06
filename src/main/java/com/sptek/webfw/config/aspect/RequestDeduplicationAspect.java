@@ -2,6 +2,7 @@ package com.sptek.webfw.config.aspect;
 
 import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.SpringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -94,7 +95,7 @@ public class RequestDeduplicationAspect
 
 
     private boolean isDuplicatationCase(String requestSignature) {
-        long expiryTime = SpringUtil.getSessionAttribute(requestSignature) == null ? 0: (long) SpringUtil.getSessionAttribute(requestSignature);
+        long expiryTime = RequestUtil.getSessionAttribute(SpringUtil.getRequest(), requestSignature) == null ? 0: (long) RequestUtil.getSessionAttribute(SpringUtil.getRequest(), requestSignature);
 
         if(expiryTime == 0) {
             log.debug("No matching request signature found. This request will be accepted.");

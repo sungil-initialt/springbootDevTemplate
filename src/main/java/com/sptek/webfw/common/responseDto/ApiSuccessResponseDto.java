@@ -2,14 +2,8 @@ package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.code.BaseCode;
 import com.sptek.webfw.common.code.SuccessCodeEnum;
-import com.sptek.webfw.util.SpringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 /*
 //rest Api에서 성공 응답 규격

@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
-@Configuration // todo : 해당 Configuration 설정시 jasyptStringEncryptor 가 @Primary 등록되어 디폴트로 적용됨을 주의!
+@Configuration
 public class JasyptStringEncryptor {
     // 정적 데이터를 암복호 할수 있는 Encryption 으로 주로 코드내(property) 주요 정보를 암복호화 할때 사용
     // 간단한 정적 데이터 암호화에 적합함으로 실시간성 데이터 암복호에는 성능상 적합하지 않음
@@ -22,14 +22,13 @@ public class JasyptStringEncryptor {
     
     final private Environment environment;
 
-    //@Primary //동일 타입 빈이 스프링부트에 디폴트로 있는듯.. (중복됨으로 해당 클레스의 우선순위를 높여줌)
-    @Bean(name = "jasyptStringEncryptor")
+    //@Primary
+    @Bean(name = "customJasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
         // todo: prd 운영시 반드시 환경변수로 설정해야 함(보안이슈), 로그로 password 노출 하지 말것
         String pbePassword = environment.getProperty("jasypt.encryptor.password");
         String pbeAlgorithm = environment.getProperty("jasypt.encryptor.algorithm", "PBEWITHHMACSHA512ANDAES_256");
-        //String pbePassword = "JasyptStringEncryptor_password_mySecret";
-        log.debug("pbePassword({}), pbeAlgorithm({})", pbePassword, pbeAlgorithm);
+        log.debug("pbePassword({}), pbeAlgorithm({})", StringUtils.hasText(pbePassword) ? pbePassword.substring(0, pbePassword.length()/2)+"..." : "", pbeAlgorithm);
 
         if(!StringUtils.hasText(pbePassword)) {
             log.error(">>#### Secure Notice : JASYPT_ENCRYPTOR 의 PBE_PASSWORD 설정이 필요 합니다.");

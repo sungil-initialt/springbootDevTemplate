@@ -1,7 +1,7 @@
 package com.sptek.webfw.config.interceptor;
 
 import com.sptek.webfw.common.constant.CommonConstants;
-import com.sptek.webfw.util.SpringUtil;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,10 +43,10 @@ public class ReqResLoggingInterceptor implements HandlerInterceptor {
         //log.debug("afterCompletion called");
 
         String session = request.getSession().getId();
-        String methodType = SpringUtil.getRequestMethodType();
-        String url = SpringUtil.getRequestUrlQuery();
-        String header = TypeConvertUtil.strMapToString(SpringUtil.getRequestHeaderMap());
-        String params = TypeConvertUtil.strArrMapToString(SpringUtil.getRequestParameterMap());
+        String methodType = RequestUtil.getRequestMethodType(request);
+        String url = RequestUtil.getRequestUrlQuery(request);
+        String header = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request));
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
         String requestBody = new String(((ContentCachingRequestWrapper)request).getContentAsByteArray());
 
         if(request.getRequestURI().startsWith("/api/")) {

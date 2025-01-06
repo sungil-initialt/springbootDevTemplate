@@ -125,8 +125,8 @@ pagehelper:
 # (프로퍼티에서 값을 decryption 할때 기본으로 선언된 bean을 사용하겠다는 것이지 코드상에서 StringEncryptor 을 빈에서 가져다 써야할 결우는 Bean 이름으로 정확히 선택해야함)
 jasypt:
   encryptor:
-    bean: jasyptStringEncryptor # 이 프로퍼티가 없어도 실제 jasyptStringEncryptor 이름으로 등록된 Bean이 있으면 해당 Bean이 동작함
-    password: ${PBE_PASSWORD} # 시스템 환경 변수에서 가져와 매핑 (보안이슈)
+    bean: customJasyptStringEncryptor # 이 프로퍼티가 없어도 실제 jasyptStringEncryptor 이름으로 등록된 Bean이 있으면 해당 Bean이 동작함
+    password: ${JASYPT_ENCRYPTOR_PASSWORD} # 일반 형식 32자 이상 권장
     #algorithm: PBEWithMD5AndDES # 보안성 낮음
     algorithm: PBEWITHHMACSHA512ANDAES_256 #보안성 높음
 
@@ -135,11 +135,14 @@ jasypt:
 #  encryptor:
 #    password: default_encryption_password_abc
 
+aesEncryptor:
+  base64SecretKey: ${AESENCRYPTOR_BASE64SECRETKEY} #Base64 형식의 43자 이상(256bit 이상, 1자 6bit)
 
-
+desEncryptor:
+  base64SecretKey: ${DESENCRYPTOR_BASE64SECRETKEY} #Base64 형식의 11자 이상(64bit 이상, 1자 6bit)
 
 jwt:
-  secureKey: yBddDhG7rP8sT22b4fwh1h964Uqz9Lde3pxMh0yaBc3De1x49x2QofWs3Z4y5w67qk4lf8ioe9332FoLp1xd4xk2382jd320 #512byte, 64자 이상
+  base64SecretKey: ${JWT_BASE64SECRETKEY} #Base64 형식의 86자 이상(512bit 이상, 1자 6bit)
   tokenValidityInSec: 86400 #1day
 
 
@@ -164,4 +167,5 @@ springdoc:
 
 test:
   jasyptTest:
-    encValue: ENC(P4rL5Xai1CB5NS7Qy8g49K7GWs1N7ltWUfgZ0ScEmlNZxFMFrtFHBIVEi4t/nr/F) # 원문 : "originPlainText"
+    # 원문: "originPlainText", spec: PBEWITHHMACSHA512ANDAES_256, JASYPT_ENCRYPTOR_PASSWORD=12345678901234567890123456789012
+    encValue: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)

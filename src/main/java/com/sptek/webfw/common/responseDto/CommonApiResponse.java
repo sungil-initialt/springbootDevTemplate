@@ -1,6 +1,7 @@
 package com.sptek.webfw.common.responseDto;
 
 import com.sptek.webfw.common.constant.CommonConstants;
+import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.SpringUtil;
 import org.springframework.util.StringUtils;
 
