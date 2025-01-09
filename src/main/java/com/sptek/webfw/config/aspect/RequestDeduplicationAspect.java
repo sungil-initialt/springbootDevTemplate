@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Aspect
 @Component
 // 정상적인 동작이 되려면 해당 사용자에 대한 session이 이미 존재한 상태여야 함(대부분의 경우 이미 존재할듯)
-public class RequestDeduplicationAspect
-{
+public class RequestDeduplicationAspect {
     //@Controller 또는 @RestController 가 적용된 클레스, 그리고 @AnoRequestDeduplication 가 적용된 클레스 또는 @AnoRequestDeduplication 가 적용된 메소드에서 실행됨
     //@Pointcut("(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController)) " +
     //        "&& (@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || @annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
@@ -83,7 +82,7 @@ public class RequestDeduplicationAspect
 
 
     @After("myPointCut()")
-    public void AfterRequest(JoinPoint joinPoint) {
+    public void afterRequest(JoinPoint joinPoint) {
         log.debug("AOP order : 5 (order 4 is caller method)");
         //to do what you need.
     }

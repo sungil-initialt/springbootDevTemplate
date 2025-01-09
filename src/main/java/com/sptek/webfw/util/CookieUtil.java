@@ -30,8 +30,8 @@ public class CookieUtil {
                 .maxAge(maxAge)
                 .httpOnly(isHttpOnly)
                 .secure(secure)
-                .domain(org.springframework.util.StringUtils.hasText(domain) ? domain : "")
-                .path(org.springframework.util.StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
+                .domain(StringUtils.hasText(domain) ? domain : "")
+                .path(StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
 
         Optional.ofNullable(sameSite)
                 .map(String::toLowerCase)
@@ -50,14 +50,14 @@ public class CookieUtil {
         return cookie;
     }
 
-    public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, boolean isHttpOnly, boolean secure, String domain, String path) {
+    public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, @NotNull boolean isHttpOnly, @NotNull boolean secure, String domain, String path) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAge);
 
         cookie.setHttpOnly(isHttpOnly);
         cookie.setSecure(secure);
 
-        cookie.setDomain(!StringUtils.hasText(domain) ? domain : "");
+        cookie.setDomain(StringUtils.hasText(domain) ? domain : "");
         cookie.setPath(StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
 
         return cookie;

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,7 +27,7 @@ MVC 인터셉터 방법보다 Fiter 방식이 추후 커스텀하기에 좋음
 //@Component
 @Profile(value = { "stg", "prd" }) //프로파일이 stg, prd 일때만 적용
 @Slf4j
-@Order(1)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @WebFilter(urlPatterns = "/api/*") //ant 표현식 사용 불가 ex: /**
 public class CorsPolicyFilter extends OncePerRequestFilter {
     final boolean IS_FILTER_ON = true;

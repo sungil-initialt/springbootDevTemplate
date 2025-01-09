@@ -18,8 +18,8 @@ import java.io.IOException;
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE) //response의 가장 최종 정보를 얻기 위해 가능하면 가장 순위가 낮은 필터에 적용함
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-public class ConvertReqResToContentCachingReqResWrapperFilter extends OncePerRequestFilter {
-    final boolean IS_FILTER_ON = true;
+public class DEPRECATED_ConvertReqResToContentCachingReqResWrapperFilter extends OncePerRequestFilter {
+    final boolean IS_FILTER_ON = false;
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {

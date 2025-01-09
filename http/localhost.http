@@ -2,6 +2,15 @@
 GET {{web-server}}/welcome
 Content-Type: text/html
 
+### view Test
+GET {{web-server}}/welcomeGet
+Content-Type: text/html
+
+### view Test
+OPTIONS {{web-server}}/welcomePost
+Content-Type: text/html
+
+
 ### hello
 GET {{api-server-ver}}/hello?message=hi
 Content-Type: application/json
@@ -11,11 +20,7 @@ GET {{api-server-ver}}/helloGet?message=hi
 Content-Type: application/json
 
 ### helloGet
-POST {{api-server-ver}}/helloGet?message=hi
-Content-Type: application/json
-
-### helloPost
-GET {{api-server-ver}}/helloPost?message=hi
+GET {{api-server-ver}}/helloGet?message=hi
 Content-Type: application/json
 
 ### helloPost
@@ -189,7 +194,7 @@ POST {{api-server-ver}}/login
 Content-Type: application/json
 
 {
-  "username": "admin1@naver.com",
+  "username": "sungilry@naver.com",
   "password": "1q2w3e4r5t!Q"
 }
 > {%
@@ -237,5 +242,10 @@ Content-Type: application/json
 
 ### 테스트
 GET {{api-server-ver}}/public/anyone/butNeedControllAuth
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+### 테스트
+GET {{api-server-ver}}/public/postPutAfterAuth
 Authorization: Bearer {{jwt}}
 Content-Type: application/json

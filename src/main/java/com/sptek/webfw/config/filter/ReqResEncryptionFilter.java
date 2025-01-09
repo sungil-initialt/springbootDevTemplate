@@ -9,27 +9,27 @@ objectMapper 셋팅에서 XssProtectSupport 클레스를 적용하는 방식으�
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
+import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import jakarta.servlet.annotation.WebFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Order(1)
+@Order(2)
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-public class XssProtectFilter extends OncePerRequestFilter {
+public class ReqResEncryptionFilter extends OncePerRequestFilter {
     final boolean IS_FILTER_ON = false;
 
     @Override
@@ -42,20 +42,40 @@ public class XssProtectFilter extends OncePerRequestFilter {
             }
 
             log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
-            HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = new HttpServletRequestWrapperSupport(request);
-            String requestBody = IOUtils.toString(httpServletRequestWrapperSupport.getReader()); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 아래에서 대체 request를 생성해서 넘겨줘야 함
+            HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = request instanceof HttpServletRequestWrapperSupport ? (HttpServletRequestWrapperSupport)request : new HttpServletRequestWrapperSupport(request);
+            HttpServletResponseWrapperSupport httpServletResponseWrapperSupport = response instanceof HttpServletResponseWrapperSupport ? (HttpServletResponseWrapperSupport)response : new HttpServletResponseWrapperSupport(response);
 
+            String requestBody = httpServletRequestWrapperSupport.getRequestBody(); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 아래에서 대체 request를 생성해서 넘겨줘야 함
             if (StringUtils.hasText(requestBody)) {
+                requestBody = requestBody.replace("hello", "hi");
+
                 Map<String, Object> orgJsonObject = new ObjectMapper().readValue(requestBody, HashMap.class);
                 Map<String, Object> newJsonObject = new HashMap<>();
                 orgJsonObject.forEach((key, value) -> newJsonObject.put(key, SecureUtil.charEscape(value.toString())));
 
-                //대체 request를 생성해서 넘김
-                httpServletRequestWrapperSupport.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());
+                //대체 request를 생성
+                httpServletRequestWrapperSupport.setRequestBody(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject));
+
             }
 
-            filterChain.doFilter(httpServletRequestWrapperSupport, response);
+            filterChain.doFilter(httpServletRequestWrapperSupport, httpServletResponseWrapperSupport);
 
+            // 원래 응답 데이터 읽기
+            String originalResponseBody = httpServletResponseWrapperSupport.getResponseBody();
+            log.info("Original Response Body: {}", originalResponseBody);
+
+            // 응답 데이터 수정
+            String modifiedResponseBody = originalResponseBody.replaceAll("hi", "changed hi");
+            log.info("Modified Response Body: {}", modifiedResponseBody);
+
+            // 수정된 데이터를 다시 설정
+            httpServletResponseWrapperSupport.setResponseBody(modifiedResponseBody);
+
+            // todo: 중요!! 자신이 response를 HttpServletResponseWrapperSupport로 변환한 최초의 필터라면 response에 body를 최종 write 할 책음을 져야 한다.
+            //  (httpServletResponseWrapperSupport가 아닌 response 객체에 써야함)
+            if (!(response instanceof HttpServletResponseWrapperSupport)) {
+                response.getWriter().write(httpServletResponseWrapperSupport.getResponseBody());
+            }
         }else{
             log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);

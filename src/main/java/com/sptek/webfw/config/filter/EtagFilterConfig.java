@@ -18,7 +18,7 @@ import java.io.IOException;
 @Profile(value = { "xxx" }) //우선 항상 사용하지 않는 것으로
 @Slf4j
 @Configuration
-public class EtagFilterConfiguration {
+public class EtagFilterConfig {
 
     /*
     <좀더 확인 확인 필요>

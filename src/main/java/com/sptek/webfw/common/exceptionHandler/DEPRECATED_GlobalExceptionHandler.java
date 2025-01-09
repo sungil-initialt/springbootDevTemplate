@@ -24,7 +24,7 @@ import java.util.Optional;
 //@Profile(value = { "notused" })
 @Slf4j
 //@ControllerAdvice
-public class BAKCUP_GlobalExceptionHandler {
+public class DEPRECATED_GlobalExceptionHandler {
     //view Controller 에서 발생한 Exception 의 처리가 주? 목적이지만 컨트롤러 영역 밖에서 발생한 에러도 이곳에서 처리 됨으로 API 요청에 대한 에러처리 기능도 포함하고 있음
     //만약 해당 핸들러가 없다면 application.yml에 설정한 spring 에러 설정에 따라서 404.html, 5xx.html 등이 처리하게 됨
     //(spring이 처리할수 없는 영역에서의 에러가 발생한다면 이 핸들러가 있더라도 was 에러가 표시될수도 있음)
@@ -50,7 +50,7 @@ public class BAKCUP_GlobalExceptionHandler {
 
         } else {
             //view 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
             return "error/commonNotfoundErrorView";
             //return "error/404"; // spring 호출과 통일할 경우
         }
@@ -80,7 +80,7 @@ public class BAKCUP_GlobalExceptionHandler {
 
         } else {
             //view 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
             return "error/commonAuthenticationErrorView";
             //return "error/403"; // spring 호출과 통일할 경우
         }
@@ -103,7 +103,7 @@ public class BAKCUP_GlobalExceptionHandler {
 
         } else {
             //view 에러의 경우 ReqResLoggingInterceptor 에서 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_EXCEPTION_MESSAGE_LOGGING, ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
             return "error/commonInternalErrorView";
             //return "error/5xx"; // spring 호출과 통일할 경우
         }

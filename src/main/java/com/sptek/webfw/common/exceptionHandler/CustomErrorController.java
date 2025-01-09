@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @Controller
 public class CustomErrorController implements ErrorController {
-    //Controller 외부 영역에서 발생한 에러(필터쪽이나.. 기타 등등)를 직접 처리하기 위해 스프링이 디폴트로 처리하던 "/error" 매핑을 직접 커스터마이징 구현함
+    //Controller 외부 영역에서 발생한 에러(필터쪽이나.. 기타 등등)를 직접 처리하기 위해 내부적으로 스프링이 디폴트로 처리하던 "/error" 매핑을 직접 커스터마이징 구현함
 
     @RequestMapping("/error") //프로퍼티 내 server.error.path 와 동일한 값으로 설정
     public Object handleError(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -23,7 +23,8 @@ public class CustomErrorController implements ErrorController {
         String message = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
         log.debug("errorStatusCode({}), message({})", errorStatusCode, message);
 
-        //todo: 404 에러의 경우는 이 매핑도 타지 않고 바로 GlobalExceptionHandler 가 호출됨.. (문제는 없으나 확인 필요)
+        // 404 에러의 경우는 여길 탈것 같지만.. 바로 GlobalExceptionHandler 가 호출됨..
+        // 일부러 에러를 발생시켜 GlobalExceptionHandler 가 처리하도록 만든것임
         if (errorStatusCode == 401) {
             throw new AccessDeniedException(message);
         } else if (errorStatusCode == 403) {

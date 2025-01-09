@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -111,5 +112,10 @@ public class SecurityApiController {
     @Operation(summary = "security butNeedControllAuth", description = "security butNeedControllAuth 테스트") //swagger
     public ResponseEntity<ApiSuccessResponseDto<String>> butNeedControllAuth() {
         return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedControllAuth"));
+    }
+
+    @RequestMapping({"/public/postPutAfterAuth"})
+    public ResponseEntity<ApiSuccessResponseDto<String>>  postPutAfterAuth(Model model) {
+        return ResponseEntity.ok(new ApiSuccessResponseDto<>("postPutAfterAuth"));
     }
 }

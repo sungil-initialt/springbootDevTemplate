@@ -24,7 +24,9 @@ public enum CommonErrorCodeEnum implements BaseCode {
     NULL_POINT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE010", "NULL_POINT_ERROR"),
     NOT_VALID_ERROR(HttpStatus.BAD_REQUEST, "GE011", "NOT_VALID_ERROR"),
     NOT_VALID_HEADER_ERROR(HttpStatus.BAD_REQUEST, "GE012", "NOT_VALID_HEADER_ERROR"),
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "GE013", "METHOD_NOT_ALLOWED"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GE999", "INTERNAL_SERVER_ERROR");
+
 
     private final HttpStatus httpStatusCode;
     private final String resultCode;

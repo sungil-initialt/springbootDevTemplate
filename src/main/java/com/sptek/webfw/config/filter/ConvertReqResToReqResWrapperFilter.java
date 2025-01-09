@@ -7,30 +7,26 @@ objectMapper 셋팅에서 XssProtectSupport 클레스를 적용하는 방식으�
 */
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
+import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.Order;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import jakarta.servlet.annotation.WebFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
-@Order(1)
+@Order(1) //httpServletResponseWrapperSupport 형태가 최종 response 형태로 나가야 함으로 필터의 마지막에 처리되야함(마지막 처리를 위해선 가장 먼저 저일되야 함)
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-public class XssProtectFilter extends OncePerRequestFilter {
-    final boolean IS_FILTER_ON = false;
+public class ConvertReqResToReqResWrapperFilter extends OncePerRequestFilter {
+    final boolean IS_FILTER_ON = true;
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
@@ -42,19 +38,15 @@ public class XssProtectFilter extends OncePerRequestFilter {
             }
 
             log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
-            HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = new HttpServletRequestWrapperSupport(request);
-            String requestBody = IOUtils.toString(httpServletRequestWrapperSupport.getReader()); //컨트럴러 이전 단계에서 Request 스트림이 읽어졌기 때문에 아래에서 대체 request를 생성해서 넘겨줘야 함
+            HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = request instanceof HttpServletRequestWrapperSupport ? (HttpServletRequestWrapperSupport)request : new HttpServletRequestWrapperSupport(request);
+            HttpServletResponseWrapperSupport httpServletResponseWrapperSupport = response instanceof HttpServletResponseWrapperSupport ? (HttpServletResponseWrapperSupport)response : new HttpServletResponseWrapperSupport(response);
+            filterChain.doFilter(httpServletRequestWrapperSupport, httpServletResponseWrapperSupport);
 
-            if (StringUtils.hasText(requestBody)) {
-                Map<String, Object> orgJsonObject = new ObjectMapper().readValue(requestBody, HashMap.class);
-                Map<String, Object> newJsonObject = new HashMap<>();
-                orgJsonObject.forEach((key, value) -> newJsonObject.put(key, SecureUtil.charEscape(value.toString())));
-
-                //대체 request를 생성해서 넘김
-                httpServletRequestWrapperSupport.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());
+            // todo: 중요!! 자신이 response를 HttpServletResponseWrapperSupport로 변환한 최초의 필터라면 response에 body를 최종 write 할 책음을 져야 한다.
+            //  (httpServletResponseWrapperSupport가 아닌 response 객체에 써야함)
+            if (!(response instanceof HttpServletResponseWrapperSupport)) {
+                response.getWriter().write(httpServletResponseWrapperSupport.getResponseBody());
             }
-
-            filterChain.doFilter(httpServletRequestWrapperSupport, response);
 
         }else{
             log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());

@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -34,7 +33,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
             }
 
             log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
-            request.setAttribute(CommonConstants.REQ_PROPERTY_NAME_FOR_TIMESTAMP_LOGGING, LocalDateTime.now());
+            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());
             filterChain.doFilter(request, response);
 
         }else{

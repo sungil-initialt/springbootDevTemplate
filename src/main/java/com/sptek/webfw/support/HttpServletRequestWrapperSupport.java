@@ -25,6 +25,19 @@ public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper 
         this.servletInputStream = new ResettableServletInputStream();
     }
 
+    //body를 읽어도 소멸되지 않는다.
+    public String getRequestBody() throws IOException {
+        String requestBody = IOUtils.toString(this.getReader());
+        this.setRequestBody(requestBody);
+
+        return requestBody;
+    }
+
+    //새로운 body로 저장된다.
+    public void setRequestBody(String requestBody) throws IOException {
+        this.resetInputStream(requestBody.getBytes());
+    }
+
     public void resetInputStream(byte[] data) {
         servletInputStream.inputStream = new ByteArrayInputStream(data);
     }
@@ -46,7 +59,6 @@ public class HttpServletRequestWrapperSupport extends HttpServletRequestWrapper 
         }
         return new BufferedReader(new InputStreamReader(servletInputStream));
     }
-
 
     private class ResettableServletInputStream extends ServletInputStream {
         private InputStream inputStream;

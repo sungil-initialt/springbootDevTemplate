@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Profile(value = { "local", "dev", "stg" }) //todo : 상용적용을 고민해 볼것(성능?)
+@Profile(value = { "local", "dev", "stg" }) //todo : 상용적용은 고민해 볼것(성능?)
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
@@ -41,7 +41,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
                 MDC.put("sessionId", request.getSession(true).getId());
                 filterChain.doFilter(request, response);
             } finally {
-                // 요청이 끝난 뒤 MDC 정리
+                // 요청이 끝난 뒤 반드시 MDC 정리
                 MDC.clear();
             }
 
