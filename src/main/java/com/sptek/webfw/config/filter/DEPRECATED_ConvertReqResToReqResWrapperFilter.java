@@ -12,21 +12,24 @@ import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.core.annotation.Order;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Slf4j
-@Order(1) //httpServletResponseWrapperSupport 형태가 최종 response 형태로 나가야 함으로 필터의 마지막에 처리되야함(마지막 처리를 위해선 가장 먼저 저일되야 함)
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-public class ConvertReqResToReqResWrapperFilter extends OncePerRequestFilter {
-    final boolean IS_FILTER_ON = true;
+//@Order(1) //httpServletResponseWrapperSupport 형태가 최종 response 형태로 나가야 함으로 필터의 마지막에 처리되야함(마지막 처리를 위해선 가장 먼저 저일되야 함)
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+public class DEPRECATED_ConvertReqResToReqResWrapperFilter extends OncePerRequestFilter {
+    private final boolean IS_FILTER_ON;
+
+    public DEPRECATED_ConvertReqResToReqResWrapperFilter(@Value("${filters.isEnabled.ConvertReqResToReqResWrapperFilter}") Boolean isFilterOn) {
+        IS_FILTER_ON = isFilterOn;
+    }
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
@@ -37,7 +40,6 @@ public class ConvertReqResToReqResWrapperFilter extends OncePerRequestFilter {
                 return;
             }
 
-            log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
             HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = request instanceof HttpServletRequestWrapperSupport ? (HttpServletRequestWrapperSupport)request : new HttpServletRequestWrapperSupport(request);
             HttpServletResponseWrapperSupport httpServletResponseWrapperSupport = response instanceof HttpServletResponseWrapperSupport ? (HttpServletResponseWrapperSupport)response : new HttpServletResponseWrapperSupport(response);
             filterChain.doFilter(httpServletRequestWrapperSupport, httpServletResponseWrapperSupport);
@@ -49,7 +51,6 @@ public class ConvertReqResToReqResWrapperFilter extends OncePerRequestFilter {
             }
 
         }else{
-            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,7 +27,11 @@ todo : redis 연동후 실제 동작 확인 필요!!
 @Order(Ordered.HIGHEST_PRECEDENCE) //최상위 필터로 적용
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
-    final boolean IS_FILTER_ON = true;
+    private final boolean IS_FILTER_ON;
+
+    public ExcludeSessionRepositoryFilter(@Value("${filters.isEnabled.ExcludeSessionRepositoryFilter}") Boolean isFilterOn) {
+        IS_FILTER_ON = isFilterOn;
+    }
 
     @Override
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
@@ -38,10 +43,9 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
                 //log.debug("setAttribute for ExcludeSessionRepository of {}", request.getServletPath());
             }
 
-            //log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
+
         } else {
-            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

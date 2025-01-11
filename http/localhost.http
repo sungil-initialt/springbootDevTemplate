@@ -7,8 +7,15 @@ GET {{web-server}}/welcomeGet
 Content-Type: text/html
 
 ### view Test
-OPTIONS {{web-server}}/welcomePost
+POST {{web-server}}/welcomePost
 Content-Type: text/html
+
+### view Test
+POST {{web-server}}/xssTest?message=<script>
+Content-Type: text/plain
+
+abcde:abd
+
 
 
 ### hello
@@ -26,6 +33,10 @@ Content-Type: application/json
 ### helloPost
 POST {{api-server-ver}}/helloPost?message=hi
 Content-Type: application/json
+
+{
+  "abc": "abc"
+}
 
 
 ### jasyptEnc 테스트
@@ -60,10 +71,9 @@ originPlainText
 
 ### desDec 테스트
 POST {{web-server}}/public/desDec
-Content-Type: text/html
+Content-Type: text/plain
 
 6xQHOBfp1u2+Kjd8c5KHn3o/sS20KrFw
-
 
 > {%
 //동적 변수 set 테스트

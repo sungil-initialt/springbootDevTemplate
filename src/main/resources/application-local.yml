@@ -109,6 +109,20 @@ spring:
       data-locations: classpath:data.sql
 
 
+filters:
+  isEnabled:
+    CorsPolicyFilter: true
+    EtagFilterConfig: true
+    ExcludeSessionRepositoryFilter: true
+    MakeMdcFilter: true
+    MakeRequestTimestampFilter: true
+    ReqResEncryptionFilter: true
+    ReqResLogFilterForDebugging: true
+
+
+
+
+
 #PageInoSupport 클레스 관련 설정
 pagehelper:
   helper-dialect: mysql

@@ -9,6 +9,7 @@ import com.sptek.webfw.config.encryption.DesEncryptor;
 import com.sptek.webfw.example.api.domain1.Domain1ApiService;
 import com.sptek.webfw.example.dto.*;
 import com.sptek.webfw.support.CommonControllerSupport;
+import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,6 +77,16 @@ public class Domain1ViewController extends CommonControllerSupport {
     public String welcomePost(Model model) {
         model.addAttribute("message", "welcome");
         return pageBasePath + "welcome";
+    }
+
+    @RequestMapping({"/xssTest"})
+    public String welcome(Model model, @RequestParam String message, @RequestBody String requestBody, HttpServletRequest request) throws Exception {
+        log.debug("param: {}, body: {}", message, requestBody);
+        String result = String.format("{message : '%s', requestBody : '%s'}", message, requestBody);
+        model.addAttribute("result", result);
+        HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = (HttpServletRequestWrapperSupport) request;
+        log.debug("xssTest : {}", httpServletRequestWrapperSupport.getRequestBody());
+        return pageBasePath + "simpleModelView";
     }
 
     @RequestMapping("/interceptor")

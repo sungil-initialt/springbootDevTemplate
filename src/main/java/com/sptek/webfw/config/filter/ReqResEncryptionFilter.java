@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,10 +28,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Order(2)
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+//@Order(2)
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class ReqResEncryptionFilter extends OncePerRequestFilter {
-    final boolean IS_FILTER_ON = false;
+    private final boolean IS_FILTER_ON;
+
+    public ReqResEncryptionFilter(@Value("${filters.isEnabled.ReqResEncryptionFilter}") Boolean isFilterOn) {
+        IS_FILTER_ON = isFilterOn;
+    }
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
@@ -41,7 +46,6 @@ public class ReqResEncryptionFilter extends OncePerRequestFilter {
                 return;
             }
 
-            log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
             HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = request instanceof HttpServletRequestWrapperSupport ? (HttpServletRequestWrapperSupport)request : new HttpServletRequestWrapperSupport(request);
             HttpServletResponseWrapperSupport httpServletResponseWrapperSupport = response instanceof HttpServletResponseWrapperSupport ? (HttpServletResponseWrapperSupport)response : new HttpServletResponseWrapperSupport(response);
 
@@ -77,7 +81,6 @@ public class ReqResEncryptionFilter extends OncePerRequestFilter {
                 response.getWriter().write(httpServletResponseWrapperSupport.getResponseBody());
             }
         }else{
-            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

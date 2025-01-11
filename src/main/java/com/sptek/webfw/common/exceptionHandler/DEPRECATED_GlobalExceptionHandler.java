@@ -116,10 +116,10 @@ public class DEPRECATED_GlobalExceptionHandler {
         String session = request.getSession().getId();
         String methodType = RequestUtil.getRequestMethodType(request);
         String url = RequestUtil.getRequestDomain(request) + request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) + (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : ""); //에러를 발생시킨 origin url
-        String header = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request));
+        String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
         String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
         log.debug("\n--------------------\n[ReqRes Info from GlobalExceptionHandler]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\nexceptionMsg : {}\n<-- responseStatus : {}\n--------------------\n"
-                    , session, methodType, url, header, params, ex.getMessage(), response.getStatus());
+                    , session, methodType, url, requestHeader, params, ex.getMessage(), response.getStatus());
     }
 }

@@ -1,10 +1,13 @@
 package com.sptek.webfw.example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sptek.webfw.anotation.AnoApiCommonResponse;
 import com.sptek.webfw.anotation.AnoCustomArgument;
 import com.sptek.webfw.anotation.AnoRequestDeduplication;
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.argumentResolver.ExampleArgumentResolverForMyUserDto;
+import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;
+import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
 import com.sptek.webfw.example.dto.FileUploadDto;
 import com.sptek.webfw.example.dto.ValidationTestDto;
 import com.sptek.webfw.support.CloseableHttpClientSupport;
@@ -18,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -48,6 +52,7 @@ import java.util.function.Predicate;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@AnoApiCommonResponse
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 @RequestMapping(value = {"/api/v1/"})
@@ -63,6 +68,15 @@ public class Domain1ApiController extends CommonControllerSupport {
     private final RestTemplateSupport restTemplateSupport;
     private final ObjectMapper objectMapper;
     private final Domain1ApiService domain1ApiService;
+
+
+    @RequestMapping("/test")
+    public Object test(
+            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = false) //swagger
+            @RequestParam String message, HttpServletResponse response) {
+
+        return UserDto.builder().id(1L).email("sungilry@naver.com").userAddresses(List.of(UserAddressDto.builder().id(1L).addressType("집").address("엘프라우드").build())).name(message).build();
+    }
 
     @RequestMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger

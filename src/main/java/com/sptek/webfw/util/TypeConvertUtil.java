@@ -35,6 +35,12 @@ public class TypeConvertUtil {
                 .collect(Collectors.joining(", "));
     }
 
+    public static String strListMapToString(Map<String, List<String>> originMap) {
+        return originMap.entrySet().stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining(", "));
+    }
+
     public static String objectToJsonWithoutRootName(@Nullable Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
         if (object == null) {
             return "{}";
@@ -90,11 +96,36 @@ public class TypeConvertUtil {
     public static <T> List<T> findMatchingOrigins(List<T> origins, List<T> myThings, Function<T, ?> keyExtractor) {
         List<?> myThingKyes = Optional.ofNullable(myThings).orElseGet(Collections::emptyList).stream()
                 .map(keyExtractor)
-                .collect(Collectors.toList());
+                .toList();
 
         return origins.stream()
                 .filter(origin -> myThingKyes.contains(keyExtractor.apply(origin)))
                 .collect(Collectors.toList());
+    }
+
+    public static Set<String> enumerationToSet(Enumeration<String> enumeration) {
+        Set<String> set = new HashSet<>();
+        while (enumeration.hasMoreElements()) {
+            set.add(enumeration.nextElement());
+        }
+        return set;
+    }
+
+    public static Set<String> collectionToSet(Collection<String> collection) {
+        Set<String> set = new HashSet<>(collection);
+        return set;
+    }
+
+    public static Enumeration<String> collectionToEnumeration(Collection<String> collection) {
+        return Collections.enumeration(collection);
+    }
+
+    public static List<String> enumerationToList(Enumeration<String> enumeration) {
+        List<String> list = new ArrayList<>();
+        while (enumeration.hasMoreElements()) {
+            list.add(enumeration.nextElement());
+        }
+        return list;
     }
 }
 

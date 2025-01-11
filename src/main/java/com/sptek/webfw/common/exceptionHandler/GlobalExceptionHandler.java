@@ -4,6 +4,7 @@ import com.sptek.webfw.common.code.CommonErrorCodeEnum;
 import com.sptek.webfw.common.constant.CommonConstants;
 import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
 import com.sptek.webfw.util.RequestUtil;
+import com.sptek.webfw.util.ResponseUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,9 +72,9 @@ public class GlobalExceptionHandler {
         log.error("Exception message : {}", ex.getMessage());
 
         //  ReqResLogFilter 로 진입이 불가능한 케이스가 있기 때문에 이경우 이곳에서 요약된 로그를 남긴다.(ex: security 필터 같은 경우)
-        // todo :컨트롤러나 필터를 진입할 수 없는 케이스의 에러가 발생한 경우 ERROR_REQUEST_URI 가 생성되는것으로 알고 잇으나 지속적으로 살펴볼 필요 있음*/
+        // todo: 컨트롤러나 필터를 진입할 수 없는 케이스의 에러가 발생한 경우 항상 ERROR_REQUEST_URI 가 생성 되는 것으로 보이나 지속적 으로 살펴볼 필요 있음*/
         if (request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null
-                // || ex instanceof xxxException // todo: 관련 케이스가 확인되는데로 추가할 수 있음
+                // || ex instanceof xxxException // todo: 관련 다른 케이스가 확인 되면 추가 필요
         ) {
             String sessionId = request.getSession().getId();
             String methodType = RequestUtil.getRequestMethodType(request);
@@ -81,23 +82,35 @@ public class GlobalExceptionHandler {
                     Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI)).orElse(request.getRequestURI()) +
                     (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
 
-            String header = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request));
+            String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
-            log.debug("\n--------------------\n[ ReqRes summary Info from GlobalExceptionHandler ]\nsession : {}\n({}) url : {}\nheader : {}\nparams : {}\nexceptionMsg : {}\n<-- responseStatus : {}\n--------------------\n",
-                    sessionId, methodType, url, header, params, ex.getMessage(), httpStatus);
+            log.debug("\n--------------------\n[ Higher-level Error from GlobalExceptionHandler ]\n" +
+                            "session : {}\n" +
+                            "({}) url : {}\n" +
+                            "header : {}\n" +
+                            "params : {}\n" +
+                            "responseStatus : {}\n" +
+                            "exceptionMsg : {}\n--------------------\n"
+                    , sessionId
+                    , methodType, url
+                    , params
+                    , requestHeader
+                    , httpStatus
+                    , ex.getMessage()
+            );
         }
     }
 
-    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum errorCode, String viewName) {
+    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) {
         String requestUri = request.getRequestURI();
         String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
                 .map(Object::toString)
                 .orElse("");
 
         if (requestUri.startsWith("/api/") || errorRequestUri.startsWith("/api/")) {
-            ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(errorCode, ex.getMessage());
-            return new ResponseEntity<>(apiErrorResponseDto, errorCode.getHttpStatusCode());
+            ApiErrorResponseDto apiErrorResponseDto = ApiErrorResponseDto.of(commonErrorCodeEnum, ex.getMessage());
+            return new ResponseEntity<>(apiErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
 
         } else {
             //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.

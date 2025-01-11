@@ -16,6 +16,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ MVC 인터셉터 방법보다 Fiter 방식이 추후 커스텀하기에 좋음
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @WebFilter(urlPatterns = "/api/*") //ant 표현식 사용 불가 ex: /**
 public class CorsPolicyFilter extends OncePerRequestFilter {
-    final boolean IS_FILTER_ON = true;
+    private final boolean IS_FILTER_ON;
 
     @Value("${secureOption.cors.defaultAccessControlAllowOrigin}")
     private String defaultAccessControlAllowOrigin;
@@ -45,6 +46,10 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Value("${secureOption.cors.accessControlAllowHeaders}")
     private String accessControlAllowHeaders;
 
+    public CorsPolicyFilter(@Value("${filters.isEnabled.CorsPolicyFilter}") Boolean isFilterOn) {
+        IS_FILTER_ON = isFilterOn;
+    }
+
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if(IS_FILTER_ON) {
@@ -54,15 +59,16 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
                 return;
             }
 
-            log.info("#### Filter Notice : {} is On ####", this.getClass().getSimpleName());
-            String origin = Optional.ofNullable(RequestUtil.getRequestHeaderMap(request).get("Origin"))
-                    .orElseGet(() -> RequestUtil.getRequestHeaderMap(request).get("origin"));
+            String origin = Collections.list(request.getHeaderNames()).stream()
+                    .filter(headerName -> headerName.equalsIgnoreCase("Origin"))
+                    .findFirst() // Origin 헤더의 첫번째 값을 사용함, 기본적으로 Origin은 하나만 있어야 함
+                    .map(request::getHeader)
+                    .orElse("[No Origin]");
 
-            log.debug("The request origin is {}", origin);
             if(accessControlAllowOrigins.contains(origin)){
-                log.debug("The request origin is part of our system");
+                log.debug("The request origin is part of our system. (origin: {})", origin);
             } else {
-                log.debug("The request origin is not our system");
+                log.debug("The request origin is not our system. (origin: {})", origin);
             }
 
             origin = accessControlAllowOrigins.contains(origin) ? origin : defaultAccessControlAllowOrigin;
@@ -80,7 +86,6 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
             }
 
         } else {
-            log.info("#### Filter Notice : {} is OFF ####", this.getClass().getSimpleName());
             filterChain.doFilter(request, response);
         }
     }

@@ -1,14 +1,14 @@
 package com.sptek.webfw.util;
 
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class RequestUtil {
@@ -38,18 +38,6 @@ public class RequestUtil {
     //request에서 요청 메소드 가져옴
     public static String getRequestMethodType(@NotNull HttpServletRequest request) {
         return request.getMethod();
-    }
-
-    //request에서 모든 해더 정보를 추출해 Map으로 반환
-    public static @NotNull Map<String, String> getRequestHeaderMap(@NotNull HttpServletRequest request) {
-        Map<String, String> headers = new HashMap<>();
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            String headerValue = request.getHeader(headerName);
-            headers.put(headerName, headerValue);
-        }
-        return headers;
     }
 
     //request에서 모든 param을 추출해 Map으로 반환
@@ -104,6 +92,38 @@ public class RequestUtil {
         }
 
         return attributes;
+    }
+
+    public static HashMap<String, String> getRequestHeaderMap(HttpServletRequest request){
+        return getRequestHeaderMap(request, "");
+    }
+
+    public static HashMap<String, String> getRequestHeaderMap(HttpServletRequest request, String delimiter) {
+        StringBuilder headerString = new StringBuilder();
+        HashMap<String, String> headers = new HashMap<>();
+
+        // 요청 헤더 이름을 가져오기
+        Set<String> headerNames = TypeConvertUtil.enumerationToSet(request.getHeaderNames());
+        // 모든 헤더를 순회하며 로그로 남기기
+        for (String headerName : headerNames) {
+            Enumeration<String> headerValues = request.getHeaders(headerName);
+
+            // 헤더 값을 리스트 형태로 변환하여 출력
+            StringBuilder values = new StringBuilder();
+            while (headerValues.hasMoreElements()) {
+                values.append(headerValues.nextElement()).append(", ");
+            }
+
+            // 마지막 쉼표와 공백 제거
+            if (values.length() > 0) {
+                values.setLength(values.length() - 2);  // 마지막 쉼표와 공백 제거
+            }
+
+            // 최종 문자열에 추가
+            //headerString.append(headerName).append(" = ").append(values.toString()).append("\n");
+            headers.put(headerName, values.append(delimiter).toString());
+        }
+        return headers;
     }
 
 }
