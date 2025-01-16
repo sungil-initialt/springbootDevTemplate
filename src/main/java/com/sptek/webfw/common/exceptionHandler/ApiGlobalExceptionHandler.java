@@ -26,8 +26,7 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
 최종 Response 응답까지 처리해 준다.
  */
 @Slf4j
-//RestController.class 를 설정하지 않으면 @RestControllerAdvice 와 @ControllerAdvice 서로 등록된 순서에 따라 한쪽에서 모두 처리하려는 걼으로 보임..
-@RestControllerAdvice(annotations = RestController.class) 
+@RestControllerAdvice(annotations = RestController.class) // @RestController 가 붙은 컨트럴러에 적용 (설정이 없으면 @ControllerAdvice 에서 처림됨)
 public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

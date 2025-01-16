@@ -38,6 +38,11 @@ Content-Type: application/json
   "abc": "abc"
 }
 
+### hello
+GET {{api-server-ver}}/test
+Content-Type: application/json
+
+
 
 ### jasyptEnc 테스트
 POST {{web-server}}/public/jasyptEnc
@@ -257,5 +262,10 @@ Content-Type: application/json
 
 ### 테스트
 GET {{api-server-ver}}/public/postPutAfterAuth
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+### 테스트
+GET {{api-server-ver}}/exampleEvent
 Authorization: Bearer {{jwt}}
 Content-Type: application/json

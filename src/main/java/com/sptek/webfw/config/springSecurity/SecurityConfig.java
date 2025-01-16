@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true) //application  메소드에서도 접근제어 가능하게 함
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
@@ -55,7 +55,7 @@ public class SecurityConfig {
 
     @Bean
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
-    public SecurityFilterChain securityFilterChainForWeb(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChainForView(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 // api/** 로 시작하지 않은 경우만 필터 적용
                 .securityMatcher(request -> !request.getRequestURI().startsWith("/api/"))
@@ -65,6 +65,15 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/**") // todo: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시하도록 임시 처리
                         .ignoringRequestMatchers("/public/**")
                 )
+
+                // todo: session 과 관련된 전반적인 부분을 확인해야함!!!
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션이 필요한 경우에만 생성
+//                        .invalidSessionUrl("/session-invalid") // 세션이 유효하지 않으면 이동할 URL 설정
+//                        .maximumSessions(1) // 최대 세션 수 설정
+//                        .maxSessionsPreventsLogin(true) // 세션 수가 초과되면 로그인 방지
+//                        .expiredUrl("/session-expired") //)
+//                )
 
                 //path별 Role을 지정함 (controller 의  @PreAuthorize와의 차이점은 여기서 path에 지정하는 방식은 spring security fillter 에 의해 관리되고.. controller 에 지정된 것은 servlet 에서 관리됨)
                 //다시말해.. path에 지정하면.. 인증이 필요할때 spring-security-fillter가 로그인 페이지로 자동 이동해 주거나.. 권한이 없을때 filter 레벨에서 403 페이지로 전환해 준다.

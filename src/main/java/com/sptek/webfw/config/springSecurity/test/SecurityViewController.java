@@ -3,7 +3,7 @@ package com.sptek.webfw.config.springSecurity.test;
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
-import com.sptek.webfw.config.springSecurity.spt.LoginHelper;
+import com.sptek.webfw.config.springSecurity.spt.RedirectHelperAfterLogin;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -69,7 +69,7 @@ public class SecurityViewController {
 
     @GetMapping("/login")
     public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
-        model.addAttribute("redirectTo", LoginHelper.getRedirectUrlAfterLogging(request, response));
+        model.addAttribute("redirectTo", RedirectHelperAfterLogin.getRedirectUrlAfterLogging(request, response));
         return pageBasePath + "login";
     }
 

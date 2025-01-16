@@ -6,8 +6,8 @@ project-info:
 
 system:
   propertySources:
-    expose-enabled: ture #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
-
+    expose-major-enabled: false #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
+    #expose-sumarry-enabled: true
 
 server:
   port: 8443

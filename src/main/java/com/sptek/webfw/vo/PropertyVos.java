@@ -27,7 +27,7 @@ public class PropertyVos {
 
         @PostConstruct //Bean 생성 이후 호출
         public void init() {
-            log.info("Project information from property : {}", this);
+            log.debug("Project information from property : {}", this);
         }
     }
 

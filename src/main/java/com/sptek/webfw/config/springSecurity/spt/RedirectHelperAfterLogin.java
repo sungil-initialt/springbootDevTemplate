@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 @Slf4j
-public class LoginHelper {
+public class RedirectHelperAfterLogin {
 
     private final static String LOGIN_SUCCESS_REDIRECT_URL = "LOGIN_SUCCESS_REDIRECT_URL";
     private final static String THE_TIME_SPRING_OWN_REDIRECT_URL = "THE_TIME_SPRING_OWN_REDIRECT_URL";

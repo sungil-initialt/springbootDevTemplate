@@ -8,6 +8,8 @@ import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.argumentResolver.ExampleArgumentResolverForMyUserDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
+import com.sptek.webfw.eventListener.custom.event.ExampleEvent;
+import com.sptek.webfw.eventListener.publisher.CustomEventPublisher;
 import com.sptek.webfw.example.dto.FileUploadDto;
 import com.sptek.webfw.example.dto.ValidationTestDto;
 import com.sptek.webfw.support.CloseableHttpClientSupport;
@@ -56,8 +58,7 @@ import java.util.function.Predicate;
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 @RequestMapping(value = {"/api/v1/"})
-//swagger
-@Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹")
+@Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹") // for swagger
 public class Domain1ApiController extends CommonControllerSupport {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
@@ -68,95 +69,86 @@ public class Domain1ApiController extends CommonControllerSupport {
     private final RestTemplateSupport restTemplateSupport;
     private final ObjectMapper objectMapper;
     private final Domain1ApiService domain1ApiService;
+    private final CustomEventPublisher customEventPublisher;
 
 
     @RequestMapping("/test")
     public Object test(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = false) //swagger
-            @RequestParam String message, HttpServletResponse response) {
+            @RequestParam(required = true) String message, HttpServletResponse response) {
 
         return UserDto.builder().id(1L).email("sungilry@naver.com").userAddresses(List.of(UserAddressDto.builder().id(1L).addressType("집").address("엘프라우드").build())).name(message).build();
     }
 
     @RequestMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> hello(
+    public Object hello(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) {
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+        return message;
     }
 
     @GetMapping("/helloGet")
     @Operation(summary = "helloGet", description = "helloGet 테스트", tags = {"echo"}) //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> helloGet(
+    public Object helloGet(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) {
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+        return message;
     }
 
     @PostMapping("/helloPost")
     @Operation(summary = "helloPost", description = "helloPost 테스트", tags = {"echo"}) //swagger
-    public ResponseEntity<ApiSuccessResponseDto<String>> helloPost(
+    public Object helloPost(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
             @RequestParam String message) {
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+        return message;
     }
 
     @GetMapping("/projectinfo")
     @Operation(summary = "projectinfo", description = "projectinfo 테스트", tags = {""})
     //단순 프로젝트 정보 확인
-    public ResponseEntity<ApiSuccessResponseDto<PropertyVos.ProjectInfoVo>> projectinfo() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(projectInfoVo));
+    public Object projectinfo() {
+        return projectInfoVo;
     }
 
     @PostMapping("/swaggerExample")
     @Operation(summary = "swagger 구성 예시", description = "swagger 구성의 가이드 API", tags = {"가이드 예시 APIs"})
-    public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> swaggerExample(
+    public Object swaggerExample(
             @Parameter(name = "message", description = "가이드용으로 의미가 없음", required = true)
             @RequestParam String message,
             @RequestBody ValidationTestDto validationTestDto) {
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(validationTestDto));
+        return validationTestDto;
     }
 
     @GetMapping("/XssProtectSupportGet")
     @Operation(summary = "XssProtectSupportGet", description = "XssProtectSupportGet 테스트", tags = {""})
     //get Req에 대한 xss 처리 결과 확인
-    public ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportGet(
+    public Object XssProtectSupportGet(
             @Parameter(name = "originText", description = "원본 텍스트", required = true)
             @RequestParam String originText) {
 
         //XssProtectFilter를 통해 response body 내 스크립트 일괄 제거.
-        String message = "XssProtectedText = " + originText;
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+        return "XssProtectedText = " + originText;
     }
 
     @PostMapping("/XssProtectSupportPost")
     @Operation(summary = "XssProtectSupportPost", description = "XssProtectSupportPost 테스트", tags = {""})
     //post Req에 대한 xss 처리 결과 확인
-    public ResponseEntity<ApiSuccessResponseDto<String>> XssProtectSupportPost(
+    public Object XssProtectSupportPost(
             @Parameter(name = "originText", description = "원본 텍스트", required = true)
             @RequestBody String originText, HttpServletRequest request) {
 
-        String message = "XssProtectedText = " + originText;
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
-    }
-
-    @RequestMapping("/interceptor")
-    @Operation(summary = "interceptor", description = "interceptor 테스트", tags = {""})
-    //인터셉터들을 테스트 하기 위한 용도
-    public ResponseEntity<ApiSuccessResponseDto<String>> interceptor() {
-        String message = "see the interceptor message in log";
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(message));
+        return "XssProtectedText = " + originText;
     }
 
     @RequestMapping("/closeableHttpClient")
     @Operation(summary = "closeableHttpClient", description = "closeableHttpClient 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
-    public ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClient() throws Exception{
+    public Object closeableHttpClient() throws Exception{
         log.debug("closeableHttpClient identityHashCode : {}", System.identityHashCode(closeableHttpClient));
 
         HttpGet httpGet = new HttpGet(fooResponseUrl);
@@ -164,25 +156,25 @@ public class Domain1ApiController extends CommonControllerSupport {
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet);
 
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(EntityUtils.toString(httpEntity)));
+        return EntityUtils.toString(httpEntity);
     }
 
     @RequestMapping("/closeableHttpClientSupport")
     @Operation(summary = "closeableHttpClientSupport", description = "closeableHttpClientSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
-    public ResponseEntity<ApiSuccessResponseDto<String>> closeableHttpClientSupport() throws Exception{
+    public Object closeableHttpClientSupport() throws Exception{
         log.debug("closeableHttpClientSupport identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
         HttpEntity httpEntity = closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(CloseableHttpClientSupport.convertResponseToString(httpEntity)));
+        return CloseableHttpClientSupport.convertResponseToString(httpEntity);
     }
 
     @RequestMapping("/restTemplate")
     @Operation(summary = "restTemplate", description = "restTemplate 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하여 req 요청
-    public ResponseEntity<ApiSuccessResponseDto<String>> restTemplate() {
+    public Object restTemplate() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
         String finalUrl = builder.toUriString();
         RequestEntity<Void> requestEntity = RequestEntity
@@ -190,21 +182,21 @@ public class Domain1ApiController extends CommonControllerSupport {
                 .build();
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(responseEntity.getBody()));
+        return responseEntity.getBody();
     }
 
     @RequestMapping("/restTemplateSupport")
     @Operation(summary = "restTemplateSupport", description = "restTemplateSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
-    public ResponseEntity<ApiSuccessResponseDto<String>> restTemplateSupport() {
+    public Object restTemplateSupport() {
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(fooResponseUrl, null, null);
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(responseEntity.getBody()));
+        return responseEntity.getBody();
     }
 
     @RequestMapping("/reqResUtil")
     @Operation(summary = "reqResUtil", description = "reqResUtil 테스트", tags = {""})
     //ReqResUtil 검증 테스트
-    public ResponseEntity<ApiSuccessResponseDto<Map<String, String>>> reqResUtil(HttpServletRequest request) {
+    public Object reqResUtil(HttpServletRequest request) {
         String reqFullUrl = RequestUtil.getRequestUrlQuery(request);
         String reqIp = RequestUtil.getReqUserIp(request);
         String heades = RequestUtil.getRequestHeaderMap(request).toString();
@@ -216,43 +208,43 @@ public class Domain1ApiController extends CommonControllerSupport {
         resultMap.put("heades", heades);
         resultMap.put("params", params);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(resultMap));
+        return new ApiSuccessResponseDto<>(resultMap);
     }
 
     @PostMapping("/validationAnnotationPost")
     @Operation(summary = "validationAnnotationPost", description = "validationAnnotationPost 테스트", tags = {""})
     //request input 값에대한 validation 처리 테스트
-    public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(validationTestDto));
+    public Object validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
+        return validationTestDto;
     }
 
     @GetMapping("/validationAnnotationGet")
     @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<ValidationTestDto>> validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(validationTestDto));
+    public Object validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
+        return validationTestDto;
     }
 
     @GetMapping("/propertyConfigImport")
     @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
     //컨트롤러 진입시 특정 property값을 가져올수 있다.
-    public ResponseEntity<ApiSuccessResponseDto<String>> propertyConfigImport(@Value("${specific.value}") String specificValue) {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(specificValue));
+    public Object propertyConfigImport(@Value("${specific.value}") String specificValue) {
+        return specificValue;
     }
 
     @GetMapping("/argumentResolverForMyUser")
     @Operation(summary = "argumentResolverForMyUser", description = "argumentResolverForMyUser 테스트", tags = {""})
     //HandlerMethodArgumentResolver 를 implement 한 ArgumentResolverForMyUser에 의해 ArgumentResolverForMyUser.MyUser에 데이터가 바인딩 될때 미리 코딩된 로직에 따라 변형처리 되어 바인딩 할수 있다.
     //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
-    public ResponseEntity<ApiSuccessResponseDto<ExampleArgumentResolverForMyUserDto.MyUserDto>> argumentResolverForMyUser(ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
+    public Object argumentResolverForMyUser(ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUserDto));
+        return new ApiSuccessResponseDto<>(myUserDto);
     }
 
     @GetMapping("/argumentResolverForMyUser2")
     @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<ExampleArgumentResolverForMyUserDto.MyUserDto>> argumentResolverForMyUser2(@AnoCustomArgument ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
+    public Object argumentResolverForMyUser2(@AnoCustomArgument ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(myUserDto));
+        return myUserDto;
     }
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -298,11 +290,11 @@ public class Domain1ApiController extends CommonControllerSupport {
     @AnoRequestDeduplication
     @RequestMapping("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<String>> duplicatedRequest() throws Exception {
+    public Object duplicatedRequest() throws Exception {
         log.debug("AOP order : ??");
         String result = "duplicatedRequest test";
         Thread.sleep(3000L);
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(result));
+        return result;
     }
 
     @RequestMapping("/httpCache")
@@ -318,8 +310,13 @@ public class Domain1ApiController extends CommonControllerSupport {
 
     @RequestMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<Integer>> apiServiceError(@RequestParam("errorCaseNum") int errorCaseNum) {
-        int result = domain1ApiService.raiseServiceError(errorCaseNum);
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(result));
+    public Object apiServiceError(@RequestParam("errorCaseNum") int errorCaseNum) {
+        return domain1ApiService.raiseServiceError(errorCaseNum);
+    }
+
+    @RequestMapping("/exampleEvent")
+    public Object exampleEvent() {
+        customEventPublisher.publishEvent(ExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
+        return "published exampleEvent ";
     }
 }

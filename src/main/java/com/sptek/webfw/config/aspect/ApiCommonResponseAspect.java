@@ -1,26 +1,21 @@
 package com.sptek.webfw.config.aspect;
 
-import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
 import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
-import com.sptek.webfw.util.RequestUtil;
-import com.sptek.webfw.util.SpringUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @Aspect
 @Component
 public class ApiCommonResponseAspect {
-    @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek.webfw.anotation.AnoApiCommonResponse) || @annotation(com.sptek.webfw.anotation.AnoApiCommonResponse))")
+    @Pointcut(
+            "@within(org.springframework.web.bind.annotation.RestController)"
+            + "&& (@within(com.sptek.webfw.anotation.AnoApiCommonResponse) || @annotation(com.sptek.webfw.anotation.AnoApiCommonResponse))"
+    )
     public void myPointCut() {}
 
 

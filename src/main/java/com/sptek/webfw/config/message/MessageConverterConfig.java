@@ -3,7 +3,6 @@ package com.sptek.webfw.config.message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.support.XssProtectSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_HTML;
@@ -36,7 +34,7 @@ public class MessageConverterConfig implements WebMvcConfigurer {
         objectMapper.setLocale(LocaleContextHolder.getLocale());
         objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul")); // todo : timezone 에 따른 시간정보 오류 수정 해야함
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
-        objectMapper.getFactory().setCharacterEscapes(new XssProtectSupport()); //Xss 방지 적용
+        objectMapper.getFactory().setCharacterEscapes(new XssProtectHelper()); //Xss 방지 적용
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         return objectMapper;
