@@ -1,4 +1,4 @@
-package com.sptek.webfw.common.constant;
+package com.sptek.webfw.base.constant;
 
 public class CommonConstants {
 

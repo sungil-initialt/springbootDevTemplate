@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity.test;
 
-import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
+import com.sptek.webfw.base.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.CustomJwtFilter;
 import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;
 import com.sptek.webfw.config.springSecurity.extras.dto.LoginRequestDto;

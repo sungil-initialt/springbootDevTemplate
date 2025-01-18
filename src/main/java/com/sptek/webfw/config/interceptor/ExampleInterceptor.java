@@ -1,5 +1,7 @@
 package com.sptek.webfw.config.interceptor;
 
+import com.sptek.webfw.anotation.UniversalAnnotationForTest;
+import com.sptek.webfw.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +26,9 @@ public class ExampleInterceptor implements HandlerInterceptor {
     @Override
     //컨트롤러 진입전 (인증, 권한 검사, 로깅 등의 작업 등)
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
-        log.debug("[Interceptor >>> ]");
-        if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
+        log.debug("[ Interceptor >>> ({}) {} ]", request.getMethod(), RequestUtil.getRequestUrlQuery(request));
 
-            /*
+        if (handler instanceof HandlerMethod handlerMethod) {
             log.debug("preHandle information : \n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
@@ -37,8 +37,9 @@ public class ExampleInterceptor implements HandlerInterceptor {
                     , handlerMethod.getMethod().getName()
                     , handlerMethod.getBeanType().getName()
                     , handlerMethod.getReturnType().getParameterType().getName()
-                    , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class)); //해당 메소드에 @AnoInterceptorCheck 어노테이션이 적용되어 있는지 여부
-             */
+                    , handlerMethod.hasMethodAnnotation(UniversalAnnotationForTest.class) //해당 메소드에 특정 어노테이션이 적용되어 있는지 여부
+            );
+            // do what you want.
         }
         return true;
     }
@@ -47,19 +48,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     //컨트롤러 처리후 view 렌더링 전(모델에 데이터 추가, 응답 수정 등)
     public void postHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, ModelAndView modelAndView) {
         if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-
-            /*
-            log.debug("postHandle information : \n" +
-                            "getMethod : {}\n" +
-                            "getBeanType : {}\n" +
-                            "getReturnType : {}\n" +
-                            "hasMethodAnnotation : {}"
-                    , handlerMethod.getMethod().getName()
-                    , handlerMethod.getBeanType().getName()
-                    , handlerMethod.getReturnType().getParameterType().getName()
-                    , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class));
-             */
+            // do what you want.
         }
     }
 
@@ -67,19 +56,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     //View가 렌더링되고 요청이 완료된 후 (주요 자원 정리, 예외 처리 로깅 등)
     public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) {
         if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-
-            /*
-            log.debug("afterCompletion information : \n" +
-                            "getMethod : {}\n" +
-                            "getBeanType : {}\n" +
-                            "getReturnType : {}\n" +
-                            "hasMethodAnnotation : {}"
-                    , handlerMethod.getMethod().getName()
-                    , handlerMethod.getBeanType().getName()
-                    , handlerMethod.getReturnType().getParameterType().getName()
-                    , handlerMethod.hasMethodAnnotation(AnoInterceptorCheck.class));
-             */
+            // do what you want,
         }
     }
 }

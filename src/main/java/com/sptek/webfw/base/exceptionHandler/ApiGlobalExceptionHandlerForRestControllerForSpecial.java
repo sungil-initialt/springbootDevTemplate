@@ -1,7 +1,7 @@
-package com.sptek.webfw.common.exceptionHandler;
+package com.sptek.webfw.base.exceptionHandler;
 
 import com.sptek.webfw.anotation.RestControllerForSpecial;
-import com.sptek.webfw.common.code.CommonErrorCodeEnum;
+import com.sptek.webfw.base.code.CommonErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

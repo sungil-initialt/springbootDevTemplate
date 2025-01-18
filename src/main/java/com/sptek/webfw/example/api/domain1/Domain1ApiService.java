@@ -1,7 +1,7 @@
 package com.sptek.webfw.example.api.domain1;
 
-import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.base.code.ServiceErrorCodeEnum;
+import com.sptek.webfw.base.exception.ServiceException;
 import com.sptek.webfw.support.CommonServiceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

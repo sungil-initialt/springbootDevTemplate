@@ -1,4 +1,4 @@
-package com.sptek.webfw.support;
+package com.sptek.webfw.config.interceptor;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,32 +16,33 @@ import java.util.List;
 
 /*/
 인터셉터가 특정 메소드(GET, POST, PUT, DELETE 등)를 구분해서 동작해야 하는 경우 InterceptorMatchSupport 를 통해 해당 인터셉터를 등록하도록 한다.
+물론!! 인터셉터 내부에서 request.getMetho() 를 통해 구분된 동작을 처리할 수 있으나 인터셉터는 별도의 config 파일에 동작을 명시하고 있는 방식임으로 일관성을 갖게 처리하기 위함
  */
 @Slf4j
-public class MethodCheckInterceptorSupport implements HandlerInterceptor {
+public class InterceptorConfigSupportForRequestMethod implements HandlerInterceptor {
     private final HandlerInterceptor handlerInterceptor;
     private final MatchInfoContainer matchInfoContainer;
 
-    public MethodCheckInterceptorSupport(HandlerInterceptor handlerInterceptor) {
+    public InterceptorConfigSupportForRequestMethod(HandlerInterceptor handlerInterceptor) {
         this.handlerInterceptor = handlerInterceptor;
         this.matchInfoContainer = new MatchInfoContainer();
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
         if (matchInfoContainer.isMatchedRequest(request)) {
             return handlerInterceptor.preHandle(request, response, handler);
         }
         return true;
     }
 
-    //사용할 경우가 있을까?
-    public MethodCheckInterceptorSupport includePathPattern(String pathPattern, HttpMethod pathMethod) {
+    //실제 사용할 경우가 있을까?
+    public InterceptorConfigSupportForRequestMethod includePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.includePathPattern(pathPattern, pathMethod);
         return this;
     }
 
-    public MethodCheckInterceptorSupport excludePathPattern(String pathPattern, HttpMethod pathMethod) {
+    public InterceptorConfigSupportForRequestMethod excludePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.excludePathPattern(pathPattern, pathMethod);
         return this;
     }

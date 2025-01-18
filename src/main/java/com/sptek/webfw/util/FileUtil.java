@@ -1,8 +1,8 @@
 package com.sptek.webfw.util;
 
-import com.sptek.webfw.common.code.CommonErrorCodeEnum;
+import com.sptek.webfw.base.code.CommonErrorCodeEnum;
 import com.sptek.webfw.example.dto.FileUploadDto;
-import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.base.exception.ServiceException;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;

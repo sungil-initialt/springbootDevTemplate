@@ -1,6 +1,6 @@
-package com.sptek.webfw.common.exception;
+package com.sptek.webfw.base.exception;
 
-import com.sptek.webfw.common.code.BaseCode;
+import com.sptek.webfw.base.code.BaseCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

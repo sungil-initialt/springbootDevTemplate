@@ -1,9 +1,10 @@
 package com.sptek.webfw.example.view.domain1;
 
-import com.sptek.webfw.anotation.AnoInterceptorCheck;
-import com.sptek.webfw.anotation.AnoRequestDeduplication;
-import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.anotation.EnableFwViewGrobalExceptionHandler;
+import com.sptek.webfw.anotation.UniversalAnnotationForTest;
+import com.sptek.webfw.anotation.EnableRequestDeduplication;
+import com.sptek.webfw.base.code.ServiceErrorCodeEnum;
+import com.sptek.webfw.base.exception.ServiceException;
 import com.sptek.webfw.config.encryption.AesEncryptor;
 import com.sptek.webfw.config.encryption.DesEncryptor;
 import com.sptek.webfw.example.api.domain1.Domain1ApiService;
@@ -17,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
+@EnableFwViewGrobalExceptionHandler
 public class Domain1ViewController extends CommonControllerSupport {
     @NonFinal
     private final String pageBasePath = "pages/example/test/";
@@ -90,7 +91,7 @@ public class Domain1ViewController extends CommonControllerSupport {
     }
 
     @RequestMapping("/interceptor")
-    @AnoInterceptorCheck
+    @UniversalAnnotationForTest
     public String interceptor(Model model) {
         log.debug("origin caller here.");
         model.addAttribute("message", "welcome");
@@ -270,7 +271,7 @@ public class Domain1ViewController extends CommonControllerSupport {
         return pageBasePath + "i18n";
     }
 
-    @AnoRequestDeduplication
+    @EnableRequestDeduplication
     @RequestMapping("/duplicatedRequest")
     public String duplicatedRequest(Model model) throws Exception {
         // 테스트를 위한 강제 딜레이

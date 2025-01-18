@@ -1,6 +1,6 @@
 package com.sptek.webfw.example.api.domain1;
 
-import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
+import com.sptek.webfw.base.responseDto.ApiSuccessResponseDto;
 import com.sptek.webfw.support.CommonControllerSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

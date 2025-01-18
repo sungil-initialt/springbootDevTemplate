@@ -1,4 +1,4 @@
-package com.sptek.webfw.common.exceptionHandler;
+package com.sptek.webfw.base.exceptionHandler;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;

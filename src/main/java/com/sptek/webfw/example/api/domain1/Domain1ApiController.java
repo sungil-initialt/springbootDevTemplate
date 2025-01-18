@@ -1,11 +1,12 @@
 package com.sptek.webfw.example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.anotation.AnoApiCommonResponse;
-import com.sptek.webfw.anotation.AnoCustomArgument;
-import com.sptek.webfw.anotation.AnoRequestDeduplication;
-import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
-import com.sptek.webfw.config.argumentResolver.ExampleArgumentResolverForMyUserDto;
+import com.sptek.webfw.anotation.EnableFwApiGrobalExceptionHandler;
+import com.sptek.webfw.anotation.EnableFwApiResponse;
+import com.sptek.webfw.anotation.EnableArgumentResolver;
+import com.sptek.webfw.anotation.EnableRequestDeduplication;
+import com.sptek.webfw.base.responseDto.ApiSuccessResponseDto;
+import com.sptek.webfw.config.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
 import com.sptek.webfw.eventListener.custom.event.ExampleEvent;
@@ -54,7 +55,8 @@ import java.util.function.Predicate;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@AnoApiCommonResponse
+@EnableFwApiResponse
+@EnableFwApiGrobalExceptionHandler
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 @RequestMapping(value = {"/api/v1/"})
@@ -235,14 +237,14 @@ public class Domain1ApiController extends CommonControllerSupport {
     @Operation(summary = "argumentResolverForMyUser", description = "argumentResolverForMyUser 테스트", tags = {""})
     //HandlerMethodArgumentResolver 를 implement 한 ArgumentResolverForMyUser에 의해 ArgumentResolverForMyUser.MyUser에 데이터가 바인딩 될때 미리 코딩된 로직에 따라 변형처리 되어 바인딩 할수 있다.
     //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
-    public Object argumentResolverForMyUser(ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
+    public Object argumentResolverForMyUser(ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
         return new ApiSuccessResponseDto<>(myUserDto);
     }
 
     @GetMapping("/argumentResolverForMyUser2")
     @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
-    public Object argumentResolverForMyUser2(@AnoCustomArgument ExampleArgumentResolverForMyUserDto.MyUserDto myUserDto) {
+    public Object argumentResolverForMyUser2(@EnableArgumentResolver ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
         return myUserDto;
     }
@@ -287,7 +289,7 @@ public class Domain1ApiController extends CommonControllerSupport {
         return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
     }
 
-    @AnoRequestDeduplication
+    @EnableRequestDeduplication
     @RequestMapping("/duplicatedRequest")
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public Object duplicatedRequest() throws Exception {

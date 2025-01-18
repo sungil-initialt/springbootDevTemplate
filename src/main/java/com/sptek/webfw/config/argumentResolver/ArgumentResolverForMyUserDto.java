@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.argumentResolver;
 
-import com.sptek.webfw.anotation.AnoCustomArgument;
+import com.sptek.webfw.anotation.EnableArgumentResolver;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,16 +14,19 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Optional;
 
-public class ExampleArgumentResolverForMyUserDto implements HandlerMethodArgumentResolver {
+public class ArgumentResolverForMyUserDto implements HandlerMethodArgumentResolver {
 
-    @Override
+    @Override //적용 조건 설정
     public boolean supportsParameter(MethodParameter methodParameter) {
-        //해당 클레스와 정확히 일치하는 경우만 적용
+        //해당 클레스와 정확히 일치하는 경우만 적용할때
         //return methodParameter.getParameterType().equals(MyUser.class);
 
-        //해당 클레스를 상속받은 클레스까지 포함 가능
+        //해당 클레스를 상속받은 클레스까지 적용할때
+        //return methodParameter.getParameterType().isAssignableFrom(MyUserDto.class)
+
+        //해당 클레스를 상속받은 클레스까지 적용하지만 rgumentResolver를 적용하겠다는 별도의 어노테이션이 있는 경우만 처리
         return methodParameter.getParameterType().isAssignableFrom(MyUserDto.class)
-                && methodParameter.hasParameterAnnotation(AnoCustomArgument.class); //@CustomArgument 어노테이션과 함께 사용했을때만 유효하게 처리하겠다는 설정.
+                && methodParameter.hasParameterAnnotation(EnableArgumentResolver.class);
     }
 
 
@@ -51,7 +54,6 @@ public class ExampleArgumentResolverForMyUserDto implements HandlerMethodArgumen
         }
 
         //MethodParameter, modelAndViewContainer, nativeWebRequest, webDataBinderFactory을 응용해서 더 많은곳에 활용.
-
         return myUserDto;
     }
 

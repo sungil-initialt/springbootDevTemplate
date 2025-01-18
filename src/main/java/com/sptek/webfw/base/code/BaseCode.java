@@ -1,4 +1,4 @@
-package com.sptek.webfw.common.code;
+package com.sptek.webfw.base.code;
 
 import org.springframework.http.HttpStatus;
 

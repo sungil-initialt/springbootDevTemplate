@@ -1,8 +1,8 @@
-package com.sptek.webfw.common.exceptionHandler;
+package com.sptek.webfw.base.exceptionHandler;
 
-import com.sptek.webfw.common.code.CommonErrorCodeEnum;
-import com.sptek.webfw.common.constant.CommonConstants;
-import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
+import com.sptek.webfw.base.code.CommonErrorCodeEnum;
+import com.sptek.webfw.base.constant.CommonConstants;
+import com.sptek.webfw.base.responseDto.ApiErrorResponseDto;
 import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     private final ExampleInterceptor exampleInterceptor;
-    private final UvInterceptor uvInterceptor;
+    private final UvCheckInterceptor uvCheckInterceptor;
     private final ReqResLogFilterSupportInterceptor reqResLogFilterSupportInterceptor;
 
     @Override
@@ -20,7 +20,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         //필요한 interceptor 등록 (exampleInterceptor 참고)
         //registry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**").excludePathPatterns(getNotEssentialRequestPatterns()).excludePathPatterns(SecureUtil.getStaticResourceRequestPatternList());
-        interceptorRegistry.addInterceptor(this.uvInterceptor).addPathPatterns("/**")
+        interceptorRegistry.addInterceptor(this.uvCheckInterceptor).addPathPatterns("/**")
                 .excludePathPatterns("/api/**")
                 .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
                 .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
@@ -29,11 +29,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns(SecureUtil.getNotEssentialRequestPatterns())
                 .excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns());
 
-        //interceptorRegistry.addInterceptor(new MethodCheckInterceptorSupport(new MethodCheckInterceptorForXX())
-        //        //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
-        //        .excludePathPattern("/api/**", HttpMethod.GET)
-        //        .excludePathPattern("/api/v2/**", HttpMethod.POST)
-        //        ).addPathPatterns("/api/**").excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns()); //1차 필터 조건
+//        interceptorRegistry.addInterceptor(new InterceptorConfigSupportForRequestMethod(new ExampleInterceptor())
+//                //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
+//                .excludePathPattern("/api/**", HttpMethod.GET)
+//                .excludePathPattern("/api/v2/**", HttpMethod.POST)
+//                ).addPathPatterns("/api/**").excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns()); //1차 필터 조건
 
         WebMvcConfigurer.super.addInterceptors(interceptorRegistry);
     }

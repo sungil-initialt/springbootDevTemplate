@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.interceptor;
 
-import com.sptek.webfw.common.constant.CommonConstants;
+import com.sptek.webfw.base.constant.CommonConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

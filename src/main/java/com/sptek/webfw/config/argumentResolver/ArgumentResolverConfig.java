@@ -16,8 +16,7 @@ public class ArgumentResolverConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         //구현한 ArgumentResolver를 등록해 준다.
-        resolvers.add(new ExampleArgumentResolverForMyUserDto());
-
+        resolvers.add(new ArgumentResolverForMyUserDto());
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 }

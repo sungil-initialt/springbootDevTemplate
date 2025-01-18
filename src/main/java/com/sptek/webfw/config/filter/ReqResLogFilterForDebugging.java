@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.filter;
 
-import com.sptek.webfw.common.constant.CommonConstants;
+import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
 import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
 import com.sptek.webfw.util.RequestUtil;

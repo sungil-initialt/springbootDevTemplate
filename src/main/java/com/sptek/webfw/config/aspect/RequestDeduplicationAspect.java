@@ -1,7 +1,7 @@
 package com.sptek.webfw.config.aspect;
 
-import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.base.code.ServiceErrorCodeEnum;
+import com.sptek.webfw.base.exception.ServiceException;
 import com.sptek.webfw.util.RequestUtil;
 import com.sptek.webfw.util.SpringUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class RequestDeduplicationAspect {
 
     //@Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || @annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
+            "&& (@within(com.sptek.webfw.anotation.EnableRequestDeduplication) || @annotation(com.sptek.webfw.anotation.EnableRequestDeduplication))")
     public void myPointCut() {}
 
 

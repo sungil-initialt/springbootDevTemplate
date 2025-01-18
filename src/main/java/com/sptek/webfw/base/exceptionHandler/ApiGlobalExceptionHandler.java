@@ -1,10 +1,11 @@
-package com.sptek.webfw.common.exceptionHandler;
+package com.sptek.webfw.base.exceptionHandler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sptek.webfw.common.code.CommonErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
-import com.sptek.webfw.common.responseDto.ApiErrorResponseDto;
+import com.sptek.webfw.anotation.EnableFwApiGrobalExceptionHandler;
+import com.sptek.webfw.base.code.CommonErrorCodeEnum;
+import com.sptek.webfw.base.exception.ServiceException;
+import com.sptek.webfw.base.responseDto.ApiErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -26,7 +27,7 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
 최종 Response 응답까지 처리해 준다.
  */
 @Slf4j
-@RestControllerAdvice(annotations = RestController.class) // @RestController 가 붙은 컨트럴러에 적용 (설정이 없으면 @ControllerAdvice 에서 처림됨)
+@RestControllerAdvice(annotations = EnableFwApiGrobalExceptionHandler.class) // @EnableFwApiGrobalExceptionHandler 가 선언된 RestController 에서만 동작함 (정확히는  RestController 여부는 체크 안함)
 public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

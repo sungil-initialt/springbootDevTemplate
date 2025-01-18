@@ -1,7 +1,7 @@
-package com.sptek.webfw.common.responseDto;
+package com.sptek.webfw.base.responseDto;
 
-import com.sptek.webfw.common.code.BaseCode;
-import com.sptek.webfw.common.code.SuccessCodeEnum;
+import com.sptek.webfw.base.code.BaseCode;
+import com.sptek.webfw.base.code.SuccessCodeEnum;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,6 +1,6 @@
-package com.sptek.webfw.common.responseDto;
+package com.sptek.webfw.base.responseDto;
 
-import com.sptek.webfw.common.code.BaseCode;
+import com.sptek.webfw.base.code.BaseCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

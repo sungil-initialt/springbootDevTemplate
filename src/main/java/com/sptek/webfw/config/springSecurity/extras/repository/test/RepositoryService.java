@@ -1,7 +1,7 @@
 package com.sptek.webfw.config.springSecurity.extras.repository.test;
 
-import com.sptek.webfw.common.code.ServiceErrorCodeEnum;
-import com.sptek.webfw.common.exception.ServiceException;
+import com.sptek.webfw.base.code.ServiceErrorCodeEnum;
+import com.sptek.webfw.base.exception.ServiceException;
 import com.sptek.webfw.config.springSecurity.extras.entity.*;
 import com.sptek.webfw.config.springSecurity.extras.repository.*;
 import lombok.AllArgsConstructor;

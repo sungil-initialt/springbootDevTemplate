@@ -16,7 +16,7 @@ UV 관련 처리를 위한 인터셉터
  */
 @Component
 @Slf4j
-public class UvInterceptor implements HandlerInterceptor {
+public class UvCheckInterceptor implements HandlerInterceptor {
     private final String uvCheckCookieName = "uvCheck";
     private final String uvCheckCookieValue = "checked";
     private final int uvCheckCookieMaxAgeSec = 60 * 60; //해당 시간동안 request 가 없었던 경우 새로운 방문으로 본다.

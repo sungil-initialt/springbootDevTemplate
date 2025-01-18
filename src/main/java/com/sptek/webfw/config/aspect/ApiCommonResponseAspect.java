@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.aspect;
 
-import com.sptek.webfw.common.responseDto.ApiSuccessResponseDto;
+import com.sptek.webfw.base.responseDto.ApiSuccessResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class ApiCommonResponseAspect {
     @Pointcut(
             "@within(org.springframework.web.bind.annotation.RestController)"
-            + "&& (@within(com.sptek.webfw.anotation.AnoApiCommonResponse) || @annotation(com.sptek.webfw.anotation.AnoApiCommonResponse))"
+            + "&& (@within(com.sptek.webfw.anotation.EnableFwApiResponse) || @annotation(com.sptek.webfw.anotation.EnableFwApiResponse))"
     )
     public void myPointCut() {}
 
