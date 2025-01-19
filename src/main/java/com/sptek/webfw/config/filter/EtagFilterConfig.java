@@ -1,11 +1,13 @@
 package com.sptek.webfw.config.filter;
 
+import com.sptek.webfw.base.constant.CommonConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +17,10 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import java.io.IOException;
 
-@Profile(value = { "xxx" }) //우선 항상 사용하지 않는 것으로
+//@Profile(value = { "xxx" }) //우선 항상 사용하지 않는 것으로
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.EtagFilter", havingValue = "true", matchIfMissing = false)
 public class EtagFilterConfig {
 
     /*
@@ -29,6 +32,8 @@ public class EtagFilterConfig {
 
     @Bean
     public FilterRegistrationBean<OncePerRequestFilter> shallowEtagHeaderFilter() {
+        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + "EtagFilter is Applied.");
+
         FilterRegistrationBean<OncePerRequestFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(
                 new OncePerRequestFilter() {

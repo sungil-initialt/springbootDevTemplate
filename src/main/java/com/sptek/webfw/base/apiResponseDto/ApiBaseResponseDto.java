@@ -1,4 +1,4 @@
-package com.sptek.webfw.base.responseDto;
+package com.sptek.webfw.base.apiResponseDto;
 
 import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.util.SpringUtil;
@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class CommonApiResponse {
+public class ApiBaseResponseDto {
     public String resultCode;
     public String resultMessage;
     public String requestTime;

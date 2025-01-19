@@ -27,7 +27,7 @@ public class GeneralTokenProvider implements InitializingBean {
     private final long tokenValidityInMilliseconds;
     private Key key;
 
-    public GeneralTokenProvider(@Value("${jwt.base64SecretKey}") String secureKey, @Value("${jwt.tokenValidityInSec}") long tokenValidityInMilliseconds) {
+    public GeneralTokenProvider(@Value("${jwt.base64SecretKey}") String secureKey, @Value("${jwt.tokenValidityInMilliseconds}") long tokenValidityInMilliseconds) {
         this.secureKey = secureKey;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }
@@ -82,10 +82,10 @@ public class GeneralTokenProvider implements InitializingBean {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
             return true;
         }
-        catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { log.info("Invalid JWT signature"); }
-        catch (ExpiredJwtException e) { log.info("Expired JWT token"); }
-        catch (UnsupportedJwtException e) { log.info("Unsupported JWT token"); }
-        catch (IllegalArgumentException e) { log.info("Invalid JWT token"); }
+        catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { log.error("Invalid JWT signature"); }
+        catch (ExpiredJwtException e) { log.error("Expired JWT token"); }
+        catch (UnsupportedJwtException e) { log.error("Unsupported JWT token"); }
+        catch (IllegalArgumentException e) { log.error("Invalid JWT token"); }
 
         return false;
     }

@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras.repository.test;
 
+import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
 import com.sptek.webfw.config.springSecurity.AuthorityIfEnum;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.util.ModelMapperUtil;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
+@EnableViewCommonErrorResponse
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외

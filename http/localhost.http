@@ -3,7 +3,7 @@ GET {{web-server}}/welcome
 Content-Type: text/html
 
 ### view Test
-GET {{web-server}}/welcomeGet
+POST {{web-server}}/welcomeGet
 Content-Type: text/html
 
 ### view Test
@@ -27,7 +27,7 @@ GET {{api-server-ver}}/helloGet?message=hi
 Content-Type: application/json
 
 ### helloGet
-GET {{api-server-ver}}/helloGet?message=hi
+POST {{api-server-ver}}/helloGet?message=hi
 Content-Type: application/json
 
 ### helloPost
@@ -220,9 +220,15 @@ Content-Type: application/json
 GET {{api-server-ver}}/public/hello
 Content-Type: application/json
 
+
+### 테스트
+GET {{api-server-ver}}/user/hello
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
 ### 테스트
 GET {{api-server-ver}}/auth/hello?a=a
-//Authorization: Bearer {{jwt}}
+Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트

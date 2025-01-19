@@ -1,4 +1,4 @@
-package com.sptek.webfw.base.responseDto;
+package com.sptek.webfw.base.apiResponseDto;
 
 import com.sptek.webfw.base.code.BaseCode;
 import com.sptek.webfw.base.code.SuccessCodeEnum;
@@ -23,10 +23,10 @@ HttpStatus.OK(200)
  */
 @Slf4j
 @Getter
-public class ApiSuccessResponseDto<T> extends CommonApiResponse{
+public class ApiCommonSuccessResponseDto<T> extends ApiBaseResponseDto {
     private final T result;
 
-    public ApiSuccessResponseDto(final T result) {
+    public ApiCommonSuccessResponseDto(final T result) {
         super.makeTimestamp();
         super.resultCode = SuccessCodeEnum.DEFAULT_SUCCESS.getResultCode();
         super.resultMessage = SuccessCodeEnum.DEFAULT_SUCCESS.getResultMessage();
@@ -34,7 +34,7 @@ public class ApiSuccessResponseDto<T> extends CommonApiResponse{
     }
 
     //성공 응답은 기본적으로 SuccessCodeEnum 안에서 선택함, SuccessCodeEnum에 따라 메시지지는 자동 결정, T는 "result" 필드에 들어가 object
-    public ApiSuccessResponseDto(final BaseCode successCodeEnum, final T result) {
+    public ApiCommonSuccessResponseDto(final BaseCode successCodeEnum, final T result) {
         super.makeTimestamp();
         super.resultCode = successCodeEnum.getResultCode();
         super.resultMessage = successCodeEnum.getResultMessage();
@@ -42,7 +42,7 @@ public class ApiSuccessResponseDto<T> extends CommonApiResponse{
     }
 
     //SuccessCodeEnum 안에서 선택할 수 없는 특별한 경우에만 사용.
-    public ApiSuccessResponseDto(final String resultCode, final String resultMessage, final T result) {
+    public ApiCommonSuccessResponseDto(final String resultCode, final String resultMessage, final T result) {
         super.makeTimestamp();
         super.resultCode = resultCode;
         super.resultMessage = resultMessage;

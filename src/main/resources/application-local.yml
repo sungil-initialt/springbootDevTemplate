@@ -109,19 +109,6 @@ spring:
       data-locations: classpath:data.sql
 
 
-filters:
-  isEnabled:
-    CorsPolicyFilter: true
-    EtagFilterConfig: true
-    ExcludeSessionRepositoryFilter: true
-    MakeMdcFilter: true
-    MakeRequestTimestampFilter: true
-    ReqResEncryptionFilter: true
-    ReqResLogFilterForDebugging: true
-
-
-
-
 
 #PageInoSupport 클레스 관련 설정
 pagehelper:
@@ -157,7 +144,7 @@ desEncryptor:
 
 jwt:
   base64SecretKey: ${JWT_BASE64SECRETKEY} #Base64 형식의 86자 이상(512bit 이상, 1자 6bit)
-  tokenValidityInSec: 86400 #1day
+  tokenValidityInMilliseconds: 3600000 #1h
 
 
 
@@ -183,3 +170,20 @@ test:
   jasyptTest:
     # 원문: "originPlainText", spec: PBEWITHHMACSHA512ANDAES_256, JASYPT_ENCRYPTOR_PASSWORD=12345678901234567890123456789012
     encValue: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)
+
+
+####### FRAMEWORK RUN OPTIONS #############
+sptFramework:
+  filters:
+    isEnabled:
+      CorsPolicyFilter: true
+      DEPRECATED_ConvertReqResToContentCachingReqResWrapperFilter: false
+      DEPRECATED_ConvertReqResToReqResWrapperFilter: false
+      DEPRECATED_XssProtectFilter: false
+      EtagFilter: true
+      ExcludeSessionRepositoryFilter: true
+      MakeMdcFilter: true
+      MakeRequestTimestampFilter: true
+      ReqResEncryptionFilter: false
+      ReqResLogFilterForDebugging: true
+###################################################

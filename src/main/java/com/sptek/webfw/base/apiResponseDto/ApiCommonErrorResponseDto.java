@@ -1,4 +1,4 @@
-package com.sptek.webfw.base.responseDto;
+package com.sptek.webfw.base.apiResponseDto;
 
 import com.sptek.webfw.base.code.BaseCode;
 import lombok.AccessLevel;
@@ -28,31 +28,31 @@ HttpStatus.BAD_REQUEST(400)
       "reason": "Size error"
     }
   ],
-  "exceptionMessage": "Validation failed for argument [0] in protected org.springframework.http.ResponseEntity&lt;com.sptek.webfw.dto.ApiSuccessResponseDto&lt;com.sptek.webfw.example.dto.ValidationTestDto&gt;&gt; com.sptek.webfw.example.api.api1.ApiTestController.validationAnnotationPost(com.sptek.webfw.example.dto.ValidationTestDto): [Field error in object 'validationTestDto' on field 'userName': rejected value [s]; codes [Size.validationTestDto.userName,Size.userName,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [validationTestDto.userName,userName]; arguments []; default message [userName],20,2]; default message [Size error]] "
+  "exceptionMessage": "Validation failed for argument [0] in protected org.springframework.http.ResponseEntity&lt;com.sptek.webfw.dto.ApiCommonSuccessResponseDto&lt;com.sptek.webfw.example.dto.ValidationTestDto&gt;&gt; com.sptek.webfw.example.api.api1.ApiTestController.validationAnnotationPost(com.sptek.webfw.example.dto.ValidationTestDto): [Field error in object 'validationTestDto' on field 'userName': rejected value [s]; codes [Size.validationTestDto.userName,Size.userName,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [validationTestDto.userName,userName]; arguments []; default message [userName],20,2]; default message [Size error]] "
 }
  */
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ApiErrorResponseDto extends CommonApiResponse{
+public class ApiCommonErrorResponseDto extends ApiBaseResponseDto {
 
     private List<InValidFieldInfo> inValidFieldInfos;
     private String exceptionMessage;
 
-    ApiErrorResponseDto(final BaseCode errorCodeEnum) {
+    ApiCommonErrorResponseDto(final BaseCode errorCodeEnum) {
         super.resultCode = errorCodeEnum.getResultCode();
         super.resultMessage = errorCodeEnum.getResultMessage();
         super.makeTimestamp();
     }
 
-    ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage) {
+    ApiCommonErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage) {
         super.resultCode = errorCodeEnum.getResultCode();
         super.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
         super.makeTimestamp();
     }
 
-    ApiErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
+    ApiCommonErrorResponseDto(final BaseCode errorCodeEnum, final String exceptionMessage, final List<InValidFieldInfo> inValidFieldInfos) {
         super.resultCode = errorCodeEnum.getResultCode();
         super.resultMessage = errorCodeEnum.getResultMessage();
         this.exceptionMessage = exceptionMessage;
@@ -60,16 +60,16 @@ public class ApiErrorResponseDto extends CommonApiResponse{
         super.makeTimestamp();
     }
 
-    public static ApiErrorResponseDto of(final BaseCode errorCodeEnum) {
-        return new ApiErrorResponseDto(errorCodeEnum);
+    public static ApiCommonErrorResponseDto of(final BaseCode errorCodeEnum) {
+        return new ApiCommonErrorResponseDto(errorCodeEnum);
     }
 
-    public static ApiErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage) {
-        return new ApiErrorResponseDto(errorCodeEnum, exceptionMessage);
+    public static ApiCommonErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage) {
+        return new ApiCommonErrorResponseDto(errorCodeEnum, exceptionMessage);
     }
 
-    public static ApiErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage, final BindingResult bindingResult) {
-        return new ApiErrorResponseDto(errorCodeEnum, exceptionMessage, InValidFieldInfo.of(bindingResult));
+    public static ApiCommonErrorResponseDto of(final BaseCode errorCodeEnum, final String exceptionMessage, final BindingResult bindingResult) {
+        return new ApiCommonErrorResponseDto(errorCodeEnum, exceptionMessage, InValidFieldInfo.of(bindingResult));
     }
 
     @Getter

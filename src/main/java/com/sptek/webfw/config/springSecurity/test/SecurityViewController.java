@@ -1,6 +1,7 @@
 package com.sptek.webfw.config.springSecurity.test;
 
-import com.sptek.webfw.base.responseDto.ApiSuccessResponseDto;
+import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
+import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;
 import com.sptek.webfw.config.springSecurity.spt.RedirectHelperAfterLogin;
@@ -29,6 +30,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
+@EnableViewCommonErrorResponse
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class SecurityViewController {
 
@@ -203,7 +205,7 @@ public class SecurityViewController {
     @PreAuthorize(
             "hasAuthority(T(com.sptek.webfw.config.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)"
     )
-    public ResponseEntity<ApiSuccessResponseDto<String>> butNeedControllAuth() {
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>("butNeedControllAuth"));
+    public ResponseEntity<ApiCommonSuccessResponseDto<String>> butNeedControllAuth() {
+        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>("butNeedControllAuth"));
     }
 }

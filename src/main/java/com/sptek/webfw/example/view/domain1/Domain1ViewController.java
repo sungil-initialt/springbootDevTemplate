@@ -1,6 +1,6 @@
 package com.sptek.webfw.example.view.domain1;
 
-import com.sptek.webfw.anotation.EnableFwViewGrobalExceptionHandler;
+import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
 import com.sptek.webfw.anotation.UniversalAnnotationForTest;
 import com.sptek.webfw.anotation.EnableRequestDeduplication;
 import com.sptek.webfw.base.code.ServiceErrorCodeEnum;
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-@EnableFwViewGrobalExceptionHandler
+@EnableViewCommonErrorResponse
 public class Domain1ViewController extends CommonControllerSupport {
     @NonFinal
     private final String pageBasePath = "pages/example/test/";

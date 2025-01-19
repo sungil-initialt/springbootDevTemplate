@@ -1,11 +1,11 @@
 package com.sptek.webfw.example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.anotation.EnableFwApiGrobalExceptionHandler;
-import com.sptek.webfw.anotation.EnableFwApiResponse;
+import com.sptek.webfw.anotation.EnableApiCommonErrorResponse;
+import com.sptek.webfw.anotation.EnableApiCommonSuccessResponse;
 import com.sptek.webfw.anotation.EnableArgumentResolver;
 import com.sptek.webfw.anotation.EnableRequestDeduplication;
-import com.sptek.webfw.base.responseDto.ApiSuccessResponseDto;
+import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserDto;
@@ -55,8 +55,8 @@ import java.util.function.Predicate;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@EnableFwApiResponse
-@EnableFwApiGrobalExceptionHandler
+@EnableApiCommonSuccessResponse
+@EnableApiCommonErrorResponse
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 @RequestMapping(value = {"/api/v1/"})
@@ -210,7 +210,7 @@ public class Domain1ApiController extends CommonControllerSupport {
         resultMap.put("heades", heades);
         resultMap.put("params", params);
 
-        return new ApiSuccessResponseDto<>(resultMap);
+        return new ApiCommonSuccessResponseDto<>(resultMap);
     }
 
     @PostMapping("/validationAnnotationPost")
@@ -239,7 +239,7 @@ public class Domain1ApiController extends CommonControllerSupport {
     //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
     public Object argumentResolverForMyUser(ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
-        return new ApiSuccessResponseDto<>(myUserDto);
+        return new ApiCommonSuccessResponseDto<>(myUserDto);
     }
 
     @GetMapping("/argumentResolverForMyUser2")
@@ -251,7 +251,7 @@ public class Domain1ApiController extends CommonControllerSupport {
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception {
 
@@ -262,7 +262,7 @@ public class Domain1ApiController extends CommonControllerSupport {
         Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
         List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
 
-        return ResponseEntity.ok(new ApiSuccessResponseDto<>(FileUploadDtos));
+        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
     }
 
     @GetMapping(value = "/byteForImage")
@@ -301,13 +301,13 @@ public class Domain1ApiController extends CommonControllerSupport {
 
     @RequestMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiSuccessResponseDto<Long>> httpCache() {
+    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCache() {
         //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
         long cacheSec = 60L;
         CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
         long result = System.currentTimeMillis();
 
-        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiSuccessResponseDto<>(result));
+        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
     }
 
     @RequestMapping("/apiServiceError")

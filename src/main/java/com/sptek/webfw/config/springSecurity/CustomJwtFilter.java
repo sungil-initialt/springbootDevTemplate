@@ -15,6 +15,8 @@ import java.io.IOException;
 
 @Slf4j
 public class CustomJwtFilter extends GenericFilterBean {
+    // todo: 유효 토큰으로 요청이 온다면 response 로 유효시간을 새로 늘린 토큰을 보내줘야 할까?? 검토 필요, 마찮가지고 sessionId 도 요청때마다 유효시간을 다시 늘려서 내려야 할지 검토 필요
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_PREFIX  = "Bearer ";
     private final GeneralTokenProvider generalTokenProvider;
@@ -48,7 +50,7 @@ public class CustomJwtFilter extends GenericFilterBean {
 
         } else {
             //jwt가 없거나 유효하지 않다도 직접 별다른 처리를 하지 않음(다른 필터에 맡김)
-            log.debug("fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
+            log.error("fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
         }
 
         chain.doFilter(httpServletRequest,response);

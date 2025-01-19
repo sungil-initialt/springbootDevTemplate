@@ -44,7 +44,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    // 주로 SecurityFilterChain 에서 특정 경로(js, css resource 경로등)를 제외하는 용도로 사용 (6.x 버전부터 아래 SecurityFilterChain에서도 처리됨으로 의미가 별로 없어짐)
+    // 주로 SecurityFilterChain 에서 특정 경로(js, css resource 경로등)를 제외하는 용도로 사용
+    // 아래 securityFilterChain에서 도 유사하게 처리 할수 있으나.. 이곳에 설정한 경로는 spring-security 와 관련한 모든 설정이 적용되지 않음 (다른 필터에서 security 관련 사용지 주위 필요)
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (webSecurity) -> webSecurity.ignoring()
                 .requestMatchers(SecureUtil.getNotEssentialRequestPatternsArray())
