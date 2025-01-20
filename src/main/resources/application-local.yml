@@ -177,13 +177,16 @@ sptFramework:
   filters:
     isEnabled:
       CorsPolicyFilter: true
-      DEPRECATED_ConvertReqResToContentCachingReqResWrapperFilter: false
-      DEPRECATED_ConvertReqResToReqResWrapperFilter: false
-      DEPRECATED_XssProtectFilter: false
+      DetailLogFilterWithContentCaching: true
       EtagFilter: true
       ExcludeSessionRepositoryFilter: true
       MakeMdcFilter: true
       MakeRequestTimestampFilter: true
       ReqResEncryptionFilter: false
-      ReqResLogFilterForDebugging: true
+
+      DEPRECATED_ConvertReqResToReqResWrapperFilter: false
+      DEPRECATED_XssProtectFilter: false
+      DEPRECATED_ReqResLogFilterForDebugging: false
+
+
 ###################################################

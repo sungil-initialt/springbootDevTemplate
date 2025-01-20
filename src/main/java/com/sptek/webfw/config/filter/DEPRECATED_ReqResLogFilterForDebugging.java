@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -31,10 +30,10 @@ import java.util.Optional;
 @Slf4j
 @Order(3)
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.ReqResLogFilterForDebugging", havingValue = "true", matchIfMissing = false)
-public class ReqResLogFilterForDebugging extends OncePerRequestFilter {
+@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_ReqResLogFilterForDebugging", havingValue = "true", matchIfMissing = false)
+public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter {
 
-    public ReqResLogFilterForDebugging() {
+    public DEPRECATED_ReqResLogFilterForDebugging() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
@@ -63,7 +62,7 @@ public class ReqResLogFilterForDebugging extends OncePerRequestFilter {
 
         if(request.getRequestURI().startsWith("/api/")) {
             String responseBody = httpServletResponseWrapperSupport.getResponseBody();
-            log.debug("\n--------------------\n[ ReqRes Information from Filter ]\n" +
+            log.debug("\n--------------------\n[ **** Request-Response Information caught by the ReqResLogFilterForDebugging **** ]\n--------------------\n" +
                             "session : {}\n" +
                             "({}) url : {}\n" +
                             "params : {}\n" +
@@ -84,7 +83,7 @@ public class ReqResLogFilterForDebugging extends OncePerRequestFilter {
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
             String responseModelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW)).map(Object::toString).orElse("");
-            log.debug("\n--------------------\n[ ReqRes Information from Filter ]\n" +
+            log.debug("\n--------------------\n[ **** Request-Response Information caught by the ReqResLogFilterForDebugging **** ]\n--------------------\n" +
                             "session : {}\n" +
                             "({}) url : {}\n" +
                             "params : {}\n" +

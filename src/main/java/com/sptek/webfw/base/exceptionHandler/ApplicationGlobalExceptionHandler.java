@@ -92,13 +92,17 @@ public class ApplicationGlobalExceptionHandler {
             String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
-            log.debug("\n--------------------\n[ Higher-level Error occurred ]\n" +
-                            "session : {}\n" +
-                            "({}) url : {}\n" +
-                            "header : {}\n" +
-                            "params : {}\n" +
-                            "responseStatus : {}\n" +
-                            "exceptionMsg : {}\n--------------------\n"
+            log.debug("\n\n" +
+                      "--------------------\n" +
+                      "[ **** Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler **** ]\n" +
+                      "--------------------\n" +
+                      "session : {}\n" +
+                      "({}) url : {}\n" +
+                      "header : {}\n" +
+                      "params : {}\n" +
+                      "responseStatus : {}\n" +
+                      "exceptionMsg : {}\n" +
+                      "--------------------\n\n"
                     , sessionId
                     , methodType, url
                     , params

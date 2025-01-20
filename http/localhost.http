@@ -43,6 +43,10 @@ GET {{api-server-ver}}/test
 Content-Type: application/json
 
 
+### apiServiceError
+GET {{api-server-ver}}/apiServiceError?errorCaseNum=1
+Content-Type: application/json
+
 
 ### jasyptEnc 테스트
 POST {{web-server}}/public/jasyptEnc
