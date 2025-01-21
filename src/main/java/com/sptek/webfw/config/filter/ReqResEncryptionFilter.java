@@ -7,11 +7,7 @@ objectMapper 셋팅에서 XssProtectSupport 클레스를 적용하는 방식으�
 */
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.base.constant.CommonConstants;
-import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
-import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
-import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -19,15 +15,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Order(2)

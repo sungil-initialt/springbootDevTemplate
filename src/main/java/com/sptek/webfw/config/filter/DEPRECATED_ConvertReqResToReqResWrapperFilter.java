@@ -1,7 +1,7 @@
 package com.sptek.webfw.config.filter;
 import com.sptek.webfw.base.constant.CommonConstants;
-import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
-import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
+import com.sptek.webfw.support.DPRECATED_HttpServletRequestWrapperSupport;
+import com.sptek.webfw.support.DEPRECATED_HttpServletResponseWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -36,14 +35,14 @@ public class DEPRECATED_ConvertReqResToReqResWrapperFilter extends OncePerReques
             return;
         }
 
-        HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = request instanceof HttpServletRequestWrapperSupport ? (HttpServletRequestWrapperSupport)request : new HttpServletRequestWrapperSupport(request);
-        HttpServletResponseWrapperSupport httpServletResponseWrapperSupport = response instanceof HttpServletResponseWrapperSupport ? (HttpServletResponseWrapperSupport)response : new HttpServletResponseWrapperSupport(response);
-        filterChain.doFilter(httpServletRequestWrapperSupport, httpServletResponseWrapperSupport);
+        DPRECATED_HttpServletRequestWrapperSupport DPRECATEDHttpServletRequestWrapperSupport = request instanceof DPRECATED_HttpServletRequestWrapperSupport ? (DPRECATED_HttpServletRequestWrapperSupport)request : new DPRECATED_HttpServletRequestWrapperSupport(request);
+        DEPRECATED_HttpServletResponseWrapperSupport DEPRECATEDHttpServletResponseWrapperSupport = response instanceof DEPRECATED_HttpServletResponseWrapperSupport ? (DEPRECATED_HttpServletResponseWrapperSupport)response : new DEPRECATED_HttpServletResponseWrapperSupport(response);
+        filterChain.doFilter(DPRECATEDHttpServletRequestWrapperSupport, DEPRECATEDHttpServletResponseWrapperSupport);
 
         // todo: 중요!! 자신이 response를 HttpServletResponseWrapperSupport로 변환한 최초의 필터라면 response에 body를 최종 write 할 책음을 져야 한다.
         //  (httpServletResponseWrapperSupport가 아닌 response 객체에 써야함)
-        if (!(response instanceof HttpServletResponseWrapperSupport)) {
-            response.getWriter().write(httpServletResponseWrapperSupport.getResponseBody());
+        if (!(response instanceof DEPRECATED_HttpServletResponseWrapperSupport)) {
+            response.getWriter().write(DEPRECATEDHttpServletResponseWrapperSupport.getResponseBody());
         }
 
     }

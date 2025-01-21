@@ -3,7 +3,7 @@ package com.sptek.webfw.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek.webfw.base.constant.CommonConstants;
-import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
+import com.sptek.webfw.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
@@ -48,8 +47,8 @@ public class DEPRECATED_XssProtectFilter extends OncePerRequestFilter {
             return;
         }
 
-        HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = new HttpServletRequestWrapperSupport(request);
-        String requestBody = IOUtils.toString(httpServletRequestWrapperSupport.getReader());
+        DPRECATED_HttpServletRequestWrapperSupport DPRECATEDHttpServletRequestWrapperSupport = new DPRECATED_HttpServletRequestWrapperSupport(request);
+        String requestBody = IOUtils.toString(DPRECATEDHttpServletRequestWrapperSupport.getReader());
 
         if (StringUtils.hasText(requestBody)) {
             Map<String, Object> orgJsonObject = new ObjectMapper().readValue(requestBody, HashMap.class);
@@ -57,10 +56,10 @@ public class DEPRECATED_XssProtectFilter extends OncePerRequestFilter {
             orgJsonObject.forEach((key, value) -> newJsonObject.put(key, SecureUtil.charEscape(value.toString())));
 
             //대체 request를 생성해서 넘김
-            httpServletRequestWrapperSupport.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());
+            DPRECATEDHttpServletRequestWrapperSupport.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());
         }
 
-        filterChain.doFilter(httpServletRequestWrapperSupport, response);
+        filterChain.doFilter(DPRECATEDHttpServletRequestWrapperSupport, response);
 
     }
 }

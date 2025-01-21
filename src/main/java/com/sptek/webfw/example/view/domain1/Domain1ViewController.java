@@ -10,7 +10,7 @@ import com.sptek.webfw.config.encryption.DesEncryptor;
 import com.sptek.webfw.example.api.domain1.Domain1ApiService;
 import com.sptek.webfw.example.dto.*;
 import com.sptek.webfw.support.CommonControllerSupport;
-import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
+import com.sptek.webfw.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek.webfw.support.PageInfoSupport;
 import com.sptek.webfw.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,8 +85,8 @@ public class Domain1ViewController extends CommonControllerSupport {
         log.debug("param: {}, body: {}", message, requestBody);
         String result = String.format("{message : '%s', requestBody : '%s'}", message, requestBody);
         model.addAttribute("result", result);
-        HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = (HttpServletRequestWrapperSupport) request;
-        log.debug("xssTest : {}", httpServletRequestWrapperSupport.getRequestBody());
+        DPRECATED_HttpServletRequestWrapperSupport DPRECATEDHttpServletRequestWrapperSupport = (DPRECATED_HttpServletRequestWrapperSupport) request;
+        log.debug("xssTest : {}", DPRECATEDHttpServletRequestWrapperSupport.getRequestBody());
         return pageBasePath + "simpleModelView";
     }
 

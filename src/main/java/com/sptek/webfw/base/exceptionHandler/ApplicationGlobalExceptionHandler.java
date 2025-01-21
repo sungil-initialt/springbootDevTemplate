@@ -5,6 +5,7 @@ import com.sptek.webfw.base.code.CommonErrorCodeEnum;
 import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek.webfw.util.RequestUtil;
+import com.sptek.webfw.util.SptFwUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,17 +93,13 @@ public class ApplicationGlobalExceptionHandler {
             String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
-            log.debug("\n\n" +
-                      "--------------------\n" +
-                      "[ **** Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler **** ]\n" +
-                      "--------------------\n" +
-                      "session : {}\n" +
-                      "({}) url : {}\n" +
-                      "header : {}\n" +
-                      "params : {}\n" +
-                      "responseStatus : {}\n" +
-                      "exceptionMsg : {}\n" +
-                      "--------------------\n\n"
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "header : %s\n"
+                    + "params : %s\n"
+                    + "responseStatus : %s\n"
+                    + "exceptionMsg : %s\n"
                     , sessionId
                     , methodType, url
                     , params
@@ -110,6 +107,7 @@ public class ApplicationGlobalExceptionHandler {
                     , httpStatus
                     , ex.getMessage()
             );
+            log.info(SptFwUtil.convertSystemNotice("Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler", logBody));
         }
     }
 

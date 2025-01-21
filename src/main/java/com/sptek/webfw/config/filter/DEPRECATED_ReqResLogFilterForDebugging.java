@@ -1,12 +1,9 @@
 package com.sptek.webfw.config.filter;
 
 import com.sptek.webfw.base.constant.CommonConstants;
-import com.sptek.webfw.support.HttpServletRequestWrapperSupport;
-import com.sptek.webfw.support.HttpServletResponseWrapperSupport;
-import com.sptek.webfw.util.RequestUtil;
-import com.sptek.webfw.util.ResponseUtil;
-import com.sptek.webfw.util.SecureUtil;
-import com.sptek.webfw.util.TypeConvertUtil;
+import com.sptek.webfw.support.DPRECATED_HttpServletRequestWrapperSupport;
+import com.sptek.webfw.support.DEPRECATED_HttpServletResponseWrapperSupport;
+import com.sptek.webfw.util.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -46,31 +43,31 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
             return;
         }
 
-        HttpServletRequestWrapperSupport httpServletRequestWrapperSupport = request instanceof HttpServletRequestWrapperSupport ? (HttpServletRequestWrapperSupport)request : new HttpServletRequestWrapperSupport(request);
-        HttpServletResponseWrapperSupport httpServletResponseWrapperSupport = response instanceof HttpServletResponseWrapperSupport ? (HttpServletResponseWrapperSupport)response : new HttpServletResponseWrapperSupport(response);
+        DPRECATED_HttpServletRequestWrapperSupport DPRECATEDHttpServletRequestWrapperSupport = request instanceof DPRECATED_HttpServletRequestWrapperSupport ? (DPRECATED_HttpServletRequestWrapperSupport)request : new DPRECATED_HttpServletRequestWrapperSupport(request);
+        DEPRECATED_HttpServletResponseWrapperSupport DEPRECATEDHttpServletResponseWrapperSupport = response instanceof DEPRECATED_HttpServletResponseWrapperSupport ? (DEPRECATED_HttpServletResponseWrapperSupport)response : new DEPRECATED_HttpServletResponseWrapperSupport(response);
 
-        String session = httpServletRequestWrapperSupport.getSession().getId();
-        String methodType = RequestUtil.getRequestMethodType(httpServletRequestWrapperSupport);
-        String url = RequestUtil.getRequestUrlQuery(httpServletRequestWrapperSupport);
-        String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(httpServletRequestWrapperSupport, "|"));
-        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(httpServletRequestWrapperSupport));
-        String requestBody = httpServletRequestWrapperSupport.getRequestBody(); // todo: 컨틀럴러에서 @RequestBody 로 읽은 후에는 가져올수 없기 때문에 필터 체인으로 넘기기 전에 미리 request body를 읽어 둠
+        String session = DPRECATEDHttpServletRequestWrapperSupport.getSession().getId();
+        String methodType = RequestUtil.getRequestMethodType(DPRECATEDHttpServletRequestWrapperSupport);
+        String url = RequestUtil.getRequestUrlQuery(DPRECATEDHttpServletRequestWrapperSupport);
+        String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(DPRECATEDHttpServletRequestWrapperSupport, "|"));
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(DPRECATEDHttpServletRequestWrapperSupport));
+        String requestBody = DPRECATEDHttpServletRequestWrapperSupport.getRequestBody(); // todo: 컨틀럴러에서 @RequestBody 로 읽은 후에는 가져올수 없기 때문에 필터 체인으로 넘기기 전에 미리 request body를 읽어 둠
 
-        filterChain.doFilter(httpServletRequestWrapperSupport, httpServletResponseWrapperSupport);
+        filterChain.doFilter(DPRECATEDHttpServletRequestWrapperSupport, DEPRECATEDHttpServletResponseWrapperSupport);
 
-        String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(httpServletResponseWrapperSupport, "|"));
+        String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(DEPRECATEDHttpServletResponseWrapperSupport, "|"));
 
         if(request.getRequestURI().startsWith("/api/")) {
-            String responseBody = httpServletResponseWrapperSupport.getResponseBody();
-            log.debug("\n--------------------\n[ **** Request-Response Information caught by the ReqResLogFilterForDebugging **** ]\n--------------------\n" +
-                            "session : {}\n" +
-                            "({}) url : {}\n" +
-                            "params : {}\n" +
-                            "requestHeader : {}\n" +
-                            "requestBody : {}\n" +
-                            "responseHeader : {}\n" +
-                            "responseBody({}) : {}\n" +
-                            "--------------------\n"
+            String responseBody = DEPRECATEDHttpServletResponseWrapperSupport.getResponseBody();
+
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "params : %s\n"
+                    + "requestHeader : %s\n"
+                    + "requestBody : %s\n"
+                    + "responseHeader : %s\n"
+                    + "responseBody(%s) : %s\n"
                     , session
                     , methodType, url
                     , params
@@ -79,20 +76,21 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
                     , responseHeader
                     , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
             );
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
             String responseModelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW)).map(Object::toString).orElse("");
-            log.debug("\n--------------------\n[ **** Request-Response Information caught by the ReqResLogFilterForDebugging **** ]\n--------------------\n" +
-                            "session : {}\n" +
-                            "({}) url : {}\n" +
-                            "params : {}\n" +
-                            "requestHeader : {}\n" +
-                            "requestBody : {}\n" +
-                            "responseHeader : {}\n" +
-                            "modelAndView({}) : {}\n" +
-                            "exceptionMsg : {}\n" +
-                            "--------------------\n"
+
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "params : %s\n"
+                    + "requestHeader : %s\n"
+                    + "requestBody : %s\n"
+                    + "responseHeader : %s\n"
+                    + "modelAndView(%s) : %s\n"
+                    + "exceptionMsg : %s\n"
                     , session
                     , methodType, url
                     , params
@@ -102,12 +100,13 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
                     , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : ""
                     , exceptionMsg
             );
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
         }
 
         // todo: 중요!! 자신이 response를 HttpServletResponseWrapperSupport로 변환한 최초의 필터라면 response에 body를 최종 write 할 책음을 져야 한다.
         //  (httpServletResponseWrapperSupport가 아닌 response 객체에 써야함)
-        if (!(response instanceof HttpServletResponseWrapperSupport)) {
-            response.getWriter().write(httpServletResponseWrapperSupport.getResponseBody());
+        if (!(response instanceof DEPRECATED_HttpServletResponseWrapperSupport)) {
+            response.getWriter().write(DEPRECATEDHttpServletResponseWrapperSupport.getResponseBody());
         }
     }
 }

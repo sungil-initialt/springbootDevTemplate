@@ -11,12 +11,12 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 
-public class HttpServletResponseWrapperSupport extends HttpServletResponseWrapper {
+public class DEPRECATED_HttpServletResponseWrapperSupport extends HttpServletResponseWrapper {
 
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     private PrintWriter writer = new PrintWriter(outputStream, true);
 
-    public HttpServletResponseWrapperSupport(HttpServletResponse response) {
+    public DEPRECATED_HttpServletResponseWrapperSupport(HttpServletResponse response) {
         super(response);
     }
 
@@ -35,7 +35,7 @@ public class HttpServletResponseWrapperSupport extends HttpServletResponseWrappe
 
     @Override
     public ServletOutputStream getOutputStream() {
-        return new CustomServletOutputStream(outputStream);
+        return new DEPRECATED_CustomServletOutputStream(outputStream);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class HttpServletResponseWrapperSupport extends HttpServletResponseWrappe
     }
 }
 
-class CustomServletOutputStream extends ServletOutputStream {
+class DEPRECATED_CustomServletOutputStream extends ServletOutputStream {
 
     private final ByteArrayOutputStream buffer;
 
-    public CustomServletOutputStream(ByteArrayOutputStream buffer) {
+    public DEPRECATED_CustomServletOutputStream(ByteArrayOutputStream buffer) {
         this.buffer = buffer;
     }
 

@@ -1,10 +1,7 @@
 package com.sptek.webfw.config.filter;
 
 import com.sptek.webfw.base.constant.CommonConstants;
-import com.sptek.webfw.util.RequestUtil;
-import com.sptek.webfw.util.ResponseUtil;
-import com.sptek.webfw.util.SecureUtil;
-import com.sptek.webfw.util.TypeConvertUtil;
+import com.sptek.webfw.util.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -70,18 +67,14 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
 
         if(request.getRequestURI().startsWith("/api/")) {
             String responseBody = getResponseBody(contentCachingResponseWrapper);
-            log.debug("\n\n" +
-                      "--------------------\n" +
-                      "[ **** Request-Response Information caught by the DetailLogFilterWithContentCaching **** ]\n" +
-                      "--------------------\n" +
-                      "session : {}\n" +
-                      "({}) url : {}\n" +
-                      "params : {}\n" +
-                      "requestHeader : {}\n" +
-                      "requestBody : {}\n" +
-                      "responseHeader : {}\n" +
-                      "responseBody({}) : {}\n" +
-                      "--------------------\n\n"
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "params : %s\n"
+                    + "requestHeader : %s\n"
+                    + "requestBody : %s\n"
+                    + "responseHeader : %s\n"
+                    + "responseBody(%s) : %s\n"
                     , session
                     , methodType, url
                     , params
@@ -90,23 +83,21 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
                     , responseHeader
                     , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
             );
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithContentCaching", logBody));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
             String responseModelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW)).map(Object::toString).orElse("");
-            log.debug("\n\n" +
-                      "--------------------\n" +
-                      "[ **** Request-Response Information caught by the DetailLogFilterWithContentCaching **** ]\n" +
-                      "--------------------\n" +
-                      "session : {}\n" +
-                      "({}) url : {}\n" +
-                      "params : {}\n" +
-                      "requestHeader : {}\n" +
-                      "requestBody : {}\n" +
-                      "responseHeader : {}\n" +
-                      "modelAndView({}) : {}\n" +
-                      "exceptionMsg : {}\n" +
-                      "--------------------\n\n"
+
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "params : %s\n"
+                    + "requestHeader : %s\n"
+                    + "requestBody : %s\n"
+                    + "responseHeader : %s\n"
+                    + "modelAndView(%s) : %s\n"
+                    + "exceptionMsg : %s\n"
                     , session
                     , methodType, url
                     , params
@@ -116,6 +107,7 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
                     , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : ""
                     , exceptionMsg
             );
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithContentCaching", logBody));
         }
 
         // contentCachingResponseWrapper 을 자신이 직접 생성했다면 필터 체인 이후 response body 복사 (필수)
