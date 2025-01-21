@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
---> 여기 정리 해야함
+//--> 여기 정리 해야함
 @Slf4j
 @Component
 public class ContextRefreshedEventListenerForRequestAnnotationMapCaching {
@@ -32,7 +32,7 @@ public class ContextRefreshedEventListenerForRequestAnnotationMapCaching {
                     requestMappingInfo.getPatternsCondition().getPatterns() :
                     requestMappingInfo.getDirectPaths();
 
-            if (patterns != null && !patterns.isEmpty()) {
+            if (!patterns.isEmpty()) {
                 patterns.forEach(urlPattern -> tempCache.put(urlPattern, annotations));
             } else {
                 log.warn("PatternsCondition and DirectPaths are both null or empty for request mapping info: {}", requestMappingInfo);

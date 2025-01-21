@@ -62,11 +62,11 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
         filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
 
         // 컨트롤러 쪽에서 requestBody 먼저 한번 읽을수 있도록 필터 체인이 다시 돌아 왔을때 처리
-        String requestBody = getRequestBody(contentCachingRequestWrapper);
+        String requestBody = SptFwUtil.getRequestBody(contentCachingRequestWrapper);
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
 
         if(request.getRequestURI().startsWith("/api/")) {
-            String responseBody = getResponseBody(contentCachingResponseWrapper);
+            String responseBody = SptFwUtil.getResponseBody(contentCachingResponseWrapper);
             String logBody = String.format(
                       "session : %s\n"
                     + "(%s) url : %s\n"
@@ -116,27 +116,4 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
         }
     }
 
-    private String getRequestBody(ContentCachingRequestWrapper requestWrapper) {
-        byte[] content = requestWrapper.getContentAsByteArray();
-        if (content.length == 0) {
-            return "No Content";
-        }
-        try {
-            return new String(content, requestWrapper.getCharacterEncoding());
-        } catch (UnsupportedEncodingException e) {
-            return "Unsupported Encoding";
-        }
-    }
-
-    private String getResponseBody(ContentCachingResponseWrapper responseWrapper) {
-        byte[] content = responseWrapper.getContentAsByteArray();
-        if (content.length == 0) {
-            return "No Content";
-        }
-        try {
-            return new String(content, responseWrapper.getCharacterEncoding());
-        } catch (UnsupportedEncodingException e) {
-            return "Unsupported Encoding";
-        }
-    }
 }
