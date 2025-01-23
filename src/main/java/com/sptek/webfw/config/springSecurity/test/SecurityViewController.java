@@ -69,7 +69,7 @@ public class SecurityViewController {
         return "redirect:/login";
     }
 
-    @GetMapping("/login")
+    @GetMapping({"/login", "/signup"})
     public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("redirectTo", RedirectHelperAfterLogin.getRedirectUrlAfterLogging(request, response));
         return pageBasePath + "login";
