@@ -1,10 +1,7 @@
 package com.sptek.webfw.example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.anotation.EnableApiCommonErrorResponse;
-import com.sptek.webfw.anotation.EnableApiCommonSuccessResponse;
-import com.sptek.webfw.anotation.EnableArgumentResolver;
-import com.sptek.webfw.anotation.EnableRequestDeduplication;
+import com.sptek.webfw.anotation.*;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;
@@ -57,6 +54,7 @@ import java.util.function.Predicate;
 @RestController
 @EnableApiCommonSuccessResponse
 @EnableApiCommonErrorResponse
+@EnableDetailLogFilter("aaa")
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 @RequestMapping(value = {"/api/v1/"})
@@ -290,7 +288,7 @@ public class Domain1ApiController extends CommonControllerSupport {
     }
 
     @EnableRequestDeduplication
-    @RequestMapping("/duplicatedRequest")
+    @RequestMapping(value="/duplicatedRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public Object duplicatedRequest() throws Exception {
         log.debug("AOP order : ??");
@@ -299,9 +297,25 @@ public class Domain1ApiController extends CommonControllerSupport {
         return result;
     }
 
-    @RequestMapping("/httpCache")
+    @UniversalAnnotationForTest
+    @EnableDetailLogFilter("1111")
+    @PostMapping({"/httpCache", "/httpCache2"})
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCache() {
+    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCachePost() {
+        log.debug("httpCache: post");
+        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
+        long cacheSec = 60L;
+        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
+        long result = System.currentTimeMillis();
+
+        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
+    }
+
+    @EnableRequestDeduplication
+    @GetMapping("/httpCache")
+    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
+    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet() {
+        log.debug("httpCache: get");
         //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
         long cacheSec = 60L;
         CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();

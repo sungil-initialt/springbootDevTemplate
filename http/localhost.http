@@ -130,6 +130,24 @@ Content-Type: application/json
 
 
 
+### httpCache?c=c 테스트
+GET {{api-server-ver}}/httpCache?c=c
+Content-Type: application/json
+
+### httpCache?c=c 테스트
+POST {{api-server-ver}}/httpCache?c=c
+Content-Type: application/json
+
+### httpCache?c=c 테스트
+PUT {{api-server-ver}}/httpCache?c=c
+Content-Type: application/json
+
+### httpCache?c=c 테스트
+PATCH {{api-server-ver}}/httpCache?c=c
+Content-Type: application/json
+
+
+
 ### closeableHttpClient 테스트
 GET {{api-server-ver}}/closeableHttpClient
 Content-Type: application/json

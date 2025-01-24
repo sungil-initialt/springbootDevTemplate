@@ -50,7 +50,7 @@ public class CustomJwtFilter extends GenericFilterBean {
 
         } else {
             //jwt가 없거나 유효하지 않다도 직접 별다른 처리를 하지 않음(다른 필터에 맡김)
-            log.error("fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
+            log.info("fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
         }
 
         chain.doFilter(httpServletRequest,response);

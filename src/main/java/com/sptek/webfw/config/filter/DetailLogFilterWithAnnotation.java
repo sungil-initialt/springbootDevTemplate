@@ -1,6 +1,8 @@
 package com.sptek.webfw.config.filter;
 
+import com.sptek.webfw.anotation.EnableDetailLogFilter;
 import com.sptek.webfw.base.constant.CommonConstants;
+import com.sptek.webfw.base.constant.RequestMappingAnnotationRegister;
 import com.sptek.webfw.util.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,17 +20,16 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE) //순서에 장단점이 있을 수 있음
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DetailLogFilterWithContentCaching", havingValue = "true", matchIfMissing = false)
-public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
-    // todo: 어노테이션이 적용된 요청에 대해서만 되도록 처리 필요
-    
-    public DetailLogFilterWithContentCaching() {
+@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DetailLogFilterWithAnnotation", havingValue = "true", matchIfMissing = false)
+public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
+    // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
+
+    public DetailLogFilterWithAnnotation() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
@@ -36,10 +37,14 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()
+                //@EnableDetailLogFilter 가 적용된 클레스 또는 메스드만 적용됨
+                || !RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class)
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
+        log.debug("RequestMappingAnnotationRegister.getAnnotationAttributes: {}", RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLogFilter.class));
 
         // Request와 Response를 ContentCachingWrapper로 래핑
         ContentCachingRequestWrapper contentCachingRequestWrapper = request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper)request : new ContentCachingRequestWrapper(request);
@@ -83,7 +88,7 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
                     , responseHeader
                     , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
             );
-            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithContentCaching", logBody));
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
@@ -107,7 +112,7 @@ public class DetailLogFilterWithContentCaching extends OncePerRequestFilter {
                     , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : ""
                     , exceptionMsg
             );
-            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithContentCaching", logBody));
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
         }
 
         // contentCachingResponseWrapper 을 자신이 직접 생성했다면 필터 체인 이후 response body 복사 (필수)

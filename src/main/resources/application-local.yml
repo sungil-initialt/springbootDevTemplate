@@ -172,7 +172,7 @@ sptFramework:
   filters:
     isEnabled:
       CorsPolicyFilter: true
-      DetailLogFilterWithContentCaching: true
+      DetailLogFilterWithAnnotation: true
       EtagFilter: true
       ExcludeSessionRepositoryFilter: true
       MakeMdcFilter: true
