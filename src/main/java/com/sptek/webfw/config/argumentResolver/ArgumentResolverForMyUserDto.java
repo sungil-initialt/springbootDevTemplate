@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.argumentResolver;
 
-import com.sptek.webfw.anotation.EnableArgumentResolver;
+import com.sptek.webfw.annotation.EnableArgumentResolver;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

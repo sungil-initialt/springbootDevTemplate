@@ -14,13 +14,18 @@ public class SptFwUtil {
     }
 
     public static String convertSystemNotice(String title, String logBody) {
+        return convertSystemNotice("", title, logBody);
+    }
+
+    public static String convertSystemNotice(String tagName, String title, String logBody) {
         return String.format(
-                  "\n\n"
-                + "--------------------\n"
-                + "[ **** %s **** ]\n"
-                + "--------------------\n"
-                + "%s\n"
-                + "--------------------\n"
+                "%s\n\n"
+                        + "--------------------\n"
+                        + "[ **** %s **** ]\n"
+                        + "--------------------\n"
+                        + "%s\n"
+                        + "--------------------\n"
+                , tagName
                 , title
                 , Optional.ofNullable(logBody).map(SptFwUtil::removeLastNewline).orElse("")
         );

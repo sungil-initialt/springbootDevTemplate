@@ -1,7 +1,7 @@
 package com.sptek.webfw.config.springSecurity.test;
 
-import com.sptek.webfw.anotation.EnableApiCommonSuccessResponse;
-import com.sptek.webfw.anotation.EnableApiCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableApiCommonSuccessResponse;
+import com.sptek.webfw.annotation.EnableApiCommonErrorResponse;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.CustomJwtFilter;
 import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;

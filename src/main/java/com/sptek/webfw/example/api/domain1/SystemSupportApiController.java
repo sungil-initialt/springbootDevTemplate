@@ -1,7 +1,7 @@
 package com.sptek.webfw.example.api.domain1;
 
-import com.sptek.webfw.anotation.EnableApiCommonSuccessResponse;
-import com.sptek.webfw.anotation.EnableApiCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableApiCommonSuccessResponse;
+import com.sptek.webfw.annotation.EnableApiCommonErrorResponse;
 import com.sptek.webfw.support.CommonControllerSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

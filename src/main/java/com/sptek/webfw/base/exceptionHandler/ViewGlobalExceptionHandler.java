@@ -1,6 +1,6 @@
 package com.sptek.webfw.base.exceptionHandler;
 
-import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableViewCommonErrorResponse;
 import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,8 +1,8 @@
 package com.sptek.webfw.example.view.domain1;
 
-import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
-import com.sptek.webfw.anotation.UniversalAnnotationForTest;
-import com.sptek.webfw.anotation.EnableRequestDeduplication;
+import com.sptek.webfw.annotation.EnableViewCommonErrorResponse;
+import com.sptek.webfw.annotation.UniversalAnnotationForTest;
+import com.sptek.webfw.annotation.EnableRequestDeduplication;
 import com.sptek.webfw.base.code.ServiceErrorCodeEnum;
 import com.sptek.webfw.base.exception.ServiceException;
 import com.sptek.webfw.config.encryption.AesEncryptor;

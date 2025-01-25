@@ -2,7 +2,7 @@ package com.sptek.webfw.base.exceptionHandler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sptek.webfw.anotation.EnableApiCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableApiCommonErrorResponse;
 import com.sptek.webfw.base.code.CommonErrorCodeEnum;
 import com.sptek.webfw.base.exception.ServiceException;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonErrorResponseDto;

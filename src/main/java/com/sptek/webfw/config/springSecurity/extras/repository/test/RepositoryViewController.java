@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity.extras.repository.test;
 
-import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableViewCommonErrorResponse;
 import com.sptek.webfw.config.springSecurity.AuthorityIfEnum;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.util.ModelMapperUtil;

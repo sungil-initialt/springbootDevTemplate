@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.filter;
 
-import com.sptek.webfw.anotation.EnableDetailLogFilter;
+import com.sptek.webfw.annotation.EnableDetailLogFilter;
 import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.base.constant.RequestMappingAnnotationRegister;
 import com.sptek.webfw.util.*;
@@ -44,7 +44,6 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.debug("RequestMappingAnnotationRegister.getAnnotationAttributes: {}", RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLogFilter.class));
 
         // Request와 Response를 ContentCachingWrapper로 래핑
         ContentCachingRequestWrapper contentCachingRequestWrapper = request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper)request : new ContentCachingRequestWrapper(request);
@@ -88,7 +87,10 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
                     , responseHeader
                     , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
             );
-            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
+
+            //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
+            String tagName = RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLogFilter.class).get("value").toString();
+            log.info(SptFwUtil.convertSystemNotice(tagName,"Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");

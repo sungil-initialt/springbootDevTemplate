@@ -1,6 +1,6 @@
 package com.sptek.webfw.base.exceptionHandler;
 
-import com.sptek.webfw.anotation.EnableApplicationCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableApplicationCommonErrorResponse;
 import com.sptek.webfw.base.code.CommonErrorCodeEnum;
 import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonErrorResponseDto;

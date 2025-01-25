@@ -1,6 +1,6 @@
 package com.sptek.webfw;
 
-import com.sptek.webfw.anotation.EnableApplicationCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableApplicationCommonErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,7 +1,7 @@
 package com.sptek.webfw.example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek.webfw.anotation.*;
+import com.sptek.webfw.annotation.*;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.UserAddressDto;

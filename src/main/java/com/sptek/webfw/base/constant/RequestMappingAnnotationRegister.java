@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 // todo: --> 코드 개선이 필요한지 살펴보자
 @Slf4j
 public class RequestMappingAnnotationRegister {
-    // 해당 request 에 uri 와 매핑된 컨틀로러 매서드에 적용된 어노테이션(클레스와 메소드 모두에 적용된 어노테이션) 정보를 모두 가지고 있는 역할을 함
+    // 컨트롤러 매서드에 적용된 타멧 페키지 어노테이션(클레스와 메소드 모두에 적용된 어노테이션) 정보를 모두 가지고 있는 역할
+    private static final String TARGET_ANNOTATION_PACKAGE = "com.sptek.webfw.annotation";
 
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
     private static Map<String, Map<String, Map<String, Object>>> requestAnnotationCache = Collections.emptyMap();
@@ -30,15 +31,15 @@ public class RequestMappingAnnotationRegister {
         }
 
         RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-        Map<String, Map<String, Map<String, Object>>> tempCache = new HashMap<>();
+        Map<String, Map<String, Map<String, Object>>> tempRequestAnnotationCache = new HashMap<>();
         StringBuilder logBodyForPathEmpty = new StringBuilder();
-        StringBuilder logBodyForNotRecommended = new StringBuilder();
+        StringBuilder logBodyForNonSpecificMapping = new StringBuilder();
 
         requestMappingHandlerMapping.getHandlerMethods().forEach((requestMappingInfo, handlerMethod) -> {
             Set<String> methods;
             if (requestMappingInfo.getMethodsCondition().getMethods().isEmpty()) {
                 methods = new HashSet<>(ALL_HTTP_METHODS);
-                logBodyForNotRecommended.append(requestMappingInfo).append("\n");
+                logBodyForNonSpecificMapping.append(requestMappingInfo).append("\n");
             } else {
                 methods = requestMappingInfo.getMethodsCondition().getMethods().stream().map(Enum::name).collect(Collectors.toSet());
             }
@@ -51,40 +52,44 @@ public class RequestMappingAnnotationRegister {
 
             if (!patterns.isEmpty()) {
                 patterns.forEach(urlPattern -> {
-                    methods.forEach(method -> tempCache.put(method + ":" + urlPattern, annotations));
+                    methods.forEach(method -> tempRequestAnnotationCache.put(method + ":" + urlPattern, annotations));
                 });
             } else {
                 logBodyForPathEmpty.append(requestMappingInfo).append("\n");
             }
         });
 
-        requestAnnotationCache = Collections.unmodifiableMap(tempCache);
+        requestAnnotationCache = Collections.unmodifiableMap(tempRequestAnnotationCache);
         log.debug(SptFwUtil.convertSystemNotice("Url Mapping Annotation List", requestAnnotationCache.toString()));
         log.info(SptFwUtil.convertSystemNotice("Except Url List (PathPatternsCondition and DirectPaths are both empty)", logBodyForPathEmpty.isEmpty() ? "No List" : logBodyForPathEmpty.toString()));
-        log.info(SptFwUtil.convertSystemNotice("Non-specific mapping Check List (it's not recommended)", logBodyForNotRecommended.isEmpty() ? "No List" : logBodyForNotRecommended.toString()));
+        log.info(SptFwUtil.convertSystemNotice("Non-specific mapping Check List (it's not recommended)", logBodyForNonSpecificMapping.isEmpty() ? "No List" : logBodyForNonSpecificMapping.toString()));
     }
 
     /**
-     * 핸들러 메소드에서 어노테이션과 속성 정보를 가져옵니다.
+     * 핸들러 메소드에서 어노테이션과 속성 정보를 가져옴
      */
     private Map<String, Map<String, Object>> getAnnotationsWithAttributes(HandlerMethod handlerMethod) {
         Map<String, Map<String, Object>> annotationData = new HashMap<>();
 
         // 클래스에 달린 어노테이션 처리
         for (Annotation annotation : handlerMethod.getBeanType().getAnnotations()) {
-            annotationData.put(annotation.annotationType().getName(), extractAnnotationAttributes(annotation));
+            if (annotation.annotationType().getPackageName().startsWith(TARGET_ANNOTATION_PACKAGE)) {
+                annotationData.put(annotation.annotationType().getName(), extractAnnotationAttributes(annotation));
+            }
         }
 
         // 메소드에 달린 어노테이션 처리 (메소드 부분을 후 처리 함으로 메소드 적용된 내용이 최종 남게 됨, 메소드 적용이 우선순위가 높음으로..)
         for (Annotation annotation : handlerMethod.getMethod().getAnnotations()) {
-            annotationData.put(annotation.annotationType().getName(), extractAnnotationAttributes(annotation));
+            if (annotation.annotationType().getPackageName().startsWith(TARGET_ANNOTATION_PACKAGE)) {
+                annotationData.put(annotation.annotationType().getName(), extractAnnotationAttributes(annotation));
+            }
         }
 
         return annotationData;
     }
 
     /**
-     * 어노테이션의 속성 정보를 추출합니다.
+     * 어노테이션의 속성 정보를 추출
      */
     private Map<String, Object> extractAnnotationAttributes(Annotation annotation) {
         Map<String, Object> attributes = new HashMap<>();

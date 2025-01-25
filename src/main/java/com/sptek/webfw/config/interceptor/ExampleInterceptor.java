@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.interceptor;
 
-import com.sptek.webfw.anotation.UniversalAnnotationForTest;
+import com.sptek.webfw.annotation.UniversalAnnotationForTest;
 import com.sptek.webfw.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

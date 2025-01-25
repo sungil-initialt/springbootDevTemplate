@@ -1,6 +1,6 @@
 package com.sptek.webfw.config.springSecurity.test;
 
-import com.sptek.webfw.anotation.EnableViewCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableViewCommonErrorResponse;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
 import com.sptek.webfw.config.springSecurity.extras.entity.User;

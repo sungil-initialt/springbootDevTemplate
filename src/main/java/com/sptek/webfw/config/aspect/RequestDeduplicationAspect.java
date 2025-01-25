@@ -25,7 +25,7 @@ public class RequestDeduplicationAspect {
 
     //@Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek.webfw.anotation.EnableRequestDeduplication) || @annotation(com.sptek.webfw.anotation.EnableRequestDeduplication))")
+            "&& (@within(com.sptek.webfw.annotation.EnableRequestDeduplication) || @annotation(com.sptek.webfw.annotation.EnableRequestDeduplication))")
     public void myPointCut() {}
 
 

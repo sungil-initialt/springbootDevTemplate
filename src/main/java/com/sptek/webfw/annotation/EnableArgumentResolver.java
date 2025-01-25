@@ -1,4 +1,4 @@
-package com.sptek.webfw.anotation;
+package com.sptek.webfw.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
