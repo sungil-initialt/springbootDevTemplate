@@ -1,0 +1,114 @@
+package com.sptek._frameworkWebCore.config.filter;
+
+import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
+import com.sptek._frameworkWebCore.support.DEPRECATED_HttpServletResponseWrapperSupport;
+import com.sptek._frameworkWebCore.util.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Optional;
+
+/*
+모든  request, response 에 대한 전체 로그를 남긴다. 성능 및 메모리 소묘가 큼으로 로컬에서 개발 디버깅용으로만 사용하여야 한다. 상용 적용 금지.
+*/
+@Profile(value = { "local" })
+@Slf4j
+@Order(3)
+@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_ReqResLogFilterForDebugging", havingValue = "true", matchIfMissing = false)
+public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter {
+
+    public DEPRECATED_ReqResLogFilterForDebugging() {
+        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+    }
+
+    @Override
+    public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+
+        //필터 제외 케이스
+        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        DPRECATED_HttpServletRequestWrapperSupport DPRECATEDHttpServletRequestWrapperSupport = request instanceof DPRECATED_HttpServletRequestWrapperSupport ? (DPRECATED_HttpServletRequestWrapperSupport)request : new DPRECATED_HttpServletRequestWrapperSupport(request);
+        DEPRECATED_HttpServletResponseWrapperSupport DEPRECATEDHttpServletResponseWrapperSupport = response instanceof DEPRECATED_HttpServletResponseWrapperSupport ? (DEPRECATED_HttpServletResponseWrapperSupport)response : new DEPRECATED_HttpServletResponseWrapperSupport(response);
+
+        String session = DPRECATEDHttpServletRequestWrapperSupport.getSession().getId();
+        String methodType = RequestUtil.getRequestMethodType(DPRECATEDHttpServletRequestWrapperSupport);
+        String url = RequestUtil.getRequestUrlQuery(DPRECATEDHttpServletRequestWrapperSupport);
+        String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(DPRECATEDHttpServletRequestWrapperSupport, "|"));
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(DPRECATEDHttpServletRequestWrapperSupport));
+        String requestBody = DPRECATEDHttpServletRequestWrapperSupport.getRequestBody(); // todo: 컨틀럴러에서 @RequestBody 로 읽은 후에는 가져올수 없기 때문에 필터 체인으로 넘기기 전에 미리 request body를 읽어 둠
+
+        filterChain.doFilter(DPRECATEDHttpServletRequestWrapperSupport, DEPRECATEDHttpServletResponseWrapperSupport);
+
+        String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(DEPRECATEDHttpServletResponseWrapperSupport, "|"));
+
+        if(request.getRequestURI().startsWith("/api/")) {
+            String responseBody = DEPRECATEDHttpServletResponseWrapperSupport.getResponseBody();
+
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "params : %s\n"
+                    + "requestHeader : %s\n"
+                    + "requestBody : %s\n"
+                    + "responseHeader : %s\n"
+                    + "responseBody(%s) : %s\n"
+                    , session
+                    , methodType, url
+                    , params
+                    , requestHeader
+                    , StringUtils.hasText(requestBody)? "\n" + requestBody : ""
+                    , responseHeader
+                    , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
+            );
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
+
+        } else {
+            String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
+            String responseModelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW)).map(Object::toString).orElse("");
+
+            String logBody = String.format(
+                      "session : %s\n"
+                    + "(%s) url : %s\n"
+                    + "params : %s\n"
+                    + "requestHeader : %s\n"
+                    + "requestBody : %s\n"
+                    + "responseHeader : %s\n"
+                    + "modelAndView(%s) : %s\n"
+                    + "exceptionMsg : %s\n"
+                    , session
+                    , methodType, url
+                    , params
+                    , requestHeader
+                    , StringUtils.hasText(requestBody)? "\n" + requestBody : ""
+                    , responseHeader
+                    , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : ""
+                    , exceptionMsg
+            );
+            log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
+        }
+
+        // todo: 중요!! 자신이 response를 HttpServletResponseWrapperSupport로 변환한 최초의 필터라면 response에 body를 최종 write 할 책음을 져야 한다.
+        //  (httpServletResponseWrapperSupport가 아닌 response 객체에 써야함)
+        if (!(response instanceof DEPRECATED_HttpServletResponseWrapperSupport)) {
+            response.getWriter().write(DEPRECATEDHttpServletResponseWrapperSupport.getResponseBody());
+        }
+    }
+}
+
+
