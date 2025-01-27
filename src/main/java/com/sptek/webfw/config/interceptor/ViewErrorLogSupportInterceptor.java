@@ -1,18 +1,22 @@
 package com.sptek.webfw.config.interceptor;
 
 import com.sptek.webfw.base.constant.CommonConstants;
+import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Collections;
 
 @Slf4j
-//@Component
+@Component
 public class ViewErrorLogSupportInterceptor implements HandlerInterceptor {
     // 해당 interceptor 는 어딘가에서든? 로그 정보로 활용할 수 있도록 view 에러와 관련된 model, 및 EX message를 저장해 준다.
 
@@ -39,7 +43,6 @@ public class ViewErrorLogSupportInterceptor implements HandlerInterceptor {
         if (ex != null) {
             request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
         }
-
     }
 
 }

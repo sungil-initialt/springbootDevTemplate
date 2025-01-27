@@ -2,6 +2,7 @@ package com.sptek.webfw.config.springSecurity.test;
 
 import com.sptek.webfw.annotation.EnableApiCommonSuccessResponse;
 import com.sptek.webfw.annotation.EnableApiCommonErrorResponse;
+import com.sptek.webfw.annotation.EnableDetailLogFilter;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.CustomJwtFilter;
 import com.sptek.webfw.config.springSecurity.GeneralTokenProvider;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @EnableApiCommonSuccessResponse
 @EnableApiCommonErrorResponse
+@EnableDetailLogFilter
 public class SecurityApiController {
     private final SecurityService securityService;
     private final GeneralTokenProvider generalTokenProvider;

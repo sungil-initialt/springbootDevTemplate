@@ -1,5 +1,6 @@
 package com.sptek.webfw.config.springSecurity.test;
 
+import com.sptek.webfw.annotation.EnableDetailLogFilter;
 import com.sptek.webfw.annotation.EnableViewCommonErrorResponse;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek.webfw.config.springSecurity.extras.dto.*;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Controller
 @EnableViewCommonErrorResponse
+//@EnableDetailLogFilter
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class SecurityViewController {
 

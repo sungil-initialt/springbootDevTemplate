@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -14,6 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Optional;
 
+@Component
 public class ArgumentResolverForMyUserDto implements HandlerMethodArgumentResolver {
 
     @Override //적용 조건 설정

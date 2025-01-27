@@ -5,10 +5,12 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 @Slf4j
 public class SptFwUtil {
+
     public static String convertSystemNotice(String title, StringBuffer logBody) {
         return SptFwUtil.convertSystemNotice(title, String.valueOf(logBody));
     }

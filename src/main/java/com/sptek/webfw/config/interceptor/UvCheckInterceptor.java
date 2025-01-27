@@ -1,22 +1,26 @@
 package com.sptek.webfw.config.interceptor;
 
 import com.sptek.webfw.util.CookieUtil;
+import com.sptek.webfw.util.SecureUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Optional;
 
 /*
 UV 관련 처리를 위한 인터셉터
  */
-@Component
 @Slf4j
-public class UvCheckInterceptor implements HandlerInterceptor {
+@Component
+public class UvCheckInterceptor implements HandlerInterceptor{
     private final String uvCheckCookieName = "uvCheck";
     private final String uvCheckCookieValue = "checked";
     private final int uvCheckCookieMaxAgeSec = 60 * 60; //해당 시간동안 request 가 없었던 경우 새로운 방문으로 본다.
@@ -44,5 +48,6 @@ public class UvCheckInterceptor implements HandlerInterceptor {
         }
         return true;
     }
+
 }
 

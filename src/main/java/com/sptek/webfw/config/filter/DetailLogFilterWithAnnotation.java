@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
@@ -29,7 +30,7 @@ import java.util.Optional;
 public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
 
-    public DetailLogFilterWithAnnotation() {
+    public DetailLogFilterWithAnnotation(ApplicationContext applicationContext) {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
@@ -39,7 +40,7 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
 
         if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()
                 //@EnableDetailLogFilter 가 적용된 클레스 또는 메스드만 적용됨
-                || !RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class)
+                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class) && !SpringUtil.hasAnnotationOnMainClass(request, EnableDetailLogFilter.class))
         ) {
             filterChain.doFilter(request, response);
             return;

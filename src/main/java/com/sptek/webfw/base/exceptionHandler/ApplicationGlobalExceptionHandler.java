@@ -5,6 +5,7 @@ import com.sptek.webfw.base.code.CommonErrorCodeEnum;
 import com.sptek.webfw.base.constant.CommonConstants;
 import com.sptek.webfw.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek.webfw.util.RequestUtil;
+import com.sptek.webfw.util.SpringUtil;
 import com.sptek.webfw.util.SptFwUtil;
 import com.sptek.webfw.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
@@ -136,6 +137,8 @@ public class ApplicationGlobalExceptionHandler {
         public boolean matches(ConditionContext context, @NotNull AnnotatedTypeMetadata metadata) {
             Environment environment = context.getEnvironment();
             String mainClassName = environment.getProperty("sun.java.command");
+            //log.debug("mainClassName: {}", mainClassName);
+
             try {
                 Class<?> mainClass = Class.forName(mainClassName);
                 return mainClass.isAnnotationPresent(EnableApplicationCommonErrorResponse.class);
