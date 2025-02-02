@@ -5,6 +5,7 @@ import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseD
 import com.sptek._frameworkWebCore.config.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.entity.User;
 import com.sptek._frameworkWebCore.config.springSecurity.spt.RedirectHelperAfterLogin;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -149,7 +150,7 @@ public class SecurityViewController {
 
     @GetMapping("/my/mypage")
     public String mypage(Model model) {
-        String myAuthentication = SecurityContextHolder.getContext().getAuthentication().toString();
+        String myAuthentication = SecurityUtil.getUserAuthentication().toString();
         //myAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인을 요청했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
 
         model.addAttribute("result", myAuthentication);

@@ -4,6 +4,9 @@ import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek._frameworkWebCore.support.DEPRECATED_HttpServletResponseWrapperSupport;
 import com.sptek._frameworkWebCore.util.*;
+import com.sptek.serviceName._global.util.RequestUtil;
+import com.sptek.serviceName._global.util.ResponseUtil;
+import com.sptek.serviceName._global.util.TypeConvertUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -38,7 +41,7 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         //필터 제외 케이스
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
             filterChain.doFilter(request, response);
             return;
         }

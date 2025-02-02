@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore.config.aspect;
 
-import com.sptek._frameworkWebCore.base.code.ServiceErrorCodeEnum;
+import com.sptek.serviceName._global.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.util.RequestUtil;
+import com.sptek.serviceName._global.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -76,14 +76,14 @@ public class RequestDeduplicationAspect {
 
     @Before("myPointCut()")
     public void beforeRequest(JoinPoint joinPoint) {
-        log.debug("AOP order : 3");
+        //log.debug("AOP order : 3");
         //to do what you need.
     }
 
 
     @After("myPointCut()")
     public void afterRequest(JoinPoint joinPoint) {
-        log.debug("AOP order : 5 (order 4 is caller method)");
+        //log.debug("AOP order : 5 (order 4 is caller method)");
         //to do what you need.
     }
 

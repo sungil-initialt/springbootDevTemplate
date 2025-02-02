@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.config.filter;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.SecureUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -38,7 +38,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         //todo : 성능적 측면에서 오버해드가 발생할 수 있음으로 상용 적용시 고려 필요
 
             //필터 제외 케이스
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,9 +46,8 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         try {
             // 세션 ID를 가져와 MDC에 추가
             MDC.put("sessionId", request.getSession(true).getId());
-            SecurityContextHolder.getContext().getAuthentication().getName();
             // todo: 멤버 계정을 보여주는 부분은 해당 시스템 별로 변경이 필요할수 있음, 또한 상용 적용시 보안이슈 체크 필요
-            MDC.put("memberId", Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Authentication::getName).orElse("ignored security-chains"));
+            MDC.put("memberId", Optional.ofNullable(SecurityUtil.getUserAuthentication()).map(Authentication::getName).orElse("ignored security-chains"));
             filterChain.doFilter(request, response);
         } finally {
             // 요청이 끝난 뒤 반드시 MDC 정리

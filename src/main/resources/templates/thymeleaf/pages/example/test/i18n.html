@@ -21,9 +21,12 @@
 <body>
 <div>
     <B>i18n</B><br>
-    <p th:text="#{language}"></p>
-    <p th:text="#{welcome('sungil')}"></p>
-    <p th:text="${connectTime}"></p>
+    <p th:text="|${welcome}|"></p>
+    <p th:text="|로케일 적용 언어 : ${language}|"></p>
+    <p th:text="|로케일 적용 언어 코드 : ${userLanguageTag}|"></p>
+    <p th:text="|로케일 적용 타임존 : ${userTimeZone}|"></p>
+    <p th:text="|서버 시간 : #{systemTime(${systemFormattedDateTime})}|"></p>
+    <p th:text="|로케일 적용 시간 : #{userTime(${userFormattedDateTime})}|"></p>
 </div>
 </body>
 </html>

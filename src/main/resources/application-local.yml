@@ -38,7 +38,9 @@ logging:
   level: #log level은 logback config 파일에 그대로 반영됨
     root: info
     com:
-      sptek.webfw: debug
+      sptek._frameworkWebCore: debug
+      sptek.serviceName._global: debug
+      sptek.serviceName._guideExample: debug
       zaxxer.hikari.pool.HikariPool: info
     org:
       mybatis.spring: info

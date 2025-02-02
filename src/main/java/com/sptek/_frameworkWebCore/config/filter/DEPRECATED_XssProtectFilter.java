@@ -4,7 +4,7 @@ package com.sptek._frameworkWebCore.config.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
-import com.sptek._frameworkWebCore.util.SecureUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +42,7 @@ public class DEPRECATED_XssProtectFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         //필터 제외 케이스
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,7 +53,7 @@ public class DEPRECATED_XssProtectFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(requestBody)) {
             Map<String, Object> orgJsonObject = new ObjectMapper().readValue(requestBody, HashMap.class);
             Map<String, Object> newJsonObject = new HashMap<>();
-            orgJsonObject.forEach((key, value) -> newJsonObject.put(key, SecureUtil.charEscape(value.toString())));
+            orgJsonObject.forEach((key, value) -> newJsonObject.put(key, SecurityUtil.charEscape(value.toString())));
 
             //대체 request를 생성해서 넘김
             DPRECATEDHttpServletRequestWrapperSupport.resetInputStream(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(newJsonObject).getBytes());

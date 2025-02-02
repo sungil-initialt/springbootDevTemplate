@@ -3,19 +3,19 @@ package com.sptek._frameworkWebCore.example.api.domain1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore.annotation.*;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
-import com.sptek._frameworkWebCore.config.argumentResolver.ArgumentResolverForMyUserDto;
+import com.sptek._frameworkWebCore.util.SpringUtil;
+import com.sptek.serviceName._global.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.dto.UserAddressDto;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.dto.UserDto;
-import com.sptek._frameworkWebCore.eventListener.custom.event.ExampleEvent;
+import com.sptek.serviceName._global.eventListener.custom.event.ExampleEvent;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.example.dto.FileUploadDto;
 import com.sptek._frameworkWebCore.example.dto.ValidationTestDto;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
-import com.sptek._frameworkWebCore.support.CommonControllerSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
-import com.sptek._frameworkWebCore.util.FileUtil;
-import com.sptek._frameworkWebCore.util.RequestUtil;
-import com.sptek._frameworkWebCore.util.TypeConvertUtil;
+import com.sptek.serviceName._global.util.FileUtil;
+import com.sptek.serviceName._global.util.RequestUtil;
+import com.sptek.serviceName._global.util.TypeConvertUtil;
 import com.sptek._frameworkWebCore.vo.PropertyVos;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,12 +54,12 @@ import java.util.function.Predicate;
 @RestController
 @EnableApiCommonSuccessResponse
 @EnableApiCommonErrorResponse
-@EnableDetailLogFilter("aaa")
+//@EnableDetailLogFilter("aaa")
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 @RequestMapping(value = {"/api/v1/"})
 @Tag(name = "기본정보", description = "테스트를 위한 기본 api 그룹") // for swagger
-public class Domain1ApiController extends CommonControllerSupport {
+public class Domain1ApiController {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
     private final PropertyVos.ProjectInfoVo projectInfoVo;

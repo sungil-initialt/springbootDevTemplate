@@ -1,14 +1,13 @@
 package com.sptek._frameworkWebCore.example.api.domain1;
 
-import com.sptek._frameworkWebCore.base.code.ServiceErrorCodeEnum;
+import com.sptek.serviceName._global.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.support.CommonServiceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class Domain1ApiService extends CommonServiceSupport {
+public class Domain1ApiService {
     public int raiseServiceError(int errorCaseNum) throws ServiceException {
 
         switch (errorCaseNum) {

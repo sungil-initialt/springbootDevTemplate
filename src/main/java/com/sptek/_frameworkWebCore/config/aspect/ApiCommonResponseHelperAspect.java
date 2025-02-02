@@ -21,7 +21,7 @@ public class ApiCommonResponseHelperAspect {
 
 
     @Around("myPointCut()")
-    public Object duplicateRequestCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object wrapWithResponseEntity(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
         // 반환값이 이미 ResponseEntity라면 수정 없이 그대로 반환
@@ -34,14 +34,12 @@ public class ApiCommonResponseHelperAspect {
     }
 
     @Before("myPointCut()")
-    public void beforeRequest(JoinPoint joinPoint) {
-        log.debug("AOP order : beforeRequest");
+    public void before(JoinPoint joinPoint) {
         //to do what you need.
     }
 
     @After("myPointCut()")
-    public void afterRequest(JoinPoint joinPoint) {
-        log.debug("AOP order : afterRequest");
+    public void after(JoinPoint joinPoint) {
         //to do what you need.
     }
 }

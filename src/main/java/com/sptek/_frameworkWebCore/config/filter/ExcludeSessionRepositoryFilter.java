@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.config.filter;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.SecureUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -38,7 +38,7 @@ public class ExcludeSessionRepositoryFilter  extends OncePerRequestFilter {
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         //불필요한 request에 대해 Session 생성 방지
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()) {
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
             //해당 이름의 Attribute가 True이면 spring은 해당 request에 대한 세션 생성을 하지 않는다.
             request.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE);
             //log.debug("setAttribute for ExcludeSessionRepository of {}", request.getServletPath());

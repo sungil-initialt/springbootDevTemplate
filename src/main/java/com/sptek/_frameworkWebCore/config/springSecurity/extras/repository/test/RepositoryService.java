@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.config.springSecurity.extras.repository.test;
 
-import com.sptek._frameworkWebCore.base.code.ServiceErrorCodeEnum;
+import com.sptek.serviceName._global.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.entity.*;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.repository.*;

@@ -4,9 +4,9 @@ import com.sptek._frameworkWebCore.annotation.EnableApplicationCommonErrorRespon
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
-import com.sptek._frameworkWebCore.util.RequestUtil;
+import com.sptek.serviceName._global.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
-import com.sptek._frameworkWebCore.util.TypeConvertUtil;
+import com.sptek.serviceName._global.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

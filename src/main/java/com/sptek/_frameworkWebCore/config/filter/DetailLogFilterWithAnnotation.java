@@ -4,6 +4,9 @@ import com.sptek._frameworkWebCore.annotation.EnableDetailLogFilter;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.*;
+import com.sptek.serviceName._global.util.RequestUtil;
+import com.sptek.serviceName._global.util.ResponseUtil;
+import com.sptek.serviceName._global.util.TypeConvertUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -38,9 +41,9 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
-        if (SecureUtil.isNotEssentialRequest() || SecureUtil.isStaticResourceRequest()
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()
                 //@EnableDetailLogFilter 가 적용된 클레스 또는 메스드만 적용됨
-                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class) && !SpringUtil.hasAnnotationOnMainClass(request, EnableDetailLogFilter.class))
+                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class) && !SpringUtil.hasAnnotationOnMainClass(EnableDetailLogFilter.class))
         ) {
             filterChain.doFilter(request, response);
             return;
@@ -90,7 +93,7 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
             );
 
             //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
-            String tagName = RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLogFilter.class).get("value").toString();
+            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLogFilter.class).get("value"));
             log.info(SptFwUtil.convertSystemNotice(tagName,"Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
 
         } else {

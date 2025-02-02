@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.example.view.domain1;
 import com.sptek._frameworkWebCore.example.dto.TBTestDto;
 import com.sptek._frameworkWebCore.example.dto.TBZipcodeDto;
 import com.sptek._frameworkWebCore.persistence.dao.MyBatisCommonDao;
-import com.sptek._frameworkWebCore.support.CommonServiceSupport;
 import com.sptek._frameworkWebCore.support.MybatisResultHandlerSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class Domain1ViewService extends CommonServiceSupport {
+public class Domain1ViewService {
 
     private final MyBatisCommonDao myBatisCommonDao;
 

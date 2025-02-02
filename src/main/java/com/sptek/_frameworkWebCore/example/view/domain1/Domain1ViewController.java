@@ -3,13 +3,14 @@ package com.sptek._frameworkWebCore.example.view.domain1;
 import com.sptek._frameworkWebCore.annotation.EnableViewCommonErrorResponse;
 import com.sptek._frameworkWebCore.annotation.UniversalAnnotationForTest;
 import com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication;
-import com.sptek._frameworkWebCore.base.code.ServiceErrorCodeEnum;
+import com.sptek._frameworkWebCore.util.LocaleUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
+import com.sptek.serviceName._global.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.config.encryption.AesEncryptor;
 import com.sptek._frameworkWebCore.config.encryption.DesEncryptor;
 import com.sptek._frameworkWebCore.example.api.domain1.Domain1ApiService;
 import com.sptek._frameworkWebCore.example.dto.*;
-import com.sptek._frameworkWebCore.support.CommonControllerSupport;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
@@ -21,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -41,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 @EnableViewCommonErrorResponse
-public class Domain1ViewController extends CommonControllerSupport {
+public class Domain1ViewController {
     @NonFinal
     private final String pageBasePath = "pages/example/test/";
     private final Domain1ViewService domain1ViewService;
@@ -262,12 +265,32 @@ public class Domain1ViewController extends CommonControllerSupport {
 
     @RequestMapping("/i18n")
     public String i18n(Model model) {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = now.format(formatter);
+        ZonedDateTime zonedDateTimeForSystem = ZonedDateTime.now(ZoneId.systemDefault());
+        ZonedDateTime zonedDateTimeForUser = ZonedDateTime.now(LocaleUtil.getCurTimeZone().toZoneId());
 
-        String connectTime = getI18nMessage("connectTime", new String[]{formattedDateTime});
-        model.addAttribute("connectTime", connectTime);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String systemFormattedDateTime = zonedDateTimeForSystem.format(dateTimeFormatter);
+        String userFormattedDateTime = zonedDateTimeForUser.format(dateTimeFormatter);
+
+        //Controller 에서 다국어 변환을 직접 하는 케이스
+        String welcome = LocaleUtil.getI18nMessage("welcome", SecurityUtil.getUserAuthentication().getName());
+        String language = LocaleUtil.getI18nMessage("language");
+
+        String userLanguageTag = LocaleUtil.getCurLanguageTag();
+        String userTimeZone = LocaleUtil.getCurTimeZoneName();
+
+        model.addAttribute("welcome", welcome);
+        model.addAttribute("language", language);
+        model.addAttribute("userLanguageTag", userLanguageTag);
+        model.addAttribute("userTimeZone", userTimeZone);
+        model.addAttribute("systemFormattedDateTime", systemFormattedDateTime);
+        model.addAttribute("userFormattedDateTime", userFormattedDateTime);
+
+        List<LocaleUtil.LocaleDto> localeDtos = LocaleUtil.getMajorLocales();
+        for(LocaleUtil.LocaleDto localeDto : localeDtos) {
+            log.debug(localeDto.toString() + " : " + localeDto.toLocaleParam());
+        }
+
         return pageBasePath + "i18n";
     }
 
