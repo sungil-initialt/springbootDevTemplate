@@ -42,13 +42,13 @@ public class SecurityFilterChainConfig {
                 )
 
                 // todo: session 과 관련된 전반적인 부분을 확인해야함!!!
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션이 필요한 경우에만 생성
-//                        .invalidSessionUrl("/session-invalid") // 세션이 유효하지 않으면 이동할 URL 설정
-//                        .maximumSessions(1) // 최대 세션 수 설정
-//                        .maxSessionsPreventsLogin(true) // 세션 수가 초과되면 로그인 방지
-//                        .expiredUrl("/session-expired") //)
-//                )
+                // .sessionManagement(session -> session
+                //        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션이 필요한 경우에만 생성
+                //        .invalidSessionUrl("/session-invalid") // 세션이 유효하지 않으면 이동할 URL 설정
+                //        .maximumSessions(1) // 최대 세션 수 설정
+                //        .maxSessionsPreventsLogin(true) // 세션 수가 초과되면 로그인 방지
+                //        .expiredUrl("/session-expired") //)
+                // )
 
                 //path별 Role을 지정함 (controller 의  @PreAuthorize와의 차이점은 여기서 path에 지정하는 방식은 spring security fillter 에 의해 관리되고.. controller 에 지정된 것은 servlet 에서 관리됨)
                 //다시말해.. path에 지정하면.. 인증이 필요할때 spring-security-fillter가 로그인 페이지로 자동 이동해 주거나.. 권한이 없을때 filter 레벨에서 403 페이지로 전환해 준다.

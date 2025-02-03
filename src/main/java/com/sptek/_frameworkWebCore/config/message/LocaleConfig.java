@@ -6,11 +6,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.LocaleResolver;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -55,7 +54,7 @@ public class LocaleConfig implements WebMvcConfigurer {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource = new ReloadableResourceBundleMessageSource();
-        reloadableResourceBundleMessageSource.setBasename("classpath:/i18n/messages");
+        reloadableResourceBundleMessageSource.setBasename("classpath:/serviceName/_global/i18n/messages");
         reloadableResourceBundleMessageSource.setDefaultEncoding("UTF-8");
         reloadableResourceBundleMessageSource.setCacheSeconds(60*10); // 리로드 시간
         return reloadableResourceBundleMessageSource;

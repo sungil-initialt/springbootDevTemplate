@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.persistence.dao;
+package com.sptek._frameworkWebCore.persistence.mybatis.dao;
 
 import com.sptek._frameworkWebCore.support.MybatisResultHandlerSupport;
 import com.sptek._frameworkWebCore.support.PageHelperSupport;

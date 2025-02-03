@@ -3,20 +3,19 @@ package com.sptek._frameworkWebCore.example.api.domain1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore.annotation.*;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
-import com.sptek._frameworkWebCore.util.SpringUtil;
-import com.sptek.serviceName._global.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.dto.UserAddressDto;
 import com.sptek._frameworkWebCore.config.springSecurity.extras.dto.UserDto;
-import com.sptek.serviceName._global.eventListener.custom.event.ExampleEvent;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.example.dto.FileUploadDto;
 import com.sptek._frameworkWebCore.example.dto.ValidationTestDto;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
+import com.sptek._frameworkWebCore.vo.PropertyVos;
+import com.sptek.serviceName._global.argumentResolver.ArgumentResolverForMyUserDto;
+import com.sptek.serviceName._global.eventListener.custom.event.ExampleEvent;
 import com.sptek.serviceName._global.util.FileUtil;
 import com.sptek.serviceName._global.util.RequestUtil;
 import com.sptek.serviceName._global.util.TypeConvertUtil;
-import com.sptek._frameworkWebCore.vo.PropertyVos;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,6 +61,10 @@ import java.util.function.Predicate;
 public class Domain1ApiController {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
+    @Value("${specific.test}")
+    private String specificPropertyTest;
+
+
     private final PropertyVos.ProjectInfoVo projectInfoVo;
     private final CloseableHttpClient closeableHttpClient;
     private final CloseableHttpClientSupport closeableHttpClientSupport;
@@ -71,6 +74,10 @@ public class Domain1ApiController {
     private final Domain1ApiService domain1ApiService;
     private final CustomEventPublisher customEventPublisher;
 
+    @RequestMapping("/specificPropertyTest")
+    public Object specificPropertyTest() {
+        return specificPropertyTest;
+    }
 
     @RequestMapping("/test")
     public Object test(

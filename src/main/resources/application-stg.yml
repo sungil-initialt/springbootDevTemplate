@@ -53,8 +53,8 @@ spring:
       enabled: true
   config:
     import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
-      - classpath:specificProperties/specificName.yml
-      - classpath:specificProperties/secureOption.yml
+      - classpath:serviceName/_global/specificPurposeProperties/specificName.yml
+      - classpath:serviceName/_global/specificPurposeProperties/secureOption.yml
   thymeleaf:
     enabled: true
     cache: false

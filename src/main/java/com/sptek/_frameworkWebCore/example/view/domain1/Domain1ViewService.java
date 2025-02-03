@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.example.view.domain1;
 
 import com.sptek._frameworkWebCore.example.dto.TBTestDto;
 import com.sptek._frameworkWebCore.example.dto.TBZipcodeDto;
-import com.sptek._frameworkWebCore.persistence.dao.MyBatisCommonDao;
+import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.support.MybatisResultHandlerSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import lombok.RequiredArgsConstructor;

@@ -37,9 +37,8 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
 
-        // todo: 클레스페스에서는 로딩이 안되는 이유가 뭐지?? (resource 쪽에서만 됨, 일단은 resource 쪽에 위치 시킴)
+        // java 와 동일한 패키지 않에 xml 을 넗는 방식은 일반적이지 않으며 굳이 한다면 xml 위치의 패키지를 ClassPathResource 로 설정해줘야 함
         sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mapper/*-config.xml")[0]);
-
         // 위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
         // org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
         // configuration.setMapUnderscoreToCamelCase(true);
