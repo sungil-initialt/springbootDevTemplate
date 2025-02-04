@@ -38,13 +38,13 @@ public class Domain1ViewService {
     @Transactional(readOnly = true)
     public TBTestDto selectOne() {
         int SqlParamForlimit = 1;
-        return this.myBatisCommonDao.selectOne("PageTestMapper.selecWithLimit", SqlParamForlimit);
+        return this.myBatisCommonDao.selectOne("PageTestMapper.selectWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
     public List<TBTestDto> selectList() {
         int SqlParamForlimit = 100;
-        return this.myBatisCommonDao.selectList("PageTestMapper.selecWithLimit", SqlParamForlimit);
+        return this.myBatisCommonDao.selectList("PageTestMapper.selectWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)

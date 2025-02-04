@@ -3,7 +3,6 @@ project-info:
   version: v1
   description : Local
 
-
 server:
   port: 8443
   servlet.session:
@@ -15,7 +14,7 @@ server:
       same-site: none #(사설 인증서의 경우 Lax 사용을 해도 브라우저가 block 처리함, 테스트를 위해 none 설정 필요)
   #사설 인증사의 경우 로컬 테스트를 위해 브라우저 설정 필요 (chrome://flags/ -> Allow invalid certificates for resources loaded from localhost. -> Enabled, 도메인은 front.localhost:8080 형태로 구성)
   ssl:
-    key-store: classpath:_frameworkWebCore/keystore/keystore.p12
+    key-store: classpath:_frameworkWebCoreResources/keystore/keystore.p12
     key-store-type: PKCS12
     key-store-password: keystore_password
   #에러전파순서 :
@@ -28,34 +27,9 @@ server:
     path: error #에러 처리에 대한 뷰 경로
     whitelabel.enabled: false #스프링의 기본 에러 페이지(Whitelabel Error Page)를 사용할지
 
-
 Storage:
   multipartFiles:
     basePath: c:/
-
-
-logging:
-  level: #log level은 logback config 파일에 그대로 반영됨
-    root: info
-    com:
-      sptek._frameworkWebCore: debug
-      sptek.serviceName._global: debug
-      sptek.serviceName._guideExample: debug
-      zaxxer.hikari.pool.HikariPool: info
-    org:
-      mybatis.spring: info
-      springframework:
-        security: info
-
-    jdbc:
-      audit: info
-      resultset: info
-      result settable: debug #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
-      sqlonly: info     #SQL만 로그로 남긴다.
-      sqltiming: info    #SQL과 소요시간을 표기한다.
-      connection: info  # 커넥션 확인가능
-  config: classpath:_frameworkWebCore/logbackConfig/logback-spring-local.xml
-
 
 spring:
   web:
@@ -68,10 +42,11 @@ spring:
       enabled: true
     restart:
       enabled: true
-  config:
-    import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
-      - classpath:serviceName/_global/specificPurposeProperties/specificName.yml
-      - classpath:serviceName/_global/specificPurposeProperties/secureOption.yml
+  # config:
+  #   import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
+  #   (단점은 명확한 파일명이나 폴더를 지정할수 있지만 하위 폴더 내부의 파일은 인식하지 못함, 그래서 ConfigDirectoryLoader 만들어 사용하는 방식으로 변경 함)
+  #     - optional:classpath:serviceNameResources/xx/specificPurposeConfig/
+  #     - optional:classpath:serviceNameResources/xx/specificPurposeConfig/xxx.yml
   thymeleaf:
     enabled: true
     cache: false
@@ -79,8 +54,8 @@ spring:
     #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
     prefix: file:src/main/resources/templates/thymeleaf/
     suffix: .html
-  #jsp로 설정할때
-  #mvc:
+  # jsp로 설정할때
+  # mvc:
   #  view:
   #    prefix: /WEB-INF/views/
   #    suffix: .jsp
@@ -105,9 +80,7 @@ spring:
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
 
-
-
-#PageInoSupport 클레스 관련 설정
+#PageInfoSupport 클레스 관련 설정
 pagehelper:
   helper-dialect: mysql
   auto-dialect: true
@@ -143,49 +116,9 @@ jwt:
   base64SecretKey: ${JWT_BASE64SECRETKEY} #Base64 형식의 86자 이상(512bit 이상, 1자 6bit)
   tokenValidityInMilliseconds: 3600000 #1h
 
-
-
-# Swagger springdoc-ui Configuration
-springdoc:
-  packages-to-scan: com.sptek.webfw.example.api.api1
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
-  swagger-ui:
-    path: swagger-ui.html         # Swagger UI 경로 => https://localhost:8080/swagger-ui.html
-    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
-    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
-  api-docs:
-    path: /api-docs/json
-    groups:
-      enabled: true
-  cache:
-    disabled: true
-
-
-
 test:
   jasyptTest:
     # 원문: "originPlainText", spec: PBEWITHHMACSHA512ANDAES_256, JASYPT_ENCRYPTOR_PASSWORD=12345678901234567890123456789012
     encValue: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)
 
 
-####### FRAMEWORK RUN OPTIONS #############
-sptFramework:
-  filters:
-    isEnabled:
-      CorsPolicyFilter: true
-      DetailLogFilterWithAnnotation: true
-      EtagFilter: true
-      ExcludeSessionRepositoryFilter: true
-      MakeMdcFilter: true
-      MakeRequestTimestampFilter: true
-      ReqResEncryptionFilter: false
-
-      DEPRECATED_ConvertReqResToReqResWrapperFilter: false
-      DEPRECATED_XssProtectFilter: false
-      DEPRECATED_ReqResLogFilterForDebugging: false
-
-  eventListener:
-    application:
-      ContextRefreshedEventListenerForConfigLogging: false #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
-###################################################

@@ -61,10 +61,6 @@ import java.util.function.Predicate;
 public class Domain1ApiController {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
-    @Value("${specific.test}")
-    private String specificPropertyTest;
-
-
     private final PropertyVos.ProjectInfoVo projectInfoVo;
     private final CloseableHttpClient closeableHttpClient;
     private final CloseableHttpClientSupport closeableHttpClientSupport;
@@ -73,11 +69,6 @@ public class Domain1ApiController {
     private final ObjectMapper objectMapper;
     private final Domain1ApiService domain1ApiService;
     private final CustomEventPublisher customEventPublisher;
-
-    @RequestMapping("/specificPropertyTest")
-    public Object specificPropertyTest() {
-        return specificPropertyTest;
-    }
 
     @RequestMapping("/test")
     public Object test(
@@ -231,12 +222,12 @@ public class Domain1ApiController {
         return validationTestDto;
     }
 
-    @GetMapping("/propertyConfigImport")
-    @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
-    //컨트롤러 진입시 특정 property값을 가져올수 있다.
-    public Object propertyConfigImport(@Value("${specific.value}") String specificValue) {
-        return specificValue;
-    }
+//    @GetMapping("/propertyConfigImport")
+//    @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
+//    //컨트롤러 진입시 특정 property값을 가져올수 있다.
+//    public Object propertyConfigImport(@Value("${specific.value}") String specificValue) {
+//        return specificValue;
+//    }
 
     @GetMapping("/argumentResolverForMyUser")
     @Operation(summary = "argumentResolverForMyUser", description = "argumentResolverForMyUser 테스트", tags = {""})

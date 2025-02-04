@@ -8,12 +8,6 @@ group = 'com.sptek'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
@@ -50,7 +44,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.aspectj:aspectjweaver:1.9.7'
 	implementation 'org.modelmapper:modelmapper:2.4.2'
-    implementation 'com.h2database:h2:2.1.214'
+	implementation 'com.h2database:h2:2.1.214'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:3.0.4.RELEASE'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
 	implementation 'org.projectlombok:lombok:1.18.26'

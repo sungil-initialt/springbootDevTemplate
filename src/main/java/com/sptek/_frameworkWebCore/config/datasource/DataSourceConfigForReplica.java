@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@Profile(value = { "dev", "stg" })
+@Profile(value = { "prd", "stg" })
 public class DataSourceConfigForReplica {
 
     @Bean(name = "writeDataSource", destroyMethod = "")

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds"> <!--설정갱신-->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
     <!--스프링 프로파일별 개별 프로퍼티 구성시 설정(필요시사용)
     <springProfile name="local">
     <property resource="logback-local.properties"/>
@@ -10,11 +12,11 @@
 
     <springProperty scope="context" name="root_log_level" source="logging.level.root"/>
 
-    <property name="base_log_path" value="./log/logback"/>
-    <property name="default_log_max_history" value="1"/>
+    <property name="base_log_path" value="/log/logback"/>
+    <property name="default_log_max_history" value="30"/>
     <property name="default_log_max_filesize" value="10MB"/>
     <property name="default_log_pattern"
-              value="%-5level %d{yy-MM-dd HH:mm:ss.SSS}[%thread] [%logger{0}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
+              value="%highlight(%-5level) %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%clr(%logger{0}){cyan}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">

@@ -1,4 +1,0 @@
-#기본 프로퍼티가 아닌 추가적인 property 파일 읽어오는 테스트를 위해 생성
-specific:
-  value: specificValue for test!
-  test: specific test origin!

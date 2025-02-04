@@ -33,17 +33,17 @@ MVC 인터셉터 방법보다 Fiter 방식이 추후 커스텀하기에 좋음
 @ConditionalOnProperty(name = "sptFramework.filters.isEnabled.CorsPolicyFilter", havingValue = "true", matchIfMissing = false)
 public class CorsPolicyFilter extends OncePerRequestFilter {
 
-    @Value("${secureOption.cors.defaultAccessControlAllowOrigin}")
+    @Value("${cors.options.defaultAccessControlAllowOrigin}")
     private String defaultAccessControlAllowOrigin;
-    @Value("#{'${secureOption.cors.accessControlAllowOrigin}'.split(',')}")
+    @Value("#{'${cors.options.accessControlAllowOrigin}'.split(',')}")
     private List<String> accessControlAllowOrigins;
-    @Value("${secureOption.cors.accessControlAllowMethods}")
+    @Value("${cors.options.accessControlAllowMethods}")
     private String accessControlAllowMethods;
-    @Value("${secureOption.cors.accessControlAllowCredentials}")
+    @Value("${cors.options.accessControlAllowCredentials}")
     private String accessControlAllowCredentials;
-    @Value("${secureOption.cors.accessControlMaxAge}")
+    @Value("${cors.options.accessControlMaxAge}")
     private String accessControlMaxAge;
-    @Value("${secureOption.cors.accessControlAllowHeaders}")
+    @Value("${cors.options.accessControlAllowHeaders}")
     private String accessControlAllowHeaders;
 
     public CorsPolicyFilter() {

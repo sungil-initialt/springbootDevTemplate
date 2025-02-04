@@ -1,6 +1,6 @@
 #secure 관련 옵션 설정
-secureOption:
-  cors:
+cors:
+  options:
     #클라이언트가 보낸 origin 값이 accessControlAllowOrigin 에 포함되어 있지 않은 경우 어떤 orging 값을 보낼지의 설정임 (*로 보내면 모두 허용, 허용하지 않을려면 그냥 자신의 대표 url로 보냄)
     defaultAccessControlAllowOrigin: "https://back.localhost:8080"
 

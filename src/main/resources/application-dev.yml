@@ -51,10 +51,9 @@ spring:
       enabled: false
     restart:
       enabled: false
-  config:
-    import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
-      - classpath:serviceName/_global/specificPurposeProperties/specificName.yml
-      - classpath:serviceName/_global/specificPurposeProperties/secureOption.yml
+#  config:
+#    import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
+#      - classpath:serviceNameResources/_global/specificPurposeConfig/
   thymeleaf:
     enabled: true
     cache: false
