@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore.config.aspect;
 
-import com.sptek.serviceName._global.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek.serviceName._global.util.RequestUtil;
+import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

@@ -1,32 +1,18 @@
 package com.sptek._frameworkWebCore.util;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek.serviceName._global.util.CookieUtil;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.ConstructorArgs;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.swing.*;
-import java.beans.ConstructorProperties;
-import java.io.Serializable;
 import java.util.*;
 
 @Slf4j

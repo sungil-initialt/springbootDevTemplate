@@ -18,12 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ConfigDirectoryLoader implements EnvironmentPostProcessor {
     // application.yml 파일을 기능적으로 분리해서 등록 가능하게 해준다. (지정된 디렉토리 내부의 모든 .YML 파일을 찾아서 application.yml 파일의 일부로 인식하게 만들어 준다.)
-    private static final String DEFAULT_BASE_PATH = "classpath:serviceNameResources/_global/specificPurposeProperties/";
+    private static final String DEFAULT_BASE_PATH = "classpath:_projectCommonResources/extraApplicationProperties/";
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         // application.yml에서 basePath 값 읽기
-        String basePath = environment.getProperty("sptFramework.specificPurposeProperties.basePath", DEFAULT_BASE_PATH);
+        String basePath = environment.getProperty("sptFramework.extraApplicationProperties.basePath", DEFAULT_BASE_PATH);
         String configPathPattern = basePath + "/**/*.yml"; // 경로 패턴 생성
 
         log.info("Loading YAML configuration files from path: {}", configPathPattern);

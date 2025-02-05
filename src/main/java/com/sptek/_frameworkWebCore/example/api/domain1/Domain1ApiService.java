@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.example.api.domain1;
 
-import com.sptek.serviceName._global.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

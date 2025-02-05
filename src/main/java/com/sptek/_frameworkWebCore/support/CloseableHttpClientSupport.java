@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.support;
 
-import com.sptek.serviceName._global.util.TypeConvertUtil;
+import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;

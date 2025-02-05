@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.config.interceptor;
 
 
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek.serviceName._global.interceptor.ExampleInterceptor;
+import com.sptek._projectCommon.interceptor.ExampleInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

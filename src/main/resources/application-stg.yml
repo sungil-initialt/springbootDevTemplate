@@ -53,7 +53,7 @@ spring:
       enabled: true
 #  config:
 #    import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
-#      - classpath:serviceNameResources/_global/specificPurposeConfig/
+#      - classpath:_projectCommonResources/extraApplicationProperties/
   thymeleaf:
     enabled: true
     cache: false

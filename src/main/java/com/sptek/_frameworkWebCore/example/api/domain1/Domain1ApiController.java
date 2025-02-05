@@ -11,11 +11,11 @@ import com.sptek._frameworkWebCore.example.dto.ValidationTestDto;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
 import com.sptek._frameworkWebCore.vo.PropertyVos;
-import com.sptek.serviceName._global.argumentResolver.ArgumentResolverForMyUserDto;
-import com.sptek.serviceName._global.eventListener.custom.event.ExampleEvent;
-import com.sptek.serviceName._global.util.FileUtil;
-import com.sptek.serviceName._global.util.RequestUtil;
-import com.sptek.serviceName._global.util.TypeConvertUtil;
+import com.sptek._projectCommon.argumentResolver.ArgumentResolverForMyUserDto;
+import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
+import com.sptek._frameworkWebCore.util.FileUtil;
+import com.sptek._frameworkWebCore.util.RequestUtil;
+import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -247,7 +247,7 @@ public class Domain1ApiController {
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${LocalStorage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception {
 
@@ -263,7 +263,7 @@ public class Domain1ApiController {
 
     @GetMapping(value = "/byteForImage")
     @Operation(summary = "byteForImage", description = "byteForImage 테스트", tags = {""})
-    public ResponseEntity<byte[]> byteForImage(@Value("${Storage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<byte[]> byteForImage(@Value("${LocalStorage.multipartFiles.basePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
             , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
 

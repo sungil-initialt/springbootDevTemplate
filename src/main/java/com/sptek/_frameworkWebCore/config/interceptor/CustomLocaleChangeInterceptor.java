@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.config.interceptor;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek.serviceName._global.util.CookieUtil;
+import com.sptek._frameworkWebCore.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

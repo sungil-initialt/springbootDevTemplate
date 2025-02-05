@@ -1,0 +1,32 @@
+################################################################
+# fixed properties
+log4jdbc:
+  spylogdelegator:
+    name: net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
+    #name: net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator #(log4j2를 사용하는 경우)
+
+################################################################
+
+logging:
+  level: #log level은 logback config 파일에 그대로 반영됨
+    root: info
+
+    com:
+      sptek._frameworkWebCore: debug
+      sptek.serviceName._global: debug
+      sptek.serviceName._guideExample: debug
+      zaxxer.hikari.pool.HikariPool: info
+    org:
+      mybatis.spring: info
+      springframework:
+        security: info
+
+    jdbc.sqltiming: off
+    jdbc.sqlonly: off
+    jdbc.connection: off
+    jdbc.audit: off
+    jdbc.resultset: debug
+    jdbc.resultsettable: debug
+
+  config: classpath:_frameworkWebCoreResources/logbackConfig/logback-spring-local.xml
+
