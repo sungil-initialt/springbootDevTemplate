@@ -45,7 +45,7 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
         // configuration.setJdbcTypeForNull(JdbcType.NULL);
         // sqlSessionFactoryBean.setConfiguration(configuration);
 
-        sqlSessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mapper/*Mapper.xml"));
+        sqlSessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mybatis/mapper/*Mapper.xml"));
         return sqlSessionFactoryBean.getObject();
     }
 

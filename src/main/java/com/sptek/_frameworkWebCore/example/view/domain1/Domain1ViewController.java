@@ -125,7 +125,7 @@ public class Domain1ViewController {
     }
 
     @RequestMapping("/checkJasyptWorking")
-    public String checkJasyptWorking(@Value("${test.jasyptTest.encValue}") String encValue, Model model) {
+    public String checkJasyptWorking(@Value("${jasypt.decryptTest.encValue}") String encValue, Model model) {
         model.addAttribute("result", encValue);
         return pageBasePath + "simpleModelView";
     }

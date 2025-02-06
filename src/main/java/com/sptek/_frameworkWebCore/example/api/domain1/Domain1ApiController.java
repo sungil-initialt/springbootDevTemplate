@@ -247,7 +247,7 @@ public class Domain1ApiController {
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${LocalStorage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception {
 
@@ -263,7 +263,7 @@ public class Domain1ApiController {
 
     @GetMapping(value = "/byteForImage")
     @Operation(summary = "byteForImage", description = "byteForImage 테스트", tags = {""})
-    public ResponseEntity<byte[]> byteForImage(@Value("${LocalStorage.multipartFiles.basePath}") String baseStoragePath
+    public ResponseEntity<byte[]> byteForImage(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
             , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
 

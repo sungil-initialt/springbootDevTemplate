@@ -1,0 +1,9 @@
+spring:
+  servlet:
+    session:
+      timeout: 60m
+      cookie:
+        name: JSESSIONID
+        http-only: true
+        secure: true #(ssl 사용시 설정과 상관없이 true로 설정됨, ssl 비사용시 false로 설정할수 있으나 false 일경우 브라우저가 자체 block처리하여 사용이 불가능함)
+        same-site: none #(사설 인증서의 경우 Lax 사용을 해도 브라우저가 block 처리함, 테스트를 위해 none 설정 필요)

@@ -1,0 +1,8 @@
+spring:
+  thymeleaf:
+    enabled: true
+    cache: false
+    check-template-location: true
+    #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
+    prefix: file:src/main/resources/templates/thymeleaf/
+    suffix: .html

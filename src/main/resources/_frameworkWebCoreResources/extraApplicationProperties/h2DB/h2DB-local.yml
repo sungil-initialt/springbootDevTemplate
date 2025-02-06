@@ -1,0 +1,17 @@
+spring:
+
+  h2: #H2 임베드 DB 사용은 프로퍼티설정만 있음
+    console:
+      enabled: true #웹콘솔 사용 여부
+      path: /h2-console #웹콘솔 url 경로, ex:https://localhost:8443/h2-console/
+
+#  datasource: #리플리카 구성이 아닌 단순 DS 사용
+#    #메모리 모드로 실행됨 (휘발성, @Entity 클레스에 대해 자동으로 TB 구성, schema.sql, data.sql 자동 실행)
+#    #url: jdbc:h2:mem:myDB
+#    #서버 모드(파일)로 실행됨(최초에 해당 위치에서 cmd로 copy con local.mv.db 를 통해 초기 DB파일 생성 필요, 저장된 DB로 이어서 실행됨)
+#    #    driverClassName: org.h2.Driver #(디폴트)
+#    #    url: jdbc:h2:file:./reference-data/h2/myDB;AUTO_SERVER=TRUE
+#    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy #jdbc 내부 로깅용
+#    url: jdbc:log4jdbc:h2:file:./reference-data/h2/myDB;AUTO_SERVER=TRUE
+#    username: sa
+#    password:

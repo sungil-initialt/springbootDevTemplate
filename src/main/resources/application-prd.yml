@@ -1,104 +1,12 @@
-project-info:
-  name: myProject Prd
-  version: v1
-  description : Prd
-
-
-system:
-  propertySources:
-    expose-enabled: ture #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
-
-
 server:
-  port: 8080
-  error: #스프링에서 제공하는 에러 기본 처리 설정
-    include-exception: true #exception 정보를 보여줄지
-    include-stacktrace: always #stacktrace 를 보여줄지
-    path: error #에러 처리에 대한 뷰 경로
-    whitelabel.enabled: false #스프링의 기본 에러 페이지(Whitelabel Error Page)를 사용할지
+  port: 8443
 
+extraApplicationProperties:
+  basePath:
+    - classpath:_frameworkWebCoreResources/extraApplicationProperties/
+    - classpath:_projectCommonResources/extraApplicationProperties/
 
-Storage:
-  multipartFiles:
-    basePath: c:/
+spring.devtools:
+  livereload.enabled: true
+  restart.enabled: true
 
-
-logging:
-  level:
-    root: info
-    com:
-      sptek.webfw.persistence.dao: info
-      zaxxer.hikari.pool.HikariPool: info
-    org:
-      mybatis.spring: info
-    jdbc:
-      audit: info
-      resultset: info
-      resultsettable: info #INFO  #SQL 결과 데이터 Table을 로그로 남긴다.
-      sqlonly: info     #SQL만 로그로 남긴다.
-      sqltiming: info    #SQL과 소요시간을 표기한다.
-      connection: info  # 커넥션 확인가능
-  config: classpath:logbackConfig/logback-spring-server.xml
-
-
-spring:
-  devtools: #코드 수정 실시간 반영
-    livereload:
-      enabled: false
-    restart:
-      enabled: false
-#  config:
-#    import: #기본 프로퍼티가 아닌 추가적인 property 파일로 구성 필요시.
-#      - classpath:_projectCommonResources/extraApplicationProperties/
-  thymeleaf:
-    enabled: true
-    cache: false
-    check-template-location: true
-    #prefix: classpath:/templates/thymeleaf/ #이렇게 설정하면 로컬서버에서 실행중 실시간 수정 변경이 안되는 현상이 있음
-    prefix: file:src/main/resources/templates/thymeleaf/
-    suffix: .html
-  #jsp로 설정할때
-  #mvc:
-  #  view:
-  #    prefix: /WEB-INF/views/
-  #    suffix: .jsp
-
-
-#For DataSource (tomcat등에 설정한 jndi 값을 통해 datasource 정보를 읽는다, 실제값으로 변경 필요)
-jndi:
-  datasource:
-    lookup:
-      write:
-        name: writeDatasourceJndiName(change to real name)
-      read:
-        name: readDatasourceJndiName(change to real name)
-
-
-#PageInoSupport 클레스 관련 설정
-pagehelper:
-  helper-dialect: mysql
-  auto-dialect: true
-  page-size-zero: false
-  reasonable: true
-  offset-as-page-num: false
-  row-bounds-with-count: false
-  auto-runtime-dialect: false
-  close-conn: true
-  default-count: true
-
-
-# Swagger springdoc-ui Configuration
-springdoc:
-  packages-to-scan: com.sptek.webfw.example.api.api1
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
-  swagger-ui:
-    path: swagger-ui.html         # Swagger UI 경로 => http://localhost:8080/swagger-ui.html
-    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
-    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
-  api-docs:
-    path: /api-docs/json
-    groups:
-      enabled: true
-  cache:
-    disabled: true

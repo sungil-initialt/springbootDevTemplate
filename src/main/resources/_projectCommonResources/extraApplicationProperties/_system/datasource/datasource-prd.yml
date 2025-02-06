@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    #write, read로 리플리케이션 구조 설정
+    write:
+      driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
+      jdbc-url: jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
+      username: root
+      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      pool-name: Hikari write Connection Pool
+      maximum-pool-size: 20
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+    read:
+      driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
+      jdbc-url: jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
+      username: root
+      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      pool-name: Hikari read Connection Pool
+      maximum-pool-size: 20
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+
+#For JNDI DataSource (tomcat등에 설정한 jndi 값을 통해 datasource 정보를 읽는 경우의 처리, 실제값으로 변경 필요)
+#jndi:
+#  datasource:
+#    lookup:
+#      write:
+#        name: writeDatasourceJndiName(change to real name)
+#      read:
+#        name: readDatasourceJndiName(change to real name)

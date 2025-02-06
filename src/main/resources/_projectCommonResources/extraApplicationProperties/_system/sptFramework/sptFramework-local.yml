@@ -18,5 +18,4 @@ sptFramework:
     application:
       ContextRefreshedEventListenerForConfigLogging: false #스프링 스타트시 시스템 property를 로그로 보여줄지 설정
 
-  extraApplicationProperties:
-    basePath: classpath:_projectCommonResources/extraApplicationProperties/
+
