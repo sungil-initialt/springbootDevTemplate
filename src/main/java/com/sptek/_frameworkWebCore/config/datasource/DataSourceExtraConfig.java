@@ -38,14 +38,14 @@ public class DataSourceExtraConfig implements WebMvcConfigurer {
         sqlSessionFactoryBean.setDataSource(dataSource);
 
         // java 와 동일한 패키지 않에 xml 을 넗는 방식은 일반적이지 않으며 굳이 한다면 xml 위치의 패키지를 ClassPathResource 로 설정해줘야 함
-        sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/**/mybatis/*-config.xml")[0]);
+        sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath*:/_projectCommonResources/mybatis/*-config.xml")[0]);
         // 위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
         // org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
         // configuration.setMapUnderscoreToCamelCase(true);
         // configuration.setJdbcTypeForNull(JdbcType.NULL);
         // sqlSessionFactoryBean.setConfiguration(configuration);
 
-        sqlSessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/**/mybatis/mapper/*Mapper.xml"));
+        sqlSessionFactoryBean.setMapperLocations(this.applicationContext.getResources("classpath*:/_projectCommonResources/mybatis/mapper/*Mapper.xml"));
         return sqlSessionFactoryBean.getObject();
     }
 
