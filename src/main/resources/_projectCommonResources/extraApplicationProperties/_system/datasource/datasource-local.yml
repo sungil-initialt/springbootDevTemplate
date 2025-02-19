@@ -25,3 +25,6 @@ spring:
       connectionTimeout: 30000
       idleTimeout: 600000
       maxLifetime: 1800000
+
+
+     # --> 여기부터 봐야함(password: ENC(UqwvhWEY4K9rahO7I8g39Q==) 에서 오류 나는 부분 확인 필요)

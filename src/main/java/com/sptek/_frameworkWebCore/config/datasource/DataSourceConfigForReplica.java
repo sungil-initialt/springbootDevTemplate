@@ -19,7 +19,8 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@Profile(value = { "prd", "stg" })
+//실제 replica 구성이 아니더라도 write, read를 동일히 입력하여 사용가능
+@Profile(value = { "local", "dev", "stg", "prd" })
 public class DataSourceConfigForReplica {
 
     @Bean(name = "writeDataSource", destroyMethod = "")
