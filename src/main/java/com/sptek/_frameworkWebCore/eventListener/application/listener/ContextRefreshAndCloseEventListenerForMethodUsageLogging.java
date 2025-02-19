@@ -2,8 +2,6 @@ package com.sptek._frameworkWebCore.eventListener.application.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +12,12 @@ import java.util.Enumeration;
 import java.util.List;
 
 @Slf4j
-@Component
+//@Component
 public class ContextRefreshAndCloseEventListenerForMethodUsageLogging {
 
     private static final String BASE_DIR = "/methodUsageLogging/";
 
-    @EventListener
+    //@EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
         try {
             List<Class<?>> classes = getClasses("com.sptek");
