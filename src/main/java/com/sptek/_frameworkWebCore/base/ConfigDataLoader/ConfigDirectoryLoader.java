@@ -36,10 +36,10 @@ public class ConfigDirectoryLoader implements EnvironmentPostProcessor {
                 .filter(path -> !path.isEmpty()) // 빈 값 제거
                 .toList();               // 리스트로 변환
 
-        log.info("ConfigDirectoryLoader base paths: {}", basePaths);
+        log.debug("ConfigDirectoryLoader base paths: {}", basePaths);
 
         if (basePaths.isEmpty()) {
-            throw new IllegalStateException("No valid Config Directories'.");
+            throw new IllegalStateException("No valid extraApplicationProperties Directories'.");
         }
 
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -48,11 +48,11 @@ public class ConfigDirectoryLoader implements EnvironmentPostProcessor {
 
         // 현재 활성화된 프로파일 가져오기
         List<String> activeProfiles = Arrays.asList(environment.getActiveProfiles());
-        log.info("Active profiles: {}", activeProfiles);
+        log.debug("Active profiles: {}", activeProfiles);
 
         for (String basePath : basePaths) {
             String configPathPattern = basePath.trim() + "/**/*.yml"; // 경로 패턴 생성
-            log.info("Loading YAML configuration files from path: {}", configPathPattern);
+            log.debug("Loading YAML configuration files from path: {}", configPathPattern);
 
             try {
                 Resource[] resources = resolver.getResources(configPathPattern);
@@ -68,7 +68,7 @@ public class ConfigDirectoryLoader implements EnvironmentPostProcessor {
                     // 프로파일별 설정 파일 처리 (e.g., config-local.yml)
                     for (String profile : activeProfiles) {
                         if (fileName.endsWith("-" + profile + ".yml")) {
-                            log.info("Loading profile-specific YAML config: {}", fileName);
+                            log.debug("Loading profile-specific YAML config: {}", fileName);
                             loadYamlToMap(resource, yaml, mergedProperties);
                         }
                     }

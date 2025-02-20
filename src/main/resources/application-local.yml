@@ -1,29 +1,32 @@
 server:
   port: 8443
 
-extraApplicationProperties:
-  basePath:
-    frameworkWebCore: classpath:_frameworkWebCoreResources/extraApplicationProperties/
-    projectCommon: classpath:_projectCommonResources/extraApplicationProperties/
+spring:
+  devtools:
+    livereload.enabled: true
+    restart.enabled: true
 
-spring.devtools:
-  livereload.enabled: true
-  restart.enabled: true
+  config:
+    import:
+      #_frameworkWebCoreResources
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/autoInitializeDB/autoInitializeDB.yml
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/globalError/globalError.yml
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/h2DB/h2DB.yml
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/jsp/jsp.yml
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/pageHelper/pageHelper.yml
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/ssl/ssl.yml
+      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/thymeleaf/thymeleaf.yml
+      #_projectCommonResources(_system)
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/cors/
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/datasource/datasource.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/encryption/encryption.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/jpa/jpa.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/jwt/jwt.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/logging/logging.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/session/session.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/springdoc/springdoc.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/sptFramework/sptFramework.yml
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/storage/storage.yml
+      #_projectCommonResources(extra)
+      - optional:classpath:_projectCommonResources/extraApplicationProperties/example1/example1.yml
 
-# jasyptStringEncryptor 로 선언된 Bean을 스프링의 기본 StringEncryptor 으로 사용 하겠다는 의미
-# (프로퍼티에서 값을 decryption 할때 기본으로 선언된 bean을 사용하겠다는 것이지 코드상에서 StringEncryptor 을 빈에서 가져다 써야할 결우는 Bean 이름으로 정확히 선택해야함)
-jasypt:
-  encryptor:
-    bean: customJasyptStringEncryptor # 이 프로퍼티가 없어도 실제 jasyptStringEncryptor 이름으로 등록된 Bean이 있으면 해당 Bean이 동작함
-    password: ${JASYPT_ENCRYPTOR_PASSWORD} # 일반 형식 32자 이상 권장
-    #algorithm: PBEWithMD5AndDES # 보안성 낮음
-    algorithm: PBEWITHHMACSHA512ANDAES_256 #보안성 높음
-
-  decryptTest: #단순 테스트 용
-    # 원문: "originPlainText", spec: PBEWITHHMACSHA512ANDAES_256, JASYPT_ENCRYPTOR_PASSWORD=12345678901234567890123456789012
-    encValue: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)
-
-  # jasyptStringEncryptor 으로 선언된 Bean 이 없다면 아래 설정으로 기분 StringEncryptor 을 설정할수 있다 (CustomJasyptConfig 에서 jasyptStringEncryptor 가 Bean으로 설정되면 의미가 없음)
-  #jasypt:
-  #  encryptor:
-  #    password: default_encryption_password_abc

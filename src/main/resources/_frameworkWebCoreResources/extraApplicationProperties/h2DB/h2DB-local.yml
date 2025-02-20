@@ -9,8 +9,9 @@
 #    #url: jdbc:h2:mem:myDB
 #
 #    #서버 모드(파일)로 실행(최초에 해당 위치에서 cmd로 copy con local.mv.db 를 통해 초기 DB파일 생성 필요, 저장된 DB로 이어서 실행됨)
-#    driverClassName: org.h2.Driver #(디폴트)
-#    url: jdbc:h2:file:./reference-data/h2/myDB;AUTO_SERVER=TRUE
-#    #driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy #jdbc 내부 로깅용
-#    #url: jdbc:log4jdbc:h2:file:./reference-data/h2/myDB;AUTO_SERVER=TRUE
+#    #driverClassName: org.h2.Driver #(디폴트)
+#    #url: jdbc:h2:file:./reference-data/h2/myDB;AUTO_SERVER=TRUE
+#    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy #jdbc 내부 로깅용
+#    url: jdbc:log4jdbc:h2:file:./reference-data/h2/myDB;AUTO_SERVER=TRUE
 #    username: sa
+#    password:

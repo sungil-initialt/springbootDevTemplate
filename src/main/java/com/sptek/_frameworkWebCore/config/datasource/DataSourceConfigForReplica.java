@@ -1,5 +1,7 @@
 package com.sptek._frameworkWebCore.config.datasource;
 
+import com.sptek._frameworkWebCore.annotation.CheckMainClassAnnotation;
+import com.sptek._frameworkWebCore.annotation.UniversalAnnotationForTest;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +23,8 @@ import java.util.Map;
 @Configuration
 //실제 replica 구성이 아니더라도 write, read를 동일히 입력하여 사용가능
 @Profile(value = { "local", "dev", "stg", "prd" })
+@CheckMainClassAnnotation(value = UniversalAnnotationForTest.class)
+@DependsOn({"customJasyptStringEncryptor"})
 public class DataSourceConfigForReplica {
 
     @Bean(name = "writeDataSource", destroyMethod = "")
