@@ -7,7 +7,7 @@ spring:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
       username: root
-      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      password: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)
       pool-name: Hikari write Connection Pool
       maximum-pool-size: 20
       connectionTimeout: 30000
@@ -19,7 +19,7 @@ spring:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: jdbc:log4jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
       username: root
-      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      password: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)
       pool-name: Hikari read Connection Pool
       maximum-pool-size: 20
       connectionTimeout: 30000

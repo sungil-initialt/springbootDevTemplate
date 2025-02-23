@@ -1,0 +1,55 @@
+version: "3.8"
+networks:
+  internal_network_mysql:
+    #external: true # 하나의 컴포즈 파일로 생성된 컨데이너들은 내부 네트워크로 통신가능, 개별 생성된 컨테이너간 통신을 위해서는 외부 네트워크를 먼저 생성하여 설정하여야 함
+
+services:
+  db-1:
+    image: mysql:8-debian
+    platform: linux/amd64 # 맥의 경우 설정 필요
+    container_name: mysql-master
+    networks:
+      - internal_network_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=sungil
+      - MYSQL_PASSWORD=sungil
+      #- MYSQL_DATABASE=spt_web_fw # 자동으로 spt_web_fw DB 를 생성하고 sungil 에게 모든 권한이 부여됨
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/mysql_master_volume:/var/lib/mysql
+
+  db-2:
+    image: mysql:8-debian
+    platform: linux/amd64 # 맥의 경우 설정 필요
+    container_name: mysql-slave
+    networks:
+      - internal_network_mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=sungil
+      - MYSQL_PASSWORD=sungil
+      #- MYSQL_DATABASE=spt_web_fw # 자동으로 spt_web_fw DB 를 생성하고 sungil 에게 모든 권한이 부여됨
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/mysql_slave_volume:/var/lib/mysql
+
+
+# master/slave 동작이 깨졌을때
+#master 서버에서 mysql 명령 상태로 들어가서 show master status\G 명령으로 내용 확인
+#slave 서버에서 mysql 명령 상태로 들어가서
+#  -stop slave
+#  -CHANGE MASTER TO MASTER_HOST='mysql-master', MASTER_USER='bookroot', MASTER_PASSWORD='1234', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=1721;
+#    (파일명과 포지션 위치는 마스터 정보를 보고 수정)
+#  -start slave
+
