@@ -1,3 +1,6 @@
-jpa:
-  hibernate:
-    ddl-auto: update #(create, create-drop, update, none)
+#spring:
+#  jpa:
+#    hibernate:
+#      ddl-auto: update  # (create, create-drop, update, none)
+#    show-sql: true      # SQL 쿼리를 출력할지 여부
+#    database-platform: org.hibernate.dialect.MySQL8Dialect

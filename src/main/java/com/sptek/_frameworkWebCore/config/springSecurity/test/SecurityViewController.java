@@ -16,7 +16,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,7 +70,8 @@ public class SecurityViewController {
         return "redirect:/login";
     }
 
-    @GetMapping({"/login", "/signup"})
+    //@GetMapping({"/login", "/signup"}) // todo: 왜 signup을 추가했지?
+    @GetMapping({"/login"})
     public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("redirectTo", RedirectHelperAfterLogin.getRedirectUrlAfterLogging(request, response));
         return pageBasePath + "login";

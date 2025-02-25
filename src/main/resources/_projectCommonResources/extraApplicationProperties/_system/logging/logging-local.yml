@@ -20,6 +20,8 @@ logging:
       mybatis.spring: info
       springframework:
         security: info
+      hibernate.SQL: DEBUG
+      hibernate.type.descriptor.sql.BasicBinder: TRACE
 
     jdbc.sqltiming: off
     jdbc.sqlonly: off

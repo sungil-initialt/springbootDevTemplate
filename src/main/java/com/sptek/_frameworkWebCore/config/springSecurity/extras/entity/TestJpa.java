@@ -9,8 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "TEST")
-public class Test {
+@Table(name = "TESTJPA")
+public class TestJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -29,7 +29,7 @@ public class Authority {
     @Column(unique = true)
     private String alias;
 
-    private String desc;
+    private String description;
     private String status; //해당 권한의 상태(사용함/사용안함 등)
 
     @ManyToMany(mappedBy = "authorities")
@@ -43,6 +43,6 @@ public class Authority {
         //authority 객체를 기준으로 나머지 값들을 저장하기 위해
         this.code = authority.getCode();
         this.alias = authority.getAlias();
-        this.desc = authority.getDesc();
+        this.description = authority.getDescription();
     }
 }

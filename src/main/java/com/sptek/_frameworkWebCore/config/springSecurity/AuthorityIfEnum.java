@@ -14,7 +14,7 @@ public enum AuthorityIfEnum implements AuthorityIf {
 
     private final String code;
     private final String alias;
-    private final String desc;
+    private final String description;
     private final String status;
 
     public static AuthorityIfEnum getAuthorityFromCode(String code) {
@@ -31,10 +31,10 @@ public enum AuthorityIfEnum implements AuthorityIf {
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from value. Unknown alias: " + alias));
     }
 
-    public static AuthorityIfEnum getAuthorityFromDesc(String desc) {
+    public static AuthorityIfEnum getAuthorityFromDesc(String description) {
         return Arrays.stream(values())
-                .filter(authorityEnum -> authorityEnum.getDesc().equals(desc))
+                .filter(authorityEnum -> authorityEnum.getDescription().equals(description))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from name. Unknown desc: " + desc));
+                .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from name. Unknown desc: " + description));
     }
 }

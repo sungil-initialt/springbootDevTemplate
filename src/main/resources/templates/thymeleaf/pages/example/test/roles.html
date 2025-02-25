@@ -34,7 +34,7 @@
 
       <div th:each="authority : ${roleMngRequestDto.allAuthorities}">
         <input type="checkbox" th:name="${'allRoles[' + roleStat.index + '].authorities[' + authorityStat.index + '].authority'}" th:value="${authority.authority}" th:checked="${#lists.contains(role.authorityEnums, authority.authority)}"/>
-        <label th:text="${authority.authority + '(' + authority.authority.desc + ')'}"></label>
+        <label th:text="${authority.authority + '(' + authority.authority.description + ')'}"></label>
       </div>
 
       <br>

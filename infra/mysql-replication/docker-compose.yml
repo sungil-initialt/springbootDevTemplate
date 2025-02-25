@@ -15,9 +15,9 @@ services:
     environment:
       - MYSQL_ROOT_HOST=%
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=sungil
-      - MYSQL_PASSWORD=sungil
-      #- MYSQL_DATABASE=spt_web_fw # 자동으로 spt_web_fw DB 를 생성하고 sungil 에게 모든 권한이 부여됨
+      - MYSQL_USER=sptek
+      - MYSQL_PASSWORD=sptek
+      - MYSQL_DATABASE=spt_web_fw # 자동으로 spt_web_fw DB 를 생성하고 sptek 에게 모든 권한이 부여됨
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -35,9 +35,9 @@ services:
     environment:
       - MYSQL_ROOT_HOST=%
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=sungil
-      - MYSQL_PASSWORD=sungil
-      #- MYSQL_DATABASE=spt_web_fw # 자동으로 spt_web_fw DB 를 생성하고 sungil 에게 모든 권한이 부여됨
+      - MYSQL_USER=sptek
+      - MYSQL_PASSWORD=sptek
+      - MYSQL_DATABASE=spt_web_fw # 자동으로 spt_web_fw DB 를 생성하고 sptek 에게 모든 권한이 부여됨
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci

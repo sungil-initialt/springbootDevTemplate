@@ -7,6 +7,6 @@ INSERT INTO ROLE (ROLE_NAME) VALUES ('ROLE_ADMIN');
 INSERT INTO ROLE (ROLE_NAME) VALUES ('ROLE_ADMIN_SPECIAL');
 INSERT INTO ROLE (ROLE_NAME) VALUES ('ROLE_SYSTEM');
 
-INSERT INTO authority (authority, code, alias, desc) VALUES ('AUTH_SPECIAL_FOR_TEST', 'R000', 'SFT', 'for test');
+INSERT INTO authority (authority, code, alias, desc) VALUES ('AUTH_SPECIAL_FOR_TEST', 'R000', 'SFT', 'for testJpa');
 INSERT INTO authority (authority, code, alias, desc) VALUES ('AUTH_RETRIEVE_USER_ALL_FOR_MARKETING', 'R001', 'RUAFM', 'for marketing');
 INSERT INTO authority (authority, code, alias, desc) VALUES ('AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY', 'R002', 'RUAFD', 'for delivery');

@@ -14,7 +14,7 @@
     <select id="selectWithLimit" parameterType="int" resultType="com.sptek._frameworkWebCore.example.dto.TBTestDto">
         <![CDATA[
         select c1, c2, c3
-        from test limit #{limit}
+        from testJpa limit #{limit}
         ]]>
     </select>
 

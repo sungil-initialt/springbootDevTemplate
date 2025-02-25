@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ### hello
-GET {{api-server-ver}}/test
+GET {{api-server-ver}}/testJpa
 Content-Type: application/json
 
 

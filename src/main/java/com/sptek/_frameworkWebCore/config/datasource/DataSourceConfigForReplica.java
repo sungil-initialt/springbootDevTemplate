@@ -1,16 +1,11 @@
 package com.sptek._frameworkWebCore.config.datasource;
 
-import com.sptek._frameworkWebCore.annotation.CheckMainClassAnnotation;
-import com.sptek._frameworkWebCore.annotation.UniversalAnnotationForTest;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -24,7 +19,7 @@ import java.util.Map;
 //실제 replica 구성이 아니더라도 write, read를 동일히 입력하여 사용가능
 @Profile(value = { "local", "dev", "stg", "prd" })
 //@CheckMainClassAnnotation(value = UniversalAnnotationForTest.class)
-@DependsOn({"customJasyptStringEncryptor"})
+//DependsOn({"customJasyptStringEncryptor"})
 public class DataSourceConfigForReplica {
 
     @Bean(name = "writeDataSource", destroyMethod = "")
@@ -65,6 +60,7 @@ public class DataSourceConfigForReplica {
         return routingDataSource;
     }
 
+    @Primary
     @Bean(name = "dataSource")
     @DependsOn({"routingDataSource"})
     // 실제 spring이 dataSource를 찾을때 ReplicationRoutingDataSource를 내부적으로 사용하는 LazyConnectionDataSourceProxy를 반환함.
@@ -74,7 +70,6 @@ public class DataSourceConfigForReplica {
 
     public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
         // @Transactional(readOnly = true) 를 사용하는 경우 read용 dataSource를 활용하도록 처리함으로써 속도 계선 가능.
-
         @Override
         protected Object determineCurrentLookupKey() {
             boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
