@@ -1,3 +1,8 @@
+project-info:
+  name: SPT Framework Web Core
+  version: v1.0.0
+  description : enjoy your coding life with SPT Framework Web Core
+
 server:
   port: 8443
 
@@ -9,24 +14,24 @@ spring:
   config:
     import:
       #_frameworkWebCoreResources
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/autoInitializeDB/autoInitializeDB.yml
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/globalError/globalError.yml
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/h2DB/h2DB.yml
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/jsp/jsp.yml
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/pageHelper/pageHelper.yml
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/ssl/ssl.yml
-      - optional:classpath:_frameworkWebCoreResources/extraApplicationProperties/thymeleaf/thymeleaf.yml
+      - optional:classpath:_autoInitializeDB/autoInitializeDB.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/globalError/globalError.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/h2DB/h2DB.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/jsp/jsp.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/pageHelper/pageHelper.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/ssl/ssl.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/thymeleaf/thymeleaf.yml
       #_projectCommonResources(_system)
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/cors/
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/datasource/datasource.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/encryption/encryption.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/jpa/jpa.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/jwt/jwt.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/logging/logging.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/session/session.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/springdoc/springdoc.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/sptFramework/sptFramework.yml
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/_system/storage/storage.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/cors/
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/datasource/datasource.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/encryption/encryption.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/jpa/jpa.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/jwt/jwt.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/logging/logging.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/session/session.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/springdoc/springdoc.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/_frameworkOption/frameworkOption.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/storage/storage.yml
       #_projectCommonResources(extra)
-      - optional:classpath:_projectCommonResources/extraApplicationProperties/example1/example1.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/example1/example1.yml
 

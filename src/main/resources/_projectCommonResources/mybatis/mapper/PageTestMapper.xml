@@ -11,14 +11,14 @@
         ]]>
     </select>
 
-    <select id="selectWithLimit" parameterType="int" resultType="com.sptek._frameworkWebCore.example.dto.TBTestDto">
+    <select id="selectWithLimit" parameterType="int" resultType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
         <![CDATA[
         select c1, c2, c3
-        from testJpa limit #{limit}
+        from test limit #{limit}
         ]]>
     </select>
 
-    <select id="selectAll" resultType="com.sptek._frameworkWebCore.example.dto.TBZipcodeDto">
+    <select id="selectAll" resultType="com.sptek._frameworkWebCore._example.dto.TBZipcodeDto">
         <![CDATA[
         select *
         from ZIPCODE
@@ -26,14 +26,14 @@
         ]]>
     </select>
 
-    <insert id="insertTbtest" parameterType="com.sptek._frameworkWebCore.example.dto.TBTestDto">
+    <insert id="insertTbtest" parameterType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
         <![CDATA[
         insert into test (c1, c2, c3)
         values (#{c1}, #{c2}, #{c3})
         ]]>
     </insert>
 
-    <update id="updateTbtest" parameterType="com.sptek._frameworkWebCore.example.dto.TBTestDto">
+    <update id="updateTbtest" parameterType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
         <![CDATA[
         update test
         set c2 = #{c2},
@@ -42,7 +42,7 @@
         ]]>
     </update>
 
-    <delete id="deleteTbtest" parameterType="com.sptek._frameworkWebCore.example.dto.TBTestDto">
+    <delete id="deleteTbtest" parameterType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
         <![CDATA[
         delete
         from test

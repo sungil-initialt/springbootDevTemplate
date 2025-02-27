@@ -1,0 +1,21 @@
+spring.h2: #H2 DB 사용
+  console:
+    enabled: false # h2 WEB Console 을 사용할 필요는 거의 없음 으로 기본 기본 false 처리함 (false 를 해도 h2 DB는 런타임에서 항상 살아 있음, 사용안할시 라이브러리 주석처리 필요)
+    path: /h2-console #웹콘솔 url 경로, ex:https://localhost:8443/h2-console/
+
+h2:
+  datasource:
+    #메모리 모드로 실행(휘발성) 로 동작 필요시
+    #driverClassName: org.h2.Driver #(디폴트)
+    #url: jdbc:h2:mem:spt_web_fw
+
+    #서버 모드(파일)로 실행(최초에 해당 위치에서 cmd로 copy con local.mv.db 를 통해 초기 DB파일 생성 필요, 저장된 DB로 이어서 실행됨)
+    driverClassName: org.h2.Driver #(디폴트)
+    url: jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE
+
+    #서버 모드로 실행 하며 jdbc 내부 로깅 필요시
+    #driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy #jdbc 내부 로깅용
+    #url: jdbc:log4jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE
+
+    username: sa
+    password:

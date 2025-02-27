@@ -1,9 +1,9 @@
 package com.sptek._frameworkWebCore.util;
 
-import com.sptek._frameworkWebCore.example.dto.ExampleADto;
-import com.sptek._frameworkWebCore.example.dto.ExampleBDto;
-import com.sptek._frameworkWebCore.example.dto.ExampleGoodsDto;
-import com.sptek._frameworkWebCore.example.dto.ExampleProductDto;
+import com.sptek._frameworkWebCore._example.dto.ExampleADto;
+import com.sptek._frameworkWebCore._example.dto.ExampleBDto;
+import com.sptek._frameworkWebCore._example.dto.ExampleGoodsDto;
+import com.sptek._frameworkWebCore._example.dto.ExampleProductDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;

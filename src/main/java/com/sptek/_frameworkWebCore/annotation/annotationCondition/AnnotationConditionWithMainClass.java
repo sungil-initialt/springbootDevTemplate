@@ -20,6 +20,7 @@ public class AnnotationConditionWithMainClass implements Condition {
             Object annotationClassName = metadata.getAnnotationAttributes(CheckMainClassAnnotation.class.getName()).get("value");
             boolean negate = (boolean) metadata.getAnnotationAttributes(CheckMainClassAnnotation.class.getName()).get("negate");
 
+
             if (annotationClassName instanceof Class) {
                 Class<?> annotationClass = (Class<?>) annotationClassName;
                 try {

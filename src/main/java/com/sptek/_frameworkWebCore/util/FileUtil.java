@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.util;
 
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
-import com.sptek._frameworkWebCore.example.dto.FileUploadDto;
+import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;

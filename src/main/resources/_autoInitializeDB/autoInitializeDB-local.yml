@@ -1,0 +1,6 @@
+spring:
+  sql:
+    init:
+      mode: always #(always, never, embedded)
+      #schema-locations: classpath:_autoInitializeDB/schema*.sql
+      #data-locations: classpath:_autoInitializeDB/data*.sql #JPA 로 자동으로 생성되는 테이블에 대한 쿼리는 우선 jap가 테이블 구성한 이후에 동작 시켜줘야 한다. (막고 실행후 다시 풀고 실행)
