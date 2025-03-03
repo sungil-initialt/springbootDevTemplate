@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.util;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
@@ -12,7 +11,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.Objects;
@@ -32,7 +30,7 @@ public class SpringUtil implements ApplicationContextAware {
         return applicationContext.getBean(beanClass);
     }
 
-    public static boolean hasAnnotationOnMainClass(Class<? extends Annotation> annotation){
+    public static boolean hasAnnotationOnMain(Class<? extends Annotation> annotation){
         Environment environment = Objects.requireNonNull(SpringUtil.applicationContext).getEnvironment();
         String mainClassName = environment.getProperty("sun.java.command");
         log.debug("mainClassName: {}", mainClassName);

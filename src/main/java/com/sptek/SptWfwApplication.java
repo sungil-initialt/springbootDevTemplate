@@ -2,6 +2,7 @@ package com.sptek;
 
 import com.sptek._frameworkWebCore.annotation.EnableApplicationCommonErrorResponse;
 import com.sptek._frameworkWebCore.annotation.EnableDetailLogFilter;
+import com.sptek._frameworkWebCore.annotation.EnableH2Datasource;
 import com.sptek._frameworkWebCore.annotation.UniversalAnnotationForTest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableApplicationCommonErrorResponse
 @EnableDetailLogFilter
 @UniversalAnnotationForTest
+@EnableH2Datasource
 public class SptWfwApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SptWfwApplication.class, args);

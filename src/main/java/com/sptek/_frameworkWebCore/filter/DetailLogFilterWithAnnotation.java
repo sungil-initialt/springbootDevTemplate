@@ -33,6 +33,8 @@ import java.util.Optional;
 public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
 
+    private Boolean hasEnableDetailLogFilterAnnotationOnMain = null;
+
     public DetailLogFilterWithAnnotation(ApplicationContext applicationContext) {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
@@ -41,9 +43,14 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
+        // 매번 호출되는 것을 방지 하기 위해서
+        if (hasEnableDetailLogFilterAnnotationOnMain == null) {
+            hasEnableDetailLogFilterAnnotationOnMain = SpringUtil.hasAnnotationOnMain(EnableDetailLogFilter.class);
+        }
+
         if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()
                 //@EnableDetailLogFilter 가 적용된 클레스 또는 메스드만 적용됨
-                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class) && !SpringUtil.hasAnnotationOnMainClass(EnableDetailLogFilter.class))
+                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class) && !hasEnableDetailLogFilterAnnotationOnMain)
         ) {
             filterChain.doFilter(request, response);
             return;
