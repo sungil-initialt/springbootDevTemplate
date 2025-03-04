@@ -1,9 +1,10 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore.annotation.EnableApplicationCommonErrorResponse;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfApplicationGlobalException_InMain;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
@@ -11,12 +12,6 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.core.env.Environment;
-import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,12 +23,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.util.Optional;
 
 //@Profile(value = { "notused" })
 @Slf4j
+//@Conditional(ApplicationGlobalExceptionHandler.ApplicationGlobalExceptionHandlerCondition.class) //@HasAnnotationOnMainForBean 방식 으로 변경함
+@HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
 @ControllerAdvice
-@Conditional(ApplicationGlobalExceptionHandler.ApplicationGlobalExceptionHandlerCondition.class)
 public class ApplicationGlobalExceptionHandler {
     // todo: 여기서는 상위 레벨 에러 처리가 목적이지만, 사실상 view / api / 상위 레벨 에러 모두 여기서 처리 가능함.
     //  상세 처리를 위해서 view / api 분리해 놓은 것이지 view / api 에러 핸들러를 적용하지 않으면 이곳에서 모두 처리됨 (다만 resultCode, resultMessage 가 상세되지 못함)
@@ -76,6 +73,28 @@ public class ApplicationGlobalExceptionHandler {
         return handleError(request, response, ex, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, "error/commonInternalErrorView");
     }
 
+
+
+
+
+    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) {
+        String requestUri = request.getRequestURI();
+        String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
+                .map(Object::toString)
+                .orElse("");
+
+        if (requestUri.startsWith("/api/") || errorRequestUri.startsWith("/api/")) {
+            ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ex.getMessage());
+            return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
+
+        } else {
+            //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
+            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
+            return viewName;
+            //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
+        }
+    }
+
     private void logWithCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
         log.error("Exception message : {}", ex.getMessage());
 
@@ -111,39 +130,23 @@ public class ApplicationGlobalExceptionHandler {
         }
     }
 
-    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) {
-        String requestUri = request.getRequestURI();
-        String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
-                .map(Object::toString)
-                .orElse("");
-
-        if (requestUri.startsWith("/api/") || errorRequestUri.startsWith("/api/")) {
-            ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ex.getMessage());
-            return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
-
-        } else {
-            //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
-            return viewName;
-            //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
-        }
-    }
 
 
-    public static class ApplicationGlobalExceptionHandlerCondition implements Condition {
-
-        @Override
-        public boolean matches(ConditionContext context, @NotNull AnnotatedTypeMetadata metadata) {
-            Environment environment = context.getEnvironment();
-            String mainClassName = environment.getProperty("sun.java.command");
-            //log.debug("mainClassName: {}", mainClassName);
-
-            try {
-                Class<?> mainClass = Class.forName(mainClassName);
-                return mainClass.isAnnotationPresent(EnableApplicationCommonErrorResponse.class);
-            } catch (ClassNotFoundException e) {
-                return false;
-            }
-        }
-    }
+// @HasAnnotationOnMainForBean 을 사용 하는 방식 으로 변경함
+//    public static class ApplicationGlobalExceptionHandlerCondition implements Condition {
+//
+//        @Override
+//        public boolean matches(ConditionContext context, @NotNull AnnotatedTypeMetadata metadata) {
+//            Environment environment = context.getEnvironment();
+//            String mainClassName = environment.getProperty("sun.java.command");
+//            //log.debug("mainClassName: {}", mainClassName);
+//
+//            try {
+//                Class<?> mainClass = Class.forName(mainClassName);
+//                return mainClass.isAnnotationPresent(EnableApplicationCommonErrorResponseForMain.class);
+//            } catch (ClassNotFoundException e) {
+//                return false;
+//            }
+//        }
+//    }
 }

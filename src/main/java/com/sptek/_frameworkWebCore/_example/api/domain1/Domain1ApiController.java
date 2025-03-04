@@ -2,6 +2,7 @@ package com.sptek._frameworkWebCore._example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore.annotation.*;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserAddressDto;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserDto;
@@ -50,9 +51,10 @@ import java.util.function.Predicate;
 
 @Slf4j
 @RequiredArgsConstructor
+@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class)
 @RestController
-@EnableApiCommonSuccessResponse
-@EnableApiCommonErrorResponse
+@EnableResponseOfApiCommonSuccess_InRestController
+@EnableResponseOfApiGlobalException_InRestController
 //@EnableDetailLogFilter("aaa")
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -240,7 +242,7 @@ public class Domain1ApiController {
 
     @GetMapping("/argumentResolverForMyUser2")
     @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
-    public Object argumentResolverForMyUser2(@EnableArgumentResolver ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
+    public Object argumentResolverForMyUser2(@EnableArgumentResolver_InParam ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
         //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
         return myUserDto;
     }
@@ -285,7 +287,7 @@ public class Domain1ApiController {
         return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
     }
 
-    @EnableRequestDeduplication
+    @EnableRequestDeduplication_InRestController_RestControllerMethod
     @RequestMapping(value="/duplicatedRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public Object duplicatedRequest() throws Exception {
@@ -295,8 +297,8 @@ public class Domain1ApiController {
         return result;
     }
 
-    @UniversalAnnotationForTest
-    @EnableDetailLogFilter("1111")
+    @TestAnnotation_InAll
+    @EnableDetailLog_InMain_Controller_ControllerMethod("1111")
     @PostMapping({"/httpCache", "/httpCache2"})
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
     public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCachePost() {
@@ -309,7 +311,7 @@ public class Domain1ApiController {
         return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
     }
 
-    @EnableRequestDeduplication
+    @EnableRequestDeduplication_InRestController_RestControllerMethod
     @GetMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
     public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet() {

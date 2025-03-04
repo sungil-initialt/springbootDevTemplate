@@ -14,8 +14,9 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class ArgumentResolverConfig implements WebMvcConfigurer {
-// controller에서 request 데이터를 object로 바인딩 해줄때 단순 바인딩이 아니라 HandlerMethodArgumentResolver를 구현한것들이 있으면 그에 따라 처리해줌.
+    private final ApplicationContext applicationContext;
 
+    // controller에서 request 데이터를 object로 바인딩 해줄때 단순 바인딩이 아니라 HandlerMethodArgumentResolver를 구현한것들이 있으면 그에 따라 처리해줌.
     // 일일이 HandlerMethodArgumentResolver를 등록하던 방식에서 더 나은 방식으로 변경함.
     //@Override
     //public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -24,10 +25,8 @@ public class ArgumentResolverConfig implements WebMvcConfigurer {
     //    WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     //}
 
-    private final ApplicationContext applicationContext;
-
     @Override
-    // Spring 컨텍스트에서 모든 HandlerMethodArgumentResolver 빈을 검색하여 자동 등록 하는 방식 으로 변경
+    // Spring 컨텍스트에서 모든 HandlerMethodArgumentResolver 빈을 검색 하여 자동 등록 하는 방식 으로 변경함
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> HandlerMethodArgumentResolvers) {
         HandlerMethodArgumentResolvers.addAll(applicationContext.getBeansOfType(HandlerMethodArgumentResolver.class).values());
     }

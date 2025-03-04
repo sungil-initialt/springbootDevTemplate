@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableApiCommonSuccessResponse {
-    // API 응답시 템플릿의 기본 ResponseEntity 구조를 사용하겠다는 선언용
+public @interface EnableDatasourceOfH2_InMain {
 }

@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore.springSecurity.test;
 
-import com.sptek._frameworkWebCore.annotation.EnableApiCommonSuccessResponse;
-import com.sptek._frameworkWebCore.annotation.EnableApiCommonErrorResponse;
-import com.sptek._frameworkWebCore.annotation.EnableDetailLogFilter;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.annotation.EnableDetailLog_InMain_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.springSecurity.CustomJwtFilter;
 import com.sptek._frameworkWebCore.springSecurity.GeneralTokenProvider;
@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = {"/api/v1/"})
 @Tag(name = "security", description = "인증/인가 api 그룹")
 @RestController
-@EnableApiCommonSuccessResponse
-@EnableApiCommonErrorResponse
-@EnableDetailLogFilter
+@EnableResponseOfApiCommonSuccess_InRestController
+@EnableResponseOfApiGlobalException_InRestController
+@EnableDetailLog_InMain_Controller_ControllerMethod
 public class SecurityApiController {
     private final SecurityService securityService;
     private final GeneralTokenProvider generalTokenProvider;

@@ -23,9 +23,9 @@ public class RequestDeduplicationAspect {
     //@Pointcut("(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController)) " +
     //        "&& (@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || @annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
 
-    //@Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
+    //기능의 특성상 @Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication) || @annotation(com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication))")
+            "&& (@within(com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication_InRestController_RestControllerMethod) || @annotation(com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication_InRestController_RestControllerMethod))")
     public void myPointCut() {}
 
 

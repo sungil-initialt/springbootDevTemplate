@@ -1,5 +1,7 @@
 package com.sptek._frameworkWebCore.filter;
 
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
@@ -10,12 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,8 +24,9 @@ import java.util.Optional;
 @Profile(value = { "local", "dev", "stg" }) //todo : 상용적용은 고민해 볼것(성능?)
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.MakeMdcFilter", havingValue = "true", matchIfMissing = false) //프로퍼티 설정 방식 에서 HasAnnotationOnMain 방식 으로 변경
+@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class)
 @WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.MakeMdcFilter", havingValue = "true", matchIfMissing = false)
 public class MakeMdcFilter extends OncePerRequestFilter {
 
     public MakeMdcFilter() {

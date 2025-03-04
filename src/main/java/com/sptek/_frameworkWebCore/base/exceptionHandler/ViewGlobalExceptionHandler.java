@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore.annotation.EnableViewCommonErrorResponse;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 //@Profile(value = { "notused" })
 @Slf4j
-@ControllerAdvice(annotations = EnableViewCommonErrorResponse.class)
+@ControllerAdvice(annotations = EnableResponseOfViewGlobalException_InViewController.class)
 public class ViewGlobalExceptionHandler {
     // todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 그래서 현재는 httpsttus 코드도 상세히 분리하고 있지않음, 고민필요.
 
@@ -32,6 +32,9 @@ public class ViewGlobalExceptionHandler {
     public Object handleUnexpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         return handleError(request, ex, "error/commonInternalErrorView");
     }
+
+
+
 
     private Object handleError(HttpServletRequest request, Exception ex, String viewName) {
         //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.

@@ -1,5 +1,7 @@
 package com.sptek._frameworkWebCore.datasource.extraConfig;
 
+import com.sptek._frameworkWebCore.annotation.EnableJpaHybrid_InMain;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -8,6 +10,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,7 +19,7 @@ import javax.sql.DataSource;
 
 @Slf4j
 @RequiredArgsConstructor
-//@Configuration
+@Configuration
 public class MybatisConfig implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
 
@@ -47,6 +50,8 @@ public class MybatisConfig implements WebMvcConfigurer {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
+    //EnableJpaHybrid_InMain 가 선언되지 않은 경우에 로딩 함(EnableJpaHybrid_InMain 사용시 JpaTransactionManager 가 동작함)
+    @HasAnnotationOnMain_InBean(value = EnableJpaHybrid_InMain.class, negate = true)
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();

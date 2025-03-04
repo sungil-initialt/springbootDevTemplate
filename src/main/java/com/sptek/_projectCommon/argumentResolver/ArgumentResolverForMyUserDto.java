@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.argumentResolver;
 
-import com.sptek._frameworkWebCore.annotation.EnableArgumentResolver;
+import com.sptek._frameworkWebCore.annotation.EnableArgumentResolver_InParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +28,7 @@ public class ArgumentResolverForMyUserDto implements HandlerMethodArgumentResolv
 
         //해당 클레스를 상속받은 클레스까지 적용하지만 rgumentResolver를 적용하겠다는 별도의 어노테이션이 있는 경우만 처리
         return methodParameter.getParameterType().isAssignableFrom(MyUserDto.class)
-                && methodParameter.hasParameterAnnotation(EnableArgumentResolver.class);
+                && methodParameter.hasParameterAnnotation(EnableArgumentResolver_InParam.class);
     }
 
 

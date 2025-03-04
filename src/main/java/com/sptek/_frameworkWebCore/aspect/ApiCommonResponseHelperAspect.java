@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class ApiCommonResponseHelperAspect {
     @Pointcut(
             "@within(org.springframework.web.bind.annotation.RestController)"
-            + "&& (@within(com.sptek._frameworkWebCore.annotation.EnableApiCommonSuccessResponse) || @annotation(com.sptek._frameworkWebCore.annotation.EnableApiCommonSuccessResponse))"
+            + "&& (@within(com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController) || @annotation(com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController))"
     )
     public void myPointCut() {}
 

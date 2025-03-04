@@ -25,7 +25,7 @@ public class JasyptStringEncryptor {
     //@Primary
     @Bean(name = "customJasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        // todo: prd 운영시 반드시 환경변수로 설정해야 함(보안이슈), 로그로 password 노출 하지 말것
+        // todo: prd 운영시 반드시 환경 변수로 설정해야 함(보안이슈), 로그로 password 노출 하지 말것
         String pbePassword = environment.getProperty("jasypt.encryptor.password");
         String pbeAlgorithm = environment.getProperty("jasypt.encryptor.algorithm", "PBEWITHHMACSHA512ANDAES_256");
         log.debug("pbePassword({}), pbeAlgorithm({})", StringUtils.hasText(pbePassword) ? pbePassword.substring(0, pbePassword.length()/2)+"..." : "", pbeAlgorithm);

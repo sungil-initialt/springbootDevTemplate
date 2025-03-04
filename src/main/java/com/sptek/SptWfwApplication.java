@@ -1,9 +1,6 @@
 package com.sptek;
 
-import com.sptek._frameworkWebCore.annotation.EnableApplicationCommonErrorResponse;
-import com.sptek._frameworkWebCore.annotation.EnableDetailLogFilter;
-import com.sptek._frameworkWebCore.annotation.EnableH2Datasource;
-import com.sptek._frameworkWebCore.annotation.UniversalAnnotationForTest;
+import com.sptek._frameworkWebCore.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,10 +9,21 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
-@EnableApplicationCommonErrorResponse
-@EnableDetailLogFilter
-@UniversalAnnotationForTest
-@EnableH2Datasource
+@TestAnnotation_InAll
+
+@EnableResponseOfApplicationGlobalException_InMain
+@EnableDetailLog_InMain_Controller_ControllerMethod
+
+//---------------------------------------------
+@EnableDatasourceOfH2_InMain
+//@EnableMysqlReplicationDatasource
+//@EnableMysqlReplicationWithJndiDatasource)
+//---------------------------------------------
+@EnableJpaHybrid_InMain
+
+//@EnableEnvironmentTrace_InMain
+
+
 public class SptWfwApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SptWfwApplication.class, args);

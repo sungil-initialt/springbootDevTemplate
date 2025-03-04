@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.springSecurity.extras.repository.test;
 
-import com.sptek._frameworkWebCore.annotation.EnableViewCommonErrorResponse;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.AuthorityDto;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@EnableViewCommonErrorResponse
+@EnableResponseOfViewGlobalException_InViewController
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외

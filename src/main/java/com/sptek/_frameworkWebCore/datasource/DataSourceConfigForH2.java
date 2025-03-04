@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore.datasource;
 
 
-import com.sptek._frameworkWebCore.annotation.EnableH2Datasource;
-import com.sptek._frameworkWebCore.annotation.HasAnnotationOnMain;
+import com.sptek._frameworkWebCore.annotation.EnableDatasourceOfH2_InMain;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +14,9 @@ import javax.sql.DataSource;
 
 //@Profile(value = { "!prd" }) //prd가 아닐때
 @Profile(value = { "local"})
-@HasAnnotationOnMain(value = EnableH2Datasource.class)
-@Configuration
 @Slf4j
+@HasAnnotationOnMain_InBean(EnableDatasourceOfH2_InMain.class)
+@Configuration
 public class DataSourceConfigForH2 {
 
     @Bean(name = "dataSource")

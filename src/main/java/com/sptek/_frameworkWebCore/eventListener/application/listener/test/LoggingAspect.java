@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.eventListener.application.listener;
+package com.sptek._frameworkWebCore.eventListener.application.listener.test;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

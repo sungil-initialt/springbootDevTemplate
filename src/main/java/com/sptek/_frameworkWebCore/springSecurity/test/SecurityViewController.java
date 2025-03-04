@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.springSecurity.test;
 
-import com.sptek._frameworkWebCore.annotation.EnableViewCommonErrorResponse;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.User;
@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@EnableViewCommonErrorResponse
+@EnableResponseOfViewGlobalException_InViewController
 //@EnableDetailLogFilter
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class SecurityViewController {

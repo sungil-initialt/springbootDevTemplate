@@ -13,7 +13,7 @@ import java.util.Base64;
 
 @Slf4j
 @Component
-// todo: DES 는 보안성이 매우 취약함으로 꼭 필요한 이유가 있을때만 사용 할것
+// todo: DES 는 보안성이 취약함으로 꼭 사용할 이유가 있을때 만 사용 할것
 public class DesEncryptor {
     private final String ALGORITHM = "DES";
     private final String TRANSFORMATION = "DES/CBC/PKCS5Padding";

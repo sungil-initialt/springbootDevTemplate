@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableH2Datasource {
-    // API 응답시 템플릿의 기본 ResponseEntity 구조를 사용하겠다는 선언용
+public @interface EnableResponseOfViewGlobalException_InViewController {
+    // view Controller 에러 발생시 공통 에러 플로우 및 공통 에러 페이이 적용
 }

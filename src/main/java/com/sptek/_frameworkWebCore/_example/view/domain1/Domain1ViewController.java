@@ -1,8 +1,7 @@
 package com.sptek._frameworkWebCore._example.view.domain1;
 
-import com.sptek._frameworkWebCore.annotation.EnableViewCommonErrorResponse;
-import com.sptek._frameworkWebCore.annotation.UniversalAnnotationForTest;
-import com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
@@ -41,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Controller
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-@EnableViewCommonErrorResponse
+@EnableResponseOfViewGlobalException_InViewController
 public class Domain1ViewController {
     @NonFinal
     private final String pageBasePath = "pages/example/test/";
@@ -92,7 +91,7 @@ public class Domain1ViewController {
     }
 
     @RequestMapping("/interceptor")
-    @UniversalAnnotationForTest
+    @TestAnnotation_InAll
     public String interceptor(Model model) {
         log.debug("origin caller here.");
         model.addAttribute("message", "welcome");
@@ -290,15 +289,6 @@ public class Domain1ViewController {
         }
 
         return pageBasePath + "i18n";
-    }
-
-    @EnableRequestDeduplication
-    @RequestMapping("/duplicatedRequest")
-    public String duplicatedRequest(Model model) throws Exception {
-        // 테스트를 위한 강제 딜레이
-        Thread.sleep(3000L);
-        model.addAttribute("result", "duplicatedRequest Test");
-        return pageBasePath + "simpleModelView";
     }
 
     //thyleaf 에러 처리 테스트

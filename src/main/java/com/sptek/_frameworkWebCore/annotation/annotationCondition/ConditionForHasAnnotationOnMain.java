@@ -1,6 +1,5 @@
 package com.sptek._frameworkWebCore.annotation.annotationCondition;
 
-import com.sptek._frameworkWebCore.annotation.HasAnnotationOnMain;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
@@ -13,7 +12,7 @@ public class ConditionForHasAnnotationOnMain implements Condition {
 
     @Override
     public boolean matches(@NotNull ConditionContext context, AnnotatedTypeMetadata metadata) {
-        Map<String, Object> attributes = metadata.getAnnotationAttributes(HasAnnotationOnMain.class.getName());
+        Map<String, Object> attributes = metadata.getAnnotationAttributes(HasAnnotationOnMain_InBean.class.getName());
 
         if (attributes == null) {
             return false;

@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore.annotation.EnableDetailLogFilter;
+import com.sptek._frameworkWebCore.annotation.EnableDetailLog_InMain_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.*;
@@ -33,7 +33,7 @@ import java.util.Optional;
 public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
 
-    private Boolean hasEnableDetailLogFilterAnnotationOnMain = null;
+    private Boolean hasEnableDetailLogAnnotationOnMain = null;
 
     public DetailLogFilterWithAnnotation(ApplicationContext applicationContext) {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
@@ -44,13 +44,13 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
         // 매번 호출되는 것을 방지 하기 위해서
-        if (hasEnableDetailLogFilterAnnotationOnMain == null) {
-            hasEnableDetailLogFilterAnnotationOnMain = SpringUtil.hasAnnotationOnMain(EnableDetailLogFilter.class);
+        if (hasEnableDetailLogAnnotationOnMain == null) {
+            hasEnableDetailLogAnnotationOnMain = SpringUtil.hasAnnotationOnMain(EnableDetailLog_InMain_Controller_ControllerMethod.class);
         }
 
         if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()
                 //@EnableDetailLogFilter 가 적용된 클레스 또는 메스드만 적용됨
-                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLogFilter.class) && !hasEnableDetailLogFilterAnnotationOnMain)
+                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLog_InMain_Controller_ControllerMethod.class) && !hasEnableDetailLogAnnotationOnMain)
         ) {
             filterChain.doFilter(request, response);
             return;
@@ -100,7 +100,7 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
             );
 
             //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
-            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLogFilter.class).get("value"));
+            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLog_InMain_Controller_ControllerMethod.class).get("value"));
             log.info(SptFwUtil.convertSystemNotice(tagName,"Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
 
         } else {

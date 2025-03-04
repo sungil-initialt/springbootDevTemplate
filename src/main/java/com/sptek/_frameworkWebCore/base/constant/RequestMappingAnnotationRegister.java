@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestMappingAnnotationRegister {
     // 컨트롤러 매서드에 적용된 타멧 페키지 어노테이션(클레스와 메소드 모두에 적용된 어노테이션) 정보를 모두 가지고 있는 역할
-    private static final String TARGET_ANNOTATION_PACKAGE = "com.sptek.webfw.annotation";
+    private static final String TARGET_ANNOTATION_PACKAGE = "com.sptek._frameworkWebCore.annotation";
 
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
     private static Map<String, Map<String, Map<String, Object>>> requestAnnotationCache = Collections.emptyMap();
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     //OPTIONS은 메소드가 없어도 스프링 단에서 처림됨, HEAD는 메소드가 없어도 스프링단에서 GET이 호출됨(단 body를 내리지 않는다)
     private static final List<String> ALL_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"/*, "OPTIONS", "HEAD"*/);
 
@@ -65,9 +66,7 @@ public class RequestMappingAnnotationRegister {
         log.info(SptFwUtil.convertSystemNotice("Non-specific mapping Check List (it's not recommended)", logBodyForNonSpecificMapping.isEmpty() ? "No List" : logBodyForNonSpecificMapping.toString()));
     }
 
-    /**
-     * 핸들러 메소드에서 어노테이션과 속성 정보를 가져옴
-     */
+    // 핸들러 메소드에서 어노테이션과 속성 정보를 가져옴
     private Map<String, Map<String, Object>> getAnnotationsWithAttributes(HandlerMethod handlerMethod) {
         Map<String, Map<String, Object>> annotationData = new HashMap<>();
 
@@ -88,9 +87,7 @@ public class RequestMappingAnnotationRegister {
         return annotationData;
     }
 
-    /**
-     * 어노테이션의 속성 정보를 추출
-     */
+    // 어노테이션의 속성 정보를 추출
     private Map<String, Object> extractAnnotationAttributes(Annotation annotation) {
         Map<String, Object> attributes = new HashMap<>();
         Method[] methods = annotation.annotationType().getDeclaredMethods();

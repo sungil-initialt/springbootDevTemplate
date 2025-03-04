@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class CustomApplicationErrorController implements ErrorController {
+public class CustomErrorController implements ErrorController {
     private final ObjectMapper objectMapper;
     //Controller 외부 영역에서 발생한 에러(필터쪽이나.. 기타 등등)를 직접 처리하기 위해 내부적으로 스프링이 디폴트로 처리하던 "/error" 매핑을 직접 커스터마이징 구현함
 
