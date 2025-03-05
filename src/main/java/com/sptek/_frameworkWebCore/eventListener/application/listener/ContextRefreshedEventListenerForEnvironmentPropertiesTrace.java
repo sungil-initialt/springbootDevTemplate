@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.eventListener.application.listener;
 
-import com.sptek._frameworkWebCore.annotation.EnableEnvironmentTrace_InMain;
+import com.sptek._frameworkWebCore.annotation.EnableEnvironmentPropertiesTrace_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,9 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Profile(value = { "local", "dev", "stg", "prd" }) //prd는 제외 할까?(보안이슈)
 //@ConditionalOnProperty(name = "sptFramework.eventListener.application.ContextRefreshedEventListenerForConfigLogging", havingValue = "true", matchIfMissing = false) //@HasAnnotationOnMain_InBean 방식으로 변경
-@HasAnnotationOnMain_InBean(EnableEnvironmentTrace_InMain.class)
+@HasAnnotationOnMain_InBean(EnableEnvironmentPropertiesTrace_InMain.class)
 @Component
-public class ContextRefreshedEventListenerForEnvironmentTrace {
+public class ContextRefreshedEventListenerForEnvironmentPropertiesTrace {
 
     // 애플리케이션 컨텍스트가 초기화되거나 새로고침될 때 실행 (시스템 설정상의 문제를 확인하는데 도움을 줄 수 있다)
     @EventListener

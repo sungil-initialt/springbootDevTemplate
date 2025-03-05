@@ -16,12 +16,12 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 //---------------------------------------------
 @EnableDatasourceOfH2_InMain
-//@EnableMysqlReplicationDatasource
-//@EnableMysqlReplicationWithJndiDatasource)
+//@EnableDatasourceOfMysqlReplication_InMain
+//@EnableDatasourceOfMysqlReplicationWithJndi_InMain
 //---------------------------------------------
 @EnableJpaHybrid_InMain
 
-//@EnableEnvironmentTrace_InMain
+@EnableEnvironmentPropertiesTrace_InMain
 
 
 public class SptWfwApplication {

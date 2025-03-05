@@ -16,11 +16,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) //application  메소드에서도 접근제어 가능하게 함
+@EnableMethodSecurity(prePostEnabled = true) //컨트롤로에서 개별적 권한 관리가 가능
 public class SecurityConfig {
 
     @Bean
-    //로그인 전체 스템을 관리할 AuthenticationManager(=ProviderManager)에 AuthenticationProvider을 추가하여 반환. (필요에 따라 만들어진 AuthenticationProvider)
+    //로그인 전체 스텝을 관리할 AuthenticationManager(=ProviderManager)에 AuthenticationProvider을 추가하여 반환. (필요에 따라 만들어진 AuthenticationProvider)
     public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {
         //AuthenticationProvider 가 여러개 설정된 상황에 대해서 어떤 전략?으로 처리할지 커스텀이 필요하다면
         //AuthenticationManager 에 대한 custom 작업이 필요함!
@@ -43,5 +43,4 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/hello");
         //return (webSecurity) -> webSecurity.ignoring().requestMatchers("/**");
     }
-
 }
