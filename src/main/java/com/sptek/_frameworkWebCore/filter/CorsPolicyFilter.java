@@ -102,7 +102,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
 //        }
 //    }
 
-    //-->스프링 시큐리티가 먼저 체가는 느낌임..
+    //--> 옵션이 아니더라도 Origin 이 있으면 관련 해더를 내려 주는쪽을 검토 필요
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // todo: 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
