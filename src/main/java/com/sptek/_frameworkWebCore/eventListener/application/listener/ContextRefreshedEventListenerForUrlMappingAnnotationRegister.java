@@ -21,7 +21,7 @@ public class ContextRefreshedEventListenerForUrlMappingAnnotationRegister {
         log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/public/anyone/butNeedControllAuth", EnableResponseOfApplicationGlobalException_InMain.class));
         log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", EnableResponseOfApiCommonSuccess_InRestController.class));
         log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", EnableResponseOfViewGlobalException_InViewController.class));
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/httpCache", EnableRequestDeduplication_InRestController_RestControllerMethod.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/httpCache", EnableDeduplicationRequest_InRestController_RestControllerMethod.class));
         log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("POST:/api/v1/httpCache", TestAnnotation_InAll.class));
         log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("POST:/api/v1/httpCache2", TestAnnotation_InAll.class));
     }

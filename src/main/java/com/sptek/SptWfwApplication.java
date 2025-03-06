@@ -21,7 +21,9 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 //---------------------------------------------
 @EnableJpaHybrid_InMain
 
-@EnableEnvironmentPropertiesTrace_InMain
+@EnableConsoleLogEnvironmentProperties_InMain
+
+@EnableCorsPolicyFilter_InMain
 
 
 public class SptWfwApplication {

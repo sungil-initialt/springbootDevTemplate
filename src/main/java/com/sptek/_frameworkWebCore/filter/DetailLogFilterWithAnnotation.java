@@ -101,7 +101,7 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
 
             //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
             String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLog_InMain_Controller_ControllerMethod.class).get("value"));
-            log.info(SptFwUtil.convertSystemNotice(tagName,"Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
+            log.info("Tag Name: " + SptFwUtil.convertSystemNotice(StringUtils.hasText(tagName) ? tagName : "No Name","Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");

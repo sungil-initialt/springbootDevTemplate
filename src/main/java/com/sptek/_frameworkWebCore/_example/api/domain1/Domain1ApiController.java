@@ -287,7 +287,7 @@ public class Domain1ApiController {
         return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
     }
 
-    @EnableRequestDeduplication_InRestController_RestControllerMethod
+    @EnableDeduplicationRequest_InRestController_RestControllerMethod
     @RequestMapping(value="/duplicatedRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public Object duplicatedRequest() throws Exception {
@@ -311,7 +311,7 @@ public class Domain1ApiController {
         return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
     }
 
-    @EnableRequestDeduplication_InRestController_RestControllerMethod
+    @EnableDeduplicationRequest_InRestController_RestControllerMethod
     @GetMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
     public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet() {

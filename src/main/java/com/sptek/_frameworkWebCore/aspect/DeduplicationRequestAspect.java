@@ -18,14 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Aspect
 @Component
 // 정상적인 동작이 되려면 해당 사용자에 대한 session이 이미 존재한 상태여야 함(대부분의 경우 이미 존재할듯)
-public class RequestDeduplicationAspect {
-    //@Controller 또는 @RestController 가 적용된 클레스, 그리고 @AnoRequestDeduplication 가 적용된 클레스 또는 @AnoRequestDeduplication 가 적용된 메소드에서 실행됨
-    //@Pointcut("(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController)) " +
-    //        "&& (@within(com.sptek.webfw.anotation.AnoRequestDeduplication) || @annotation(com.sptek.webfw.anotation.AnoRequestDeduplication))")
+public class DeduplicationRequestAspect {
 
     //기능의 특성상 @Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication_InRestController_RestControllerMethod) || @annotation(com.sptek._frameworkWebCore.annotation.EnableRequestDeduplication_InRestController_RestControllerMethod))")
+            "&& (@within(com.sptek._frameworkWebCore.annotation.EnableDeduplicationRequest_InRestController_RestControllerMethod) || @annotation(com.sptek._frameworkWebCore.annotation.EnableDeduplicationRequest_InRestController_RestControllerMethod))")
     public void myPointCut() {}
 
 
@@ -34,7 +31,7 @@ public class RequestDeduplicationAspect {
         long DEDUPLICATION_DEFAULT_MS = 1000L*10; //해당 메소드 처리 시간이 실제 얼마가 걸릴지 알수 없기 때문에 우선 이 Sec 동안 중복 요청 불가 처리함 (해당 시간 내에도 처리 되지 못하면 중복 방어가 더이상 안됨)
         long DEDUPLICATION_EXTRA_MS = 1000L; //해당 메소드 처리가 종료되면 남은 초기 시간과 관계 없이 새로운 시간으로 중복 처리 방어함 (종료가 되었더라도 1초 정도는 중복 방어함)
 
-        log.debug("AOP order : 1");
+        //log.debug("AOP order : 1");
         //log.debug("sessionAttributeAll : {}", ReqResUtil.getSessionAttributesAll(true));
         HttpServletRequest currentRequest = SpringUtil.getRequest();
 
@@ -62,7 +59,7 @@ public class RequestDeduplicationAspect {
             log.debug("save new requestedMethodSignature ({}), currentTimeMillis ({})", requestedMethodSignature, System.currentTimeMillis());
 
             try {
-                log.debug("AOP order : 2");
+                //log.debug("AOP order : 2");
                 return joinPoint.proceed(); // --> @Before --> origin caller --> @After 순으로 진행됨
 
             } finally {  //exception 상황에서도 반드시 expire Ms 업데이트 필요
