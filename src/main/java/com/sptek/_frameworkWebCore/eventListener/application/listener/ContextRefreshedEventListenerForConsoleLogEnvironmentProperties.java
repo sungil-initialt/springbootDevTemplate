@@ -24,7 +24,7 @@ import java.util.stream.StreamSupport;
 //@ConditionalOnProperty(name = "sptFramework.eventListener.application.ContextRefreshedEventListenerForConfigLogging", havingValue = "true", matchIfMissing = false) //@HasAnnotationOnMain_InBean 방식으로 변경
 @HasAnnotationOnMain_InBean(EnableConsoleLogEnvironmentProperties_InMain.class)
 @Component
-public class ContextRefreshedEventListenerForEnvironmentPropertiesTrace {
+public class ContextRefreshedEventListenerForConsoleLogEnvironmentProperties {
 
     // 애플리케이션 컨텍스트가 초기화되거나 새로고침될 때 실행 (시스템 설정상의 문제를 확인하는데 도움을 줄 수 있다)
     @EventListener

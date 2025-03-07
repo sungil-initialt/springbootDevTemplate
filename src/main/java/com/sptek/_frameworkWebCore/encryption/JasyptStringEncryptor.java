@@ -1,5 +1,7 @@
 package com.sptek._frameworkWebCore.encryption;
 
+import com.sptek._frameworkWebCore.annotation.EnableEncryptorJasypt_InMain;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
+@HasAnnotationOnMain_InBean(EnableEncryptorJasypt_InMain.class)
 public class JasyptStringEncryptor {
     // 정적 데이터를 암복호 할수 있는 Encryption 으로 주로 코드내(property) 주요 정보를 암복호화 할때 사용
     // 간단한 정적 데이터 암호화에 적합함으로 실시간성 데이터 암복호에는 성능상 적합하지 않음

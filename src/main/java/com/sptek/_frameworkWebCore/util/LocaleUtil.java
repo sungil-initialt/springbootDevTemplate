@@ -42,9 +42,7 @@ public class LocaleUtil {
     //현재 Locale에 해당하는 메시지로 제공한다. (arg 가 객체로 들어올 경우 해당 객체의 toString() 이 적용됨)
     public static String getI18nMessage(String code, @Nullable Object[] args) {
         String langCode;
-        LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(SpringUtil.getRequest());
-
-        if (localeResolver != null) {
+        if (RequestContextUtils.getLocaleResolver(SpringUtil.getRequest()) != null) {
             langCode = LocaleContextHolder.getLocale().toLanguageTag();
 
         } else {

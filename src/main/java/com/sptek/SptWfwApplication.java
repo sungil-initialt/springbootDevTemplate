@@ -25,6 +25,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @EnableCorsPolicyFilter_InMain
 
+@EnableEncryptorJasypt_InMain
+
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

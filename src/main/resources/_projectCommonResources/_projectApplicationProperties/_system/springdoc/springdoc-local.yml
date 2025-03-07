@@ -6,7 +6,7 @@ springdoc:
     path: /api-docs/json
     groups:
       enabled: true
-  packages-to-scan: com.sptek.webfw.example.api.api1
+  packages-to-scan: com.sptek #해당 페키지 하위의 컨트롤러를 스캔함
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
@@ -14,4 +14,4 @@ springdoc:
     tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
     operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
   cache:
-    disabled: true
+    disabled: false
