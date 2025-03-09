@@ -27,6 +27,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @EnableEncryptorJasypt_InMain
 
+@EnableThymeleafSpringSecurityDialect_InMain //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
 
 public class SptWfwApplication {
 	public static void main(String[] args) {
