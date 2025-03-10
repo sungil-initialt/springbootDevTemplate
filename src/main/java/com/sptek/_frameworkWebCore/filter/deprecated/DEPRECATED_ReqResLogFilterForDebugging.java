@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.deprecated;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
@@ -9,14 +9,10 @@ import com.sptek._frameworkWebCore.util.ResponseUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,11 +22,11 @@ import java.util.Optional;
 /*
 모든  request, response 에 대한 전체 로그를 남긴다. 성능 및 메모리 소묘가 큼으로 로컬에서 개발 디버깅용으로만 사용하여야 한다. 상용 적용 금지.
 */
-@Profile(value = { "local" })
 @Slf4j
-@Order(3)
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_ReqResLogFilterForDebugging", havingValue = "true", matchIfMissing = false)
+//@Profile(value = { "local" })
+//@Order(3)
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_ReqResLogFilterForDebugging", havingValue = "true", matchIfMissing = false)
 public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter {
 
     public DEPRECATED_ReqResLogFilterForDebugging() {

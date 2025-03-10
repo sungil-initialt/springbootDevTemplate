@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.deprecated;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,11 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import jakarta.servlet.annotation.WebFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,9 +21,9 @@ import java.util.Map;
 
 
 @Slf4j
-@Order(1)
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_XssProtectFilter", havingValue = "true", matchIfMissing = false)
+//@Order(1)
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_XssProtectFilter", havingValue = "true", matchIfMissing = false)
 public class DEPRECATED_XssProtectFilter extends OncePerRequestFilter {
     /*
     Xss 방지 필터 목적인데.. request param 으로 들어오는 값들에 대한 처리는 필터에서 적용하기가 애매함 (해당 코드는 request body 에만 Xss 필터가 적용됨)

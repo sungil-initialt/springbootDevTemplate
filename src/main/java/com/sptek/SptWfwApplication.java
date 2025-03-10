@@ -12,6 +12,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @TestAnnotation_InAll
 
 @EnableResponseOfApplicationGlobalException_InMain
+@EnableMdcTagging_InMain
 @EnableDetailLog_InMain_Controller_ControllerMethod
 
 //---------------------------------------------
@@ -25,9 +26,12 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @EnableCorsPolicyFilter_InMain
 
+
 @EnableEncryptorJasypt_InMain
 
 @EnableThymeleafSpringSecurityDialect_InMain //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
+
+@DisableFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

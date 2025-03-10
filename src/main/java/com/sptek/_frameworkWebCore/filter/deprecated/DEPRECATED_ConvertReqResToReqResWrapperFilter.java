@@ -1,25 +1,22 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.deprecated;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek._frameworkWebCore.support.DEPRECATED_HttpServletResponseWrapperSupport;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 
 @Slf4j
-@Order(1) //httpServletResponseWrapperSupport 형태가 최종 response 형태로 나가야 함으로 필터의 마지막에 처리되야함(마지막 처리를 위해선 가장 먼저 저일되야 함)
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_ConvertReqResToReqResWrapperFilter", havingValue = "true", matchIfMissing = false)
+//@Order(1) //httpServletResponseWrapperSupport 형태가 최종 response 형태로 나가야 함으로 필터의 마지막에 처리되야함(마지막 처리를 위해선 가장 먼저 저일되야 함)
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DEPRECATED_ConvertReqResToReqResWrapperFilter", havingValue = "true", matchIfMissing = false)
 public class DEPRECATED_ConvertReqResToReqResWrapperFilter extends OncePerRequestFilter {
 
     public DEPRECATED_ConvertReqResToReqResWrapperFilter() {

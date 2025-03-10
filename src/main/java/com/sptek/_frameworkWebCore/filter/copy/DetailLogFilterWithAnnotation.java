@@ -1,17 +1,16 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.copy;
 
-import com.sptek._frameworkWebCore.annotation.DisableFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.annotation.EnableDetailLog_InMain_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.*;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -21,13 +20,15 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
+//@Order(2) //순서에 장단점이 있을 수 있음
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.DetailLogFilterWithAnnotation", havingValue = "true", matchIfMissing = false)
 public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
-    private Boolean hasDisableFilterAndSessionForMinorRequestAnnotation = null;
-    private Boolean hasEnableDetailLogAnnotation = null;
 
-    @PostConstruct //Bean 생성 이후 호출
-    public void init() {
+    private Boolean hasWorkingAnnotation = null;
+
+    public DetailLogFilterWithAnnotation(ApplicationContext applicationContext) {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
@@ -35,21 +36,15 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
-        // 매번 호출 되는 것을 방지 하기 위해서
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation == null) {
-            hasDisableFilterAndSessionForMinorRequestAnnotation = SpringUtil.hasAnnotationOnMain(DisableFilterAndSessionForMinorRequest_InMain.class);
-            hasEnableDetailLogAnnotation = SpringUtil.hasAnnotationOnMain(EnableDetailLog_InMain_Controller_ControllerMethod.class);
+        // 매번 호출되는 것을 방지 하기 위해서
+        if (hasWorkingAnnotation == null) {
+            hasWorkingAnnotation = SpringUtil.hasAnnotationOnMain(EnableDetailLog_InMain_Controller_ControllerMethod.class);
         }
 
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation) {
-            if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-        }
-
-        //추가로 EnableDetailLog_InMain_Controller_ControllerMethod 가 없는 경우 그냥 페스함
-        if (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLog_InMain_Controller_ControllerMethod.class) && !hasEnableDetailLogAnnotation) {
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()
+                //@EnableDetailLogFilter 가 적용된 클레스 또는 메스드만 적용됨
+                || (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLog_InMain_Controller_ControllerMethod.class) && !hasWorkingAnnotation)
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -131,4 +126,5 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
             contentCachingResponseWrapper.copyBodyToResponse();
         }
     }
+
 }

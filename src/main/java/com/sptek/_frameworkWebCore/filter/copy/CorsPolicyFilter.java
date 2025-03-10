@@ -1,11 +1,7 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.copy;
 
-import com.sptek._frameworkWebCore.annotation.DisableFilterAndSessionForMinorRequest_InMain;
-import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.globalVo.CorsPropertiesVo;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._frameworkWebCore.util.SpringUtil;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +14,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/*
+MVC 인터셉터 방법보다 Fiter 방식이 추후 커스텀하기에 좋음
+ */
+
+//@WebFilter적용시 @Component 사용하지 않아야함(@Component 적용시 모든 요청에 적용됨)
+//@Component
+//@Slf4j
+//@RequiredArgsConstructor
+//@Order(Ordered.LOWEST_PRECEDENCE)
+//@Profile(value = { "local", "dev", "stg", "prd" })
+//@HasAnnotationOnMain_InBean(EnableCorsPolicyFilter_InMain.class)
+////@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.CorsPolicyFilter", havingValue = "true", matchIfMissing = false)
+//@WebFilter(urlPatterns = "/api/*") //브라우저에서 실제 CORS 확인 처리는 api 호출때 요첨 됨으로.. //ant 표현식 사용 불가 ex: /**
+////@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+
+
+
 @Slf4j
 @RequiredArgsConstructor
 public class CorsPolicyFilter extends OncePerRequestFilter {
@@ -25,26 +38,13 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     // 상세한 컨트롤 및 어노테이션을 통한 사용 설정을 위해 개별 필터로 처리함(SpringSecurity 의 CORS 디폴트 처리는 disabled 처리함)
 
     private final CorsPropertiesVo corsPropertiesVo;
-    private Boolean hasDisableFilterAndSessionForMinorRequestAnnotation = null;
-
-    @PostConstruct //Bean 생성 이후 호출
-    public void init() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
-    }
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        // 매번 호출되는 것을 방지 하기 위해서
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation == null) {
-            hasDisableFilterAndSessionForMinorRequestAnnotation = SpringUtil.hasAnnotationOnMain(DisableFilterAndSessionForMinorRequest_InMain.class);
-        }
-
         // todo: 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation) {
-            if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
         String origin = Collections.list(request.getHeaderNames()).stream()
@@ -56,7 +56,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         //log.debug("CORS request Orign: {}", origin);
 
         // 브라우저는 요청 형태에 따라 다양한 CORS 정책을 사용함
-        // ex: GET 일때는 Option 요청을 보내지 않고 본래 요청에 Origin 만 넣어서 보냄, POST 등 중요한? 요청의 경우 Option 을 먼저 보내고 안전 한지 확인 후 본래 요청 에도 Origin 을 넣어 보냄)
+        // /ex: GET 일때는 Option 요청을 보내지 않고 본래 요청에 Origin 만 넣어서 보냄, POST 등 중요한? 요청의 경우 Option 을 먼저 보내고 안전 한지 확인 후 본래 요청 에도 Origin 을 넣어 보냄)
         if (!origin.equalsIgnoreCase("NoOrigin")) {
             String allowOrigin = "*".equals(corsPropertiesVo.getDefaultAccessControlAllowOrigin()) || corsPropertiesVo.getAccessControlAllowOrigins().contains(origin)
                     ? origin

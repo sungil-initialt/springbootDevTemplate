@@ -23,10 +23,12 @@ public class SecurityUtil {
     }
 
     public static List<String> getNotEssentialRequestPatterns(){
+        //return Arrays.asList("foo", "bar");
         return Arrays.asList(
                 "/swagger-ui.html"
                 , "/api-docs/**"
                 , "/v2/api-docs/**"
+                , "/v3/api-docs/**"
                 , "/configuration/ui/**"
                 , "/configuration/security/**"
                 , "/swagger-resources/**"
@@ -61,6 +63,7 @@ public class SecurityUtil {
     }
 
     public static List<String> getStaticResourceRequestPatterns(){
+        //return Arrays.asList("foo", "bar");
         return Arrays.asList(
                 "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**"
                 , "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**"

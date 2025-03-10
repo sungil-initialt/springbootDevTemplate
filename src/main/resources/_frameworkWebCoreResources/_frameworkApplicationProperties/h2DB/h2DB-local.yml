@@ -1,6 +1,6 @@
 spring.h2: #H2 DB 사용
   console:
-    enabled: false # h2 WEB Console 을 사용할 필요는 거의 없음 으로 기본 기본 false 처리함 (false 를 해도 h2 DB는 런타임에서 항상 살아 있음, 사용안할시 라이브러리 주석처리 필요)
+    enabled: true # h2 WEB Console 을 사용할 필요는 거의 없음 으로 기본 기본 false 처리함 (false 를 해도 h2 DB는 런타임에서 항상 살아 있음, 사용안할시 라이브러리 주석처리 필요)
     path: /h2-console #웹콘솔 url 경로, ex:https://localhost:8443/h2-console/
 
 h2:

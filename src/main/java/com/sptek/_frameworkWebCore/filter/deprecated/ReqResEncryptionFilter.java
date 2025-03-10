@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.deprecated;
 
 /*
 Xss 방지 필터 목적인데.. request param 으로 들어오는 값들에 대한 처리는 필터에서 적용하기가 애매함 (해당 코드는 request body 에만 Xss 필터가 적용됨)
@@ -10,21 +10,18 @@ objectMapper 셋팅에서 XssProtectSupport 클레스를 적용하는 방식으�
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Slf4j
-@Order(2)
-@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
-@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.ReqResEncryptionFilter", havingValue = "true", matchIfMissing = false)
+//@Order(2)
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.ReqResEncryptionFilter", havingValue = "true", matchIfMissing = false)
 public class ReqResEncryptionFilter extends OncePerRequestFilter {
 
     public ReqResEncryptionFilter() {

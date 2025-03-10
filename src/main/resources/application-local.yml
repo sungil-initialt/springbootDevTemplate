@@ -14,7 +14,7 @@ spring:
   config:
     import:
       #_frameworkWebCoreResources
-      - optional:classpath:_autoInitializeDB/autoInitializeDB.yml
+      - optional:classpath:_autoSqlInitialize/autoSqlInitialize.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/globalError/globalError.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/h2DB/h2DB.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/jsp/jsp.yml
@@ -22,7 +22,7 @@ spring:
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/ssl/ssl.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/thymeleaf/thymeleaf.yml
       #_projectCommonResources(_system)
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/cors/cors.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/cors/corsPolicy.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/datasource/datasource.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/encryption/encryption.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/jpa/jpa.yml

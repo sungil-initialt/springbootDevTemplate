@@ -3,6 +3,7 @@ package com.sptek._frameworkWebCore.eventListener.application.listener;
 import com.sptek._frameworkWebCore.annotation.EnableConsoleLogEnvironmentProperties_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
 @Slf4j
+@RequiredArgsConstructor
 @Profile(value = { "local", "dev", "stg", "prd" }) //prd는 제외 할까?(보안이슈)
 //@ConditionalOnProperty(name = "sptFramework.eventListener.application.ContextRefreshedEventListenerForConfigLogging", havingValue = "true", matchIfMissing = false) //@HasAnnotationOnMain_InBean 방식으로 변경
 @HasAnnotationOnMain_InBean(EnableConsoleLogEnvironmentProperties_InMain.class)

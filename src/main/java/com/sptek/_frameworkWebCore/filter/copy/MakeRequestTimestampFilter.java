@@ -1,10 +1,7 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.copy;
 
-import com.sptek._frameworkWebCore.annotation.DisableFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._frameworkWebCore.util.SpringUtil;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,27 +15,22 @@ import java.time.LocalDateTime;
 
 //@Profile(value = { "xxx" })
 @Slf4j
+//@Order(2) //최상위 필터로 적용 (최대한 실제 요청에 가깝게 timestamp를 만들기 위해)
+//@WebFilter(urlPatterns = "/api/*") //ant 표현식 사용 불가 ex: /**
+//@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.MakeRequestTimestampFilter", havingValue = "true", matchIfMissing = false)
 public class MakeRequestTimestampFilter extends OncePerRequestFilter {
-    private Boolean hasDisableFilterAndSessionForMinorRequestAnnotation = null;
 
-    @PostConstruct //Bean 생성 이후 호출
-    public void init() {
+    public MakeRequestTimestampFilter() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 
-        // 매번 호출 되는 것을 방지 하기 위해서
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation == null) {
-            hasDisableFilterAndSessionForMinorRequestAnnotation = SpringUtil.hasAnnotationOnMain(DisableFilterAndSessionForMinorRequest_InMain.class);
-        }
-
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation) {
-            if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+        //필터 제외 케이스
+        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
         request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());

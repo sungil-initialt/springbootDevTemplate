@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.filter;
+package com.sptek._frameworkWebCore.filter.deprecated;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import jakarta.servlet.ServletException;

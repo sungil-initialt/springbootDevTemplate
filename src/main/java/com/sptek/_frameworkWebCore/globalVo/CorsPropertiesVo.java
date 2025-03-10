@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Data
-@Component
+@Component("corsPropertiesVo")
 @ConfigurationProperties(prefix = "cors.options")
 public class CorsPropertiesVo {
     private String defaultAccessControlAllowOrigin;

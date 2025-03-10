@@ -40,7 +40,8 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (webSecurity) -> webSecurity.ignoring()
                 .requestMatchers(SecurityUtil.getNotEssentialRequestPatternsArray())
-                .requestMatchers("/api/v1/hello");
+                .requestMatchers("/api/v1/hello")
+                ;
         //return (webSecurity) -> webSecurity.ignoring().requestMatchers("/**");
     }
 }
