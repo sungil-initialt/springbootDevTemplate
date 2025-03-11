@@ -74,7 +74,12 @@ public class SecurityFilterChainConfig {
                         //.defaultSuccessUrl("/")
                         .successHandler(customAuthenticationSuccessHandlerForView)
                         .failureHandler(customAuthenticationFailureHandlerForView)
-                )
+                        // <View 로그인 처리 프로세서>
+                        // 로그인 폼에서 정보 입력 후 <form action=/login> 으로 하면 서버의 AuthenticationManager 로 입력 정보가 자동 으로 전달됨
+                        // 전달 받은 로그인 정보를 보고 어떤 타입의 로그인 처리 인지 확인후 등록된 AuthenticationProvider(CustomAuthenticationProvider)의 support 타입을 보고 그에 맞는 대상에 전달됨(security 내부적으로 처리됨)
+                        // AuthenticationProvider(CustomAuthenticationProvider) 에서 관련 처리를 하고(개발자) 리턴 타입을 맟춰 응답하면 AuthenticationManager SecurityContextHolder 및 session 에 관련 처리를 함
+                        // security 설정에 따라 다르지만 이후 요청이 들어오면 SecurityFilterChain 에소 세션(쿠키)을 기준으로 SecurityContextHolder 다시 가져와서 로그인 상태를 유지함
+                        // 세션에 SecurityContextHolder가 없거나 만료되었다면.. 그에 따른 후속 처리 진행
 
                 // 로그아웃 처리
                 // 1. SecurityContext에 저장된 인증 정보 제거
@@ -130,8 +135,8 @@ public class SecurityFilterChainConfig {
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, /login 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
                 //api 방식일 경우 UsernamePasswordAuthenticationFilter 가 동작하면 안됨으로 그 앞에 CustomJwtFilter 두어 인증 관련 처리를 먼저 하도록 처리함
-                .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                ;
+                .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
 
         return httpSecurity.build();
     }
