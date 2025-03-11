@@ -12,22 +12,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
-@Order(Ordered.HIGHEST_PRECEDENCE+1)
-@Profile(value = { "local", "dev", "stg", "prd" })
-@WebFilter(urlPatterns = "/*")
+//@Profile(value = { "local", "dev", "stg", "prd" })
+//@WebFilter(urlPatterns = "/*")
 public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
     private Boolean enableNoFilterAndSessionForMinorRequest_InMain = null;
@@ -40,6 +35,7 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+        log.debug("DetailLogFilterWithAnnotation start");
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
         // 매번 호출 되는 것을 방지 하기 위해서

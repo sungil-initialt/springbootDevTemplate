@@ -1,30 +1,24 @@
 package com.sptek._frameworkWebCore.filter;
 
 import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Slf4j
-@Profile(value = { "local", "dev", "stg", "prd" })
-@Order(Ordered.HIGHEST_PRECEDENCE) //최대한 높은 순위로 지정해야 함
-@HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
-@WebFilter(urlPatterns = "/*")
+//@Profile(value = { "local", "dev", "stg", "prd" })
+//@HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
+//@WebFilter(urlPatterns = "/*")
 public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
     /*
     org.springframework.session:spring-session-data-redis 을 사용하게 되면 SessionRepositoryFilter 가 자동 등록 되게 되는데
@@ -45,6 +39,7 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
 
     @Override
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+        log.debug("NoSessionFilterForMinorRequest start");
         // 매번 호출 되는 것을 방지 하기 위해서
         if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
             enableNoFilterAndSessionForMinorRequest_InMain = SpringUtil.hasAnnotationOnMain(EnableNoFilterAndSessionForMinorRequest_InMain.class);
