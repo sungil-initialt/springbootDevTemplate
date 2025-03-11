@@ -31,7 +31,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @EnableThymeleafSpringSecurityDialect_InMain //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
 
-@DisableFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
+//@DisableFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

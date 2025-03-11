@@ -39,7 +39,7 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
         if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
             //중요 요청이 아닌 경우 이미 세션 처리를 끝낸것 처럼 강제 세팅함
             request.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE);
-            //log.debug("setAttribute for ExcludeSessionRepository of {}", request.getServletPath());
+            log.debug("Not Essential Request: {}", request.getServletPath());
         }
 
         filterChain.doFilter(request, response);

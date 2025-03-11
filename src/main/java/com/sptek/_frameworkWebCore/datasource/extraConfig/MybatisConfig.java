@@ -28,12 +28,13 @@ public class MybatisConfig implements WebMvcConfigurer {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
 
+        //설정이 하나도 없는 경우 일부러 에러를 발생하기 위해 [0] 을 하드 코딩함(설정이 안되었음을 인지 할수 있도록)
         sqlSessionFactoryBean.setConfigLocation(this.applicationContext.getResources("classpath:/_projectCommonResources/mybatis/*-config.xml")[0]);
+        // Resource[] resources = this.applicationContext.getResources("classpath:/_projectCommonResources/mybatis/*-config.xml");
+        // if (resources.length > 0) {
+        //    sqlSessionFactoryBean.setConfigLocation(resources[0]);
+        // }
 
-//        Resource[] resources = this.applicationContext.getResources("classpath:/_projectCommonResources/mybatis/*-config.xml");
-//        if (resources.length > 0) {
-//            sqlSessionFactoryBean.setConfigLocation(resources[0]);
-//        }
         // java 와 동일한 패키지 않에 xml 을 넗는 방식은 일반적이지 않으며 굳이 한다면 xml 위치의 패키지를 ClassPathResource 로 설정해줘야 함
         // 위 config.xml 을 통한 설정이 아니라 코딩으로 설정 가능
         // org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();

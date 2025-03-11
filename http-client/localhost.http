@@ -231,7 +231,7 @@ POST {{api-server-ver}}/login
 Content-Type: application/json
 
 {
-  "username": "sungilry@naver.com",
+  "username": "sungilry1@naver.com",
   "password": "1q2w3e4r5t!Q"
 }
 > {%
