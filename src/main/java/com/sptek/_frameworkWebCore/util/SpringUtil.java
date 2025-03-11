@@ -33,7 +33,7 @@ public class SpringUtil implements ApplicationContextAware {
     public static boolean hasAnnotationOnMain(Class<? extends Annotation> annotation){
         Environment environment = Objects.requireNonNull(SpringUtil.applicationContext).getEnvironment();
         String mainClassName = environment.getProperty("sun.java.command");
-        log.debug("mainClassName: {}", mainClassName);
+        //log.debug("mainClassName: {}", mainClassName);
 
         try {
             Class<?> mainClass = Class.forName(mainClassName);

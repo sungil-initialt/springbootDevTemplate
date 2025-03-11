@@ -1,6 +1,8 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore.annotation.DisableFilterAndSessionForMinorRequest_InMain;
+import com.sptek._frameworkWebCore.annotation.EnableCorsPolicyFilter_InMain;
+import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.globalVo.CorsPropertiesVo;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
@@ -8,11 +10,15 @@ import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -20,12 +26,16 @@ import java.util.Collections;
 
 @Slf4j
 @RequiredArgsConstructor
+@Order(Ordered.LOWEST_PRECEDENCE)
+@Profile(value = { "local", "dev", "stg", "prd" })
+@HasAnnotationOnMain_InBean(EnableCorsPolicyFilter_InMain.class)
+@WebFilter(urlPatterns = "/api/*") //브라우저에서 실제 CORS 확인 처리는 api 호출때 주로 요첨 됨으로..
 public class CorsPolicyFilter extends OncePerRequestFilter {
     // CORS 설정은 SpringSecurity 에서 설정 가능 하나..
     // 상세한 컨트롤 및 어노테이션을 통한 사용 설정을 위해 개별 필터로 처리함(SpringSecurity 의 CORS 디폴트 처리는 disabled 처리함)
 
     private final CorsPropertiesVo corsPropertiesVo;
-    private Boolean hasDisableFilterAndSessionForMinorRequestAnnotation = null;
+    private Boolean enableNoFilterAndSessionForMinorRequest_InMain = null;
 
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
@@ -35,12 +45,12 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // 매번 호출되는 것을 방지 하기 위해서
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation == null) {
-            hasDisableFilterAndSessionForMinorRequestAnnotation = SpringUtil.hasAnnotationOnMain(DisableFilterAndSessionForMinorRequest_InMain.class);
+        if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
+            enableNoFilterAndSessionForMinorRequest_InMain = SpringUtil.hasAnnotationOnMain(EnableNoFilterAndSessionForMinorRequest_InMain.class);
         }
 
         // todo: 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
-        if (hasDisableFilterAndSessionForMinorRequestAnnotation) {
+        if (enableNoFilterAndSessionForMinorRequest_InMain) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;
@@ -83,3 +93,5 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         }
     }
 }
+
+

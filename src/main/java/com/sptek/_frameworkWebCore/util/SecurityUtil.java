@@ -92,6 +92,7 @@ public class SecurityUtil {
 
     // spring security 필터에 의해 처리된 접속자 정보
     public static Authentication getUserAuthentication() {
+        //log.debug("UserAuthentication : {}", SecurityContextHolder.getContext().getAuthentication());
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
