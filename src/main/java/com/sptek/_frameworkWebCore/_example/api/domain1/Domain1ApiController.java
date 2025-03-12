@@ -314,14 +314,18 @@ public class Domain1ApiController {
     @EnableDeduplicationRequest_InRestController_RestControllerMethod
     @GetMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet() {
-        log.debug("httpCache: get");
-        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
-        long cacheSec = 60L;
-        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
+    public ResponseEntity<ApiCommonSuccessResponseDto<String>> httpCacheGet() {
         long result = System.currentTimeMillis();
 
-        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
+        long seconds = result / 1000;  // 밀리초를 초로 변환
+        long minutes = (seconds / 60) % 60;  // 초를 분으로 변환 후, 60으로 나누어 분만 추출
+        int lastDigitOfMinutes = (int)(minutes % 10);
+
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
+                .eTag(String.valueOf(lastDigitOfMinutes)) // lastModified is also available
+                .body(new ApiCommonSuccessResponseDto<>("x"));
     }
 
     @RequestMapping("/apiServiceError")

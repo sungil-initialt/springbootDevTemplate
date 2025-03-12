@@ -320,12 +320,16 @@ public class Domain1ViewController {
     //todo : Document에 대한 cache 처리를 위한건데.. 현재 cache 가 동작하지 않음(이유 확인이 필요함)
     @RequestMapping("/httpCache")
     public String httpCache(HttpServletResponse response, Model model) {
-        long cacheSec = 60L;
-        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic();
         long result = System.currentTimeMillis();
+
+        // CacheControl을 이용한 캐시 헤더 설정
+        CacheControl cacheControl = CacheControl.maxAge(60L, TimeUnit.SECONDS)  // 60초 동안 캐시
+                .cachePublic()  // 공용 캐시 가능
+                ;//.mustRevalidate();  // 만료된 경우 재검증 필요
 
         model.addAttribute("result", result);
         response.setHeader("Cache-Control", cacheControl.getHeaderValue());
+
         return pageBasePath + "simpleModelView";
     }
 

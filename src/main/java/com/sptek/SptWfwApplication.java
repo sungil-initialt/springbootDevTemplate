@@ -33,6 +33,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @EnableNoFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 
+@EnableCachePublicForStaticResourceInMain_InMain
+
 public class SptWfwApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SptWfwApplication.class, args);

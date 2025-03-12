@@ -74,6 +74,7 @@ public class SecurityFilterChainConfig {
                         //.defaultSuccessUrl("/")
                         .successHandler(customAuthenticationSuccessHandlerForView)
                         .failureHandler(customAuthenticationFailureHandlerForView)
+                )
                         // <View 로그인 처리 프로세서>
                         // 로그인 폼에서 정보 입력 후 <form action=/login> 으로 하면 서버의 AuthenticationManager 로 입력 정보가 자동 으로 전달됨
                         // 전달 받은 로그인 정보를 보고 어떤 타입의 로그인 처리 인지 확인후 등록된 AuthenticationProvider(CustomAuthenticationProvider)의 support 타입을 보고 그에 맞는 대상에 전달됨(security 내부적으로 처리됨)
