@@ -314,18 +314,26 @@ public class Domain1ApiController {
     @EnableDeduplicationRequest_InRestController_RestControllerMethod
     @GetMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<String>> httpCacheGet() {
+    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet(HttpServletResponse httpServletResponse) {
         long result = System.currentTimeMillis();
 
         long seconds = result / 1000;  // 밀리초를 초로 변환
         long minutes = (seconds / 60) % 60;  // 초를 분으로 변환 후, 60으로 나누어 분만 추출
         int lastDigitOfMinutes = (int)(minutes % 10);
 
+        String clientETag = httpServletResponse.getHeader(HttpHeaders.IF_NONE_MATCH);
+        log.debug("clientETag : {}", clientETag);
+        if (clientETag != null && clientETag.equals(lastDigitOfMinutes)) {
+            // ETag가 일치하면 304 (Not Modified) 응답
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return null;
+        }
+
         return ResponseEntity
                 .ok()
                 .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
                 .eTag(String.valueOf(lastDigitOfMinutes)) // lastModified is also available
-                .body(new ApiCommonSuccessResponseDto<>("x"));
+                .body(new ApiCommonSuccessResponseDto<>(result));
     }
 
     @RequestMapping("/apiServiceError")

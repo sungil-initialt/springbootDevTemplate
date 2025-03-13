@@ -23,16 +23,10 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableJpaHybrid_InMain
 
 @EnableConsoleLogEnvironmentProperties_InMain
-
 @EnableCorsPolicyFilter_InMain
-
-
 @EnableEncryptorJasypt_InMain
-
 @EnableThymeleafSpringSecurityDialect_InMain //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
-
 @EnableNoFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
-
 @EnableCachePublicForStaticResourceInMain_InMain
 
 public class SptWfwApplication {
