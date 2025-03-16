@@ -23,6 +23,7 @@ public class ViewControllerConfig implements WebMvcConfigurer {
         viewControllerRegistry.addViewController("/fileUpload").setViewName("/pages/example/test/fileUpload");
         viewControllerRegistry.addViewController("/pageForSubmitTest").setViewName("/pages/example/test/pageForSubmitTest");
         viewControllerRegistry.addViewController("/pageForApiTest").setViewName("/pages/example/test/pageForApiTest");
+        viewControllerRegistry.addViewController("/pageForFetchTest").setViewName("/pages/example/test/pageForFetchTest");
 
     }
 

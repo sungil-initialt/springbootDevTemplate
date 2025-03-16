@@ -42,7 +42,11 @@ import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -297,43 +301,61 @@ public class Domain1ApiController {
         return result;
     }
 
-    @TestAnnotation_InAll
-    @EnableDetailLog_InMain_Controller_ControllerMethod("1111")
-    @PostMapping({"/httpCache", "/httpCache2"})
-    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCachePost() {
-        log.debug("httpCache: post");
-        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
-        long cacheSec = 60L;
-        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
-        long result = System.currentTimeMillis();
+//    @TestAnnotation_InAll
+//    @EnableDetailLog_InMain_Controller_ControllerMethod("1111")
+//    @PostMapping({"/httpCache", "/httpCache2"})
+//    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
+//    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCachePost() {
+//        log.debug("httpCache: post");
+//        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
+//        long cacheSec = 60L;
+//        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
+//        long result = System.currentTimeMillis();
+//
+//        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
+//    }
 
-        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
-    }
 
-    @EnableDeduplicationRequest_InRestController_RestControllerMethod
+
     @GetMapping("/httpCache")
     @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet(HttpServletResponse httpServletResponse) {
-        long result = System.currentTimeMillis();
+    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet(HttpServletResponse response, HttpServletRequest request) {
+        log.debug("xxx");
+        // 현재 시간 (밀리초)
+        long currentTimeMillis = System.currentTimeMillis();
 
-        long seconds = result / 1000;  // 밀리초를 초로 변환
-        long minutes = (seconds / 60) % 60;  // 초를 분으로 변환 후, 60으로 나누어 분만 추출
-        int lastDigitOfMinutes = (int)(minutes % 10);
+        // 현재 시간(GMT 형식으로 Last-Modified 용)
+        Instant now = Instant.ofEpochMilli(currentTimeMillis);
+        String currentTime = DateTimeFormatter.RFC_1123_DATE_TIME.withZone(ZoneOffset.UTC).format(now);
 
-        String clientETag = httpServletResponse.getHeader(HttpHeaders.IF_NONE_MATCH);
-        log.debug("clientETag : {}", clientETag);
-        if (clientETag != null && clientETag.equals(lastDigitOfMinutes)) {
-            // ETag가 일치하면 304 (Not Modified) 응답
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            return null;
+        // 1분(60초)을 지나기 위한 기준 시간 계산
+        Instant oneMinuteAgo = now.minusSeconds(60);
+
+        // 요청 헤더의 If-Modified-Since 값 가져오기
+        String ifModifiedSince = request.getHeader(HttpHeaders.IF_MODIFIED_SINCE);
+        log.debug("ifModifiedSince : {}", ifModifiedSince);
+
+        if (ifModifiedSince != null) {
+            try {
+                // If-Modified-Since를 파싱하여 이전 요청 시간 계산
+                Instant lastModifiedFromClient = Instant.from(
+                        DateTimeFormatter.RFC_1123_DATE_TIME.withZone(ZoneOffset.UTC).parse(ifModifiedSince));
+
+                // 클라이언트의 If-Modified-Since 확인, 1분 기준으로 캐싱 처리
+                if (lastModifiedFromClient.isAfter(oneMinuteAgo)) {
+                    // 1분이 지나지 않았다면 304 - Not Modified 처리
+                    return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+                }
+            } catch (Exception e) {
+                // 잘못된 헤더 값이 들어올 경우 무시
+            }
         }
 
-        return ResponseEntity
-                .ok()
-                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
-                .eTag(String.valueOf(lastDigitOfMinutes)) // lastModified is also available
-                .body(new ApiCommonSuccessResponseDto<>(result));
+        // 1분 이상이 지난 경우, 새 데이터를 내려주고 Last-Modified 갱신
+        response.setHeader(HttpHeaders.LAST_MODIFIED, currentTime);
+        //CacheControl cacheControl = CacheControl.maxAge(60, TimeUnit.SECONDS).cachePublic();//.mustRevalidate();
+        // 200 OK로 응답
+        return ResponseEntity.ok().body(new ApiCommonSuccessResponseDto<>(currentTimeMillis));
     }
 
     @RequestMapping("/apiServiceError")

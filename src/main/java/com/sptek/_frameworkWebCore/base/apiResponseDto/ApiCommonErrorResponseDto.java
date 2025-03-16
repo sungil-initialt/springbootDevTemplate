@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /*
-//rest Api에서 실패 응답 규격
+//rest api 실패 응답 규격
 HttpStatus.BAD_REQUEST(400)
 {
   "resultCode": "GE011",

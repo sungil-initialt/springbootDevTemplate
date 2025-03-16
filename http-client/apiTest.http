@@ -131,7 +131,7 @@ Content-Type: application/json
 
 
 ### httpCache?c=c 테스트
-GET {{api-server-ver}}/httpCache?c=c
+GET {{api-server-ver}}/httpCache
 Content-Type: application/json
 
 ### httpCache?c=c 테스트
@@ -232,7 +232,7 @@ Content-Type: application/json
 
 {
   "username": "sungilry1@naver.com",
-  "password": "1q2w3e4r5t!Q"
+  "password": "1q2w3e4r5t!Q-"
 }
 > {%
     client.global.set("jwt", response.body.result);

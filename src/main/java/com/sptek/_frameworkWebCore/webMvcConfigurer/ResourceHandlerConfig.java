@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.webMvcConfigurer;
 
-import com.sptek._frameworkWebCore.annotation.EnableCachePublicForStaticResourceInMain_InMain;
+import com.sptek._frameworkWebCore.annotation.EnableHttpCachePublicForStaticResource_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -26,22 +26,25 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
         resourceHandlerRegistry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
     }
 
-    @HasAnnotationOnMain_InBean(EnableCachePublicForStaticResourceInMain_InMain.class)
+
+
+    @HasAnnotationOnMain_InBean(EnableHttpCachePublicForStaticResource_InMain.class)
     @Configuration
-    public class ResourceHandlerConfigForEnableStaticCache implements WebMvcConfigurer {
+    public class EnableHttpCachePublicForStaticResource implements WebMvcConfigurer {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
-            //deploy시 파일(js, css등) 이름을 변경하게 됨으로 관련 캐시의 maxAge를 길게 가져가도 될듯
+            //static의 경우 ETag 또는 Last-Modified 는 적용 하지 않음 (대신 maxAge를 길게 가져 가며 그 기간 동안 무조건 캐싱 후 만료후 무조건 새로 가져옴)
+            // todo: maxAge 방식을 사용함으로 deploy 때 static 파일(js, css등)의 네이밍 변혈을 반드시 해줘야 함
             CacheControl cacheControl = CacheControl.maxAge(Duration.ofDays(365)).cachePublic();
-            //프로퍼티 속성 spring.web.resources.static-locations의 설정의 역할과 동일, 양쪽에 둘다 설정될수 있음(양쪽 설정 모두 적용됨, 그러나 프로퍼티 속성이 없는 경우는 /static 하위를 /**로 매핑한것으로 디포트 설정됨을 주의)
+
+            //프로퍼티 속성 spring.web.resources.static-locations의 설정의 역할과 동일, 양쪽에 둘다 설정 될수 있음(양쪽 설정 모두 적용됨, 그러나 프로퍼티 속성이 없는 경우는 /static 하위를 /**로 매핑한것으로 디포트 설정됨을 주의)
             resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
             resourceHandlerRegistry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
         }
     }
-
-    @HasAnnotationOnMain_InBean(value = EnableCachePublicForStaticResourceInMain_InMain.class, negate = true)
+    @HasAnnotationOnMain_InBean(value = EnableHttpCachePublicForStaticResource_InMain.class, negate = true)
     @Configuration
-    public class ResourceHandlerConfigForForDisableStaticCache implements WebMvcConfigurer {
+    public class DisableHttpCachePublicForStaticResource implements WebMvcConfigurer {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
             resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");

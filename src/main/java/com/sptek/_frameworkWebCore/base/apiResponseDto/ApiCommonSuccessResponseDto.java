@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /*
-//rest Api에서 성공 응답 규격
+//rest api 성공 응답 규격
 HttpStatus.OK(200)
 {
   "resultCode": "S000",
