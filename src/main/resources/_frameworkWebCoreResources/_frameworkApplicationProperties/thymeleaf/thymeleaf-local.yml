@@ -7,19 +7,3 @@ spring:
     prefix: file:src/main/resources/templates/thymeleaf/
     suffix: .html
 
-    # 정적 리소스 캐시 버스팅 설정
-
-  web:
-    resources:
-      chain:
-        enabled: true  # 리소스 체인 활성화
-        strategy:
-          fixed:
-            version: "1.0.0"  # 수동 버전
-            paths:
-            - /static/**/*.js  # JS 파일에만 버전 적용
-            - /static/**/*.css  # CSS 파일에만 버전 적용
-            - /static/**/*.png  # PNG 이미지 파일에만 버전 적용
-            - /static/**/*.jpg  # JPG 이미지 파일에만 버전 적용
-            - /static/**/*.jpeg  # JPEG 이미지 파일에만 버전 적용
-            - /static/**/*.gif  # GIF 이미지 파일에만 버전 적용

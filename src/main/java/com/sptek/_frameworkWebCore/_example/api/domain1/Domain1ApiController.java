@@ -1,22 +1,22 @@
 package com.sptek._frameworkWebCore._example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
+import com.sptek._frameworkWebCore._example.dto.ValidationTestDto;
 import com.sptek._frameworkWebCore.annotation.*;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
+import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
+import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserAddressDto;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserDto;
-import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
-import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
-import com.sptek._frameworkWebCore._example.dto.ValidationTestDto;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
-import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
-import com.sptek._projectCommon.argumentResolver.ArgumentResolverForMyUserDto;
-import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
+import com.sptek._projectCommon.argumentResolver.ArgumentResolverForMyUserDto;
+import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +42,6 @@ import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -50,7 +49,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -84,7 +82,8 @@ public class Domain1ApiController {
         return UserDto.builder().id(1L).email("sungilry@naver.com").userAddresses(List.of(UserAddressDto.builder().id(1L).addressType("집").address("엘프라우드").build())).name(message).build();
     }
 
-    @RequestMapping("/hello")
+    @EnableDetailLog_InMain_Controller_ControllerMethod()
+    @GetMapping("/hello")
     @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
     public Object hello(
             @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger

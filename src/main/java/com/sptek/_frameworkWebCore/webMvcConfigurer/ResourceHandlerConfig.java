@@ -3,10 +3,13 @@ package com.sptek._frameworkWebCore.webMvcConfigurer;
 import com.sptek._frameworkWebCore.annotation.EnableHttpCachePublicForStaticResource_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
+import org.springframework.web.servlet.resource.VersionResourceResolver;
 
 import java.time.Duration;
 
@@ -38,10 +41,24 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
             CacheControl cacheControl = CacheControl.maxAge(Duration.ofDays(365)).cachePublic();
 
             //프로퍼티 속성 spring.web.resources.static-locations의 설정의 역할과 동일, 양쪽에 둘다 설정 될수 있음(양쪽 설정 모두 적용됨, 그러나 프로퍼티 속성이 없는 경우는 /static 하위를 /**로 매핑한것으로 디포트 설정됨을 주의)
-            resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl).resourceChain(true);
+            resourceHandlerRegistry.addResourceHandler("/static/**")
+                    .addResourceLocations("classpath:/static/")
+                    //.setCacheControl(cacheControl)
+                    .resourceChain(true)
+                    .addResolver(new VersionResourceResolver()
+                            .addContentVersionStrategy("/static/**"));
+
+            //필요시 추가
             //resourceHandlerRegistry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
         }
+
+        @Bean
+        public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
+            return new ResourceUrlEncodingFilter();
+        }
     }
+
+
     @HasAnnotationOnMain_InBean(value = EnableHttpCachePublicForStaticResource_InMain.class, negate = true)
     @Configuration
     public class DisableHttpCachePublicForStaticResource implements WebMvcConfigurer {
