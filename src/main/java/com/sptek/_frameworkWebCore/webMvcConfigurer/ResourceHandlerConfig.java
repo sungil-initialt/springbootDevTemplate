@@ -6,10 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
+import org.springframework.web.servlet.resource.ResourceUrlProviderExposingInterceptor;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
+
 
 import java.time.Duration;
 
@@ -30,32 +34,33 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
     }
 
 
-
     @HasAnnotationOnMain_InBean(EnableHttpCachePublicForStaticResource_InMain.class)
     @Configuration
     public class EnableHttpCachePublicForStaticResource implements WebMvcConfigurer {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
-            //static의 경우 ETag 또는 Last-Modified 는 적용 하지 않음 (대신 maxAge를 길게 가져 가며 그 기간 동안 무조건 캐싱 후 만료후 무조건 새로 가져옴)
-            // todo: maxAge 방식을 사용함으로 deploy 때 static 파일(js, css등)의 네이밍 변혈을 반드시 해줘야 함
-            CacheControl cacheControl = CacheControl.maxAge(Duration.ofDays(365)).cachePublic();
 
-            //프로퍼티 속성 spring.web.resources.static-locations의 설정의 역할과 동일, 양쪽에 둘다 설정 될수 있음(양쪽 설정 모두 적용됨, 그러나 프로퍼티 속성이 없는 경우는 /static 하위를 /**로 매핑한것으로 디포트 설정됨을 주의)
-            resourceHandlerRegistry.addResourceHandler("/static/**")
+            // 프로퍼티 속성 spring.web.resources.static-locations의 설정의 역할과 동일,
+            // 양쪽에 둘다 설정 될수 있음(양쪽 설정 모두 적용됨, 그러나 프로퍼티 속성이 없는 경우는 /static 하위를 /**로 매핑한것으로 디포트 설정됨을 주의)
+            // VersionResourceResolver 의 경우 thymeleaf 내에서만 동작함으로
+            // 그럼으로 thymeleaf 경로 밖의 예를 들어 /static/js/ js파일 내부에서 다른 js 파일을 import 하는 경우 적용이 안됨(cache busting 에 주의)
+            resourceHandlerRegistry.addResourceHandler("/**")
                     .addResourceLocations("classpath:/static/")
-                    //.setCacheControl(cacheControl)
+                    .setCacheControl(CacheControl.maxAge(Duration.ofDays(365)).cachePublic())
                     .resourceChain(true)
-                    .addResolver(new VersionResourceResolver()
-                            .addContentVersionStrategy("/static/**"));
+                    .addResolver(new VersionResourceResolver().addContentVersionStrategy("/**"));
 
-            //필요시 추가
-            //resourceHandlerRegistry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
+            // todo: 아래와 같이 리소스 핸들러 경로에 프리픽스를 주면 리소스 인식에는 문제가 없는데..
+            // VersionResourceResolver가 적용되지 않는(리소스에 해싱값이 안붙음) 현상이 있음 (원인 확인 필요), thymeleaf 버그 일수도..
+            //resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
         }
 
         @Bean
+        //static resource 의 버전(해싱값) 처리를 위해 필요
         public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
             return new ResourceUrlEncodingFilter();
         }
+
     }
 
 
@@ -64,8 +69,7 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
     public class DisableHttpCachePublicForStaticResource implements WebMvcConfigurer {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
-            resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-            //resourceHandlerRegistry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+            resourceHandlerRegistry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
         }
     }
 }
