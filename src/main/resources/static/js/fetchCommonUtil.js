@@ -35,39 +35,8 @@ HttpStatus.OK(200)
  */
 
 
-const API_BASE_URL = "https://localhost/api/v1"; // API 기본 URL
 
 function test1() {
     alert("test1");
 }
 
-async function apiRequest(endpoint, method = "GET", body = null, customHeaders = {}) {
-
-    const url = `${API_BASE_URL}${endpoint}`;
-
-    const headers = {
-        "Content-Type": "application/json",
-        ...customHeaders // 추가적인 헤더가 필요할 경우 병합
-    };
-
-    const options = {
-        method,
-        headers,
-        cache: "default", // 캐싱 정책 설정 가능
-        credentials: "include" // 요청에 credentials 포함
-    };
-
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
-
-    try {
-        const response = await fetch(url, options);
-
-        return await response.json(); // 자동으로 JSON 변환
-    } catch (error) {
-        console.error("API request error:", error);
-        //alert('API request error: ${error.message}');
-        throw error; // 필요하면 에러를 다시 던질 수도 있음
-    } 
-}

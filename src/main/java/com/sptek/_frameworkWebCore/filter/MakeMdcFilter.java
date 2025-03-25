@@ -30,7 +30,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        log.debug("MakeMdcFilter start");
+        //log.debug("MakeMdcFilter start");
         //Mapped Diagnostic Context 를 사용하여 Slf4j 의 로깅 패턴에 특정 정보를 포함 할수 있도록 한다.
         //todo : 성능적 측면에서 오버해드가 발생할 수 있음으로 상용 적용시 고려 필요
 

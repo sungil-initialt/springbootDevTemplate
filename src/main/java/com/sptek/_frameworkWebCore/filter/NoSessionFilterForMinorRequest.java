@@ -39,7 +39,7 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
 
     @Override
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        log.debug("NoSessionFilterForMinorRequest start");
+        //log.debug("NoSessionFilterForMinorRequest start");
         // 매번 호출 되는 것을 방지 하기 위해서
         if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
             enableNoFilterAndSessionForMinorRequest_InMain = SpringUtil.hasAnnotationOnMain(EnableNoFilterAndSessionForMinorRequest_InMain.class);
