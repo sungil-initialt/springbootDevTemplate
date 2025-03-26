@@ -1,5 +1,2 @@
 example1:
-  project-info:
-    name: myProject
-    version: v1
-    description : Stg
+  key: value

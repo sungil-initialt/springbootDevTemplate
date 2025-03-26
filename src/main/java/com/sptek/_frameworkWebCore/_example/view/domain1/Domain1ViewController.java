@@ -60,6 +60,11 @@ public class Domain1ViewController {
         this.desEncryptor = desEncryptor;
     }
 
+    @GetMapping({"/pageForFetchTest"})
+    public String pageForFetchTest() {
+        return pageBasePath + "pageForFetchTest";
+    }
+
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
     @RequestMapping({"/welcome"})

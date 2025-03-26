@@ -1,10 +1,12 @@
 package com.sptek._projectCommon.code;
 
 import com.sptek._frameworkWebCore.base.code.BaseCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@AllArgsConstructor
 public enum ServiceErrorCodeEnum implements BaseCode {
     //시스템 내부에서 발생하는 에러가 아니라 서비스 로직상 에러로 취급되야 하는 경우에 활용하는 Exception 이다. 서비스에 맞게 추가해 나가면 된다.
     //API에서 주로 활용되지만 viewController에서도 활용될수 있다. viewController에서 활용되는 경우 HttpStatus는 의미가 없음
@@ -18,10 +20,4 @@ public enum ServiceErrorCodeEnum implements BaseCode {
     private final HttpStatus httpStatusCode;
     private final String resultCode;
     private final String resultMessage;
-
-    ServiceErrorCodeEnum(final HttpStatus httpStatusCode, final String resultCode, final String resultMessage) {
-        this.httpStatusCode = httpStatusCode;
-        this.resultCode = resultCode;
-        this.resultMessage = resultMessage;
-    }
 }

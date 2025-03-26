@@ -19,5 +19,18 @@
 
     <!--Common CSS -->
     <link th:inline="css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <!--Meta Data from ModelAttribute-->
+    <th:block th:each="autoMeta : ${autoMetaSet}">
+        <meta th:attr="name=${autoMeta.key}, content=${autoMeta.value}" />
+    </th:block>
+
+
+<!--
+    meta 로 자동 등록 되는 경우가 아닌경우 아래와 같이 개별적으로 사용 가능!!
+    <script th:inline="javascript">
+        const exKey = /*[[${exKey}]]*/ 'default';
+    </script>
+-->
 </head>
 </html>

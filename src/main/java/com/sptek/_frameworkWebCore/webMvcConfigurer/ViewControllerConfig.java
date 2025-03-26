@@ -15,7 +15,7 @@ public class ViewControllerConfig implements WebMvcConfigurer {
         //swagger.
         viewControllerRegistry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
 
-        //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정
+        //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정 (이경우 @ControllerAdvice 가 동작 하지 않음을 주의)
         viewControllerRegistry.addViewController("/").setViewName("/pages/example/test/none");
         viewControllerRegistry.addViewController("/none").setViewName("/pages/example/test/none");
         viewControllerRegistry.addViewController("/temporaryParkingPageForXXX").setViewName("/pages/example/test/temporaryParkingView");
@@ -23,8 +23,6 @@ public class ViewControllerConfig implements WebMvcConfigurer {
         viewControllerRegistry.addViewController("/fileUpload").setViewName("/pages/example/test/fileUpload");
         viewControllerRegistry.addViewController("/pageForSubmitTest").setViewName("/pages/example/test/pageForSubmitTest");
         viewControllerRegistry.addViewController("/pageForApiTest").setViewName("/pages/example/test/pageForApiTest");
-        viewControllerRegistry.addViewController("/pageForFetchTest").setViewName("/pages/example/test/pageForFetchTest");
-
     }
 
     /*
