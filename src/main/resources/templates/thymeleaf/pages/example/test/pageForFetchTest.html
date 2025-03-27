@@ -11,7 +11,7 @@
     <!-- inline CSS 영역-->
     <style th:inline="css" type="text/css">
     </style><!-- inline JS 영역-->
-    <script th:src="@{/js/fetchCommonUtil.js}" charset="UTF-8" defer></script>
+    <script th:src="@{/js/_framework/fetchCommonUtil.js}" charset="UTF-8" defer></script>
 </head>
 <body>
 <div>
@@ -19,18 +19,19 @@
     <br>요청은 동시에 여럿 가능<br>
     <script>
         document.getElementById('btn1').addEventListener('click', async function() {
-            console.log( "btn1");
             try {
-                const data = await apiRequest('/helloGet?message=hello');
-                console.log("===");
-                console.log(JSON.stringify(data, null, 2));
-                //alert(JSON.stringify(data, null, 2));
+                const data = await requestFetch('/hellox', {
+                    query: { message: 'welcome' }
+                });
+                console.log('response: ' + JSON.stringify(data, null, 2));
+                // alert(JSON.stringify(data, null, 2));
             } catch (error) {
                 console.error("Error fetching todo:", error);
             }
         });
     </script>
 </div>
+
     <br>
 <div>
     <button id="btn1-1">duplicatedRequest(async방식2)</button>

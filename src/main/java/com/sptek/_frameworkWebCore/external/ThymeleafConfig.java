@@ -16,3 +16,15 @@ public class ThymeleafConfig {
         return new SpringSecurityDialect();
     }
 }
+
+/*
+<div sec:authorize="isAuthenticated()">
+    로그인한 사용자만 볼 수 있는 영역
+</div>
+
+<div sec:authorize="hasRole('ADMIN')">
+    관리자만 볼 수 있는 영역
+</div>
+
+<p>안녕하세요, <span sec:authentication="name"></span> 님!</p>
+*/

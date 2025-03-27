@@ -22,17 +22,17 @@ spring:
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/ssl/ssl.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/thymeleaf/thymeleaf.yml
       #_projectCommonResources(_system)
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/cors/corsPolicy.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/datasource/datasource.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/encryption/encryption.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/jpa/jpa.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/jwt/jwt.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/logging/logging.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/session/session.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/springdoc/springdoc.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/_frameworkOption/frameworkOption.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/storage/storage.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_system/globalModelAttribute/globalModelAttribute.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/cors/corsPolicy.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/datasource/datasource.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/encryption/encryption.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/jpa/jpa.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/jwt/jwt.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/logging/logging.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/session/session.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/springdoc/springdoc.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/_frameworkOption/frameworkOption.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/storage/storage.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/globalStaticViewModel/globalStaticViewModel.yml
       #_projectCommonResources(extra)
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/example1/example1.yml
 

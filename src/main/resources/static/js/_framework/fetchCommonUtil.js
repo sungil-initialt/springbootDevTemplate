@@ -43,7 +43,7 @@ HttpStatus.OK(200)
  * @param {Object} options - 사용자 정의 옵션 (method, headers, body, query 등)
  * @returns {Promise<any>} 응답 JSON 또는 필요한 데이터
  */
-const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]').content;
+const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api/v1';
 //console.log("API_BASE_URL: " + API_BASE_URL);
 
 async function requestFetch(url, options = {}) {
@@ -54,7 +54,8 @@ async function requestFetch(url, options = {}) {
         query = {},
         baseUrl = API_BASE_URL,       // 전역 API prefix가 있다면 사용
         timeout = 10000,    // 기본 timeout 10초
-        rawResponse = false // JSON 파싱 말고 원본 응답 받고 싶을 때
+        rawResponse = false, // JSON 파싱 말고 원본 응답 받고 싶을 때
+        showErrorAlert = true // 에러 메시지 알림 표시 여부
     } = options;
 
     // 1. 쿼리 파라미터 붙이기
@@ -80,18 +81,35 @@ async function requestFetch(url, options = {}) {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     fetchOptions.signal = controller.signal;
 
+    
+    // 5. 실제 처리 !!
     try {
         const response = await fetch(fullUrl, fetchOptions);
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-            if (response.status === Response.statuses.TOO_MANY_REQUESTS) {
-                //중복 오류와 관련해서는 아무 처리 하지 않음
-                console.error('Too many requests');
+            if (response.status === 429) { // HTTP 429: Too Many Requests
+                console.error('Too many requests. This error has been ignored.');
+
             } else {
-                const errorJson = await response.json();
-                alert(errorJson.exceptionMessage);
-                throw new Error(`HTTP ${response.status}: ${errorJson}`);
+                let errorJson;
+                try {
+                    errorJson = await response.json();
+
+                } catch (parseError) {
+                    console.error('Failed to parse error response JSON:', parseError);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                if (showErrorAlert) {
+                    if (errorJson?.resultCode?.startsWith('GE')) {
+                        alert('에러가 발생 하였습니다. 관리자에 문의 주세요\n'+ JSON.stringify(errorJson, null, 2));
+                    } else if (errorJson?.resultCode?.startsWith('SE')) {
+                        alert(errorJson.resultMessage);
+                    }
+                }
+
+                throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorJson)}`);
             }
         }
 

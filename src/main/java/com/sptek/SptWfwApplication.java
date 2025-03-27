@@ -27,7 +27,9 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableEncryptorJasypt_InMain
 @EnableThymeleafSpringSecurityDialect_InMain //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
 @EnableNoFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
-//@EnableHttpCachePublicForStaticResource_InMain
+@EnableHttpCachePublicForStaticResource_InMain
+@EnableGlobalViewModelForStatic_InMain
+@EnableGlobalViewModelForUserAuthentication_InMain
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

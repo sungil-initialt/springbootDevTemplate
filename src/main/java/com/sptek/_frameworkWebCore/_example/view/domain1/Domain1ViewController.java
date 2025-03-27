@@ -73,7 +73,7 @@ public class Domain1ViewController {
         return pageBasePath + "welcome";
     }
 
-    @GetMapping({"/welcomeGet"})
+    @GetMapping({"/", "/welcomeGet"})
     public String welcomeGet(Model model) {
         model.addAttribute("message", "welcome");
         return pageBasePath + "welcome";

@@ -6,14 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
-import org.springframework.web.servlet.resource.ResourceUrlProvider;
-import org.springframework.web.servlet.resource.ResourceUrlProviderExposingInterceptor;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
-
 
 import java.time.Duration;
 
@@ -45,14 +41,14 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
             // VersionResourceResolver 의 경우 thymeleaf 내에서만 동작함으로
             // 그럼으로 thymeleaf 경로 밖의 예를 들어 /static/js/ js파일 내부에서 다른 js 파일을 import 하는 경우 적용이 안됨(cache busting 에 주의)
             resourceHandlerRegistry.addResourceHandler("/**")
-                    .addResourceLocations("classpath:/static/")
+                    .addResourceLocations("classpath:/static/") //todo: 참고-static 파일이 변경된 경우는 서버 재시작을 해야 캐시값이 새로 적용됨
                     .setCacheControl(CacheControl.maxAge(Duration.ofDays(365)).cachePublic())
                     .resourceChain(true)
                     .addResolver(new VersionResourceResolver().addContentVersionStrategy("/**"));
 
-            // todo: 아래와 같이 리소스 핸들러 경로에 프리픽스를 주면 리소스 인식에는 문제가 없는데..
-            // VersionResourceResolver가 적용되지 않는(리소스에 해싱값이 안붙음) 현상이 있음 (원인 확인 필요), thymeleaf 버그 일수도..
-            //resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
+            // todo: 아래와 같이 리소스 핸들러 경로에 프리픽스(/static/)를 주면 리소스 인식에는 문제가 없는데..
+            //  VersionResourceResolver가 적용되지 않는(리소스에 해싱값이 안붙음) 현상이 있음 (원인 확인 필요), thymeleaf 버그 일수도..
+            //  resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
         }
 
         @Bean

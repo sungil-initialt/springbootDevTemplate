@@ -1,7 +1,0 @@
-global-model:
-  attributes:
-    autoMetaSet: # document 의 meta 정보로 자동 등록될 데이터 선언
-      apiBaseUrl: https://localhost/api/v1
-      apiBaseUrl2: https://localhost/api/v2
-
-    exKey: exValue
