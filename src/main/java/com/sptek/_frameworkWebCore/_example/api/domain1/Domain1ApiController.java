@@ -294,8 +294,8 @@ public class Domain1ApiController {
     @RequestMapping(value="/duplicatedRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public Object duplicatedRequest() throws Exception {
-        log.debug("AOP order : ??");
-        String result = "duplicatedRequest test";
+        //log.debug("AOP order : ??");
+        String result = "duplicatedRequest test ok";
         Thread.sleep(3000L);
         return result;
     }

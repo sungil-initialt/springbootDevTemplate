@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.encryption;
+package com.sptek._frameworkWebCore.encryption.encryptor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,12 +23,10 @@ public class DesEncryptor {
     // Secret key 로드
     DesEncryptor(@Value("${desEncryptor.base64SecretKey}") String base64SecretKey) {
         byte[] secretKeyBytes = Base64.getDecoder().decode(base64SecretKey);
-
-        // DES 키는 반드시 8바이트 (64비트)여야 함
         if (secretKeyBytes.length != 8) {
+            // DES 키는 반드시 8바이트 (64비트)여야 함
             throw new IllegalArgumentException("Error while DES encrypting, DES key length must be an 11-character Base64-encoded (64 bits)");
         }
-
         this.secretKey = new SecretKeySpec(secretKeyBytes, ALGORITHM);
     }
 
@@ -51,33 +49,33 @@ public class DesEncryptor {
             System.arraycopy(iv, 0, encryptedWithIv, 0, iv.length);
             System.arraycopy(encrypted, 0, encryptedWithIv, iv.length, encrypted.length);
 
-            return Base64.getEncoder().encodeToString(encryptedWithIv);
+            return String.format("Enc_sptDES(%s)", Base64.getEncoder().encodeToString(encryptedWithIv));
         } catch (Exception e) {
             throw new RuntimeException("Error while DES encrypting", e);
         }
     }
 
-    // 복호화 메서드
-    public String decrypt(String encryptedText) {
-        try {
-            byte[] decoded = Base64.getDecoder().decode(encryptedText);
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-
-            // 8바이트 IV 분리
-            byte[] iv = new byte[8];
-            System.arraycopy(decoded, 0, iv, 0, iv.length);
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
-
-            // 암호문 분리
-            byte[] encrypted = new byte[decoded.length - iv.length];
-            System.arraycopy(decoded, iv.length, encrypted, 0, encrypted.length);
-
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-            byte[] original = cipher.doFinal(encrypted);
-
-            return new String(original, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw new RuntimeException("Error while DES decrypting", e);
-        }
-    }
+//    // 복호화 메서드 (AllTypeDecryptor 로 통합)
+//    public String decrypt(String encryptedText) {
+//        try {
+//            byte[] decoded = Base64.getDecoder().decode(encryptedText);
+//            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+//
+//            // 8바이트 IV 분리
+//            byte[] iv = new byte[8];
+//            System.arraycopy(decoded, 0, iv, 0, iv.length);
+//            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+//
+//            // 암호문 분리
+//            byte[] encrypted = new byte[decoded.length - iv.length];
+//            System.arraycopy(decoded, iv.length, encrypted, 0, encrypted.length);
+//
+//            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+//            byte[] original = cipher.doFinal(encrypted);
+//
+//            return new String(original, StandardCharsets.UTF_8);
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error while DES decrypting", e);
+//        }
+//    }
 }

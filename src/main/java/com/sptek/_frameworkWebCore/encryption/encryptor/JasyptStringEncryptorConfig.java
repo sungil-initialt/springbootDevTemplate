@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.encryption;
+package com.sptek._frameworkWebCore.encryption.encryptor;
 
 import com.sptek._frameworkWebCore.annotation.EnableEncryptorJasypt_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
@@ -17,12 +17,11 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 @Configuration
 @HasAnnotationOnMain_InBean(EnableEncryptorJasypt_InMain.class)
-public class JasyptStringEncryptor {
+public class JasyptStringEncryptorConfig {
     // 정적 데이터를 암복호 할수 있는 Encryption 으로 주로 코드내(property) 주요 정보를 암복호화 할때 사용
     // 간단한 정적 데이터 암호화에 적합함으로 실시간성 데이터 암복호에는 성능상 적합하지 않음
     // PBE(passwordBasedEncryption) 방식으로 암호화 과정에 주어진 password 값을 활용함 (password 외 랜덤 salt 값과 이에 대한 hashing 반복을 통해 보안을 높임)
-    //--> 여기 내용 정리 필요함, 상세 설명과.. 알고리즘 업데이트등.. 추가로 웹상에서 사용할수 있는 DES, AES 코드 추가하자!
-    
+
     final private Environment environment;
 
     //@Primary

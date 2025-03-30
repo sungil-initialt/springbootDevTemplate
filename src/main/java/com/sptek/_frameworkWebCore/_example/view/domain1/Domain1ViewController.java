@@ -2,12 +2,14 @@ package com.sptek._frameworkWebCore._example.view.domain1;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
+import com.sptek._frameworkWebCore.encryption.decryptor.AllTypeDecryptor;
+import com.sptek._frameworkWebCore.springSecurity.extras.dto.TestDto;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.encryption.AesEncryptor;
-import com.sptek._frameworkWebCore.encryption.DesEncryptor;
+import com.sptek._frameworkWebCore.encryption.encryptor.AesEncryptor;
+import com.sptek._frameworkWebCore.encryption.encryptor.DesEncryptor;
 import com.sptek._frameworkWebCore._example.api.domain1.Domain1ApiService;
 import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
@@ -49,20 +51,22 @@ public class Domain1ViewController {
     private final StringEncryptor stringEncryptor;
     private final AesEncryptor aesEncryptor;
     private final DesEncryptor desEncryptor;
+    private final AllTypeDecryptor allTypeDecryptor;
 
     public Domain1ViewController(Domain1ViewService domain1ViewService, Domain1ApiService domain1ApiService
             , @Qualifier("customJasyptStringEncryptor") StringEncryptor stringEncryptor
-            , AesEncryptor aesEncryptor, DesEncryptor desEncryptor) {
+            , AesEncryptor aesEncryptor, DesEncryptor desEncryptor, AllTypeDecryptor allTypeDecryptor) {
         this.domain1ViewService = domain1ViewService;
         this.domain1ApiService = domain1ApiService;
         this.stringEncryptor = stringEncryptor;
         this.aesEncryptor = aesEncryptor;
         this.desEncryptor = desEncryptor;
+        this.allTypeDecryptor = allTypeDecryptor;
     }
 
-    @GetMapping({"/pageForFetchTest"})
+    @GetMapping({"/pageForApiTestWithFetch"})
     public String pageForFetchTest() {
-        return pageBasePath + "pageForFetchTest";
+        return pageBasePath + "pageForApiTestWithFetch";
     }
 
     //기본 테스트
@@ -145,8 +149,20 @@ public class Domain1ViewController {
     @PostMapping("/public/aesDec") //csrf 무시 경로
     public String aesDecPost(Model model, @RequestBody String encryptedText) {
         log.debug(encryptedText);
-        String decryptedText = aesEncryptor.decrypt(encryptedText);
+        String decryptedText = allTypeDecryptor.decryptAllType(encryptedText);
         model.addAttribute("result", decryptedText);
+        return pageBasePath + "simpleModelView";
+    }
+
+    @PostMapping("/public/aesDecForDto") //csrf 무시 경로
+    public String aesDecForDto(Model model, @RequestBody String encryptedText) throws IllegalAccessException {
+        ExampleADto exampleADto = ExampleADto.builder().aDtoFirstName(encryptedText).aDtoLastName(encryptedText).build();
+        ExampleBDto exampleBDto = ExampleBDto.builder().bObjectEndTitle("xx").bObjectFamilyTitle(encryptedText).build();
+        ExampleABDto exampleABDto = ExampleABDto.builder().exampleADto(exampleADto).exampleBDto(exampleBDto).abString1("Enc_sptDES(6xQHOBfp1u2+Kjd8c5KHn3o/sS20KrFw)").abString2("222").build();
+
+        log.debug(encryptedText);
+        exampleABDto = (ExampleABDto) allTypeDecryptor.decryptDtoAllType(exampleABDto);
+        model.addAttribute("result", exampleABDto);
         return pageBasePath + "simpleModelView";
     }
 
@@ -161,7 +177,7 @@ public class Domain1ViewController {
     @PostMapping("/public/desDec") //csrf 무시 경로
     public String desDecPost(Model model, @RequestBody String encryptedText) {
         log.debug(encryptedText);
-        String decryptedText = desEncryptor.decrypt(encryptedText);
+        String decryptedText = allTypeDecryptor.decryptAllType(encryptedText);
         model.addAttribute("result", decryptedText);
         return pageBasePath + "simpleModelView";
     }

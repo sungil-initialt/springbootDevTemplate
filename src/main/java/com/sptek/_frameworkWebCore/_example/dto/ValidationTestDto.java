@@ -44,6 +44,8 @@ public class ValidationTestDto {
     private String mobileNumber;
 
     /*
+    @Valid //객체 내부 까지 벨리드 검사
+    @URL //url 형식
     @Positive //양수
     @PositiveOrZero //0포함 양수
     @Negative //음수
