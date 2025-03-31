@@ -46,7 +46,7 @@ HttpStatus.OK(200)
 const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api/v1';
 //console.log("API_BASE_URL: " + API_BASE_URL);
 
-async function requestFetch(url, options = {}) {
+export async function requestFetch(url, options = {}) {
     const {
         baseUrl = API_BASE_URL,       // 전역 API prefix가 있다면 사용
         method = 'GET',

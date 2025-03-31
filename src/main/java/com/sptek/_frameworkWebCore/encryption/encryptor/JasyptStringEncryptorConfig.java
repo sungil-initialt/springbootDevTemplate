@@ -2,6 +2,7 @@ package com.sptek._frameworkWebCore.encryption.encryptor;
 
 import com.sptek._frameworkWebCore.annotation.EnableEncryptorJasypt_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -40,6 +41,9 @@ public class JasyptStringEncryptorConfig {
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
         pooledPBEStringEncryptor.setConfig(getSimpleStringPBEConfig(pbePassword, pbeAlgorithm));
 
+        //Encryption 에 사용 등록 처리
+        GlobalEncryptor.register(GlobalEncryptor.Type.sptJASYPT, pooledPBEStringEncryptor);
+
         //최종 인코딩된 암호값에는 알고리즘정보 및 salt가 포함됨(salt가 포함됨으로 별도로 salt를 관리할 필요가 없음, salt가 노출된다고 해도 암호를 풀 방법이 쉬워질건 없음)
         return pooledPBEStringEncryptor;
     }
@@ -59,4 +63,6 @@ public class JasyptStringEncryptorConfig {
 
         return simpleStringPBEConfig;
     }
+
+
 }

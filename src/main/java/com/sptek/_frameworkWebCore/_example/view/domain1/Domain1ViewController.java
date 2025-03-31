@@ -1,27 +1,23 @@
 package com.sptek._frameworkWebCore._example.view.domain1;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
-import com.sptek._frameworkWebCore.encryption.decryptor.AllTypeDecryptor;
-import com.sptek._frameworkWebCore.springSecurity.extras.dto.TestDto;
-import com.sptek._frameworkWebCore.util.LocaleUtil;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
-import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.encryption.encryptor.AesEncryptor;
-import com.sptek._frameworkWebCore.encryption.encryptor.DesEncryptor;
 import com.sptek._frameworkWebCore._example.api.domain1.Domain1ApiService;
 import com.sptek._frameworkWebCore._example.dto.*;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
+import com.sptek._frameworkWebCore.base.exception.ServiceException;
+import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
+import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
+import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.jasypt.encryption.StringEncryptor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -31,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 @EnableResponseOfViewGlobalException_InViewController
 public class Domain1ViewController {
@@ -48,21 +46,6 @@ public class Domain1ViewController {
     private final String pageBasePath = "pages/example/test/";
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
-    private final StringEncryptor stringEncryptor;
-    private final AesEncryptor aesEncryptor;
-    private final DesEncryptor desEncryptor;
-    private final AllTypeDecryptor allTypeDecryptor;
-
-    public Domain1ViewController(Domain1ViewService domain1ViewService, Domain1ApiService domain1ApiService
-            , @Qualifier("customJasyptStringEncryptor") StringEncryptor stringEncryptor
-            , AesEncryptor aesEncryptor, DesEncryptor desEncryptor, AllTypeDecryptor allTypeDecryptor) {
-        this.domain1ViewService = domain1ViewService;
-        this.domain1ApiService = domain1ApiService;
-        this.stringEncryptor = stringEncryptor;
-        this.aesEncryptor = aesEncryptor;
-        this.desEncryptor = desEncryptor;
-        this.allTypeDecryptor = allTypeDecryptor;
-    }
 
     @GetMapping({"/pageForApiTestWithFetch"})
     public String pageForFetchTest() {
@@ -119,7 +102,7 @@ public class Domain1ViewController {
     @PostMapping("/public/jasyptEnc")
     public String jasyptEncPost(Model model, @RequestBody String plainText) {
         log.debug(plainText);
-        String encryptedText = stringEncryptor.encrypt(plainText);
+        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptJASYPT, plainText);
         model.addAttribute("result", encryptedText);
         return pageBasePath + "simpleModelView";
     }
@@ -127,7 +110,7 @@ public class Domain1ViewController {
     @PostMapping("/public/jasyptDec") //csrf 무시 경로
     public String jasyptDecPost(Model model, @RequestBody String encryptedText) {
         log.debug(encryptedText);
-        String decryptedText = stringEncryptor.decrypt(encryptedText);
+        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
         model.addAttribute("result", decryptedText);
         return pageBasePath + "simpleModelView";
     }
@@ -141,35 +124,38 @@ public class Domain1ViewController {
     @PostMapping("/public/aesEnc")
     public String aesEncPost(Model model, @RequestBody String plainText) {
         log.debug(plainText);
-        String encryptedText = aesEncryptor.encrypt(plainText);
-        model.addAttribute("result", encryptedText);
+        String encryptedText1 = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptAES, plainText);
+        String encryptedText2 = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptDES, plainText);
+        String encryptedText3 = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptJASYPT, plainText);
+
+        model.addAttribute("result", encryptedText1 + " : " + encryptedText2 + " : " + encryptedText3);
         return pageBasePath + "simpleModelView";
     }
 
     @PostMapping("/public/aesDec") //csrf 무시 경로
-    public String aesDecPost(Model model, @RequestBody String encryptedText) {
+    public String aesDecPost(Model model, @RequestBody String encryptedText) throws IllegalAccessException {
         log.debug(encryptedText);
-        String decryptedText = allTypeDecryptor.decryptAllType(encryptedText);
+        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
         model.addAttribute("result", decryptedText);
         return pageBasePath + "simpleModelView";
     }
 
     @PostMapping("/public/aesDecForDto") //csrf 무시 경로
-    public String aesDecForDto(Model model, @RequestBody String encryptedText) throws IllegalAccessException {
+    public String aesDecForDto(Model model, @RequestBody String encryptedText) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         ExampleADto exampleADto = ExampleADto.builder().aDtoFirstName(encryptedText).aDtoLastName(encryptedText).build();
         ExampleBDto exampleBDto = ExampleBDto.builder().bObjectEndTitle("xx").bObjectFamilyTitle(encryptedText).build();
-        ExampleABDto exampleABDto = ExampleABDto.builder().exampleADto(exampleADto).exampleBDto(exampleBDto).abString1("Enc_sptDES(6xQHOBfp1u2+Kjd8c5KHn3o/sS20KrFw)").abString2("222").build();
+        ExampleABDto exampleABDto = ExampleABDto.builder().exampleADto(exampleADto).exampleBDto(exampleBDto).abString1("ENC_sptJASYPT(moVlL9/qsjqzcbtCtGUJfAGgpGx1iuh01ZASXxR+N2HDKnc85OwNqrVG3dP6hwf2)").abString2("222").build();
 
         log.debug(encryptedText);
-        exampleABDto = (ExampleABDto) allTypeDecryptor.decryptDtoAllType(exampleABDto);
-        model.addAttribute("result", exampleABDto);
+        ExampleABDto decryptedExampleABDto = GlobalEncryptor.decrypt(exampleABDto);
+        model.addAttribute("result", exampleABDto + " ----- " + decryptedExampleABDto);
         return pageBasePath + "simpleModelView";
     }
 
     @PostMapping("/public/desEnc")
     public String desEncPost(Model model, @RequestBody String plainText) {
         log.debug(plainText);
-        String encryptedText = desEncryptor.encrypt(plainText);
+        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptDES, plainText);
         model.addAttribute("result", encryptedText);
         return pageBasePath + "simpleModelView";
     }
@@ -177,7 +163,7 @@ public class Domain1ViewController {
     @PostMapping("/public/desDec") //csrf 무시 경로
     public String desDecPost(Model model, @RequestBody String encryptedText) {
         log.debug(encryptedText);
-        String decryptedText = allTypeDecryptor.decryptAllType(encryptedText);
+        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
         model.addAttribute("result", decryptedText);
         return pageBasePath + "simpleModelView";
     }

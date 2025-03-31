@@ -1,3 +1,12 @@
+### healthCheck
+GET {{web-server}}//system-Support-api/healthCheck
+Content-Type: text/html
+
+### rsaPublicKey
+GET {{web-server}}//system-Support-api/rsaPublicKey
+Content-Type: text/html
+
+
 ### view Test
 GET {{web-server}}/welcome
 Content-Type: text/html
@@ -58,7 +67,7 @@ originPlainText
 POST {{web-server}}/public/jasyptDec
 Content-Type: text/html
 
-moVlL9/qsjqzcbtCtGUJfAGgpGx1iuh01ZASXxR+N2HDKnc85OwNqrVG3dP6hwf2
+ENC_sptJASYPT(moVlL9/qsjqzcbtCtGUJfAGgpGx1iuh01ZASXxR+N2HDKnc85OwNqrVG3dP6hwf2)
 
 
 ### aesEnc 테스트
@@ -71,13 +80,13 @@ originPlainText
 POST {{web-server}}/public/aesDec
 Content-Type: text/html
 
-Enc_sptAES(+qyH9/BjtEIGy0BJ8Lm0/ApuBoYD7oovvR2va5MAJYk=)
+ENC_sptAES(+qyH9/BjtEIGy0BJ8Lm0/ApuBoYD7oovvR2va5MAJYk=)
 
 ### aesDecForDto 테스트
 POST {{web-server}}/public/aesDecForDto
 Content-Type: text/html
 
-Enc_sptAES(+qyH9/BjtEIGy0BJ8Lm0/ApuBoYD7oovvR2va5MAJYk=)
+ENC_sptAES(+qyH9/BjtEIGy0BJ8Lm0/ApuBoYD7oovvR2va5MAJYk=)
 
 ### desEnc 테스트
 POST {{web-server}}/public/desEnc
@@ -89,7 +98,7 @@ originPlainText
 POST {{web-server}}/public/desDec
 Content-Type: text/plain
 
-Enc_sptDES(6xQHOBfp1u2+Kjd8c5KHn3o/sS20KrFw)
+ENC_sptDES(6xQHOBfp1u2+Kjd8c5KHn3o/sS20KrFw)
 
 
 > {%

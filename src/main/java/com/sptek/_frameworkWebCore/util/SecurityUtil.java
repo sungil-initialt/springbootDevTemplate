@@ -38,7 +38,7 @@ public class SecurityUtil {
                 , "/error/**"
                 , "/err/**"
                 , "/static/**"
-                , "/health/**"
+                , "/system-Support-api/**"
                 , "/github-markdown-css/**"
                 , "/h2-console/**"
                 , "/static/favicon.ico"
