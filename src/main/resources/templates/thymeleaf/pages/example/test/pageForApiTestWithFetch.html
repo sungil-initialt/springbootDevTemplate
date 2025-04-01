@@ -12,18 +12,19 @@
     <style th:inline="css" type="text/css">
     </style><!-- inline JS 영역-->
 
-    <!--<script th:src="@{/js/_framework/fetchCommonUtil.js}" charset="UTF-8" defer></script> //단순링크방식일때-->
-    <script src="https://cdn.jsdelivr.net/npm/jsencrypt/bin/jsencrypt.min.js"></script>
+    <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
     <script type="module" th:inline="javascript">
-        import { requestFetch } from [[@{/js/_framework/fetchCommonUtil.js}]];
+        import { requestFetch, rsaEncrypt } from [[@{/js/_framework/frameworkUtil.js}]];
         window.requestFetch = requestFetch;
+        window.rsaEncrypt = rsaEncrypt;
+
     </script>
 
 </head>
 <body>
 
 <div style="background-color: #f0f8ff; padding: 10px; border-radius: 5px;">
-    <label for="apiEndpoint">직접입력 :</label> <input type="text" id="apiEndpoint" placeholder="Enter API endpoint" style="width: 400px;"/>
+    <label>직접입력 :</label> <input type="text" id="apiEndpoint" placeholder="Enter API endpoint" style="width: 400px;"/>
     <button id="request">request</button>
     <script>
         document.getElementById('request').addEventListener('click', async function () {
@@ -37,7 +38,7 @@
                 const data = await requestFetch(apiEndpoint, {});
                 console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
             } catch (error) {
-                console.error("Error fetching todo:", error);
+                console.error("Error requestFetch:", error);
             }
         });
     </script>
@@ -48,7 +49,7 @@
 <br>
 
 <div style="background-color: #f0f8ff; padding: 10px; border-radius: 5px;">
-    <label for="apiEndpoint">async :</label> <button id="deDuplication1">deDuplication</button>
+    <label>async :</label> <button id="deDuplication1">deDuplication</button>
     <script>
         document.getElementById('deDuplication1').addEventListener('click', async function() {
             try {
@@ -57,7 +58,7 @@
                 });
                 console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
             } catch (error) {
-                console.error("Error fetching todo:", error);
+                console.error("Error requestFetch:", error);
             }
         });
     </script>
@@ -65,7 +66,7 @@
 <br>
 
 <div style="background-color: #f0f8ff; padding: 10px; border-radius: 5px;">
-    <label for="apiEndpoint">sync :</label> <button id="deDuplication2">deDuplication</button>
+    <label>sync :</label> <button id="deDuplication2">deDuplication</button>
     <script>
         document.getElementById('deDuplication2').addEventListener('click', async function() {
             try {
@@ -73,23 +74,44 @@
                 });
                 console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
             } catch (error) {
-                console.error("Error fetching todo:", error);
+                console.error("Error requestFetch:", error);
             }
         });
     </script>
 </div>
 <br>
 
+
 <div style="background-color: #f0f8ff; padding: 10px; border-radius: 5px;">
-    <label for="apiEndpoint">rsa Encrypt :</label> <button id="Encrypt">Encrypt</button>
+    <label>plainText for RSA :</label> <input type="text" id="plainText" placeholder="Enter Confidential Information" style="width: 400px;"/>
+    <button id="encrypt">Encrypt</button>
+    <br><br>
+    <label>rsa Encrypted :</label> <input type="text" id="rsaEncryptText" style="width: 400px;"/>
+    <button id="sendForRsa">send to server</button>
     <script>
-        document.getElementById('Encrypt').addEventListener('click', async function() {
+        document.getElementById('encrypt').addEventListener('click', async function () {
             try {
-                const data = await requestFetch('/system-Support-api/rsaPublicKeyBase64', {
+                const plainText = document.getElementById('plainText').value;
+                if (!plainText) {
+                    alert(" PlainText is required");
+                    return;
+                }
+                const encryptedData = await rsaEncrypt(plainText);
+                document.getElementById('rsaEncryptText').value = encryptedData;
+            } catch (error) {
+                console.error('Error rsaEncrypt:', error);
+            }
+        });
+
+        document.getElementById('sendForRsa').addEventListener('click', async function() {
+            try {
+                const data = await requestFetch('/decryptRsa', {
+                    method: 'POST',
+                    body: document.getElementById('rsaEncryptText').value
                 });
                 console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
             } catch (error) {
-                console.error("Error fetching todo:", error);
+                console.error("Error requestFetch:", error);
             }
         });
     </script>

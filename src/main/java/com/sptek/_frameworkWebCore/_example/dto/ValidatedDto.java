@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValidationTestDto {
+public class ValidatedDto {
 
 
     //NotBlank은 NotNull, NotEmpty 기능을 모두 포함함.
@@ -40,7 +40,7 @@ public class ValidationTestDto {
     private String email;
 
     @Pattern(regexp = "010\\d{8}", message = "전화번호 형식에 맞지 않습니다.")
-    @Schema(description = "사용자 전화번호", example = "010-1234-5678")
+    @Schema(description = "사용자 전화번호", example = "01012345678")
     private String mobileNumber;
 
     /*

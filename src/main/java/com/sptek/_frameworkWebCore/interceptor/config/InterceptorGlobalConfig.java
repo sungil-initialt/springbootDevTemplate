@@ -1,6 +1,8 @@
-package com.sptek._frameworkWebCore.interceptor;
+package com.sptek._frameworkWebCore.interceptor.config;
 
 
+import com.sptek._frameworkWebCore.interceptor.UvCheckInterceptor;
+import com.sptek._frameworkWebCore.interceptor.ViewErrorLogSupportInterceptor;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._projectCommon.interceptor.ExampleInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -9,14 +11,14 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class InterceptorConfigForSptfw implements WebMvcConfigurer {
+public class InterceptorGlobalConfig implements WebMvcConfigurer {
 
     private final ExampleInterceptor exampleInterceptor;
     private final UvCheckInterceptor uvCheckInterceptor;
     private final ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor;
 
     //조건에 따라 Interceptor 들이 Bean 으로 등독 될수도 안 될수도 있는 상황이 있기 때문에 @Nullable 사용한 생성자를 직접 구현하였음
-    public InterceptorConfigForSptfw(@Nullable ExampleInterceptor exampleInterceptor
+    public InterceptorGlobalConfig(@Nullable ExampleInterceptor exampleInterceptor
             , @Nullable UvCheckInterceptor uvCheckInterceptor
             , @Nullable ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor) {
         this.exampleInterceptor = exampleInterceptor;

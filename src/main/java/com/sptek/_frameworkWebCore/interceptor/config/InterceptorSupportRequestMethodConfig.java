@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.interceptor;
+package com.sptek._frameworkWebCore.interceptor.config;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +19,11 @@ import java.util.List;
 물론!! 인터셉터 내부에서 request.getMetho() 를 통해 구분된 동작을 처리할 수 있으나 인터셉터는 별도의 config 파일에 동작을 명시하고 있는 방식임으로 일관성을 갖게 처리하기 위함
  */
 @Slf4j
-public class InterceptorConfigSupportForRequestMethod implements HandlerInterceptor {
+public class InterceptorSupportRequestMethodConfig implements HandlerInterceptor {
     private final HandlerInterceptor handlerInterceptor;
     private final MatchInfoContainer matchInfoContainer;
 
-    public InterceptorConfigSupportForRequestMethod(HandlerInterceptor handlerInterceptor) {
+    public InterceptorSupportRequestMethodConfig(HandlerInterceptor handlerInterceptor) {
         this.handlerInterceptor = handlerInterceptor;
         this.matchInfoContainer = new MatchInfoContainer();
     }
@@ -37,12 +37,12 @@ public class InterceptorConfigSupportForRequestMethod implements HandlerIntercep
     }
 
     //실제 사용할 경우가 있을까?
-    public InterceptorConfigSupportForRequestMethod includePathPattern(String pathPattern, HttpMethod pathMethod) {
+    public InterceptorSupportRequestMethodConfig includePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.includePathPattern(pathPattern, pathMethod);
         return this;
     }
 
-    public InterceptorConfigSupportForRequestMethod excludePathPattern(String pathPattern, HttpMethod pathMethod) {
+    public InterceptorSupportRequestMethodConfig excludePathPattern(String pathPattern, HttpMethod pathMethod) {
         matchInfoContainer.excludePathPattern(pathPattern, pathMethod);
         return this;
     }

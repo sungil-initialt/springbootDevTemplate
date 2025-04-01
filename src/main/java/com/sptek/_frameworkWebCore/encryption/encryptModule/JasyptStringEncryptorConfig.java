@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.encryption.encryptor;
+package com.sptek._frameworkWebCore.encryption.encryptModule;
 
 import com.sptek._frameworkWebCore.annotation.EnableEncryptorJasypt_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;

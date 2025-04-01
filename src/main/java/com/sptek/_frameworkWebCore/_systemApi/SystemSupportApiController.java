@@ -1,9 +1,9 @@
-package com.sptek._frameworkWebCore._example.api.domain1;
+package com.sptek._frameworkWebCore._systemApi;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
-import com.sptek._frameworkWebCore.encryption.encryptor.RsaEncryptor;
+import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.Base64;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @Tag(name = "시스템 API", description = "시스템이 기본으로 제공하는 API") //swagger
-@RequestMapping(value = {"/system-Support-api"})
+@RequestMapping(value = {"/api/v1/system-support-api/"})
 public class SystemSupportApiController {
 
     //해당 매핑은 NotEssentialRequestPattern 에 포함되어 있음 (필터 적용이 되지 않는다.)

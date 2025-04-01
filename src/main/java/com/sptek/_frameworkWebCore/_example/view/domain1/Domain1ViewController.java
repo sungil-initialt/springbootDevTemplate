@@ -300,7 +300,7 @@ public class Domain1ViewController {
 
     //thyleaf 에러 처리 테스트
     @GetMapping("/validationWithBindingResult")
-    public String validationWithBindingResult(ValidationTestDto validationTestDto) {
+    public String validationWithBindingResult(ValidatedDto validationTestDto) {
         //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
 
         log.debug("called by GET");
@@ -308,7 +308,7 @@ public class Domain1ViewController {
     }
 
     @PostMapping("/validationWithBindingResult")
-    public String validationWithBindingResult(@Valid ValidationTestDto validationTestDto, BindingResult bindingResult) {
+    public String validationWithBindingResult(@Valid ValidatedDto validationTestDto, BindingResult bindingResult) {
         log.debug("called by POST");
 
         if (bindingResult.hasErrors()) {

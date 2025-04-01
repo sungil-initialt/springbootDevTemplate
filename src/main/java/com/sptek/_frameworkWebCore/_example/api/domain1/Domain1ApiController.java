@@ -2,10 +2,11 @@ package com.sptek._frameworkWebCore._example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
-import com.sptek._frameworkWebCore._example.dto.ValidationTestDto;
+import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
 import com.sptek._frameworkWebCore.annotation.*;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
+import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserAddressDto;
@@ -110,6 +111,17 @@ public class Domain1ApiController {
         return message;
     }
 
+    @PostMapping("/decryptRsa")
+    @Operation(summary = "decryptRsa", description = "decryptRsa 테스트", tags = {"decryptRsa"}) //swagger
+    public Object decryptRsa(
+            @Parameter(name = "rsaEncryptText", description = "RSA로 암호화된 텍스트", required = true) //swagger
+            @RequestBody String rsaEncryptText) {
+
+        log.debug("rsaEncryptText = {}", rsaEncryptText);
+        String rsaDecryptText = GlobalEncryptor.decrypt(rsaEncryptText);
+        return rsaDecryptText;
+    }
+
     @GetMapping("/projectinfo")
     @Operation(summary = "projectinfo", description = "projectinfo 테스트", tags = {""})
     //단순 프로젝트 정보 확인
@@ -122,7 +134,7 @@ public class Domain1ApiController {
     public Object swaggerExample(
             @Parameter(name = "message", description = "가이드용으로 의미가 없음", required = true)
             @RequestParam String message,
-            @RequestBody ValidationTestDto validationTestDto) {
+            @RequestBody ValidatedDto validationTestDto) {
 
         return validationTestDto;
     }
@@ -217,13 +229,13 @@ public class Domain1ApiController {
     @PostMapping("/validationAnnotationPost")
     @Operation(summary = "validationAnnotationPost", description = "validationAnnotationPost 테스트", tags = {""})
     //request input 값에대한 validation 처리 테스트
-    public Object validationAnnotationPost(@RequestBody @Validated ValidationTestDto validationTestDto) {
+    public Object validationAnnotationPost(@RequestBody @Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
     @GetMapping("/validationAnnotationGet")
     @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
-    public Object validationAnnotationGet(@Validated ValidationTestDto validationTestDto) {
+    public Object validationAnnotationGet(@Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 

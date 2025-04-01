@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.encryption.encryptor;
+package com.sptek._frameworkWebCore.encryption.encryptModule;
 
 import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import lombok.extern.slf4j.Slf4j;

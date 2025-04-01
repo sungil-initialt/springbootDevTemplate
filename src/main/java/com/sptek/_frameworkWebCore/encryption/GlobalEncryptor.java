@@ -6,7 +6,10 @@ import org.jasypt.encryption.StringEncryptor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GlobalEncryptor {
@@ -56,8 +59,20 @@ public class GlobalEncryptor {
 //        return castedCopy;
 //    }
 
-    //dto 의 필드중 @EnableAutoDecrypt_InDtoString 어노테이션이 적용된 필드에 대해서만 decrypt 하는 방식 (리소스 절약)
+    //이미 확인한 객체는 다시 확인 하지 않도록 처리
     public static <T> T decrypt(@NotNull T dto) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+        Set<Object> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        return decryptInternal(dto, visited);
+    }
+
+    //dto 의 필드중 @EnableAutoDecrypt_InDtoString 어노테이션이 적용된 필드에 대해서만 decrypt 하는 방식 (리소스 절약) // todo : 복잡한 DTO 에 대해 성능 확인 필요
+    private static <T> T decryptInternal(@NotNull T dto, Set<Object> visited)
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+
+        // 중복 객체 방지
+        if (visited.contains(dto)) return dto;
+        visited.add(dto);
+
         Class<?> clazz = dto.getClass();
         Object copy = clazz.getDeclaredConstructor().newInstance();
 
@@ -65,7 +80,6 @@ public class GlobalEncryptor {
             field.setAccessible(true);
             Object originalField = field.get(dto);
 
-            // 어노테이션이 붙어있을 경우만 복호화 시도
             if (field.isAnnotationPresent(EnableDecryptAuto_InDtoString.class)
                     && originalField instanceof String strValue
                     && strValue.startsWith(encKeyword)) {
@@ -74,16 +88,16 @@ public class GlobalEncryptor {
                 field.set(copy, decrypted);
             }
 
-            // 재귀 복호화 (내부 객체 중에도 복호화 대상 있을 수 있음)
+            // 재귀 복호화
             else if (originalField != null
                     && !field.getType().isPrimitive()
                     && !field.getType().getName().startsWith("java.")) {
 
-                Object decryptedChild = decrypt(originalField);
+                Object decryptedChild = decryptInternal(originalField, visited);
                 field.set(copy, decryptedChild);
             }
 
-            // 나머지는 단순 복사
+            // 나머지 단순 복사
             else {
                 field.set(copy, originalField);
             }

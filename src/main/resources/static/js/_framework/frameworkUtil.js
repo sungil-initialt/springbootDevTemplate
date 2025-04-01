@@ -168,3 +168,26 @@ try {
     console.error('요청 실패:', err.message);
 }
 */
+
+export async function rsaEncrypt(plainText) {
+    try {
+        const response = await requestFetch('/system-support-api/rsaPublicKeyBase64', {
+        });
+        console.log('response:', typeof response === 'string' ? response : JSON.stringify(response, null, 2));
+
+        const publicKeyBase64 = response.result;
+        //console.log('publicKeyBase64:', publicKeyBase64);
+        // publicKeyBase64 → PEM 변환
+        const publicKeyPem = `-----BEGIN PUBLIC KEY-----\n${publicKeyBase64.match(/.{1,64}/g).join('\n')}\n-----END PUBLIC KEY-----`;
+
+        const encryptor = new JSEncrypt();
+        encryptor.setPublicKey(publicKeyPem);
+        const rsaEncryptedText = `ENC_sptRSA(${await encryptor.encrypt(plainText)})`;
+        console.log('encryptedText:', rsaEncryptedText);
+        return rsaEncryptedText;
+
+    } catch (error) {
+        console.error("Error requestFetch:", error);
+        throw err;
+    }
+}

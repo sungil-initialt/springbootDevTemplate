@@ -1,4 +1,4 @@
-# Swagger springdoc-ui Configuration (https://localhost:8443/swagger-ui.html)
+# Swagger springdoc-ui Configuration (https://localhost/swagger-ui.html)
 springdoc:
   api-docs:
     # swagger 활성 여부
