@@ -1,32 +1,29 @@
+#replication 구성이 아닐경우.. write 와 read를 동일 정보로 입력해서 처리 가능 (단 maximum-pool-size 를 어떻게 나눠 쓸지 결정 필요)
+
 spring:
   datasource:
     #write, read로 리플리케이션 구조 설정
     write:
       driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
-      jdbc-url: jdbc:mysql://localhost:3306/bookclub?serverTimezone=UTC
-      username: root
-      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      username: sptek
+      password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
       pool-name: Hikari write Connection Pool
-      maximum-pool-size: 20
+      maximum-pool-size: 100
       connectionTimeout: 30000
       idleTimeout: 600000
       maxLifetime: 1800000
     read:
       driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
-      jdbc-url: jdbc:mysql://localhost:3307/bookclub?serverTimezone=UTC
-      username: root
-      password: ENC(UqwvhWEY4K9rahO7I8g39Q==)
+      jdbc-url: jdbc:mysql://localhost:3307/spt_web_fw?serverTimezone=UTC
+      #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3307/spt_web_fw?serverTimezone=UTC
+      username: sptek
+      password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
       pool-name: Hikari read Connection Pool
-      maximum-pool-size: 20
+      maximum-pool-size: 100
       connectionTimeout: 30000
       idleTimeout: 600000
       maxLifetime: 1800000
-
-#For JNDI DataSource (tomcat등에 설정한 jndi 값을 통해 datasource 정보를 읽는 경우의 처리, 실제값으로 변경 필요)
-#jndi:
-#  datasource:
-#    lookup:
-#      write:
-#        name: writeDatasourceJndiName(change to real name)
-#      read:
-#        name: readDatasourceJndiName(change to real name)

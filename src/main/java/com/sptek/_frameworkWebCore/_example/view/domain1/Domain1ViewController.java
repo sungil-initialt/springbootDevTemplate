@@ -5,8 +5,6 @@ import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
-import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
@@ -18,16 +16,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,27 +59,9 @@ public class Domain1ViewController {
         return pageBasePath + "welcome";
     }
 
-    @GetMapping({"/", "/welcomeGet"})
-    public String welcomeGet(Model model) {
-        model.addAttribute("message", "welcome");
-        return pageBasePath + "welcome";
-    }
 
-    @PostMapping({"/welcomePost"})
-    public String welcomePost(Model model) {
-        model.addAttribute("message", "welcome");
-        return pageBasePath + "welcome";
-    }
 
-    @RequestMapping({"/xssTest"})
-    public String welcome(Model model, @RequestParam String message, @RequestBody String requestBody, HttpServletRequest request) throws Exception {
-        log.debug("param: {}, body: {}", message, requestBody);
-        String result = String.format("{message : '%s', requestBody : '%s'}", message, requestBody);
-        model.addAttribute("result", result);
-        DPRECATED_HttpServletRequestWrapperSupport DPRECATEDHttpServletRequestWrapperSupport = (DPRECATED_HttpServletRequestWrapperSupport) request;
-        log.debug("xssTest : {}", DPRECATEDHttpServletRequestWrapperSupport.getRequestBody());
-        return pageBasePath + "simpleModelView";
-    }
+
 
     @RequestMapping("/interceptor")
     @TestAnnotation_InAll
@@ -99,96 +80,12 @@ public class Domain1ViewController {
         return pageBasePath + "xx"; //not to reach here
     }
 
-    @PostMapping("/public/jasyptEnc")
-    public String jasyptEncPost(Model model, @RequestBody String plainText) {
-        log.debug(plainText);
-        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptJASYPT, plainText);
-        model.addAttribute("result", encryptedText);
-        return pageBasePath + "simpleModelView";
-    }
 
-    @PostMapping("/public/jasyptDec") //csrf 무시 경로
-    public String jasyptDecPost(Model model, @RequestBody String encryptedText) {
-        log.debug(encryptedText);
-        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
-        model.addAttribute("result", decryptedText);
-        return pageBasePath + "simpleModelView";
-    }
 
-    @RequestMapping("/checkJasyptWorking")
-    public String checkJasyptWorking(@Value("${jasypt.decryptTest.encValue}") String encValue, Model model) {
-        model.addAttribute("result", encValue);
-        return pageBasePath + "simpleModelView";
-    }
 
-    @PostMapping("/public/aesEnc")
-    public String aesEncPost(Model model, @RequestBody String plainText) {
-        log.debug(plainText);
-        String encryptedText1 = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptAES, plainText);
-        String encryptedText2 = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptDES, plainText);
-        String encryptedText3 = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptJASYPT, plainText);
 
-        model.addAttribute("result", encryptedText1 + " : " + encryptedText2 + " : " + encryptedText3);
-        return pageBasePath + "simpleModelView";
-    }
 
-    @PostMapping("/public/aesDec") //csrf 무시 경로
-    public String aesDecPost(Model model, @RequestBody String encryptedText) throws IllegalAccessException {
-        log.debug(encryptedText);
-        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
-        model.addAttribute("result", decryptedText);
-        return pageBasePath + "simpleModelView";
-    }
 
-    @PostMapping("/public/aesDecForDto") //csrf 무시 경로
-    public String aesDecForDto(Model model, @RequestBody String encryptedText) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        ExampleADto exampleADto = ExampleADto.builder().aDtoFirstName(encryptedText).aDtoLastName(encryptedText).build();
-        ExampleBDto exampleBDto = ExampleBDto.builder().bObjectEndTitle("xx").bObjectFamilyTitle(encryptedText).build();
-        ExampleABDto exampleABDto = ExampleABDto.builder().exampleADto(exampleADto).exampleBDto(exampleBDto).abString1("ENC_sptJASYPT(moVlL9/qsjqzcbtCtGUJfAGgpGx1iuh01ZASXxR+N2HDKnc85OwNqrVG3dP6hwf2)").abString2("222").build();
-
-        log.debug(encryptedText);
-        ExampleABDto decryptedExampleABDto = GlobalEncryptor.decrypt(exampleABDto);
-        model.addAttribute("result", exampleABDto + " ----- " + decryptedExampleABDto);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @PostMapping("/public/desEnc")
-    public String desEncPost(Model model, @RequestBody String plainText) {
-        log.debug(plainText);
-        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptDES, plainText);
-        model.addAttribute("result", encryptedText);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @PostMapping("/public/desDec") //csrf 무시 경로
-    public String desDecPost(Model model, @RequestBody String encryptedText) {
-        log.debug(encryptedText);
-        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
-        model.addAttribute("result", decryptedText);
-        return pageBasePath + "simpleModelView";
-    }
-
-    //Mybatis 를 통한 DB 테스트들
-    @RequestMapping("/dbConnect")
-    public String dbConnect(Model model) {
-        int result = domain1ViewService.returnOne();
-        model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/replicationMaster")
-    public String replicationMaster(Model model) {
-        int result = domain1ViewService.replicationMaster();
-        model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/replicationSlave")
-    public String replicationSlave(Model model) {
-        int result = domain1ViewService.replicationSlave();
-        model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
-    }
 
     @RequestMapping("/selectOne")
     public String selectOne(Model model) {

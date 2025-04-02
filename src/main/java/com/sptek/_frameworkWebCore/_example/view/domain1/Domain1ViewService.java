@@ -20,31 +20,20 @@ public class Domain1ViewService {
 
     private final MyBatisCommonDao myBatisCommonDao;
 
-    @Transactional(readOnly = true)
-    public int returnOne(){
-        return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
-    }
 
-    @Transactional(readOnly = false) //false 임으로 master 쪽으로 요청됨.
-    public int replicationMaster(){
-        return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
-    }
 
-    @Transactional(readOnly = true) //true 임으로 slave 쪽으로 요청됨.
-    public int replicationSlave() {
-        return this.myBatisCommonDao.selectOne("PageTestMapper.return1", null);
-    }
+
 
     @Transactional(readOnly = true)
     public TBTestDto selectOne() {
         int SqlParamForlimit = 1;
-        return this.myBatisCommonDao.selectOne("PageTestMapper.selectWithLimit", SqlParamForlimit);
+        return this.myBatisCommonDao.selectOne("_framework_example.selectWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
     public List<TBTestDto> selectList() {
         int SqlParamForlimit = 100;
-        return this.myBatisCommonDao.selectList("PageTestMapper.selectWithLimit", SqlParamForlimit);
+        return this.myBatisCommonDao.selectList("_framework_example.selectWithLimit", SqlParamForlimit);
     }
 
     @Transactional(readOnly = true)
@@ -80,14 +69,14 @@ public class Domain1ViewService {
              */
         };
 
-        return this.myBatisCommonDao.selectListWithResultHandler("PageTestMapper.selectAll", null, mybatisResultHandlerSupport);
+        return this.myBatisCommonDao.selectListWithResultHandler("_framework_example.selectAll", null, mybatisResultHandlerSupport);
     }
 
     @Transactional(readOnly = true)
     public Map<?, ?> selectMap() {
         int SqlParamForlimit = 3;
         //"컬럼명 c1의 값을 map의 key값으로 하여 Map을 생성한다.
-        Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("PageTestMapper.selecWithLimit", SqlParamForlimit, "c1");
+        Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("_framework_example.selecWithLimit", SqlParamForlimit, "c1");
 
         return resultMap;
     }
@@ -96,22 +85,22 @@ public class Domain1ViewService {
     //result row의 페이징 처리를 위한 예시
     //파람의 상세 내용은 PageInfoSupport 클레스에서 확인가능
     public PageInfoSupport<TBZipcodeDto> selectPaginate(int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
-        return this.myBatisCommonDao.selectPaginatedList("PageTestMapper.selectAll", null,
+        return this.myBatisCommonDao.selectPaginatedList("_framework_example.selectAll", null,
                 currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
     }
 
     @Transactional(readOnly = false)
     public int insert(TBTestDto tbTestDto) {
-        return this.myBatisCommonDao.insert("PageTestMapper.insertTbtest", tbTestDto);
+        return this.myBatisCommonDao.insert("_framework_example.insertTbtest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
     public int update(TBTestDto tbTestDto) {
-        return this.myBatisCommonDao.insert("PageTestMapper.updateTbtest", tbTestDto);
+        return this.myBatisCommonDao.insert("_framework_example.updateTbtest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
     public int delete(TBTestDto tbTestDto) {
-        return this.myBatisCommonDao.insert("PageTestMapper.deleteTbtest", tbTestDto);
+        return this.myBatisCommonDao.insert("_framework_example.deleteTbtest", tbTestDto);
     }
 }

@@ -1,3 +1,5 @@
+#replication 구성이 아닐경우.. write 와 read를 동일 정보로 입력해서 처리 가능 (단 maximum-pool-size 를 어떻게 나눠 쓸지 결정 필요)
+
 spring:
   datasource:
     #write, read로 리플리케이션 구조 설정

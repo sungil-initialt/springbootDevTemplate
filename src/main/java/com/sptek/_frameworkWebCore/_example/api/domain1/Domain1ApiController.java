@@ -2,24 +2,17 @@ package com.sptek._frameworkWebCore._example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
-import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
 import com.sptek._frameworkWebCore.annotation.*;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
-import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
-import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserAddressDto;
-import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserDto;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
 import com.sptek._frameworkWebCore.util.FileUtil;
-import com.sptek._frameworkWebCore.util.RequestUtil;
-import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import com.sptek._projectCommon.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +26,6 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,9 +39,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -75,90 +65,18 @@ public class Domain1ApiController {
     private final Domain1ApiService domain1ApiService;
     private final CustomEventPublisher customEventPublisher;
 
-    @RequestMapping("/test")
-    public Object test(
-            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = false) //swagger
-            @RequestParam(required = true) String message, HttpServletResponse response) {
 
-        return UserDto.builder().id(1L).email("sungilry@naver.com").userAddresses(List.of(UserAddressDto.builder().id(1L).addressType("집").address("엘프라우드").build())).name(message).build();
-    }
 
-    @EnableDetailLog_InMain_Controller_ControllerMethod()
-    @GetMapping("/hello")
-    @Operation(summary = "hello", description = "hello 테스트", tags = {"echo"}) //swagger
-    public Object hello(
-            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
-            @RequestParam String message) {
 
-        return message;
-    }
 
-    @GetMapping("/helloGet")
-    @Operation(summary = "helloGet", description = "helloGet 테스트", tags = {"echo"}) //swagger
-    public Object helloGet(
-            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
-            @RequestParam String message) {
 
-        return message;
-    }
 
-    @PostMapping("/helloPost")
-    @Operation(summary = "helloPost", description = "helloPost 테스트", tags = {"echo"}) //swagger
-    public Object helloPost(
-            @Parameter(name = "message", description = "ehco 로 응답할 내용", required = true) //swagger
-            @RequestParam String message) {
 
-        return message;
-    }
 
-    @PostMapping("/decryptRsa")
-    @Operation(summary = "decryptRsa", description = "decryptRsa 테스트", tags = {"decryptRsa"}) //swagger
-    public Object decryptRsa(
-            @Parameter(name = "rsaEncryptText", description = "RSA로 암호화된 텍스트", required = true) //swagger
-            @RequestBody String rsaEncryptText) {
 
-        log.debug("rsaEncryptText = {}", rsaEncryptText);
-        String rsaDecryptText = GlobalEncryptor.decrypt(rsaEncryptText);
-        return rsaDecryptText;
-    }
 
-    @GetMapping("/projectinfo")
-    @Operation(summary = "projectinfo", description = "projectinfo 테스트", tags = {""})
-    //단순 프로젝트 정보 확인
-    public Object projectinfo() {
-        return projectInfoVo;
-    }
 
-    @PostMapping("/swaggerExample")
-    @Operation(summary = "swagger 구성 예시", description = "swagger 구성의 가이드 API", tags = {"가이드 예시 APIs"})
-    public Object swaggerExample(
-            @Parameter(name = "message", description = "가이드용으로 의미가 없음", required = true)
-            @RequestParam String message,
-            @RequestBody ValidatedDto validationTestDto) {
 
-        return validationTestDto;
-    }
-
-    @GetMapping("/XssProtectSupportGet")
-    @Operation(summary = "XssProtectSupportGet", description = "XssProtectSupportGet 테스트", tags = {""})
-    //get Req에 대한 xss 처리 결과 확인
-    public Object XssProtectSupportGet(
-            @Parameter(name = "originText", description = "원본 텍스트", required = true)
-            @RequestParam String originText) {
-
-        //XssProtectFilter를 통해 response body 내 스크립트 일괄 제거.
-        return "XssProtectedText = " + originText;
-    }
-
-    @PostMapping("/XssProtectSupportPost")
-    @Operation(summary = "XssProtectSupportPost", description = "XssProtectSupportPost 테스트", tags = {""})
-    //post Req에 대한 xss 처리 결과 확인
-    public Object XssProtectSupportPost(
-            @Parameter(name = "originText", description = "원본 텍스트", required = true)
-            @RequestBody String originText, HttpServletRequest request) {
-
-        return "XssProtectedText = " + originText;
-    }
 
     @RequestMapping("/closeableHttpClient")
     @Operation(summary = "closeableHttpClient", description = "closeableHttpClient 테스트", tags = {""})
@@ -208,36 +126,9 @@ public class Domain1ApiController {
         return responseEntity.getBody();
     }
 
-    @RequestMapping("/reqResUtil")
-    @Operation(summary = "reqResUtil", description = "reqResUtil 테스트", tags = {""})
-    //ReqResUtil 검증 테스트
-    public Object reqResUtil(HttpServletRequest request) {
-        String reqFullUrl = RequestUtil.getRequestUrlQuery(request);
-        String reqIp = RequestUtil.getReqUserIp(request);
-        String heades = RequestUtil.getRequestHeaderMap(request).toString();
-        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
-        Map<String, String> resultMap = new HashMap<>();
-        resultMap.put("reqFullUrl", reqFullUrl);
-        resultMap.put("reqIp", reqIp);
-        resultMap.put("heades", heades);
-        resultMap.put("params", params);
 
-        return new ApiCommonSuccessResponseDto<>(resultMap);
-    }
 
-    @PostMapping("/validationAnnotationPost")
-    @Operation(summary = "validationAnnotationPost", description = "validationAnnotationPost 테스트", tags = {""})
-    //request input 값에대한 validation 처리 테스트
-    public Object validationAnnotationPost(@RequestBody @Validated ValidatedDto validationTestDto) {
-        return validationTestDto;
-    }
-
-    @GetMapping("/validationAnnotationGet")
-    @Operation(summary = "validationAnnotationGet", description = "validationAnnotationGet 테스트", tags = {""})
-    public Object validationAnnotationGet(@Validated ValidatedDto validationTestDto) {
-        return validationTestDto;
-    }
 
 //    @GetMapping("/propertyConfigImport")
 //    @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})

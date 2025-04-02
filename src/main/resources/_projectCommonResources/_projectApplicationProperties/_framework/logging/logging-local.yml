@@ -23,10 +23,10 @@ logging:
       hibernate.SQL: DEBUG
       hibernate.type.descriptor.sql.BasicBinder: TRACE
 
-    jdbc.sqltiming: off
-    jdbc.sqlonly: off
-    jdbc.connection: off
-    jdbc.audit: off
+    jdbc.sqltiming: error
+    jdbc.sqlonly: error
+    jdbc.connection: error
+    jdbc.audit: error
     jdbc.resultset: debug
     jdbc.resultsettable: debug
 

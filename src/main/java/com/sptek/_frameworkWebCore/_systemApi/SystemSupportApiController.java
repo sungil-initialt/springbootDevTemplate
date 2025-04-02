@@ -4,8 +4,10 @@ import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_I
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
+import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,21 +17,29 @@ import java.util.Base64;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@Tag(name = "시스템 API", description = "시스템이 기본으로 제공하는 API") //swagger
 @RequestMapping(value = {"/api/v1/system-support-api/"})
-public class SystemSupportApiController {
+@Tag(name = "시스템 Support API", description = "")
 
-    //해당 매핑은 NotEssentialRequestPattern 에 포함되어 있음 (필터 적용이 되지 않는다.)
+public class SystemSupportApiController {
+    private final ProjectInfoVo projectInfoVo;
+
+    @GetMapping("/projectInfo")
+    @Operation(summary = "프로퍼티 설정된 프로젝트 기본 정보 제공", description = "", tags = {""})
+    public Object projectInfo() {
+        return projectInfoVo;
+    }
+
     @GetMapping("/healthCheck")
-    @Operation(summary = "healthCheck", description = "healthCheck 제공", tags = {""}) //swagger
+    @Operation(summary = "healthCheck api", description = "", tags = {""}) //swagger
     public Object healthCheck() {
         return "ok";
     }
 
     @GetMapping("/rsaPublicKeyBase64")
-    @Operation(summary = "rsaPublicKeyBase64", description = "rsaPublicKeyBase64 제공", tags = {""}) //swagger
+    @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공 api", description = "", tags = {""}) //swagger
     public Object rsaPublicKeyBase64() {
         String plainText = "originPlainText";
         String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText);

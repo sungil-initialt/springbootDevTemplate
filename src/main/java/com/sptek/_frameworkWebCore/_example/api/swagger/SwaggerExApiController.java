@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore._example.api.swagger;
 import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,13 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/v1/", /*"/api/v2/"*/}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
+@Tag(name = "Swagger annotation 예시", description = "")
 
-@Tag(name = "스웨거 예시", description = "스웨거 어노테이션 사용을 위한 예시 api")
-public class swaggerExApiController {
-    private final ProjectInfoVo projectInfoVo;
+public class SwaggerExApiController {
 
     @GetMapping("/echoMessage")
-    @Operation(summary = "echoMessage", description = "message echo 테스트", tags = {"echoMessage"})
+    @Operation(summary = "parameter echo 테스트", description = "", tags = {""})
     @ApiResponse(
             responseCode = "200",
             content = @Content(
@@ -38,14 +36,14 @@ public class swaggerExApiController {
             )
     )
     public Object echoMessage(
-            @Parameter(name = "message1", description = "ehco 로 응답할 내용", required = true) @RequestParam String message1,
-            @Parameter(name = "message2", description = "ehco 로 응답할 내용", required = true) @RequestParam String message2) {
+            @Parameter(name = "message1", description = "echo할 message1", required = true) @RequestParam String message1,
+            @Parameter(name = "message2", description = "echo할 message2", required = false) @RequestParam String message2) {
 
         return message1 + ":" + message2;
     }
 
     @GetMapping("/echoDto")
-    @Operation(summary = "echoDto", description = "객체의 echo 테스트", tags = {"echoDto"})
+    @Operation(summary = "객체의 echo 테스트", description = "", tags = {""})
     @ApiResponse(
             responseCode = "200",
             content = @Content(
