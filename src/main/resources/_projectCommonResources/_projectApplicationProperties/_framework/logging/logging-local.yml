@@ -15,13 +15,13 @@ logging:
       sptek._frameworkWebCore: debug
       sptek.serviceName._global: debug
       sptek.serviceName._guideExample: debug
-      zaxxer.hikari.pool.HikariPool: info
+      zaxxer.hikari.pool.HikariPool: debug
     org:
       mybatis.spring: info
       springframework:
         security: info
-      hibernate.SQL: DEBUG
-      hibernate.type.descriptor.sql.BasicBinder: TRACE
+      hibernate.SQL: debug
+      hibernate.type.descriptor.sql.BasicBinder: trace
 
     jdbc.sqltiming: error
     jdbc.sqlonly: error

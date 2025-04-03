@@ -27,3 +27,19 @@ spring:
       connectionTimeout: 30000
       idleTimeout: 600000
       maxLifetime: 1800000
+
+# master / slave 궈리 호출 여부를 확인 하기 위한 예시 쿼리
+#SHOW VARIABLES LIKE 'log_output';
+#SHOW VARIABLES LIKE 'general_log';
+#
+#SET GLOBAL log_output = 'TABLE';
+#SET GLOBAL general_log = 'ON';
+#
+#SELECT
+#CONVERT_TZ(event_time, '+00:00', '+09:00') AS event_time_kst,
+#user_host,
+#argument
+#FROM mysql.general_log
+#WHERE user_host LIKE '%sptek%'
+#ORDER BY event_time DESC
+#LIMIT 5;

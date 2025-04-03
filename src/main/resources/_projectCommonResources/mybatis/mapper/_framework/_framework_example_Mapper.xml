@@ -11,14 +11,47 @@
         ]]>
     </select>
 
-    <select id="selectWithLimit" parameterType="int" resultType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
+    <select id="selectTb_Test" parameterType="int" resultType="com.sptek._frameworkWebCore._example.dto.Tb_TestDto">
         <![CDATA[
         select c1, c2, c3
         from test limit #{limit}
         ]]>
     </select>
 
-    <select id="selectAll" resultType="com.sptek._frameworkWebCore._example.dto.TBZipcodeDto">
+    <insert id="insertTb_Test" parameterType="com.sptek._frameworkWebCore._example.dto.Tb_TestDto">
+        <![CDATA[
+        insert into test (c1, c2, c3)
+        values (#{c1}, #{c2}, #{c3})
+        ]]>
+    </insert>
+
+    
+    <update id="updateTb_Test" parameterType="com.sptek._frameworkWebCore._example.dto.Tb_TestDto">
+        <![CDATA[
+            update test
+            set c1 = #{c1}, c2 = #{c2}, c3 = #{c3}
+            WHERE c1 = (
+                SELECT max_c1 FROM
+                    (
+                        SELECT MAX(c1) AS max_c1 FROM test
+                    ) AS sub
+            )
+            ]]>
+    </update>
+
+    <update id="deleteTb_Test">
+        <![CDATA[
+        DELETE FROM test
+        WHERE c1 = (
+            SELECT max_c1 FROM
+            (
+                SELECT MAX(c1) AS max_c1 FROM test
+            ) AS sub
+        )
+        ]]>
+    </update>
+
+    <select id="selectAll" resultType="com.sptek._frameworkWebCore._example.dto.Tb_ZipcodeDto">
         <![CDATA[
         select *
         from ZIPCODE
@@ -26,27 +59,4 @@
         ]]>
     </select>
 
-    <insert id="insertTbtest" parameterType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
-        <![CDATA[
-        insert into test (c1, c2, c3)
-        values (#{c1}, #{c2}, #{c3})
-        ]]>
-    </insert>
-
-    <update id="updateTbtest" parameterType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
-        <![CDATA[
-        update test
-        set c2 = #{c2},
-            c3 = #{c3}
-        where c1 = #{c1}
-        ]]>
-    </update>
-
-    <delete id="deleteTbtest" parameterType="com.sptek._frameworkWebCore._example.dto.TBTestDto">
-        <![CDATA[
-        delete
-        from test
-        where c1 = #{c1}
-        ]]>
-    </delete>
 </mapper>

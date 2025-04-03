@@ -7,7 +7,7 @@ public abstract class MybatisResultHandlerSupport <T, R> {
 
     private boolean stopFlag = false;
 
-    //처리 시작전에 할일이 있다면 overwrite 한다.
+    // overwrite somthing to do before the start
     public void open(){
     }
 
@@ -15,15 +15,14 @@ public abstract class MybatisResultHandlerSupport <T, R> {
     public void stop() {
         this.stopFlag = true;
     }
-
     public boolean isStop() {
         return stopFlag;
     }
 
-    //처리를 끝내며 할일이 있다면 overwrite 한다.
+    // overwrite somthing to do for finishing
     public void close(){
     }
 
-    //result row를 받아 실체 처리할 부분을 구현한다.
+    // overwrite somthing to do for processing
     public abstract R handleResultRow(T resultRow);
 }

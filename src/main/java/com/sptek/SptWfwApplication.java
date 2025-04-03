@@ -16,8 +16,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableDetailLog_InMain_Controller_ControllerMethod
 
 //---------------------------------------------
-@EnableDatasourceOfH2_InMain
-//@EnableDatasourceOfMysqlReplication_InMain
+//@EnableDatasourceOfH2_InMain
+@EnableDatasourceOfMysqlReplication_InMain
 //@EnableDatasourceOfMysqlReplicationWithJndi_InMain
 //---------------------------------------------
 @EnableJpaHybrid_InMain

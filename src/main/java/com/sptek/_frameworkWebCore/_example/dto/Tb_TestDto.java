@@ -11,7 +11,7 @@ TEST 테이블(sample 테이블)에 대한 DTO로 모든 DTO는 가능하면 bui
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TBTestDto {
+public class Tb_TestDto {
     private int c1;
     private int c2;
     private int c3;

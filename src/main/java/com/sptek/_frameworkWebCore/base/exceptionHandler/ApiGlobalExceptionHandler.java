@@ -128,9 +128,10 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiCommonErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());
     }
 
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiCommonErrorResponseDto> handleUnExpectedException(Exception ex) {
-        log.error(ex.getMessage());
+        log.error("Unexpected exception occurred", ex);
 
         final ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiCommonErrorResponseDto, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR.getHttpStatusCode());

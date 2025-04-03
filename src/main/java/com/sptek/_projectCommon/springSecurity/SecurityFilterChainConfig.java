@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -29,15 +30,33 @@ public class SecurityFilterChainConfig {
     //private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
+    public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                //H2 DB 웹 콘설 전용
+                .securityMatcher("/h2-console/**")
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        //콘솔 UI 구성상 FrameOptionsConfig::disable 옵션이 필요한데 보안상 해당 경로만 적용
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
+
+        return http.build();
+    }
+
+    @Bean
     //스프링 6.x 버전부터 변경된 방식으로, spring security는 자체적으로 준비된 필터들과 동작 순서가 있으며 아래는 그 필터들의 동작유무 및 설정 옵션을 지정하는 역할을 한다.
     public SecurityFilterChain securityFilterChainForView(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 // api/** 로 시작하지 않은 경우만 필터 적용
-                .securityMatcher(request -> !request.getRequestURI().startsWith("/api/"))
+                .securityMatcher(request -> !request.getRequestURI().startsWith("/api/") && !request.getRequestURI().startsWith("/h2-console/"))
 
                 // CSRF를 비활성화할 경로 지정
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/**") // todo: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시하도록 임시 처리
+                        .ignoringRequestMatchers("/example/**")
                         .ignoringRequestMatchers("/public/**")
                 )
 
@@ -141,4 +160,7 @@ public class SecurityFilterChainConfig {
 
         return httpSecurity.build();
     }
+
+
+
 }

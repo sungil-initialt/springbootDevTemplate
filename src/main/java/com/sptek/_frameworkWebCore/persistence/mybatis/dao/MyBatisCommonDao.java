@@ -26,6 +26,21 @@ public class MyBatisCommonDao {
     @Qualifier("sqlSessionTemplate")
     private SqlSessionTemplate sqlSessionTemplate;
 
+    public Integer insert(String statementId, @Nullable Object parameter) {
+        log.debug("statementId = {}", statementId);
+        return this.sqlSessionTemplate.insert(statementId, parameter);
+    }
+
+    public Integer update(String statementId, @Nullable Object parameter) {
+        log.debug("statementId = {}", statementId);
+        return this.sqlSessionTemplate.update(statementId, parameter);
+    }
+
+    public Integer delete(String statementId, @Nullable Object parameter) {
+        log.debug("statementId = {}", statementId);
+        return this.sqlSessionTemplate.delete(statementId, parameter);
+    }
+
     public <T> T selectOne(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
         return (T)(this.sqlSessionTemplate.selectOne(statementId, parameter));
@@ -36,9 +51,17 @@ public class MyBatisCommonDao {
         return  (List<T>) this.sqlSessionTemplate.selectList(statementId, parameter);
     }
 
-    //DB로 부터 result row를 하나씩 받아가며 중간처리 작업을 진행할 수 있게 해준다.
-    public <T, R> List<R> selectListWithResultHandler(String statementId, Object parameter,
-                                                      final MybatisResultHandlerSupport<T, R> mybatisResultHandlerSupport) {
+    public Map<?, ?> selectMap(String statementId, @Nullable Object parameter, String columnNameForMapkey) {
+        log.debug("statementId = {}", statementId);
+        return this.sqlSessionTemplate.selectMap(statementId, parameter, columnNameForMapkey);
+    }
+
+    // DB로 부터 result row를 하나씩 받아가며 중간처리 작업을 진행할 수 있게 해준다.
+    // 조회 범위를 러프하게 잡고 원하는 요소만 모을수 있다, 메모리 절약가능, 반대로 DB 커넥션을 잡고 있음, 커넥션 타임아웃 주의
+    public <T, R> List<R> selectListWithResultHandler(
+            String statementId, Object parameter,
+            final MybatisResultHandlerSupport<T, R> mybatisResultHandlerSupport)
+    {
         log.debug("statementId = {}", statementId);
         final List<R> finalHeandledResults = new ArrayList<R>();
         try {
@@ -56,11 +79,13 @@ public class MyBatisCommonDao {
         return finalHeandledResults;
     }
 
-    public <T> PageInfoSupport<T> selectPaginatedList(String statementId, @Nullable Object parameter,
-                                                      int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
+    public <T> PageInfoSupport<T> selectPaginatedList(
+            String statementId, @Nullable Object parameter,
+            int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize)
+    {
         log.debug("statementId = {}", statementId);
 
-        //todo : totla 사이즈를 매번 구하지 않도록 캐싱 방안을 고려해야함
+        //todo : 전체 사이즈를 매번 구하지 않도록 캐싱 방안을 고려해야함
         int defaultSetRowSizePerPage = 20;
         int defaultSetButtomPageNavigationSize = 10;
 
@@ -74,23 +99,5 @@ public class MyBatisCommonDao {
         return pageInfoSupport;
     }
 
-    public Map<?, ?> selectMap(String statementId, @Nullable Object parameter, String columnNameForMapkey) {
-        log.debug("statementId = {}", statementId);
-        return this.sqlSessionTemplate.selectMap(statementId, parameter, columnNameForMapkey);
-    }
 
-    public Integer insert(String statementId, @Nullable Object parameter) {
-        log.debug("statementId = {}", statementId);
-        return this.sqlSessionTemplate.insert(statementId, parameter);
-    }
-
-    public Integer update(String statementId, @Nullable Object parameter) {
-        log.debug("statementId = {}", statementId);
-        return this.sqlSessionTemplate.update(statementId, parameter);
-    }
-
-    public Integer delete(String statementId, @Nullable Object parameter) {
-        log.debug("statementId = {}", statementId);
-        return this.sqlSessionTemplate.delete(statementId, parameter);
-    }
 }

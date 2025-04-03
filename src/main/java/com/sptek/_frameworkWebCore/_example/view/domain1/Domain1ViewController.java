@@ -5,12 +5,10 @@ import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -87,82 +85,7 @@ public class Domain1ViewController {
 
 
 
-    @RequestMapping("/selectOne")
-    public String selectOne(Model model) {
-        TBTestDto tbTestDto = domain1ViewService.selectOne();
-        model.addAttribute("result", tbTestDto.toString());
-        return pageBasePath + "simpleModelView";
-    }
 
-    @RequestMapping("/selectList")
-    public String selectList(Model model) {
-        List<TBTestDto> tbTestDtos = domain1ViewService.selectList();
-        model.addAttribute("result", tbTestDtos.toString());
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/selectListWithResultHandler")
-    //ResultHandler를 이용해서 db에서 result row를 하나씩 읽어와 각 row에 대한 처리가 가능함
-    public String selectListWithResultHandler(Model model) {
-        List<TBZipcodeDto> tBZipcodes = domain1ViewService.selectListWithResultHandler();
-        model.addAttribute("result", tBZipcodes.toString());
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/selectMap")
-    //result 결과 list를 map 형태로 받아올수 있다.
-    public String selectMap(Model model) {
-        Map<?, ?> resultMap = domain1ViewService.selectMap();
-        model.addAttribute("result", resultMap.toString());
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/selectPaginate")
-    //PageHelperSupport를 이용해서 페이지 처리가 가능한 형태로 result row를 읽어 온다.
-    public String selectPaginate(HttpServletRequest request,
-                                     @RequestParam(name = "currentPageNum", required = false, defaultValue = "0") int currentPageNum,
-                                     @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
-                                     @RequestParam(name = "setButtomPageNavigationSize", required = false, defaultValue = "0") int setButtomPageNavigationSize,
-                                     Model model) {
-
-        PageInfoSupport<TBZipcodeDto> pageInfoSupport = domain1ViewService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
-        model.addAttribute("result", pageInfoSupport.toString());
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/insert")
-    public String insert(Model model) {
-        TBTestDto tbTestDto = TBTestDto.builder()
-                .c1(41)
-                .c2(42)
-                .c3(43).build();
-
-        int result = domain1ViewService.insert(tbTestDto);
-        model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/update")
-    public String update(Model model) {
-        TBTestDto tbTestDto = TBTestDto.builder()
-                .c1(41)
-                .c2(422)
-                .c3(433).build();
-
-        int result = domain1ViewService.update(tbTestDto);
-        model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/delete")
-    public String delete(Model model) {
-        TBTestDto tbTestDto = TBTestDto.builder()
-                .c1(41).build();
-
-        int result = domain1ViewService.delete(tbTestDto);
-        model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
-    }
 
     @RequestMapping("/i18n")
     public String i18n(Model model) {
