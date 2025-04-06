@@ -19,6 +19,7 @@ getBeanType : com.sptek.webfw.example.api.api1.ApiTestController
 getReturnType : org.springframework.http.ResponseEntity
 hasMethodAnnotation : false
  */
+
 @Component
 @Slf4j
 public class ExampleInterceptor implements HandlerInterceptor {

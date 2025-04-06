@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.api.db;
 
-import com.sptek._frameworkWebCore._example.dto.Tb_TestDto;
-import com.sptek._frameworkWebCore._example.dto.Tb_ZipcodeDto;
+import com.sptek._frameworkWebCore._example.dto.TbTestDto;
+import com.sptek._frameworkWebCore._example.dto.TbZipcodeDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,70 +45,62 @@ public class DbExApiController {
         return dbExService.checkReplicationSlave() == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/insert")
+    @GetMapping("/insertTbTest")
     @Operation(summary = "Tb_Test insert (시스템 시간(ms))", description = "")
-    public Object insert() {
-        Tb_TestDto tbTestDto = Tb_TestDto.builder()
+    public Object insertTbTest() {
+        TbTestDto tbTestDto = TbTestDto.builder()
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c3((int) (System.currentTimeMillis() % Integer.MAX_VALUE)).build();
-
-        return dbExService.insertTB_Test(tbTestDto) == 1 ? "success" : "fail";
+        return dbExService.insertTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/update")
+    @GetMapping("/updateTbTest")
     @Operation(summary = "Tb_Test update (시스템 시간(ms))", description = "")
-    public Object update() {
-        Tb_TestDto tbTestDto = Tb_TestDto.builder()
+    public Object updateTbTest() {
+        TbTestDto tbTestDto = TbTestDto.builder()
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c3((int) (System.currentTimeMillis() % Integer.MAX_VALUE)).build();
-
-        return dbExService.updateTb_Test(tbTestDto) == 1 ? "success" : "fail";
+        return dbExService.updateTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/deleteTbTest")
     @Operation(summary = "Tb_Test delete (최신값)", description = "")
-    public Object delete() {
-        return dbExService.deleteTb_Test() == 1 ? "success" : "fail";
+    public Object deleteTbTest() {
+        return dbExService.deleteTbTest() == 1 ? "success" : "fail";
     }
-    
-    @GetMapping("/selectOne")
+
+    @GetMapping("/getOneTbTest")
     @Operation(summary = "Tb_Test select (단일)", description = "")
-    public Object selectOne() {
-        return dbExService.getOneTB_Test();
+    public Object getOneTbTest() {
+        return dbExService.getOneTbTest();
     }
 
-    @GetMapping("/selectList")
+    @GetMapping("/getListTbTest")
     @Operation(summary = "Tb_Test select (리스트)", description = "")
-    public Object selectList() {
-        return dbExService.getListTB_Test();
+    public Object getListTbTest() {
+        return dbExService.getListTbTest();
     }
-
     
-    
-    
-    @GetMapping("/selectListWithResultHandler")
+    @GetMapping("/getListTbTestWithResultHandler")
     @Operation(summary = "ResultHandler를 사용해 Tb_Test select (리스트)", description = "")
-    public List<Tb_ZipcodeDto> selectListWithResultHandler() {
-        return dbExService.selectListWithResultHandler();
+    public Object getListTbTestWithResultHandler() {
+        return dbExService.getListTbTestWithResultHandler();
     }
 
-    @GetMapping("/selectMap")
+    @GetMapping("/getMapTbTest")
     @Operation(summary = "Tb_Test select (단일, 리스트)", description = "")
-    public Map<?, ?> selectMap() {
-        return dbExService.selectMap();
+    public Object getMapTbTest() {
+        return dbExService.getMapTbTest();
     }
 
-    @GetMapping("/selectPaginate")
-    @Operation(summary = "페이징된 Tb_Test select (리스트)", description = "")
-    public PageInfoSupport<Tb_ZipcodeDto> selectPaginate(
+    @GetMapping("/getListTbTestWithPagination")
+    @Operation(summary = "Paging 된 Tb_Test select (리스트)", description = "")
+    public Object selectPaginate(
             @RequestParam(name = "currentPageNum", required = false, defaultValue = "0") int currentPageNum,
             @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
-            @RequestParam(name = "setButtomPageNavigationSize", required = false, defaultValue = "0") int setButtomPageNavigationSize) {
-
-        return dbExService.selectPaginate(currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
+            @RequestParam(name = "setBottomPageNavigationSize", required = false, defaultValue = "0") int setBottomPageNavigationSize) {
+        return dbExService.getListTbTestWithPagination();
     }
-
-
 }

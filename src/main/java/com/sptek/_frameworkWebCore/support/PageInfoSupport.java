@@ -22,7 +22,7 @@ public class PageInfoSupport<T> {
 
     //네비게이션바에 최대 몇개의 넘버릴을 해줄지의 값 (셋팅값으로 동적 변경 가능, 5로 셋팅시 현재 페이지가 3이면 [1, 2, 3, 4, 5],
     // 현재 페이지가 6이면 [4, 5, 6, 7, 8], 조회된 결과 전체 페이지가 3개고 현재 페이지가 1 이면 [1, 2, 3] 으로 셋팅값보다 작을수 있음)
-    int setButtomPageNavigationSize;
+    int setBottomPageNavigationSize;
 
 
 
@@ -48,7 +48,7 @@ public class PageInfoSupport<T> {
     int currentNavigationLastNum; //하단 네비게이션바의 마지막 페이지 번호
     int[] currentNavigationAllNums; //하단 네비게이션바의 모든 페이지 번호
 
-    List<T> selectedList; //조회된 실제 데이터 리스트
+    List selectedList; //조회된 실제 데이터 리스트
 
     public PageInfoSupport(PageInfo<T> pageInfo) {
         MappingPageInfoToPageInfoSupport(pageInfo);
@@ -58,7 +58,7 @@ public class PageInfoSupport<T> {
         //PageInfo의 불명확한 메소드명과 불필요한 데이터를 제거하여 사용자가 이해하기 쉽게하기 위한 처리
         currentPageNum = pageInfo.getPageNum();
         setRowSizePerPage = pageInfo.getPageSize();
-        setButtomPageNavigationSize = pageInfo.getNavigatePages();
+        setBottomPageNavigationSize = pageInfo.getNavigatePages();
 
         totalPageCount = pageInfo.getPages();
         totalRowCount = pageInfo.getTotal();

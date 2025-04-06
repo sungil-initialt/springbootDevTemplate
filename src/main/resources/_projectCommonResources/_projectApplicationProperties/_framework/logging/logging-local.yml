@@ -12,23 +12,34 @@ logging:
     root: info
 
     com:
+      #Framework
       sptek._frameworkWebCore: debug
-      sptek.serviceName._global: debug
-      sptek.serviceName._guideExample: debug
+      sptek._projectCommon: debug
+      sptek.serviceName: debug
+
+      #DHikariPool DB 커넥션 풀
       zaxxer.hikari.pool.HikariPool: debug
+
     org:
-      mybatis.spring: info
+      #Mybatis
+      mybatis: error #(debug -> sqlSession 처리과정 확인)
+      apache.ibatis: error
+
+      #JPA
+      hibernate.SQL: error
+      hibernate.type.descriptor.sql.BasicBinder: error
+
+      #Spring
       springframework:
         security: info
-      hibernate.SQL: debug
-      hibernate.type.descriptor.sql.BasicBinder: trace
 
-    jdbc.sqltiming: error
-    jdbc.sqlonly: error
+    #JDBC (JDBC 및 DB 처리 관련 상세 로그 확인이 필요한 경우 DB 드라이버를 DriverSpy 로 변경 필요)
     jdbc.connection: error
     jdbc.audit: error
-    jdbc.resultset: debug
-    jdbc.resultsettable: debug
+    jdbc.sqltiming: error
+    jdbc.sqlonly: error
+    jdbc.resultset: error
+    jdbc.resultsettable: error
 
   config: classpath:_frameworkWebCoreResources/logbackConfig/logback-spring-local.xml
 

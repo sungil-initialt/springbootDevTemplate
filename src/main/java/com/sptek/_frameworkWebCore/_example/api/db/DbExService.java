@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.api.db;
 
-import com.sptek._frameworkWebCore._example.dto.Tb_TestDto;
-import com.sptek._frameworkWebCore._example.dto.Tb_ZipcodeDto;
+import com.sptek._frameworkWebCore._example.dto.TbTestDto;
+import com.sptek._frameworkWebCore._example.dto.TbZipcodeDto;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.support.MybatisResultHandlerSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
@@ -36,51 +36,54 @@ public class DbExService {
     }
 
     @Transactional(readOnly = false)
-    public int insertTB_Test(Tb_TestDto tbTestDto) {
-        return this.myBatisCommonDao.insert("framework_example.insertTb_Test", tbTestDto);
+    public int insertTbTest(TbTestDto tbTestDto) {
+        return this.myBatisCommonDao.insert("framework_example.insertTbTest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
-    public int updateTb_Test(Tb_TestDto tbTestDto) {
-        return this.myBatisCommonDao.update("framework_example.updateTb_Test", tbTestDto);
+    public int updateTbTest(TbTestDto tbTestDto) {
+        return this.myBatisCommonDao.update("framework_example.updateTbTest", tbTestDto);
     }
 
     @Transactional(readOnly = false)
-    public int deleteTb_Test() {
-        return this.myBatisCommonDao.delete("framework_example.deleteTb_Test", null);
+    public int deleteTbTest() {
+        return this.myBatisCommonDao.delete("framework_example.deleteTbTest", null);
     }
-
-
 
     @Transactional(readOnly = true)
-    public Tb_TestDto getOneTB_Test() {
+    public TbTestDto getOneTbTest() {
         int limit = 1;
-        return this.myBatisCommonDao.selectOne("framework_example.selectTb_Test", limit);
+        return this.myBatisCommonDao.selectOne("framework_example.selectTbTestWithLimit", limit);
     }
 
     @Transactional(readOnly = true)
-    public List<Tb_TestDto> getListTB_Test() {
+    public List<TbTestDto> getListTbTest() {
         int limit = 100;
-        return this.myBatisCommonDao.selectList("framework_example.selectTb_Test", limit);
+        return this.myBatisCommonDao.selectList("framework_example.selectTbTestWithLimit", limit);
     }
-
-
-
-
 
     @Transactional(readOnly = true)
     //DB로 부터 result row를 하나씩 받아와 처리하는 용도 (대용량 결과를 한번에 받기 어려운 경우 또는 result row의 결과를 보고 처리가 필요한 경우 사용)
-    public List<Tb_ZipcodeDto> selectListWithResultHandler(){
-        MybatisResultHandlerSupport mybatisResultHandlerSupport = new MybatisResultHandlerSupport<Tb_ZipcodeDto, Tb_ZipcodeDto>() {
+    public List<TbTestDto> getListTbTestWithResultHandler(){
+        MybatisResultHandlerSupport<TbTestDto, TbTestDto> mybatisResultHandlerSupport = new MybatisResultHandlerSupport<>() {
             int maxCount = 0;
 
             @Override
-            //result row 단위로 해야할 작업을 정의한다.
-            public Tb_ZipcodeDto handleResultRow(Tb_ZipcodeDto resultRow) {
-                //ex) 전체 처리건수를 10건으로 제한하면서 zipNO 값이 특정 값보다 작은 데이터를 제외하는 간단한 예시
-                maxCount++;
-                if(Integer.parseInt(resultRow.getZipNo()) < 14040) return null;
-                if(maxCount == 10) stop();
+            //result row 단위로 해야할 작업을 정의 한다. (ex: 특정 조건에 맞는 값이 몇건 수집 되면 종료 처리)
+            public TbTestDto handleResultRow(TbTestDto resultRow) {
+
+                if (Integer.parseInt(String.valueOf(resultRow.getC1())) < 2133368224) {
+                    log.debug("maxCount = {}, {} was excepted", maxCount, resultRow.getC1());
+                    return null; //해당 row 는 제외
+                } else {
+                    maxCount++;
+                    log.debug("maxCount = {}, {} was added", maxCount, resultRow.getC1());
+                }
+
+                if(maxCount == 2) {
+                    stop(); // 더이상 처리 하지 않음 (현재 row 는 포함됨)
+                }
+
                 return resultRow;
             }
 
@@ -101,27 +104,21 @@ public class DbExService {
              */
         };
 
-        return this.myBatisCommonDao.selectListWithResultHandler("framework_example.selectAll", null, mybatisResultHandlerSupport);
+        return this.myBatisCommonDao.selectListWithResultHandler("framework_example.selectAllTbTest", null, mybatisResultHandlerSupport);
     }
 
     @Transactional(readOnly = true)
-    public Map<?, ?> selectMap() {
-        int SqlParamForlimit = 3;
+    public Map<?, ?> getMapTbTest() {
         //"컬럼명 c1의 값을 map의 key값으로 하여 Map을 생성한다.
-        Map<?, ?> resultMap = this.myBatisCommonDao.selectMap("framework_example.selecWithLimit", SqlParamForlimit, "c1");
-
-        return resultMap;
+        int limit = 3;
+        return this.myBatisCommonDao.selectMap("framework_example.selectTbTestWithLimit", limit, "c1");
     }
 
     @Transactional(readOnly = true)
     //result row의 페이징 처리를 위한 예시
     //파람의 상세 내용은 PageInfoSupport 클레스에서 확인가능
-    public PageInfoSupport<Tb_ZipcodeDto> selectPaginate(int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize) {
-        return this.myBatisCommonDao.selectPaginatedList("_framework_example.selectAll", null,
-                currentPageNum, setRowSizePerPage, setButtomPageNavigationSize);
+    public PageInfoSupport<TbTestDto> getListTbTestWithPagination() {
+        return this.myBatisCommonDao.selectListWithPagination("framework_example.selectAllTbTest", null);
     }
-
-
-
 
 }

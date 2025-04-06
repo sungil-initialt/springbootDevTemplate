@@ -6,30 +6,30 @@
 
     <select id="return1" resultType="int">
         <![CDATA[
-        select 1
-        from dual
+        SELECT 1
+        FROM dual
         ]]>
     </select>
 
-    <select id="selectTb_Test" parameterType="int" resultType="com.sptek._frameworkWebCore._example.dto.Tb_TestDto">
+    <select id="selectTbTestWithLimit" parameterType="int" resultType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
         <![CDATA[
-        select c1, c2, c3
-        from test limit #{limit}
+        SELECT c1, c2, c3
+        FROM test limit #{limit}
         ]]>
     </select>
 
-    <insert id="insertTb_Test" parameterType="com.sptek._frameworkWebCore._example.dto.Tb_TestDto">
+    <insert id="insertTbTest" parameterType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
         <![CDATA[
-        insert into test (c1, c2, c3)
-        values (#{c1}, #{c2}, #{c3})
+        INSERT INTO test (c1, c2, c3)
+        VALUES (#{c1}, #{c2}, #{c3})
         ]]>
     </insert>
 
     
-    <update id="updateTb_Test" parameterType="com.sptek._frameworkWebCore._example.dto.Tb_TestDto">
+    <update id="updateTbTest" parameterType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
         <![CDATA[
-            update test
-            set c1 = #{c1}, c2 = #{c2}, c3 = #{c3}
+            UPDATE test
+            SET c1 = #{c1}, c2 = #{c2}, c3 = #{c3}
             WHERE c1 = (
                 SELECT max_c1 FROM
                     (
@@ -39,7 +39,7 @@
             ]]>
     </update>
 
-    <update id="deleteTb_Test">
+    <update id="deleteTbTest">
         <![CDATA[
         DELETE FROM test
         WHERE c1 = (
@@ -51,11 +51,10 @@
         ]]>
     </update>
 
-    <select id="selectAll" resultType="com.sptek._frameworkWebCore._example.dto.Tb_ZipcodeDto">
+    <select id="selectAllTbTest" resultType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
         <![CDATA[
-        select *
-        from ZIPCODE
-        where doro = '공항길'
+        SELECT c1, c2, c3
+        FROM test
         ]]>
     </select>
 

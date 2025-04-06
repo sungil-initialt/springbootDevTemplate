@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
-@Component
+//@Component (ex 임으로 off 처리함)
 public class ExampleAspect {
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)") // todo : 반드시 조건 수정 할것
     public void myPointCut() {}
@@ -17,8 +17,7 @@ public class ExampleAspect {
     @Around("myPointCut()")
     public Object aroundXXX(ProceedingJoinPoint joinPoint) throws Throwable {
         log.debug("aroundXXX");
-        Object result = joinPoint.proceed();
-        return result;
+        return joinPoint.proceed();
     }
 
     @Before("myPointCut()")

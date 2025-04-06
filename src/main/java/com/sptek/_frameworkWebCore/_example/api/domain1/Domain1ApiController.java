@@ -78,7 +78,7 @@ public class Domain1ApiController {
 
 
 
-    @RequestMapping("/closeableHttpClient")
+    @GetMapping("/closeableHttpClient")
     @Operation(summary = "closeableHttpClient", description = "closeableHttpClient 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
     public Object closeableHttpClient() throws Exception{
@@ -92,7 +92,7 @@ public class Domain1ApiController {
         return EntityUtils.toString(httpEntity);
     }
 
-    @RequestMapping("/closeableHttpClientSupport")
+    @GetMapping("/closeableHttpClientSupport")
     @Operation(summary = "closeableHttpClientSupport", description = "closeableHttpClientSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
     public Object closeableHttpClientSupport() throws Exception{
@@ -104,7 +104,7 @@ public class Domain1ApiController {
         return CloseableHttpClientSupport.convertResponseToString(httpEntity);
     }
 
-    @RequestMapping("/restTemplate")
+    @GetMapping("/restTemplate")
     @Operation(summary = "restTemplate", description = "restTemplate 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하여 req 요청
     public Object restTemplate() {
@@ -118,7 +118,7 @@ public class Domain1ApiController {
         return responseEntity.getBody();
     }
 
-    @RequestMapping("/restTemplateSupport")
+    @GetMapping("/restTemplateSupport")
     @Operation(summary = "restTemplateSupport", description = "restTemplateSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
     public Object restTemplateSupport() {
@@ -260,13 +260,13 @@ public class Domain1ApiController {
         return ResponseEntity.ok().body(new ApiCommonSuccessResponseDto<>(currentTimeMillis));
     }
 
-    @RequestMapping("/apiServiceError")
+    @GetMapping("/apiServiceError")
     @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
     public Object apiServiceError(@RequestParam("errorCaseNum") int errorCaseNum) {
         return domain1ApiService.raiseServiceError(errorCaseNum);
     }
 
-    @RequestMapping("/exampleEvent")
+    @GetMapping("/exampleEvent")
     public Object exampleEvent() {
         customEventPublisher.publishEvent(ExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
         return "published exampleEvent ";

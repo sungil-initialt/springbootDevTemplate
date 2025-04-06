@@ -3,13 +3,16 @@ package com.sptek._frameworkWebCore.persistence.mybatis.dao;
 import com.sptek._frameworkWebCore.support.MybatisResultHandlerSupport;
 import com.sptek._frameworkWebCore.support.PageHelperSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
+import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,24 +81,42 @@ public class MyBatisCommonDao {
 
         return finalHeandledResults;
     }
-
-    public <T> PageInfoSupport<T> selectPaginatedList(
-            String statementId, @Nullable Object parameter,
-            int currentPageNum, int setRowSizePerPage, int setButtomPageNavigationSize)
+    
+    public <T> PageInfoSupport<T> selectListWithPagination(String statementId, @Nullable Object parameter)
     {
         log.debug("statementId = {}", statementId);
 
-        //todo : 전체 사이즈를 매번 구하지 않도록 캐싱 방안을 고려해야함
+        //이부분 해결해야 함!!!
+        //todo : 전체 row 의 total size 를 매번 구하지 않도록 캐싱 방안을 고려 해야함
+        int maxSetRowSizePerPage = 100;
         int defaultSetRowSizePerPage = 20;
-        int defaultSetButtomPageNavigationSize = 10;
+        int defaultSetBottomPageNavigationSize = 10;
 
+        HttpServletRequest httpServletRequest = SpringUtil.getRequest();
+        int currentPageNum = httpServletRequest.getParameter("currentPageNum") != null
+                ? Integer.parseInt(httpServletRequest.getParameter("currentPageNum"))
+                : 0;
         currentPageNum = currentPageNum <= 0 ? 1 : currentPageNum;
+
+        int setRowSizePerPage = httpServletRequest.getParameter("setRowSizePerPage") != null
+                ? Integer.parseInt(httpServletRequest.getParameter("setRowSizePerPage"))
+                : 0;
         setRowSizePerPage = setRowSizePerPage <= 0 ? defaultSetRowSizePerPage : setRowSizePerPage;
-        setButtomPageNavigationSize = setButtomPageNavigationSize <= 0 ? defaultSetButtomPageNavigationSize : setButtomPageNavigationSize;
+        setRowSizePerPage = Math.min(setRowSizePerPage, maxSetRowSizePerPage);
 
+        int setBottomPageNavigationSize = httpServletRequest.getParameter("setBottomPageNavigationSize") != null
+                ? Integer.parseInt(httpServletRequest.getParameter("setBottomPageNavigationSize"))
+                : 0;
+        setBottomPageNavigationSize = setBottomPageNavigationSize <= 0 ? defaultSetBottomPageNavigationSize : setBottomPageNavigationSize;
+
+        //setPageForSelect 내부 에서 PageHelper.startPage 가 호출 되면서 다음 mybatis 쿼리에 자동 으로 limit 처리를 해줌
         PageHelperSupport.setPageForSelect(currentPageNum, setRowSizePerPage);
-        PageInfoSupport<T> pageInfoSupport = PageHelperSupport.selectPaginatedList((List<T>) this.sqlSessionTemplate.selectList(statementId, parameter), setButtomPageNavigationSize);
-
+        PageInfoSupport<T> pageInfoSupport;
+        if (parameter == null) {
+            pageInfoSupport = PageHelperSupport.selectPaginatedList(this.sqlSessionTemplate.selectList(statementId), setBottomPageNavigationSize);
+        } else {
+            pageInfoSupport = PageHelperSupport.selectPaginatedList(this.sqlSessionTemplate.selectList(statementId, parameter), setBottomPageNavigationSize);
+        }
         return pageInfoSupport;
     }
 

@@ -8,7 +8,7 @@ spring:
       jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
       #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
-      username: sptek
+      username: stek
       password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
       pool-name: Hikari write Connection Pool
       maximum-pool-size: 20
@@ -17,7 +17,7 @@ spring:
       maxLifetime: 1800000
     read:
       driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
-      jdbc-url: jdbc:mysql://localhost:3307/spt_web_fw?serverTimezone=UTC
+      jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
       #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       #jdbc-url: jdbc:log4jdbc:mysql://localhost:3307/spt_web_fw?serverTimezone=UTC
       username: sptek

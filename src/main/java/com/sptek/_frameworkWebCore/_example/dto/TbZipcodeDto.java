@@ -12,7 +12,7 @@ TBZipcode 테이블(sample 테이블)에 대한 DTO로 모든 DTO는 가능하�
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tb_ZipcodeDto {
+public class TbZipcodeDto {
     private String zipNo;
     private String sido;
     private String sidoEng;

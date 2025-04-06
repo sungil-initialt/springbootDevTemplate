@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -43,17 +44,33 @@ public class SpringUtil implements ApplicationContextAware {
         }
     }
 
-
-    public static @NotNull HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    public static HttpServletRequest getRequest() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        if (attributes instanceof ServletRequestAttributes servletRequestAttributes) {
+            return servletRequestAttributes.getRequest();
+        }
+        throw new IllegalStateException("No request bound to current thread");
     }
 
     public static HttpServletResponse getResponse() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+        RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
+        if (attrs instanceof ServletRequestAttributes sra) {
+            HttpServletResponse response = sra.getResponse();
+            if (response != null) {
+                return response;
+            }
+            throw new IllegalStateException("No response available for current request");
+        }
+        throw new IllegalStateException("No request bound to current thread");
     }
 
     public static HttpSession getSession(boolean create) {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(create);
+        RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
+        if (attrs instanceof ServletRequestAttributes sra) {
+            HttpServletRequest request = sra.getRequest();
+            return request.getSession(create);
+        }
+        throw new IllegalStateException("No request bound to current thread");
     }
 
 }
