@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-//Rest API 요청이 실패일 경우 활용되는 실패코드 enum 객체
-//http 상태코드로 사용되는  HttpStatus와, responseBody에 들어가는 resultCode, resultMessage 로 구성됨
-//에러 DTO를 통해 넘어갈때는 exceptionMessage가 추가되는데 exceptionMessage는 실제 에러메시지에로 개발자 정보 측면이라면
-//ErrorCodeEnum의 resultMessage는 사용자 알림등의 활용에서 사용되는 용도로 보면 좋을것 같다(물론 result 코드를 이용해 처리할 수도 있음)
+//요청이 실패일 경우 활용 되는 실패 코드 enum 객체
+//http 상태 코드로 사용 되는  Http Status 와, response Body 에 들어 가는 resultCode, resultMessage 로 구성됨
+//에러 DTO 를 통해 넘어 갈때는 exception Message 가 추가 되는데 이 exception Message 는 실제 에러 내용 으로 개발자 에게 정보 제공 측면 으로 활용 되는 것이고
+//ErrorCode-Enum 의 result Message 는 일반 사용자 알림 활용 용도로 보면 좋을것 같다 (물론 result 코드를 이용해 처리할 수도 있음)
+
 @Getter
 @AllArgsConstructor
 public enum CommonErrorCodeEnum implements BaseCode {
-    //범용적으로 사용되고 있는 httpstatus 와 관련된 에러 (httpstatuscode를 그에 맞게 내린다)
+    //범용 적으로 사용 되고 있는 httpstatus 와 관련된 에러 (http status code 를 그에 맞게 내린다)
     BAD_REQUEST_ERROR(HttpStatus.BAD_REQUEST, "GE001", "BAD_REQUEST_ERROR"),
     INVALID_TYPE_VALUE_ERROR(HttpStatus.BAD_REQUEST, "GE002", "INVALID_TYPE_VALUE_ERROR"),
     MISSING_REQUEST_PARAMETER_ERROR(HttpStatus.BAD_REQUEST, "GE003", "MISSING_REQUEST_PARAMETER_ERROR"),

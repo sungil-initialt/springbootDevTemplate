@@ -6,6 +6,7 @@ import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,15 +16,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 //@Profile(value = { "notused" })
 @Slf4j
 @ControllerAdvice(annotations = EnableResponseOfViewGlobalException_InViewController.class)
+
 public class ViewGlobalExceptionHandler {
     // todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 그래서 현재는 httpsttus 코드도 상세히 분리하고 있지않음, 고민필요.
 
     @ExceptionHandler(ServiceException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    //개발자가 의도적으로 생성한 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
-    //ServiceException의 경우도 공통 에러페이지로 처리하도록 구성했으나 필요시 커스텀을 위해 구분해 놓음
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //api 쪽의 ServiceException 경우 상황에 맞게 HttpStatus 를 내리나.. view 에서는 큰 의미가 없어 하나도 통일
+    //개발자 가 의도적 으로 생성한 Exception 는 ServiceException 로 생성 하며 해당 핸들러 에서 처리 됨
     public Object handleServiceException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        return handleError(request, ex, "error/commonInternalErrorView");
+        return handleError(request, ex, "error/commonServiceErrorView");
     }
 
     @ExceptionHandler(Exception.class)
@@ -35,10 +36,10 @@ public class ViewGlobalExceptionHandler {
 
 
 
-
     private Object handleError(HttpServletRequest request, Exception ex, String viewName) {
-        //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
+        //view 요청 에서 발생한 에러의 경우 이후에 구체적 으로 어떤 에러가 발생 했는지 정확히 알수 없기 때문에 저장 해서 사용함.
         request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
+
         return viewName;
         //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
     }

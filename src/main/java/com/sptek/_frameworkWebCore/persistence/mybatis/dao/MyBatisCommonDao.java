@@ -6,10 +6,12 @@ import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletRequest;
@@ -20,14 +22,28 @@ import java.util.Map;
 mybatis를 이용한 db 기본 템플릿을 제공함
  */
 
-@SuppressWarnings("rawtypes")
 @Slf4j
 @Component("myBatisCommonDao")
 public class MyBatisCommonDao {
 
-    @Autowired
-    @Qualifier("sqlSessionTemplate")
-    private SqlSessionTemplate sqlSessionTemplate;
+    private final SqlSessionTemplate sqlSessionTemplate;
+    private final int defaultCurrentPageNum;
+    private final int defaultSetRowSizePerPage;
+    private final int defaultSetBottomPageNavigationSize;
+    private final int maxSetRowSizePerPage;
+
+    public MyBatisCommonDao(
+            @Qualifier("sqlSessionTemplate") SqlSessionTemplate sqlSessionTemplate,
+            @Value("${daoPagination.default.currentPageNum}") int defaultCurrentPageNum,
+            @Value("${daoPagination.default.setRowSizePerPage}") int defaultSetRowSizePerPage,
+            @Value("${daoPagination.default.setBottomPageNavigationSize}") int defaultSetBottomPageNavigationSize,
+            @Value("${daoPagination.max.setRowSizePerPage}") int maxSetRowSizePerPage1) {
+        this.sqlSessionTemplate = sqlSessionTemplate;
+        this.defaultCurrentPageNum = defaultCurrentPageNum;
+        this.defaultSetRowSizePerPage = defaultSetRowSizePerPage;
+        this.defaultSetBottomPageNavigationSize = defaultSetBottomPageNavigationSize;
+        this.maxSetRowSizePerPage = maxSetRowSizePerPage1;
+    }
 
     public Integer insert(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
@@ -88,27 +104,23 @@ public class MyBatisCommonDao {
 
         //이부분 해결해야 함!!!
         //todo : 전체 row 의 total size 를 매번 구하지 않도록 캐싱 방안을 고려 해야함
-        int maxSetRowSizePerPage = 100;
-        int defaultSetRowSizePerPage = 20;
-        int defaultSetBottomPageNavigationSize = 10;
 
         HttpServletRequest httpServletRequest = SpringUtil.getRequest();
-        int currentPageNum = httpServletRequest.getParameter("currentPageNum") != null
+        int currentPageNum = (httpServletRequest.getParameter("currentPageNum") != null
+                && Integer.parseInt(httpServletRequest.getParameter("currentPageNum")) > 0)
                 ? Integer.parseInt(httpServletRequest.getParameter("currentPageNum"))
-                : 0;
-        currentPageNum = currentPageNum <= 0 ? 1 : currentPageNum;
+                : defaultCurrentPageNum;
 
-        int setRowSizePerPage = httpServletRequest.getParameter("setRowSizePerPage") != null
-                ? Integer.parseInt(httpServletRequest.getParameter("setRowSizePerPage"))
-                : 0;
-        setRowSizePerPage = setRowSizePerPage <= 0 ? defaultSetRowSizePerPage : setRowSizePerPage;
-        setRowSizePerPage = Math.min(setRowSizePerPage, maxSetRowSizePerPage);
+        int setRowSizePerPage = (httpServletRequest.getParameter("setRowSizePerPage") != null
+                && Integer.parseInt(httpServletRequest.getParameter("setRowSizePerPage")) > 0)
+                ? Math.min(Integer.parseInt(httpServletRequest.getParameter("setRowSizePerPage")), maxSetRowSizePerPage)
+                : defaultSetRowSizePerPage;
 
-        int setBottomPageNavigationSize = httpServletRequest.getParameter("setBottomPageNavigationSize") != null
+        int setBottomPageNavigationSize = (httpServletRequest.getParameter("setBottomPageNavigationSize") != null
+                && Integer.parseInt(httpServletRequest.getParameter("setBottomPageNavigationSize")) > 0)
                 ? Integer.parseInt(httpServletRequest.getParameter("setBottomPageNavigationSize"))
-                : 0;
-        setBottomPageNavigationSize = setBottomPageNavigationSize <= 0 ? defaultSetBottomPageNavigationSize : setBottomPageNavigationSize;
-
+                : defaultSetBottomPageNavigationSize;
+        
         //setPageForSelect 내부 에서 PageHelper.startPage 가 호출 되면서 다음 mybatis 쿼리에 자동 으로 limit 처리를 해줌
         PageHelperSupport.setPageForSelect(currentPageNum, setRowSizePerPage);
         PageInfoSupport<T> pageInfoSupport;

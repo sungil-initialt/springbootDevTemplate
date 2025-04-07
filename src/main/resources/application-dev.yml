@@ -23,6 +23,7 @@ spring:
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/thymeleaf/thymeleaf.yml
       #_projectCommonResources(_system)
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/cors/corsPolicy.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/daoPagination/daoPagination.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/datasource/datasource.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/encryption/encryption.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/jpa/jpa.yml

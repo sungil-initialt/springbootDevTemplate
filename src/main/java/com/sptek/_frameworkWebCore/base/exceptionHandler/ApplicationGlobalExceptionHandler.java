@@ -31,14 +31,16 @@ import java.util.Optional;
 //@Conditional(ApplicationGlobalExceptionHandler.ApplicationGlobalExceptionHandlerCondition.class) //@HasAnnotationOnMainForBean 방식 으로 변경함
 @HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
 @ControllerAdvice
+
 public class ApplicationGlobalExceptionHandler {
-    // todo: 여기서는 상위 레벨 에러 처리가 목적이지만, 사실상 view / api / 상위 레벨 에러 모두 여기서 처리 가능함.
-    //  상세 처리를 위해서 view / api 분리해 놓은 것이지 view / api 에러 핸들러를 적용하지 않으면 이곳에서 모두 처리됨 (다만 resultCode, resultMessage 가 상세되지 못함)
+    // todo: 이 핸들러 는 상위 레벨 에러 처리가 목적 이지만, 사실상 view / api / 상위 레벨등 모든 에러 처리가 여기 서도 가능함.
+    //  상세 처리를 위해서 view / api 분리해 놓은 것이지 view / api 에러 핸들러 를 적용 하지 않으면 이곳 에서 모두 처리됨 (다만 resultCode, resultMessage 가 상세 되지 못함)
 
     public ApplicationGlobalExceptionHandler() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied");
     }
 
+    //상위 레벨 에러
     @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     //요청에 대한 url 매핑 자체가 없기 때문에 ApplicationGlobalExceptionHandler 로 들어옴
@@ -47,6 +49,7 @@ public class ApplicationGlobalExceptionHandler {
         return handleError(request, response, ex, CommonErrorCodeEnum.NOT_FOUND_ERROR, "error/commonNotfoundErrorView");
     }
 
+    //상위 레벨 에러
     @ExceptionHandler({AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     //controller 에서 hasRole 이든 hasAuthority 든 AccessDeniedException 이 발생됨 (hasRole인 경우는 401 같지는 403이 나옴)
@@ -56,6 +59,7 @@ public class ApplicationGlobalExceptionHandler {
         return handleError(request, response, ex, CommonErrorCodeEnum.FORBIDDEN_ERROR, "error/commonAuthenticationErrorView");
     }
 
+    //상위 레벨 에러
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     // 지원하지 않는 request Metho(GET, POST, PUT, DELETE...)로 요청 했을때
@@ -64,7 +68,7 @@ public class ApplicationGlobalExceptionHandler {
         return handleError(request, response, ex, CommonErrorCodeEnum.METHOD_NOT_ALLOWED, "error/commonInternalErrorView");
     }
 
-    //Exception 클레스를 처리하기 때문에 사실상 모든 에러 처리가 가능함
+    //최종 Exception 클레스 를 처리 하기 때문에 사실상 모든 에러 처리가 가능함
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     //그 외 예상할 수 없는 모든 에러 처리
@@ -74,9 +78,7 @@ public class ApplicationGlobalExceptionHandler {
     }
 
 
-
-
-
+    //view 와 api 요청을 구분 하여 최종 처리 함
     private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) {
         String requestUri = request.getRequestURI();
         String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
@@ -95,6 +97,7 @@ public class ApplicationGlobalExceptionHandler {
         }
     }
 
+    //DetailLogFilter 에 도달할 수 없기 때문에 이곳 에서 대처함.
     private void logWithCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
         log.error("Exception message : {}", ex.getMessage());
 

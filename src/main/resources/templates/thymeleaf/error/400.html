@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <!--
-Not Found (404)
+Unauthorized (401)
 -->
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>404-Not Found</title>
+    <title>400-Bad Request</title>
 </head>
 <body>
 <div class="errorPage">
-    <b>404-Not Found</b><br />
+    <b>400-Bad Request(Service Exception)</b><br />
     <p th:text="${'path: ' + path}"></p>
     <p th:text="${'status: ' + status}"></p>
     <p th:text="${'timestamp: ' + timestamp}"></p>

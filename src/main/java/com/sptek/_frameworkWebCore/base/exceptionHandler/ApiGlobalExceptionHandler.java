@@ -28,6 +28,7 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
  */
 @Slf4j
 @RestControllerAdvice(annotations = EnableResponseOfApiGlobalException_InRestController.class) // @EnableFwApiGrobalExceptionHandler 가 선언된 RestController 에서만 동작함 (정확히는  RestController 여부는 체크 안함)
+
 public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -119,8 +120,8 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiCommonErrorResponseDto, CommonErrorCodeEnum.FORBIDDEN_ERROR.getHttpStatusCode());
     }
 
+    //개발자 가 의도 적으로 생성한 Exception 는 ServiceException 로 생성 하며 해당 핸들러 에서 처리 됨
     @ExceptionHandler(ServiceException.class)
-    //개발자가 의도적으로 생성한 Exception는 ServiceException로 생성하며 해당 핸들러에서 처리 됨
     public ResponseEntity<ApiCommonErrorResponseDto> handleServiceException(ServiceException ex) {
         log.error("{}, {}, {}", ex.getServiceErrorCodeEnum().getResultCode(), ex.getServiceErrorCodeEnum().getResultMessage(), ex.getMessage());
 

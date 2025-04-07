@@ -1,0 +1,9 @@
+daoPagination:
+  default:
+    currentPageNum: 1
+    setRowSizePerPage: 20
+    setBottomPageNavigationSize: 10
+
+  max:
+    setRowSizePerPage: 100
+

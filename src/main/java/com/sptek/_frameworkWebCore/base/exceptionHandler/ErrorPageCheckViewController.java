@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.view.common;
+package com.sptek._frameworkWebCore.base.exceptionHandler;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @Controller
 @EnableResponseOfViewGlobalException_InViewController
+
 public class ErrorPageCheckViewController {
+
     @RequestMapping("/error/{errViewName}")
     public String error(@PathVariable("errViewName") String errViewName) {
         //해당 RequestMapping은 UI확인등 에러 페이지를 눈으로 확인하기 위한 용도이며 실제 상황에서 ex 발생시 정상적인 메커니즘을 통해 에러 페이지로 연결된다.
