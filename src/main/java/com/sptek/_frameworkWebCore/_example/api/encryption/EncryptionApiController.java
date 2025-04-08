@@ -24,10 +24,10 @@ import java.util.Map;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
-@Tag(name = "Encryption 예시", description = "")
+@RequestMapping(value = {"/api/v1/example/encryption/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
+@Tag(name = "encryption", description = "")
 
-public class EncryptionExApiController {
+public class EncryptionApiController {
 
     @Value("${jasypt.decryptTest.encValue}") // 프로퍼티에 jasypt 암호화 값으로 저장되 있음
     private String encValue;
@@ -41,9 +41,8 @@ public class EncryptionExApiController {
     @PostMapping("/allTypeEncryptForString")
     @Operation(summary = "plain text 에 대해 DES, AES, RSA, Jasypt 로 암/복호화", description = "", tags = {""})
     public Object allTypeEncryptForString(
-            @Parameter(name = "plainText", description = "암호화 할 plainText", required = true)
-            @RequestBody String plainText
-    ) {
+            @Parameter(name = "plainText", description = "암호화 할 plainText") @RequestBody String plainText)
+    {
         HashMap<String, String> encryptedMap = new HashMap<>();
         encryptedMap.put(GlobalEncryptor.Type.sptDES.name(), GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptDES, plainText)); // 보안 취약
         encryptedMap.put(GlobalEncryptor.Type.sptAES.name(), GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptAES, plainText));
@@ -64,21 +63,18 @@ public class EncryptionExApiController {
     }
 
     @PostMapping("/allTypeDecryptForString")
-    @Operation(summary = "DES, AES, RSA, Jasypt 로 Encrypt 된 String 의 복호화", description = "", tags = {""})
+    @Operation(summary = "DES, AES, RSA, Jasypt 로 Encrypt 된 String 의 복호화", description = "")
     public Object allTypeDecryptForString(
-            @Parameter(name = "encryptText", description = "암호화된(DES, AES, RSA, Jasypt) 텍스트", required = true)
-            @RequestBody String encryptText
-    ) {
+            @Parameter(name = "encryptText", description = "암호화된(DES, AES, RSA, Jasypt) 텍스트") @RequestBody String encryptText)
+    {
         return GlobalEncryptor.decrypt(encryptText);
     }
 
     @PostMapping("/allTypeDecryptForDto")
-    @Operation(summary = "DES, AES, RSA, Jasypt 로 Encrypt 한 필드를 포함 하는 DTO 의 복호화", description = "", tags = {""})
+    @Operation(summary = "DES, AES, RSA, Jasypt 로 Encrypt 한 필드를 포함 하는 DTO 의 복호화", description = "")
     public Object allTypeDecryptForDto(
-            @Parameter(name = "parentDto", description = "암호화된(DES, AES, RSA, Jasypt) 값을 포함하는 DTO", required = true)
-            @RequestBody ParentDto parentDto
-    ) throws Exception {
-
+            @Parameter(name = "parentDto", description = "암호화된(DES, AES, RSA, Jasypt) 값을 포함하는 DTO") @RequestBody ParentDto parentDto) throws Exception
+    {
         return GlobalEncryptor.decrypt(parentDto);
     }
 

@@ -25,7 +25,7 @@ public class ErrorPageCheckViewController {
         errorCode =  switch (errorCode) {
             case "400", "404" -> "4xx";
             case "500", "501" -> "error-5xx";
-            default -> "commonInternalErrorView";
+            default -> "commonInternalError";
         };
         return "error/" + errorCode;
         */

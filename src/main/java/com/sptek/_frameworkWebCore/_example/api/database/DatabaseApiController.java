@@ -1,10 +1,8 @@
-package com.sptek._frameworkWebCore._example.api.db;
+package com.sptek._frameworkWebCore._example.api.database;
 
 import com.sptek._frameworkWebCore._example.dto.TbTestDto;
-import com.sptek._frameworkWebCore._example.dto.TbZipcodeDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.support.PageInfoSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,28 +19,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
-@Tag(name = "DB 관련 예시", description = "")
+@RequestMapping(value = {"/api/v1/example/database/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
+@Tag(name = "database", description = "")
 
-public class DbExApiController {
-    private final DbExService dbExService;
+public class DatabaseApiController {
+    private final DatabaseService databaseService;
 
     @GetMapping("/checkDbConnection")
     @Operation(summary = "쿼리 실행을 통해 DB 연결 상태 체크", description = "")
     public Object checkDbConnection() {
-        return dbExService.checkDbConnection() == 1 ? "success" : "fail";
+        return databaseService.checkDbConnection() == 1 ? "success" : "fail";
     }
 
     @GetMapping("/checkReplicationMaster")
     @Operation(summary = "@Transactional(readOnly = false) 통해 Master DB로 연결", description = "")
     public Object checkReplicationMaster(Model model) {
-        return dbExService.checkReplicationMaster() == 1 ? "success" : "fail";
+        return databaseService.checkReplicationMaster() == 1 ? "success" : "fail";
     }
 
     @GetMapping("/checkReplicationSlave")
     @Operation(summary = "@Transactional(readOnly = true) 통해 Slave DB로 연결", description = "")
     public Object checkReplicationSlave(Model model) {
-        return dbExService.checkReplicationSlave() == 1 ? "success" : "fail";
+        return databaseService.checkReplicationSlave() == 1 ? "success" : "fail";
     }
 
     @GetMapping("/insertTbTest")
@@ -52,7 +50,7 @@ public class DbExApiController {
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c3((int) (System.currentTimeMillis() % Integer.MAX_VALUE)).build();
-        return dbExService.insertTbTest(tbTestDto) == 1 ? "success" : "fail";
+        return databaseService.insertTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
     @GetMapping("/updateTbTest")
@@ -62,37 +60,37 @@ public class DbExApiController {
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c3((int) (System.currentTimeMillis() % Integer.MAX_VALUE)).build();
-        return dbExService.updateTbTest(tbTestDto) == 1 ? "success" : "fail";
+        return databaseService.updateTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
     @GetMapping("/deleteTbTest")
     @Operation(summary = "Tb_Test delete (최신값)", description = "")
     public Object deleteTbTest() {
-        return dbExService.deleteTbTest() == 1 ? "success" : "fail";
+        return databaseService.deleteTbTest() == 1 ? "success" : "fail";
     }
 
     @GetMapping("/getOneTbTest")
     @Operation(summary = "Tb_Test select (단일)", description = "")
     public Object getOneTbTest() {
-        return dbExService.getOneTbTest();
+        return databaseService.getOneTbTest();
     }
 
     @GetMapping("/getListTbTest")
     @Operation(summary = "Tb_Test select (리스트)", description = "")
     public Object getListTbTest() {
-        return dbExService.getListTbTest();
+        return databaseService.getListTbTest();
     }
     
     @GetMapping("/getListTbTestWithResultHandler")
     @Operation(summary = "ResultHandler를 사용해 Tb_Test select (리스트)", description = "")
     public Object getListTbTestWithResultHandler() {
-        return dbExService.getListTbTestWithResultHandler();
+        return databaseService.getListTbTestWithResultHandler();
     }
 
     @GetMapping("/getMapTbTest")
     @Operation(summary = "Tb_Test select (단일, 리스트)", description = "")
     public Object getMapTbTest() {
-        return dbExService.getMapTbTest();
+        return databaseService.getMapTbTest();
     }
 
     @GetMapping("/getListTbTestWithPagination")
@@ -101,6 +99,6 @@ public class DbExApiController {
             @RequestParam(name = "currentPageNum", required = false, defaultValue = "0") int currentPageNum,
             @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
             @RequestParam(name = "setBottomPageNavigationSize", required = false, defaultValue = "0") int setBottomPageNavigationSize) {
-        return dbExService.getListTbTestWithPagination();
+        return databaseService.getListTbTestWithPagination();
     }
 }

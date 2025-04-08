@@ -1,7 +1,6 @@
-package com.sptek._frameworkWebCore._example.api.db;
+package com.sptek._frameworkWebCore._example.api.database;
 
 import com.sptek._frameworkWebCore._example.dto.TbTestDto;
-import com.sptek._frameworkWebCore._example.dto.TbZipcodeDto;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.support.MybatisResultHandlerSupport;
 import com.sptek._frameworkWebCore.support.PageInfoSupport;
@@ -17,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 
-public class DbExService {
+public class DatabaseService {
     private final MyBatisCommonDao myBatisCommonDao;
 
     @Transactional(readOnly = true)

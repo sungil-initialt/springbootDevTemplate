@@ -1,12 +1,13 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfDevViewGlobalException_InMain;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 //@Profile(value = { "notused" })
 @Slf4j
 @ControllerAdvice(annotations = EnableResponseOfViewGlobalException_InViewController.class)
+@HasAnnotationOnMain_InBean(value = EnableResponseOfDevViewGlobalException_InMain.class, negate = true)
 
 public class ViewGlobalExceptionHandler {
     // todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 그래서 현재는 httpsttus 코드도 상세히 분리하고 있지않음, 고민필요.
@@ -24,14 +26,16 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST) //api 쪽의 ServiceException 경우 상황에 맞게 HttpStatus 를 내리나.. view 에서는 큰 의미가 없어 하나도 통일
     //개발자 가 의도적 으로 생성한 Exception 는 ServiceException 로 생성 하며 해당 핸들러 에서 처리 됨
     public Object handleServiceException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        return handleError(request, ex, "error/commonServiceErrorView");
+        log.error("ServiceException message1 : {}", ex.getMessage());
+        return handleError(request, ex, "error/commonServiceError");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     //기타 모든 에러를 하나로 처리함 (view 에러 에서는 특별히 공통 에러 페이지 외 구분할 필요가 없기 때문에 한번에 처리함, 에러 종류별 구분된 에러 페이지가 필요하면 추가해 나갈 것)
     public Object handleUnexpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        return handleError(request, ex, "error/commonInternalErrorView");
+        log.error("ServiceException message2 : {}", ex.getMessage());
+        return handleError(request, ex, "error/commonInternalError");
     }
 
 

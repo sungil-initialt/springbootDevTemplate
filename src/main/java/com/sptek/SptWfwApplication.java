@@ -11,7 +11,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
 @TestAnnotation_InAll
 
-@EnableResponseOfApplicationGlobalException_InMain
+//@EnableResponseOfApplicationGlobalException_InMain
 @EnableMdcTagging_InMain
 @EnableDetailLog_InMain_Controller_ControllerMethod
 
@@ -30,6 +30,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableHttpCachePublicForStaticResource_InMain
 @EnableGlobalViewModelForStatic_InMain
 @EnableGlobalViewModelForUserAuthentication_InMain
+@EnableResponseOfApplicationGlobalException_InMain
+//@EnableResponseOfDevViewGlobalException_InMain
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

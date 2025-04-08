@@ -29,6 +29,11 @@ public class ApiCommonResponseHelperAspect {
             return result;
         }
 
+//        // 단순 String 일때
+//        if (result instanceof String) {
+//            return ResponseEntity.ok(new HashMap<String, String>().put("result", (String) result));
+//        }
+
         // 반환값을 ResponseEntity<ApiCommonSuccessResponseDto<?>> 형태로 래핑
         return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
     }

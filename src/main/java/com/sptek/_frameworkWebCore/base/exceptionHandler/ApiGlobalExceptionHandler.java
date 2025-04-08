@@ -3,12 +3,13 @@ package com.sptek._frameworkWebCore.base.exceptionHandler;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.auth.AuthenticationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -111,8 +112,8 @@ public class ApiGlobalExceptionHandler {
         return new ResponseEntity<>(apiCommonErrorResponseDto, CommonErrorCodeEnum.JACKSON_PROCESS_ERROR.getHttpStatusCode());
     }
 
-    //권한 오류는 ApplicationGlobalExceptionHandler 처리 이지만.. 필터가 아닌 컨트럴러에서 권한 체크를 하는 경우도 있음으로 이곳에도 필요하다.
-    @ExceptionHandler({AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
+    //권한 오류는 ApplicationGlobalExceptionHandler 처리 이지만.. 필터가 아닌 controller 에서 권한 체크를 하는 경우도 있음 으로 이곳 에도 필요 하다.
+    @ExceptionHandler({AuthenticationException.class, AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
     public Object handleAccessDeniedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         log.error(ex.getMessage());
 

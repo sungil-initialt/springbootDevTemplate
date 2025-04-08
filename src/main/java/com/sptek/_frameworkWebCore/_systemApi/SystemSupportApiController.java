@@ -20,8 +20,8 @@ import java.util.Base64;
 @RequiredArgsConstructor
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/system-support-api/"})
-@Tag(name = "시스템 Support API", description = "")
+@RequestMapping(value = {"/api/v1/systemSupportApi/"})
+@Tag(name = "systemSupportApi", description = "")
 
 public class SystemSupportApiController {
     private final ProjectInfoVo projectInfoVo;

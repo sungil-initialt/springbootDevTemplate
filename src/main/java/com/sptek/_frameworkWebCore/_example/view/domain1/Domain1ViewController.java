@@ -51,13 +51,18 @@ public class Domain1ViewController {
 
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
-    @GetMapping({"/welcome"})
+    @GetMapping({"/", "/welcome"})
     public String welcome(Model model) {
         model.addAttribute("message", "welcome");
         return pageBasePath + "welcome";
     }
 
-
+    //기본 테스트
+    @PostMapping({"/postUrl"})
+    public String postUrl(Model model) {
+        model.addAttribute("message", "postUrl");
+        return pageBasePath + "welcome";
+    }
 
 
 
