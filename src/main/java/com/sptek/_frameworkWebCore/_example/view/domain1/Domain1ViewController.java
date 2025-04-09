@@ -78,7 +78,7 @@ public class Domain1ViewController {
     @RequestMapping("/serviceErr")
     public String serviceErr(Model model) {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
-        if(1==1) throw new ServiceException(ServiceErrorCodeEnum.XXX_ERROR);
+        if(1==1) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR);
 
         return pageBasePath + "xx"; //not to reach here
     }

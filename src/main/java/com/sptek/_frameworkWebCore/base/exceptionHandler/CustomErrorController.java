@@ -16,13 +16,15 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 
 @Slf4j
 @RequiredArgsConstructor
 @HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
 @Controller
 public class CustomErrorController implements ErrorController {
-    //Controller 외부 영역 에서 발생한 에러(필터 쪽이나.. 기타 등등)를 직접 처리 하기 위해 ErrorController 상속 받아 구현 함
+    //Controller 외부 영역 에서 발생한 에러(필터 쪽이나.. 기타 등등)를 직접 처리 하기 위해 ErrorController 상속 받아 구현 함 (정확히 는 controller 에 별도 에러 핸들러 가 없다면 그때는 모두 이곳 으로 진입)
     //해당 Controller 가 없다면 스프링 이 내부 디폴트 로직에 따라 "/error" 리소내 errcode.html 로 자동 매핑 해준다.
 
     //private final ObjectMapper objectMapper;
@@ -48,8 +50,22 @@ public class CustomErrorController implements ErrorController {
         throw (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         */
 
+        // todo: 에러 메시지 가 안 나오는 케이스 에 대해 좀더 확인 필요
         int errorStatusCode = Integer.parseInt(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)));
-        String errMessage = String.valueOf(request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
+        Object errorMsgAttr = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+        String errMessage = (errorMsgAttr != null && !errorMsgAttr.toString().isBlank())
+                ? errorMsgAttr.toString()
+                : null;
+
+        if (errMessage == null) {
+            Throwable throwable = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+            if (throwable != null) {
+                errMessage = Optional.ofNullable(throwable.getMessage()).orElse(throwable.getClass().getSimpleName());
+            } else {
+                errMessage = "No error message available";
+            }
+        }
+
         log.debug("errorStatusCode({}), message({})", errorStatusCode, errMessage);
 
         // 상위 레벨 에서 발생할 수 있는 에러의 종류를 이정도 로 정의함(더 구체화 가능)

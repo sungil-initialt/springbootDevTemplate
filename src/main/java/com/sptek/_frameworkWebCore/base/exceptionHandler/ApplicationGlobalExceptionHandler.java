@@ -106,7 +106,7 @@ public class ApplicationGlobalExceptionHandler {
 
     //DetailLogFilter 에 도달할 수 없기 때문에 이곳 에서 대처함.
     private void logWithCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
-        log.error("Exception message-- : {}", ex.getMessage());
+        log.error("Exception message : {}", ex.getMessage());
 
         //  ReqResLogFilter 로 진입이 불가능한 케이스가 있기 때문에 이경우 이곳에서 요약된 로그를 남긴다.(ex: security 필터 같은 경우)
         // todo: 컨트롤러나 필터를 진입할 수 없는 케이스의 에러가 발생한 경우 항상 ERROR_REQUEST_URI 가 생성 되는 것으로 보이나 지속적 으로 살펴볼 필요 있음

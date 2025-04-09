@@ -31,7 +31,8 @@ public class ExampleResponseAdvice implements ResponseBodyAdvice<Object> {
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request,
                                   ServerHttpResponse response) {
+
         // response 를 원하는 형태로 처리
-        return "do what to do";
+        return body;
     }
 }

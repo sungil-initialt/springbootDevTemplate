@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/swagger/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
+@RequestMapping(value = {"/api/v1/example/swagger/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "swagger", description = "")
 
 public class SwaggerApiController {
@@ -31,8 +31,8 @@ public class SwaggerApiController {
     @Operation(summary = "parameter echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(type = "string", description = "응답 메시지", example = "message1:message2")))
     public Object echoMessage(
-            @Parameter(name = "message1", description = "echo할 message1") @RequestParam String message1,
-            @Parameter(name = "message2", description = "echo할 message2") @RequestParam(required = false) String message2) {
+            @Parameter(description = "echo 내용1") @RequestParam("message1") String message1,
+            @Parameter(description = "echo 내용2") @RequestParam(name="message2", required = false) String message2) {
 
         return message1 + ":" + message2;
     }

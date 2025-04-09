@@ -3,7 +3,10 @@ project-info:
   version: v1.0.0
   description : enjoy your coding life with SPT Framework Web Core
 
+
+
 server:
+  name: ${HOSTNAME:${COMPUTERNAME:unknown}}
   port: 443
 
 spring:

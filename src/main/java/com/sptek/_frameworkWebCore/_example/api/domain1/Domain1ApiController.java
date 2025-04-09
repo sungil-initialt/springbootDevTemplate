@@ -2,7 +2,10 @@ package com.sptek._frameworkWebCore._example.api.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
-import com.sptek._frameworkWebCore.annotation.*;
+import com.sptek._frameworkWebCore.annotation.EnableDeduplicationRequest_InRestController_RestControllerMethod;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
@@ -10,9 +13,7 @@ import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
 import com.sptek._frameworkWebCore.util.FileUtil;
-import com.sptek._projectCommon.argumentResolver.ArgumentResolverForMyUserDto;
 import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,7 +72,6 @@ public class Domain1ApiController {
 
 
     @GetMapping("/closeableHttpClient")
-    @Operation(summary = "closeableHttpClient", description = "closeableHttpClient 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
     public Object closeableHttpClient() throws Exception{
         log.debug("closeableHttpClient identityHashCode : {}", System.identityHashCode(closeableHttpClient));
@@ -85,7 +85,6 @@ public class Domain1ApiController {
     }
 
     @GetMapping("/closeableHttpClientSupport")
-    @Operation(summary = "closeableHttpClientSupport", description = "closeableHttpClientSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
     public Object closeableHttpClientSupport() throws Exception{
         log.debug("closeableHttpClientSupport identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
@@ -97,7 +96,6 @@ public class Domain1ApiController {
     }
 
     @GetMapping("/restTemplate")
-    @Operation(summary = "restTemplate", description = "restTemplate 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하여 req 요청
     public Object restTemplate() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
@@ -111,7 +109,6 @@ public class Domain1ApiController {
     }
 
     @GetMapping("/restTemplateSupport")
-    @Operation(summary = "restTemplateSupport", description = "restTemplateSupport 테스트", tags = {""})
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
     public Object restTemplateSupport() {
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(fooResponseUrl, null, null);
@@ -122,31 +119,11 @@ public class Domain1ApiController {
 
 
 
-//    @GetMapping("/propertyConfigImport")
-//    @Operation(summary = "propertyConfigImport", description = "propertyConfigImport 테스트", tags = {""})
-//    //컨트롤러 진입시 특정 property값을 가져올수 있다.
-//    public Object propertyConfigImport(@Value("${specific.value}") String specificValue) {
-//        return specificValue;
-//    }
 
-    @GetMapping("/argumentResolverForMyUser")
-    @Operation(summary = "argumentResolverForMyUser", description = "argumentResolverForMyUser 테스트", tags = {""})
-    //HandlerMethodArgumentResolver 를 implement 한 ArgumentResolverForMyUser에 의해 ArgumentResolverForMyUser.MyUser에 데이터가 바인딩 될때 미리 코딩된 로직에 따라 변형처리 되어 바인딩 할수 있다.
-    //HandlerMethodArgumentResolver 의 구현체는 WebMvcConfig의 addArgumentResolvers()를 통해 미리 등록해 놓아야 한다. 등록되지 않으면 그냥 DTO로써 동일 네임 필드에 대해서만 1:1 바인딩 처리됨.
-    public Object argumentResolverForMyUser(ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
-        //ArgumentResolverForMyUser에 어노테이션까지 일치해야 하는 조건이 들어 있기 때문에 resolveArgument()를 타지않고 단순 DTO로써의 역할만 처리됨
-        return new ApiCommonSuccessResponseDto<>(myUserDto);
-    }
 
-    @GetMapping("/argumentResolverForMyUser2")
-    @Operation(summary = "argumentResolverForMyUser2", description = "argumentResolverForMyUser2 테스트", tags = {""})
-    public Object argumentResolverForMyUser2(@EnableArgumentResolver_InParam ArgumentResolverForMyUserDto.MyUserDto myUserDto) {
-        //어노테이션 조건까지 일치함으로 DTO의 단순 바인딩이 아니라 resolveArgument() 내부 코드가 처리해줌
-        return myUserDto;
-    }
+
 
     @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "fileUpload", description = "fileUpload 테스트", tags = {""})
     public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception {
@@ -162,7 +139,6 @@ public class Domain1ApiController {
     }
 
     @GetMapping(value = "/byteForImage")
-    @Operation(summary = "byteForImage", description = "byteForImage 테스트", tags = {""})
     public ResponseEntity<byte[]> byteForImage(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
             , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
@@ -187,7 +163,6 @@ public class Domain1ApiController {
 
     @EnableDeduplicationRequest_InRestController_RestControllerMethod
     @RequestMapping(value="/duplicatedRequest", method = {RequestMethod.GET, RequestMethod.POST})
-    @Operation(summary = "duplicatedRequest", description = "duplicatedRequest 테스트", tags = {""})
     public Object duplicatedRequest() throws Exception {
         //log.debug("AOP order : ??");
         String result = "duplicatedRequest test ok";
@@ -212,7 +187,6 @@ public class Domain1ApiController {
 
 
     @GetMapping("/httpCache")
-    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
     public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet(HttpServletResponse response, HttpServletRequest request) {
         log.debug("xxx");
         // 현재 시간 (밀리초)
@@ -253,7 +227,6 @@ public class Domain1ApiController {
     }
 
     @GetMapping("/apiServiceError")
-    @Operation(summary = "apiServiceError", description = "apiServiceError 테스트", tags = {""})
     public Object apiServiceError(@RequestParam("errorCaseNum") int errorCaseNum) {
         return domain1ApiService.raiseServiceError(errorCaseNum);
     }

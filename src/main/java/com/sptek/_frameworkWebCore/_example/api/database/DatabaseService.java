@@ -64,9 +64,10 @@ public class DatabaseService {
     @Transactional(readOnly = true)
     //DB로 부터 result row를 하나씩 받아와 처리하는 용도 (대용량 결과를 한번에 받기 어려운 경우 또는 result row의 결과를 보고 처리가 필요한 경우 사용)
     public List<TbTestDto> getListTbTestWithResultHandler(){
-        MybatisResultHandlerSupport<TbTestDto, TbTestDto> mybatisResultHandlerSupport = new MybatisResultHandlerSupport<>() {
+        //익명 클레스로 생성
+        MybatisResultHandlerSupport<TbTestDto, TbTestDto> mybatisResultHandlerSupport = new MybatisResultHandlerSupport<>()
+        {
             int maxCount = 0;
-
             @Override
             //result row 단위로 해야할 작업을 정의 한다. (ex: 특정 조건에 맞는 값이 몇건 수집 되면 종료 처리)
             public TbTestDto handleResultRow(TbTestDto resultRow) {

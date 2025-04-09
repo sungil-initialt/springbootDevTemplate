@@ -26,7 +26,7 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST) //api 쪽의 ServiceException 경우 상황에 맞게 HttpStatus 를 내리나.. view 에서는 큰 의미가 없어 하나도 통일
     //개발자 가 의도적 으로 생성한 Exception 는 ServiceException 로 생성 하며 해당 핸들러 에서 처리 됨
     public Object handleServiceException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        log.error("ServiceException message1 : {}", ex.getMessage());
+        log.error("ServiceException message : {}", ex.getMessage());
         return handleError(request, ex, "error/commonServiceError");
     }
 
@@ -34,7 +34,7 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     //기타 모든 에러를 하나로 처리함 (view 에러 에서는 특별히 공통 에러 페이지 외 구분할 필요가 없기 때문에 한번에 처리함, 에러 종류별 구분된 에러 페이지가 필요하면 추가해 나갈 것)
     public Object handleUnexpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        log.error("ServiceException message2 : {}", ex.getMessage());
+        log.error("ServiceException message : {}", ex.getMessage());
         return handleError(request, ex, "error/commonInternalError");
     }
 

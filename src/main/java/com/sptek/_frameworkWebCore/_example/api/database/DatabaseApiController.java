@@ -19,33 +19,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/database/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트가 Accept 해더를 보낼 경우 제공하는 미디어 타입이 일치해야함(없으면 406)
+@RequestMapping(value = {"/api/v1/example/database/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "database", description = "")
 
 public class DatabaseApiController {
     private final DatabaseService databaseService;
 
     @GetMapping("/checkDbConnection")
-    @Operation(summary = "쿼리 실행을 통해 DB 연결 상태 체크", description = "")
+    @Operation(summary = "1. DB 연결 상태 체크", description = "")
     public Object checkDbConnection() {
         return databaseService.checkDbConnection() == 1 ? "success" : "fail";
     }
 
     @GetMapping("/checkReplicationMaster")
-    @Operation(summary = "@Transactional(readOnly = false) 통해 Master DB로 연결", description = "")
+    @Operation(summary = "2. @Transactional(readOnly = false) 통해 Master DB로 연결 체크", description = "")
     public Object checkReplicationMaster(Model model) {
         return databaseService.checkReplicationMaster() == 1 ? "success" : "fail";
     }
 
     @GetMapping("/checkReplicationSlave")
-    @Operation(summary = "@Transactional(readOnly = true) 통해 Slave DB로 연결", description = "")
+    @Operation(summary = "3. @Transactional(readOnly = true) 통해 Slave DB로 연결 체크", description = "")
     public Object checkReplicationSlave(Model model) {
         return databaseService.checkReplicationSlave() == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/insertTbTest")
-    @Operation(summary = "Tb_Test insert (시스템 시간(ms))", description = "")
-    public Object insertTbTest() {
+    @GetMapping("/myBatisCommonDaoInsert")
+    @Operation(summary = "4. myBatisCommonDao insert", description = "")
+    public Object myBatisCommonDaoInsert() {
         TbTestDto tbTestDto = TbTestDto.builder()
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
@@ -53,9 +53,9 @@ public class DatabaseApiController {
         return databaseService.insertTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/updateTbTest")
-    @Operation(summary = "Tb_Test update (시스템 시간(ms))", description = "")
-    public Object updateTbTest() {
+    @GetMapping("/myBatisCommonDaoUpdate")
+    @Operation(summary = "5. myBatisCommonDao update", description = "")
+    public Object myBatisCommonDaoUpdate() {
         TbTestDto tbTestDto = TbTestDto.builder()
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
@@ -63,42 +63,42 @@ public class DatabaseApiController {
         return databaseService.updateTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/deleteTbTest")
-    @Operation(summary = "Tb_Test delete (최신값)", description = "")
-    public Object deleteTbTest() {
+    @GetMapping("/myBatisCommonDaoDelete")
+    @Operation(summary = "6. myBatisCommonDao delete", description = "")
+    public Object myBatisCommonDaoDelete() {
         return databaseService.deleteTbTest() == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/getOneTbTest")
-    @Operation(summary = "Tb_Test select (단일)", description = "")
-    public Object getOneTbTest() {
+    @GetMapping("/myBatisCommonDaoSelectOne")
+    @Operation(summary = "7. myBatisCommonDao selectOne", description = "")
+    public Object myBatisCommonDaoSelectOne() {
         return databaseService.getOneTbTest();
     }
 
-    @GetMapping("/getListTbTest")
-    @Operation(summary = "Tb_Test select (리스트)", description = "")
-    public Object getListTbTest() {
+    @GetMapping("/myBatisCommonDaoSelectList")
+    @Operation(summary = "8. myBatisCommonDao selectList", description = "")
+    public Object myBatisCommonDaoSelectList() {
         return databaseService.getListTbTest();
     }
     
-    @GetMapping("/getListTbTestWithResultHandler")
-    @Operation(summary = "ResultHandler를 사용해 Tb_Test select (리스트)", description = "")
-    public Object getListTbTestWithResultHandler() {
+    @GetMapping("/myBatisCommonDaoSelectListWithResultHandler")
+    @Operation(summary = "9. myBatisCommonDao selectListWithResultHandler", description = "")
+    public Object myBatisCommonDaoSelectListWithResultHandler() {
         return databaseService.getListTbTestWithResultHandler();
     }
 
-    @GetMapping("/getMapTbTest")
-    @Operation(summary = "Tb_Test select (단일, 리스트)", description = "")
-    public Object getMapTbTest() {
+    @GetMapping("/myBatisCommonDaoSelectMap")
+    @Operation(summary = "10. myBatisCommonDao selectMap(단일, 리스트)", description = "")
+    public Object myBatisCommonDaoSelectMap() {
         return databaseService.getMapTbTest();
     }
 
-    @GetMapping("/getListTbTestWithPagination")
-    @Operation(summary = "Paging 된 Tb_Test select (리스트)", description = "")
-    public Object selectPaginate(
-            @RequestParam(name = "currentPageNum", required = false, defaultValue = "0") int currentPageNum,
-            @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "0") int setRowSizePerPage,
-            @RequestParam(name = "setBottomPageNavigationSize", required = false, defaultValue = "0") int setBottomPageNavigationSize) {
+    @GetMapping("/myBatisCommonDaoSelectListWithPagination")
+    @Operation(summary = "11. myBatisCommonDao selectListWithPagination", description = "")
+    public Object myBatisCommonDaoSelectListWithPagination(
+            @RequestParam(name = "currentPageNum", required = false, defaultValue = "1") int currentPageNum,
+            @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "20") int setRowSizePerPage,
+            @RequestParam(name = "setBottomPageNavigationSize", required = false, defaultValue = "10") int setBottomPageNavigationSize) {
         return databaseService.getListTbTestWithPagination();
     }
 }

@@ -1,10 +1,7 @@
 package com.sptek._projectCommon.argumentResolver;
 
+import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import com.sptek._frameworkWebCore.annotation.EnableArgumentResolver_InParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -16,7 +13,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.util.Optional;
 
 @Component
-public class ArgumentResolverForMyUserDto implements HandlerMethodArgumentResolver {
+public class ExampleArgumentResolverForExUserDto implements HandlerMethodArgumentResolver {
 
     @Override //적용 조건 설정
     public boolean supportsParameter(MethodParameter methodParameter) {
@@ -27,50 +24,35 @@ public class ArgumentResolverForMyUserDto implements HandlerMethodArgumentResolv
         //return methodParameter.getParameterType().isAssignableFrom(MyUserDto.class)
 
         //해당 클레스를 상속받은 클레스까지 적용하지만 rgumentResolver를 적용하겠다는 별도의 어노테이션이 있는 경우만 처리
-        return methodParameter.getParameterType().isAssignableFrom(MyUserDto.class)
+        return methodParameter.getParameterType().isAssignableFrom(ExUserDto.class)
                 && methodParameter.hasParameterAnnotation(EnableArgumentResolver_InParam.class);
     }
 
 
     @Override
-    //controller에 obj를 넘기면서 특정한 처리를 미리 해서 넘길수 있게 해준다(반복적으로 이루어지는 작업에 활용하면 유용)
+    //MethodParameter, modelAndViewContainer, nativeWebRequest, webDataBinderFactory 을 응용 해서 더 많은 곳에 활용 가능.
     public Object resolveArgument(@NotNull MethodParameter methodParameter
             , ModelAndViewContainer modelAndViewContainer
             , NativeWebRequest nativeWebRequest
             , WebDataBinderFactory webDataBinderFactory) {
 
-        MyUserDto myUserDto;
+        ExUserDto exUserDto;
         String id = Optional.ofNullable(nativeWebRequest.getParameter("id")).map(String::toString).orElse("anonymous");
-        if(id.equals("admin")) {
-            myUserDto = MyUserDto.builder()
+
+        if(id.equals("sungilry")) {
+            exUserDto = ExUserDto.builder()
                     .id(id)
-                    .name("관리자")
-                    .type(MyUserDto.UserType.admin)
+                    .name("당신의 이름을 멋쟁이 " + id + " 님으로 변경 했어요!")
+                    .type(ExUserDto.UserType.admin)
                     .build();
         } else {
-            myUserDto = MyUserDto.builder()
+            exUserDto = ExUserDto.builder()
                     .id(id)
                     .name(id + " 님")
-                    .type(MyUserDto.UserType.anonymous)
+                    .type(ExUserDto.UserType.anonymous)
                     .build();
         }
 
-        //MethodParameter, modelAndViewContainer, nativeWebRequest, webDataBinderFactory을 응용해서 더 많은곳에 활용.
-        return myUserDto;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    //해당 클레스가 inner class로 있을 필요는 없음(그냥 편의상 한것임)
-    public static class MyUserDto {
-        private String id;
-        private String name;
-        private UserType type;
-
-        public enum UserType {
-            customer, manager, admin, anonymous
-        }
+        return exUserDto;
     }
 }

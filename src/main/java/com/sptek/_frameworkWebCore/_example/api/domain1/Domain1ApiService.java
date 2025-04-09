@@ -18,7 +18,7 @@ public class Domain1ApiService {
                 throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "해당 기간동안의 주문 내역이 없습니다.");
         }
 
-        throw new ServiceException(ServiceErrorCodeEnum.XXX_ERROR);
+        throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR);
         //return errorCaseNum;
     }
 
