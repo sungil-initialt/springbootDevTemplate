@@ -1,9 +1,9 @@
 package com.sptek._frameworkWebCore.springSecurity.test;
 
+import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.*;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
-import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.AuthorityRepository;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.RoleRepository;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.TermsRepository;
