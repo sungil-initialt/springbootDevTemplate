@@ -23,7 +23,7 @@ import java.util.Map;
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 public class RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외
-    private final String pageBasePath = "pages/example/test/";
+    private final String pageBasePath = "pages/_example/html/";
     private final RepositoryService repositoryService;
 
     //for test

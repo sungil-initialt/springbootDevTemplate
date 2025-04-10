@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Component
 public class ExampleArgumentResolverForExUserDto implements HandlerMethodArgumentResolver {
+    //Controller 에만 적용 가능함
 
     @Override //적용 조건 설정
     public boolean supportsParameter(MethodParameter methodParameter) {

@@ -36,7 +36,7 @@ import java.util.List;
 public class SecurityViewController {
 
     @NonFinal
-    private final String pageBasePath = "pages/example/test/";
+    private final String pageBasePath = "pages/_example/html/";
     private final ModelMapper modelMapper;
     private final SecurityService securityService;
 

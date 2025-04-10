@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.domain1;
+package com.sptek._frameworkWebCore._example.unit.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;

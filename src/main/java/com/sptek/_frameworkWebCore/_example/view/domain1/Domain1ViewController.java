@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.view.domain1;
 
-import com.sptek._frameworkWebCore._example.api.domain1.Domain1ApiService;
+import com.sptek._frameworkWebCore._example.unit.domain1.Domain1ApiService;
 import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @EnableResponseOfViewGlobalException_InViewController
 public class Domain1ViewController {
     @NonFinal
-    private final String pageBasePath = "pages/example/test/";
+    private final String pageBasePath = "pages/_example/html/";
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
 
@@ -56,13 +56,13 @@ public class Domain1ViewController {
         model.addAttribute("message", "welcome");
         return pageBasePath + "welcome";
     }
-
-    //기본 테스트
-    @PostMapping({"/postUrl"})
-    public String postUrl(Model model) {
-        model.addAttribute("message", "postUrl");
-        return pageBasePath + "welcome";
-    }
+//
+//    //기본 테스트
+//    @PostMapping({"/postUrl"})
+//    public String postUrl(Model model) {
+//        model.addAttribute("message", "postUrl");
+//        return pageBasePath + "welcome";
+//    }
 
 
 

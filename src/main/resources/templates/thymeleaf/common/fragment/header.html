@@ -1,34 +1,88 @@
 <!DOCTYPE html>
-<!-- Thymeleaf 선언 / headerFragment 임을 선언-->
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       th:fragment="HeaderFragment">
-<div style="border: solid 1px yellow">
-    <img th:src="@{/images/icon1.jpg}" width="10" height="10" alt=""> Header 영역입니다..
-    <div>
 
-<!--
-참고:
-비로그인 상태의 authentication 원형 : Welcome, AnonymousAuthenticationToken [Principal=anonymousUser, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=ACA1E6855D4DDCD648186A12FA2E5706], Granted Authorities=[ROLE_ANONYMOUS]]!
-로그인 상태의 authentication 원형 :Welcome, UsernamePasswordAuthenticationToken [Principal=CustomUserDetails(userDto=UserDto(id=2, name=이성일, email=sungilry@naver.com, password=[PROTECTED], userAddresses=[UserAddressDto(id=2, addressType=집, address=엘프라우드)], roles=[RoleDto(id=4, roleName=ROLE_USER, authorities=[], authorityEnums=[])], terms=[TermsDto(id=1, termsName=TERMS_MEMBERSHIP)])), Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=ACA1E6855D4DDCD648186A12FA2E5706], Granted Authorities=[ROLE_USER]]!
-//-->
-        <!-- 로그인된 사용자 정보 -->
-        <div>
-            <p th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}">
-                Welcome, <span th:text="${#authentication.getPrincipal().userDto.email}" style="color: blueviolet;">User</span> 님!
-            </p>
+<head>
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            border-bottom: 2px solid #ddd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-            <!--윗쪽 p테그에 한번에 묶지 못한 이유는 p테그안에 form이 규칙상 못들어가기 때문, spring-security의 로그아웃 처리의 경우 CSRF 가능성있어서 post로 처리되는게 보통, get으로 해야 겠다면 csrf 토큰사용 disable 처리 필요//-->
-            <form th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}"
-                  action="/logout" method="POST" th:action="@{/logout}">
-                <button type="submit">Logout</button>
-            </form>
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
 
-            <p th:if="${#authentication?.getPrincipal() == null or #authentication?.getPrincipal() == 'anonymousUser'}">
-                <a th:href="@{/login?button}">login</a>&nbsp;&nbsp;&nbsp;<a th:href="@{/signup}">signup</a>
-            </p>
-        </div>
+        .header-left img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right p {
+            margin: 0;
+        }
+
+        .header-right a, .header-right button {
+            background: none;
+            border: none;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .header-right button:hover,
+        .header-right a:hover {
+            text-decoration: underline;
+        }
+
+        .user-email {
+            font-weight: bold;
+            color: #6f42c1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header-container">
+
+    <div class="header-left">
+        <span><b>SPTEK Web Framework Guide </b></span>
+    </div>
+
+    <div class="header-right">
+
+        <!-- 로그인 상태 -->
+        <p th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}">
+            Welcome, <span th:text="${#authentication.getPrincipal().userDto.email}" class="user-email">User</span> 님!
+        </p>
+        <!--윗쪽 p테그에 한번에 묶지 못한 이유는 p테그안에 form 이 규칙상 못들어가기 때문, spring-security의 로그아웃 처리의 경우 CSRF 가능성있어서 post로 처리되는게 보통, get으로 해야 겠다면 csrf 토큰사용 disable 처리 필요//-->
+        <form th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}"
+              action="/logout" method="POST" th:action="@{/logout}">
+            <button type="submit">Logout</button>
+        </form>
+
+        <!-- 비로그인 상태 -->
+        <p th:if="${#authentication?.getPrincipal() == null or #authentication?.getPrincipal() == 'anonymousUser'}">
+            <a th:href="@{/login?button}">Login</a>&nbsp;&nbsp;
+            <a th:href="@{/signup}">Signup</a>
+        </p>
 
     </div>
 </div>
+</body>
 </html>

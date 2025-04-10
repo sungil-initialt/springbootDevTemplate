@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.encryption;
+package com.sptek._frameworkWebCore._example.unit.encryption;
 
 import com.sptek._frameworkWebCore.annotation.EnableDecryptAuto_InDtoString;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
@@ -29,14 +29,14 @@ import java.util.Map;
 
 public class EncryptionApiController {
 
-    @GetMapping("/JasyptForProperty")
-    @Operation(summary = "1. jasypt로 암호호 된 서버 프로퍼티 값이 자동으로 복호화 되어 바인딩 되는지 확인 ", description = "")
+    @GetMapping("/a/JasyptForProperty")
+    @Operation(summary = "jasypt로 암호호 된 서버 프로퍼티 값이 자동으로 복호화 되어 바인딩 되는지 확인 ", description = "")
     public Object JasyptForProperty(@Parameter(hidden = true) @Value("${jasypt.decryptTest.encValue}") String encValue) {
         return encValue;
     }
 
-    @PostMapping("/allTypeEncryptForString")
-    @Operation(summary = "2. plain text 파람에 대해 DES, AES, RSA, Jasypt 로 각각 암/복호화 처리", description = "")
+    @PostMapping("/b/allTypeEncryptForString")
+    @Operation(summary = "plain text 파람에 대해 DES, AES, RSA, Jasypt 로 각각 암/복호화 처리", description = "")
     public Object allTypeEncryptForString(@RequestBody String plainText) {
         //4가지 방식으로 암호화 처리
         HashMap<String, String> encryptedMap = new HashMap<>();
@@ -60,14 +60,14 @@ public class EncryptionApiController {
         return resultMap;
     }
 
-    @PostMapping("/allTypeDecryptForString")
-    @Operation(summary = "3. 암호화된 (DES, AES, RSA, Jasypt) 파람 값의 복호화", description = "")
+    @PostMapping("/c/allTypeDecryptForString")
+    @Operation(summary = "암호화된 (DES, AES, RSA, Jasypt) 파람 값의 복호화", description = "")
     public Object allTypeDecryptForString(@RequestBody String encryptText) {
         return GlobalEncryptor.decrypt(encryptText);
     }
 
-    @PostMapping("/allTypeDecryptForDto")
-    @Operation(summary = "4. 암호화된(DES, AES, RSA, Jasypt) 필드를 포함 하는 객체의 복호화", description = "")
+    @PostMapping("/d/allTypeDecryptForDto")
+    @Operation(summary = "암호화된(DES, AES, RSA, Jasypt) 필드를 포함 하는 객체의 복호화", description = "")
     public Object allTypeDecryptForDto(@RequestBody ParentDto parentDto) throws Exception {
         return GlobalEncryptor.decrypt(parentDto);
     }

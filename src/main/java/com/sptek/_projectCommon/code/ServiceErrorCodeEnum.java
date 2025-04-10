@@ -16,7 +16,7 @@ public enum ServiceErrorCodeEnum implements BaseCode {
     ALREADY_EXIST_RESOURCE_ERROR(HttpStatus.CONFLICT, "SE409", "해당 데이터 가 이미 존재 합니다."),
     DUPLICATION_REQUEST_ERROR(HttpStatus.TOO_MANY_REQUESTS, "SE429", "Duplication Request Exception"), //동일한 request가 빠르게 연속으로 들어오는 경우 내부적으로 한번만 처리하기 위한 기능을 위해 만듬, (매우 예외적인 케이스의 에러코드임)
 
-    DEFAULT_ERROR(HttpStatus.BAD_REQUEST, "SE999", "죄송 합니다. 요청 처리에 실패 하였 습니다.");
+    DEFAULT_ERROR(HttpStatus.BAD_REQUEST, "SE999", "요청이 정상적으로 처리되지 않았습니다.");
 
     private final HttpStatus httpStatusCode;
     private final String resultCode;

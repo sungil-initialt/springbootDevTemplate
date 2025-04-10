@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.util;
+package com.sptek._frameworkWebCore._example.unit.util;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
@@ -26,7 +26,7 @@ import java.util.Map;
 @Tag(name = "util", description = "")
 
 public class FrameworkUtilApiController {
-    @GetMapping("/testRequestUtil")
+    @GetMapping("/a/testRequestUtil")
     @Operation(summary = "request 요청과 관련해 URL, reqIP, Header, parameter를 제공", description = "")
     public Object reqResUtil(HttpServletRequest request) {
         String reqFullUrl = RequestUtil.getRequestUrlQuery(request);

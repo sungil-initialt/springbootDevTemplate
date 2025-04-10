@@ -16,12 +16,14 @@ public class ViewControllerConfig implements WebMvcConfigurer {
         viewControllerRegistry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
 
         //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정 (이경우 @ControllerAdvice 가 동작 하지 않음을 주의)
-        viewControllerRegistry.addViewController("/none").setViewName("/pages/example/test/none");
-        viewControllerRegistry.addViewController("/temporaryParkingPageForXXX").setViewName("/pages/example/test/temporaryParkingView");
-        viewControllerRegistry.addViewController("/sorry").setViewName("/pages/example/test/temporaryParkingView");
-        viewControllerRegistry.addViewController("/fileUpload").setViewName("/pages/example/test/fileUpload");
-        viewControllerRegistry.addViewController("/pageForSubmitTest").setViewName("/pages/example/test/pageForSubmitTest");
-        viewControllerRegistry.addViewController("/pageForApiTest").setViewName("/pages/example/test/pageForApiTest");
+        viewControllerRegistry.addViewController("/").setViewName("/pages/_example/html/welcome");
+
+        viewControllerRegistry.addViewController("/none").setViewName("/pages/_example/html/none");
+        viewControllerRegistry.addViewController("/temporaryParkingPageForXXX").setViewName("/pages/_example/html/temporaryParkingView");
+        viewControllerRegistry.addViewController("/sorry").setViewName("/pages/_example/html/temporaryParkingView");
+        viewControllerRegistry.addViewController("/fileUpload").setViewName("/pages/_example/html/fileUpload");
+        viewControllerRegistry.addViewController("/pageForSubmitTest").setViewName("/pages/_example/html/pageForSubmitTest");
+        viewControllerRegistry.addViewController("/pageForApiTest").setViewName("/pages/_example/html/pageForApiTest");
     }
 
     /*

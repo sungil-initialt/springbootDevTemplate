@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.usefulComponent;
+package com.sptek._frameworkWebCore._example.unit.usefulComponent;
 
 import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import com.sptek._frameworkWebCore.annotation.EnableArgumentResolver_InParam;
@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class UsefulComponentApiController {
 
-    @PostMapping("/withoutArgumentResolver")
+    @PostMapping("/a/withoutArgumentResolver")
     @Operation(summary = "ArgumentResolver 비적용", description = "")
     public Object withoutArgumentResolver(ExUserDto exUserDto) {
         //단순히 바인딩 처리됨
         return exUserDto;
     }
 
-    @PostMapping("/withArgumentResolver")
+    @PostMapping("/b/withArgumentResolver")
     @Operation(summary = "ArgumentResolver 적용", description = "")
     public Object withArgumentResolver(@EnableArgumentResolver_InParam ExUserDto exUserDto) {
         //ArgumentResolver(ExampleArgumentResolverForExUserDto) 정의에 따라 바인딩 처리됨

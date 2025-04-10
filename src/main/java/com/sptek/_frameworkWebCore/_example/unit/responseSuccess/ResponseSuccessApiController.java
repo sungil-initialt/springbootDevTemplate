@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.responseSuccess;
+package com.sptek._frameworkWebCore._example.unit.responseSuccess;
 
 import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "response Success", description = "")
 
 public class ResponseSuccessApiController {
-    @GetMapping("/responseSuccessForPrimitiveType")
+    @GetMapping("/a/responseSuccessForPrimitiveType")
     @Operation(summary = "Primitive Type 의 성공 응답", description = "")
     public Object responseSuccessForPrimitiveType(@RequestParam(name="message", required = false) String message) {
         return message;
     }
 
-    @PostMapping("/responseSuccessForObject")
+    @PostMapping("/b/responseSuccessForObject")
     @Operation(summary = "Object(DTO) Type 의 성공 응답", description = "")
     public Object responseSuccessForObject(ValidatedDto validatedDto) {
         return validatedDto;

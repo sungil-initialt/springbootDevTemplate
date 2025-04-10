@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.xss;
+package com.sptek._frameworkWebCore._example.unit.xss;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 public class XssApiController {
 
-    @GetMapping("/XssProtect")
+    @GetMapping("/a/XssProtect")
     @Operation(summary = "parameter의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     public Object XssProtectGet(@Parameter(name = "originParameter", description = "스크립트 요소를 포함한 요청 파람") @RequestParam String originParameter) {
         return "XssProtectedText = " + originParameter;
     }
 
-    @PostMapping("/XssProtect")
+    @PostMapping("/b/XssProtect")
     @Operation(summary = "body의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     //post Req에 대한 xss 처리 결과 확인
     public Object XssProtectPost(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {

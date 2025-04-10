@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.database;
+package com.sptek._frameworkWebCore._example.unit.database;
 
 import com.sptek._frameworkWebCore._example.dto.TbTestDto;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;

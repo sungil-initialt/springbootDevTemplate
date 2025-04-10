@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.api.validation;
+package com.sptek._frameworkWebCore._example.unit.validation;
 
 import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
@@ -21,19 +21,19 @@ import org.springframework.web.bind.annotation.*;
 
 public class ValidationApiController {
 
-    @GetMapping("/validationAnnotation")
+    @GetMapping("/a/validationAnnotation")
     @Operation(summary = "parameter 의 validation 확인과 에러 처리", description = "")
     public Object validationAnnotationGet(@Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
-    @PostMapping("/validationAnnotation")
+    @PostMapping("/b/validationAnnotation")
     @Operation(summary = "body 의 validation 확인과 에러 처리", description = "")
     public Object validationAnnotation(@RequestBody @Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
-    @PostMapping("/validationAnnotationIgnore")
+    @PostMapping("/c/validationAnnotationIgnore")
     @Operation(summary = "body 의 validation 미적용 처리", description = "")
     public Object validationAnnotationIgnore(@RequestBody ValidatedDto validationTestDto) {
         return validationTestDto;
