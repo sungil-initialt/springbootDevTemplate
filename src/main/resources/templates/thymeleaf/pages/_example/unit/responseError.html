@@ -13,43 +13,119 @@
         .base-div {
             background-color: #f0f8ff;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 10px;
+            line-height: 1.6;
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            font-weight: 350;
         }
-    </style><!-- inline JS 영역-->
+        .inner-div {
+            background-color: #F9F0FFFF;
+            padding: 5px;
+            border-radius: 5px;
+            margin: 16px 0;
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            font-weight: 400;
+        }
+        .btn-normal {
+            background-color: #e9ecef;
+            color: #212529;
+            border: 1px solid #ced4da;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
 
-    <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+        .btn-normal:hover {
+            background-color: #e3e7ea; /* 아주 미묘하게 밝기 조정 */
+        }
+
+        .btn-normal:active {
+            background-color: #dfe3e6;
+        }
+
+        .btn-normal:disabled {
+            background-color: #f1f3f5;
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <!-- inline JS 영역-->
     <script type="module" th:inline="javascript">
         import { requestFetch, rsaEncrypt } from [[@{/js/_framework/frameworkUtil.js}]];
         window.requestFetch = requestFetch;
-        window.rsaEncrypt = rsaEncrypt;
-
     </script>
-
 </head>
 <body>
+<div class="inner-div">
+    🔔 시스템 에서 기본 제공 하는 에러 페이지 가이드 입니다<br>
+    400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.
+</div>
 
 <div class="base-div">
-    <label>직접입력 :</label> <input type="text" id="apiEndpoint" placeholder="Enter API endpoint" style="width: 400px;"/>
-    <button id="request">request</button>
+    <label>🟢 존재하지 않는 URL (GET /xxx) :</label>
+    <button class="btn-normal" id="notExist">404 Not Exist URL</button>
     <script>
-        document.getElementById('request').addEventListener('click', async function () {
-            const apiEndpoint = document.getElementById('apiEndpoint').value;
-            if (!apiEndpoint) {
-                alert("API endpoint is required");
-                return;
-            }
-
-            try {
-                const data = await requestFetch(apiEndpoint, {});
-                console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-            } catch (error) {
-                console.error("Error requestFetch:", error);
-            }
+        document.getElementById('notExist').addEventListener('click', function () {
+            const url = '/xxx'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
         });
-    </script>
-    <br>
-    <br>hello 테스트 : /hello?message=hi
-    <br>Exception 테스트 : /apiServiceError?errorCaseNum=1
+    </script><br><br>
+
+    <label>🟢 존재하지 않는 Request Method (POST /index) :</label>
+    <button class="btn-normal" id="notSupportMethod">405 Not Support Method</button>
+    <script>
+        document.getElementById('notSupportMethod').addEventListener('click', function () {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/index'; // 여기에 원하는 URL 지정
+            document.body.appendChild(form);
+            form.submit();
+        });
+    </script><br><br>
+
+    <label>🟢 Runtime Exception (GET /runtimeException) :</label>
+    <button class="btn-normal" id="runtimeException">500 Runtime Exception</button>
+    <script>
+        document.getElementById('runtimeException').addEventListener('click', function () {
+            const url = '/runtimeException'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <label>🟢 Service Exception (GET /serviceException) :</label>
+    <button class="btn-normal" id="serviceException">400 Service Exception</button>
+    <script>
+        document.getElementById('serviceException').addEventListener('click', function () {
+            const url = '/serviceException'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <label>🟢 Authentication Exception (GET /authException) :</label>
+    <button class="btn-normal" id="authException">401/403 Authentication Exception</button>
+    <script>
+        document.getElementById('authException').addEventListener('click', function () {
+            const url = '/authException'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <div class="inner-div">
+        💡 @EnableResponseOfDevViewGlobalException_InMain 을 적용해 보세요. <br>
+        상세 오류 정보를 제공 하는 오류 페이지로 전환 됩니다. 개발시 디버깅을 위해 적용할 수 있습니다.
+    </div>
+
+
+
+
+
+
+</div>
+<div class="inner-div">
+    abc
 </div>
 <br>
 

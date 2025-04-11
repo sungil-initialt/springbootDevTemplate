@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApplicationGlobalException_InMain;
+import com.sptek._frameworkWebCore.annotation.EnableResponseOfDevViewGlobalException_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,9 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
+@HasAnnotationOnMain_InBean(value = EnableResponseOfDevViewGlobalException_InMain.class, negate = true) //-->둘다 적용이 되도록 수정 필요
 @Controller
+
 public class CustomErrorController implements ErrorController {
     //Controller 외부 영역 에서 발생한 에러(필터 쪽이나.. 기타 등등)를 직접 처리 하기 위해 ErrorController 상속 받아 구현 함 (정확히 는 controller 에 별도 에러 핸들러 가 없다면 그때는 모두 이곳 으로 진입)
     //해당 Controller 가 없다면 스프링 이 내부 디폴트 로직에 따라 "/error" 리소내 errcode.html 로 자동 매핑 해준다.

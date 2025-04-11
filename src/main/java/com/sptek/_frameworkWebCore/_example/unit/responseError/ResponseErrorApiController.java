@@ -32,7 +32,6 @@ public class ResponseErrorApiController {
         return validatedDto;
     }
 
-    //스웨거 말고 browser 에서 테스트
     @GetMapping("/b/runtimeError")
     @Operation(summary = "Runtime 에러 ", description = "")
     public Object runtimeError(@Parameter(hidden = true) @RequestHeader("X-Auth") String authHeader) {

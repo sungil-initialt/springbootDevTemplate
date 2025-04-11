@@ -114,7 +114,7 @@ public class ApiGlobalExceptionHandler {
 
     //권한 오류는 ApplicationGlobalExceptionHandler 처리 이지만.. 필터가 아닌 controller 에서 권한 체크를 하는 경우도 있음 으로 이곳 에도 필요 하다.
     @ExceptionHandler({AuthenticationException.class, AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
-    public Object handleAccessDeniedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
+    public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         log.error(ex.getMessage());
 
         final ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(CommonErrorCodeEnum.FORBIDDEN_ERROR, ex.getMessage());

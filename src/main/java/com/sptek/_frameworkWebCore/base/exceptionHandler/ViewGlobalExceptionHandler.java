@@ -8,10 +8,13 @@ import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.auth.AuthenticationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 //@Profile(value = { "notused" })
@@ -30,11 +33,19 @@ public class ViewGlobalExceptionHandler {
         return handleError(request, ex, "error/commonServiceError");
     }
 
+    @ExceptionHandler({AuthenticationException.class, AccessDeniedException.class, HttpClientErrorException.Unauthorized.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    //기타 모든 에러를 하나로 처리함 (view 에러 에서는 특별히 공통 에러 페이지 외 구분할 필요가 없기 때문에 한번에 처리함, 에러 종류별 구분된 에러 페이지가 필요하면 추가해 나갈 것)
+    public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
+        log.error("AuthenticationException message : {}", ex.getMessage());
+        return handleError(request, ex, "error/commonAuthenticationError");
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     //기타 모든 에러를 하나로 처리함 (view 에러 에서는 특별히 공통 에러 페이지 외 구분할 필요가 없기 때문에 한번에 처리함, 에러 종류별 구분된 에러 페이지가 필요하면 추가해 나갈 것)
     public Object handleUnexpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        log.error("ServiceException message : {}", ex.getMessage());
+        log.error("Exception message : {}", ex.getMessage());
         return handleError(request, ex, "error/commonInternalError");
     }
 

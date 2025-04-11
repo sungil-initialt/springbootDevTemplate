@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 @EnableResponseOfViewGlobalException_InViewController
+
 public class Domain1ViewController {
     @NonFinal
     private final String pageBasePath = "pages/_example/html/";
@@ -51,7 +52,7 @@ public class Domain1ViewController {
 
     //기본 테스트
     //@RequestMapping({"/", "/welcome"})
-    @GetMapping({"/", "/welcome"})
+    @GetMapping({"/welcome"})
     public String welcome(Model model) {
         model.addAttribute("message", "welcome");
         return pageBasePath + "welcome";
