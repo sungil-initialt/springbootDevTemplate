@@ -1,14 +1,13 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfDevViewGlobalException_InMain;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 //@Profile(value = { "notused" })
 @Slf4j
 @ControllerAdvice(annotations = EnableResponseOfViewGlobalException_InViewController.class)
-@HasAnnotationOnMain_InBean(value = EnableResponseOfDevViewGlobalException_InMain.class, negate = true)
+@ConditionalOnProperty(name = "server.error.ignoreCustomErrorViewForDebug", havingValue = "false", matchIfMissing = false)
 
 public class ViewGlobalExceptionHandler {
     // todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 그래서 현재는 httpsttus 코드도 상세히 분리하고 있지않음, 고민필요.

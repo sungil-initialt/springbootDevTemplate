@@ -1,7 +1,6 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApplicationGlobalException_InMain;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfDevViewGlobalException_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
-@HasAnnotationOnMain_InBean(value = EnableResponseOfDevViewGlobalException_InMain.class, negate = true) //-->둘다 적용이 되도록 수정 필요
+@ConditionalOnProperty(name = "server.error.ignoreCustomErrorViewForDebug", havingValue = "false", matchIfMissing = false)
 @Controller
 
 public class CustomErrorController implements ErrorController {

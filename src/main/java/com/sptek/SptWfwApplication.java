@@ -31,7 +31,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableGlobalViewModelForStatic_InMain
 @EnableGlobalViewModelForUserAuthentication_InMain
 @EnableResponseOfApplicationGlobalException_InMain
-//@EnableResponseOfDevViewGlobalException_InMain
 
 public class SptWfwApplication {
 	public static void main(String[] args) {
