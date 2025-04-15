@@ -79,7 +79,7 @@ public class CustomErrorController implements ErrorController {
             throw new AccessDeniedException(errMessage);
 
         } else if (errorStatusCode == 404) {
-            // todo : 적절한 에러 클레스를 없어서 ResponseStatusException 로 우선 처림함(명확성 이 떨어짐)..
+            // todo : 적절한 Exception 이 없어서 ResponseStatusException 로 처림함(명확성은 좀 떨어짐)..
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errMessage);
 
         } else if (errorStatusCode == 405) {

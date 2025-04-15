@@ -37,4 +37,16 @@ public enum AuthorityIfEnum implements AuthorityIf {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from name. Unknown desc: " + description));
     }
+
+//    // todo: 사용하기 편리하게 관련 const 변수를 만들어 줄까?
+//    public static class SecuredPath {
+//        final static String postSecured_Any_Auth = "postSecured-Any-Auth";
+//        final static String putSecured_Any_Auth = "putSecured-Any-Auth";
+//        final static String deleteSecured_Any_Auth = "deleteSecured-Any-Auth";
+//        final static String secured_Any_Auth = "secured-Any-Auth";
+//        final static String secured_Special_Auth = "secured-Special-Auth";
+//        final static String secured_User_Role = "secured-User-Role";
+//        final static String secured_system_Role = "secured-system-Role";
+//        final static String secured_Admin_AdminSpecial_Role = "secured-Admin-AdminSpecial-Role";
+//    }
 }

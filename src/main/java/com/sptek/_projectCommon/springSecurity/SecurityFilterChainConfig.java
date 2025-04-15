@@ -4,11 +4,8 @@ import com.sptek._frameworkWebCore.springSecurity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,9 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Slf4j
 @RequiredArgsConstructor
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) //application  메소드에서도 접근제어 가능하게 함
+//@Configuration
+//@EnableWebSecurity
+//@EnableMethodSecurity(prePostEnabled = true) //application  메소드에서도 접근제어 가능하게 함
 public class SecurityFilterChainConfig {
 
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
@@ -30,8 +27,8 @@ public class SecurityFilterChainConfig {
     //private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
-    public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
+    public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
                 //H2 DB 웹 콘설 전용
                 .securityMatcher("/h2-console/**")
                 .csrf(csrf -> csrf.disable())
@@ -43,7 +40,7 @@ public class SecurityFilterChainConfig {
                         .anyRequest().permitAll()
                 );
 
-        return http.build();
+        return httpSecurity.build();
     }
 
     @Bean

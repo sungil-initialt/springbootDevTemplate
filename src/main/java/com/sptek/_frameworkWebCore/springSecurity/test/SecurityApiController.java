@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.springSecurity.test;
 import com.sptek._frameworkWebCore.annotation.EnableDetailLog_InMain_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.springSecurity.CustomJwtFilter;
 import com.sptek._frameworkWebCore.springSecurity.GeneralTokenProvider;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.LoginRequestDto;
@@ -13,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(value = {"/api/v1/"})
-@Tag(name = "security", description = "인증/인가 api 그룹")
+@Tag(name = "security---", description = "인증/인가 api 그룹")
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
@@ -36,7 +33,7 @@ public class SecurityApiController {
     private final GeneralTokenProvider generalTokenProvider;
     private final AuthenticationManager authenticationManager;
 
-    //API 방식의 인증 요청
+    //----API 방식의 인증 요청
     @PostMapping("/login")
     public Object signin(@RequestBody @Valid LoginRequestDto loginRequestDto, HttpServletResponse response) {
         // RequestBody 에서 id, pw 항목을 선정하여 UsernamePasswordAuthenticationToken 를 만들어 낸후
@@ -46,16 +43,18 @@ public class SecurityApiController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication); //다음 요청을 위한 것이 아니라 현재 요청 내 이코드 이후 코드 에서 사용될 여지가 있기에 저장함
-
         String jwt = generalTokenProvider.convertAuthenticationToJwt(authentication);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
-        return ResponseEntity.ok().headers(httpHeaders).body(new ApiCommonSuccessResponseDto<>(jwt));
 
-        //response.setHeader(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
-        //return jwt;
+        //아래 방식으로 변경
+        //HttpHeaders httpHeaders = new HttpHeaders();
+        //httpHeaders.add(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
+        //return ResponseEntity.ok().headers(httpHeaders).body(new ApiCommonSuccessResponseDto<>(jwt));
+
+        response.setHeader(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
+        return jwt;
     }
 
+    //-------
     @GetMapping("/public/hello")
     @Operation(summary = "security notAuthHello", description = "security notAuthHello 테스트") //swagger
     public Object notAuthHello() {

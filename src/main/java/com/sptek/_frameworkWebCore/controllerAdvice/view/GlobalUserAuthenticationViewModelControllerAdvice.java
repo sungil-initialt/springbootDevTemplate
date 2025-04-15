@@ -21,6 +21,6 @@ public class GlobalUserAuthenticationViewModelControllerAdvice {
     @ModelAttribute
     public void addModelAttributes(Model model) {
         // todo: 실 서비스에서는 view 에서 실제 필요한 항목으로 선별해서 내릴것.
-        model.addAttribute("userAuthentication", SecurityUtil.getUserAuthentication().getPrincipal());
+        model.addAttribute("userAuthentication", SecurityUtil.getUserAuthentication() == null ? "" : SecurityUtil.getUserAuthentication().getPrincipal());
     }
 }
