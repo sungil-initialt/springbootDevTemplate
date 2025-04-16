@@ -61,6 +61,7 @@ public class SecurityApiController {
         return "publicHello";
     }
 
+    //--
     @GetMapping("/auth/hello")
     @Operation(summary = "security authHello", description = "security authHello 테스트") //swagger
     public Object authHello() {

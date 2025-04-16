@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/xss/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "xss", description = "")
 
 public class XssApiController {
 
-    @GetMapping("/a/XssProtect")
+    @GetMapping("/public/xss/a_xssProtect")
     @Operation(summary = "parameter의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     public Object XssProtectGet(@Parameter(name = "originParameter", description = "스크립트 요소를 포함한 요청 파람") @RequestParam String originParameter) {
-        return "XssProtectedText = " + originParameter;
+        return originParameter;
     }
 
-    @PostMapping("/b/XssProtect")
+    @PostMapping("/public/xss/b_xssProtect")
     @Operation(summary = "body의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     //post Req에 대한 xss 처리 결과 확인
     public Object XssProtectPost(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {

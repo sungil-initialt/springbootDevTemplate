@@ -60,13 +60,13 @@ public class DatabaseApiController {
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c2((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
                 .c3((int) (System.currentTimeMillis() % Integer.MAX_VALUE)).build();
-        return databaseService.updateTbTest(tbTestDto) == 1 ? "success" : "fail";
+        return databaseService.updateTbTest(tbTestDto) > 0 ? "success" : "fail";
     }
 
     @GetMapping("/public/databasea/f_myBatisCommonDaoDelete")
     @Operation(summary = "myBatisCommonDao delete", description = "")
     public Object myBatisCommonDaoDelete() {
-        return databaseService.deleteTbTest() == 1 ? "success" : "fail";
+        return databaseService.deleteTbTest() > 0 ? "success" : "fail";
     }
 
     @GetMapping("/public/databasea/g_myBatisCommonDaoSelectOne")

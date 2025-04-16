@@ -22,7 +22,7 @@ public class ResponseErrorViewController {
     @NonFinal
     private final String pageBasePath = "pages/_example/unit/";
 
-    @GetMapping({"/public/responseError/responseError"})
+    @GetMapping({"/public/responseError"})
     public String responseError() {
         return pageBasePath + "responseError";
     }

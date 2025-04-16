@@ -72,7 +72,7 @@ public class DatabaseService {
             //result row 단위로 해야할 작업을 정의 한다. (ex: 특정 조건에 맞는 값이 몇건 수집 되면 종료 처리)
             public TbTestDto handleResultRow(TbTestDto resultRow) {
 
-                if (Integer.parseInt(String.valueOf(resultRow.getC1())) < 2133368224) {
+                if (Integer.parseInt(String.valueOf(resultRow.getC1())) > 2133368224) {
                     log.debug("maxCount = {}, {} was excepted", maxCount, resultRow.getC1());
                     return null; //해당 row 는 제외
                 } else {

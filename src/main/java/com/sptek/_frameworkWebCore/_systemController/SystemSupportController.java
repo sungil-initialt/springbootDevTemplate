@@ -22,46 +22,45 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Base64;
 
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@EnableResponseOfApiCommonSuccess_InRestController
+@EnableResponseOfApiGlobalException_InRestController
+@RequestMapping(value = {"/api/v1/systemSupportApi/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트 가 Accept 해더를 보낼 경우 제공 하는 미디어 타입이 일치 해야함(없으면 406)
+@Tag(name = "system Support Api", description = "")
 public class SystemSupportController {
 
-    @RestController
-    @RequiredArgsConstructor
-    @EnableResponseOfApiCommonSuccess_InRestController
-    @EnableResponseOfApiGlobalException_InRestController
-    @RequestMapping(value = {"/api/v1/systemSupportApi/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트 가 Accept 해더를 보낼 경우 제공 하는 미디어 타입이 일치 해야함(없으면 406)
-    @Tag(name = "system Support Api", description = "")
-    public class SystemSupportApiController {
-        private final ProjectInfoVo projectInfoVo;
+    private final ProjectInfoVo projectInfoVo;
 
-        @GetMapping("/projectInfo")
-        @Operation(summary = "프로퍼티 설정된 프로젝트 기본 정보 제공", description = "")
-        public Object projectInfo() {
-            return projectInfoVo;
-        }
-
-        @GetMapping("/serverName")
-        @Operation(summary = "시스템 환경 설정에 따른 서버 네임 제공", description = "")
-        public Object propertyConfigImport(@Parameter(hidden = true) @Value("${server.name}") String serverName) {
-            return serverName;
-        }
-
-        @GetMapping("/healthCheck")
-        @Operation(summary = "healthCheck api", description = "") //swagger
-        public Object healthCheck() {
-            return "ok";
-        }
-
-        @GetMapping("/rsaPublicKeyBase64")
-        @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공 api", description = "") //swagger
-        public Object rsaPublicKeyBase64() {
-            String plainText = "originPlainText";
-            String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText);
-            String decryptedText = GlobalEncryptor.decrypt(encryptedText);
-
-            log.debug("plainText: {}, decryptedText: {}, decryptedText: {}", plainText, encryptedText, decryptedText);
-            return Base64.getEncoder().encodeToString(RsaEncryptor.getPublicKey().getEncoded());
-        }
+    @GetMapping("/public/projectInfo")
+    @Operation(summary = "프로퍼티 설정된 프로젝트 기본 정보 제공", description = "")
+    public Object projectInfo() {
+        return projectInfoVo;
     }
+
+    @GetMapping("/public/serverName")
+    @Operation(summary = "시스템 환경 설정에 따른 서버 네임 제공", description = "")
+    public Object propertyConfigImport(@Parameter(hidden = true) @Value("${server.name}") String serverName) {
+        return serverName;
+    }
+
+    @GetMapping("/public/healthCheck")
+    @Operation(summary = "healthCheck api", description = "") //swagger
+    public Object healthCheck() {
+        return "ok";
+    }
+
+    @GetMapping("/public/rsaPublicKeyBase64")
+    @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공 api", description = "") //swagger
+    public Object rsaPublicKeyBase64() {
+        String plainText = "originPlainText";
+        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText);
+        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
+
+        log.debug("plainText: {}, decryptedText: {}, decryptedText: {}", plainText, encryptedText, decryptedText);
+        return Base64.getEncoder().encodeToString(RsaEncryptor.getPublicKey().getEncoded());
+    }
+
 
     @Controller
     @RequiredArgsConstructor
@@ -71,7 +70,7 @@ public class SystemSupportController {
         @NonFinal
         private final String pageBasePath = "pages/_example/unit/";
 
-        @GetMapping({"/", "/public/index"})
+        @GetMapping({"/"})
         public String index() {
             return pageBasePath + "index";
         }

@@ -10,6 +10,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Component
@@ -35,15 +36,20 @@ public class ExampleArgumentResolverForExUserDto implements HandlerMethodArgumen
     public Object resolveArgument(@NotNull MethodParameter methodParameter
             , ModelAndViewContainer modelAndViewContainer
             , NativeWebRequest nativeWebRequest
-            , WebDataBinderFactory webDataBinderFactory) {
+            , WebDataBinderFactory webDataBinderFactory) throws IOException {
 
         ExUserDto exUserDto;
         String id = Optional.ofNullable(nativeWebRequest.getParameter("id")).map(String::toString).orElse("anonymous");
 
+//        if(id.equals("anonymous")) {
+//            String body = nativeWebRequest.getNativeRequest(HttpServletRequest.class).getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+//            id = new ObjectMapper().readValue(body, ExUserDto.class).getId();
+//        }
+
         if(id.equals("sungilry")) {
             exUserDto = ExUserDto.builder()
                     .id(id)
-                    .name("당신의 이름을 멋쟁이 " + id + " 님으로 변경 했어요!")
+                    .name("SPT " + id + " 님으로 변경 했어요!")
                     .type(ExUserDto.UserType.admin)
                     .build();
         } else {

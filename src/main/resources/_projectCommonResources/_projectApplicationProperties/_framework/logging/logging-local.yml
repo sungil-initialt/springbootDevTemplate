@@ -2,8 +2,11 @@
 # fixed properties
 log4jdbc:
   spylogdelegator:
+    #slf4j를 사용 하는 경우 (디폴트)
     name: net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
-    #name: net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator #(log4j2를 사용하는 경우)
+
+    #log4j2를 사용 하는 경우
+    #name: net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator
 
 ################################################################
 

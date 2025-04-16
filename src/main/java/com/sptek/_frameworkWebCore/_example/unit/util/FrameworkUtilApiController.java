@@ -22,11 +22,11 @@ import java.util.Map;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/util/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "util", description = "")
 
 public class FrameworkUtilApiController {
-    @GetMapping("/a/testRequestUtil")
+    @GetMapping("/public/util/a_testRequestUtil")
     @Operation(summary = "request 요청과 관련해 URL, reqIP, Header, parameter를 제공", description = "")
     public Object reqResUtil(HttpServletRequest request) {
         String reqFullUrl = RequestUtil.getRequestUrlQuery(request);

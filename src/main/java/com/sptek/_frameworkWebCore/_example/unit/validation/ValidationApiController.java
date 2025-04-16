@@ -16,24 +16,24 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/validation/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "validation", description = "")
 
 public class ValidationApiController {
 
-    @GetMapping("/a/validationAnnotation")
+    @GetMapping("/public/validation/a_validationAnnotation")
     @Operation(summary = "parameter 의 validation 확인과 에러 처리", description = "")
     public Object validationAnnotationGet(@Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
-    @PostMapping("/b/validationAnnotation")
+    @PostMapping("/public/validation/b_validationAnnotation")
     @Operation(summary = "body 의 validation 확인과 에러 처리", description = "")
     public Object validationAnnotation(@RequestBody @Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
-    @PostMapping("/c/validationAnnotationIgnore")
+    @PostMapping("/public/validation/c_validationAnnotationIgnore")
     @Operation(summary = "body 의 validation 미적용 처리", description = "")
     public Object validationAnnotationIgnore(@RequestBody ValidatedDto validationTestDto) {
         return validationTestDto;

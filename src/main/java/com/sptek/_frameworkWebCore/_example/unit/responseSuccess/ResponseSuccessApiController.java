@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/responseSuccess/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "response Success", description = "")
 
 public class ResponseSuccessApiController {
-    @GetMapping("/a/responseSuccessForPrimitiveType")
+    @GetMapping("/public/responseSuccess/a_responseSuccessForPrimitiveType")
     @Operation(summary = "Primitive Type 의 성공 응답", description = "")
     public Object responseSuccessForPrimitiveType(@RequestParam(name="message", required = false) String message) {
         return message;
     }
 
-    @PostMapping("/b/responseSuccessForObject")
+    @PostMapping("/public/responseSuccess/b_responseSuccessForObject")
     @Operation(summary = "Object(DTO) Type 의 성공 응답", description = "")
     public Object responseSuccessForObject(ValidatedDto validatedDto) {
         return validatedDto;

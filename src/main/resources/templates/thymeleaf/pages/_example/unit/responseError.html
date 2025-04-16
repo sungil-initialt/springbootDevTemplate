@@ -80,7 +80,7 @@
         document.getElementById('notSupportMethod').addEventListener('click', function () {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/index'; // 여기에 원하는 URL 지정
+            form.action = '/'; // 여기에 원하는 URL 지정
             document.body.appendChild(form);
             form.submit();
         });
@@ -90,7 +90,7 @@
     <button class="btn-normal" id="runtimeException">500 Runtime Exception</button>
     <script>
         document.getElementById('runtimeException').addEventListener('click', function () {
-            const url = '/runtimeException'; // 원하는 링크로 수정 가능
+            const url = '/view/example/public/responseError/runtimeException'; // 원하는 링크로 수정 가능
             window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
         });
     </script><br><br>
@@ -99,7 +99,7 @@
     <button class="btn-normal" id="serviceException">400 Service Exception</button>
     <script>
         document.getElementById('serviceException').addEventListener('click', function () {
-            const url = '/serviceException'; // 원하는 링크로 수정 가능
+            const url = '/view/example/public/responseError/serviceException'; // 원하는 링크로 수정 가능
             window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
         });
     </script><br><br>
@@ -108,13 +108,13 @@
     <button class="btn-normal" id="authException">401/403 Authentication Exception</button>
     <script>
         document.getElementById('authException').addEventListener('click', function () {
-            const url = '/authException'; // 원하는 링크로 수정 가능
+            const url = '/view/example/public/responseError/authException'; // 원하는 링크로 수정 가능
             window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
         });
     </script><br><br>
 
     <div class="inner-div">
-        💡 프로파일에 따라 ignoreCustomErrorViewForDebug: true 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
+        💡 프로파일에 따라 프로퍼티 " ignoreCustomErrorViewForDebug: true " 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
     </div>
 
 

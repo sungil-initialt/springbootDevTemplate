@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/swagger/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "swagger", description = "")
 
 public class SwaggerApiController {
 
-    @GetMapping("/a/echoMessage")
+    @GetMapping("/public/swagger/a_echoMessage")
     @Operation(summary = "parameter echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(type = "string", description = "응답 메시지", example = "message1:message2")))
     public Object echoMessage(
@@ -37,7 +37,7 @@ public class SwaggerApiController {
         return message1 + ":" + message2;
     }
 
-    @GetMapping("/b/echoDto")
+    @GetMapping("/public/swagger/b_echoDto")
     @Operation(summary = "객체의 echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(implementation = ValidatedDto.class)))
     public Object echoDto(ValidatedDto validatedDto) {

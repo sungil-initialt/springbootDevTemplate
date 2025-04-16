@@ -4,10 +4,13 @@ spring:
   datasource:
     #write, read로 리플리케이션 구조 설정
     write:
-      driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
+      #디폴트
+      driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      #동작 쿼리를 보고 싶을때
       #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+
       username: sptek
       password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
       pool-name: Hikari write Connection Pool
@@ -16,10 +19,13 @@ spring:
       idleTimeout: 600000
       maxLifetime: 1800000
     read:
-      driver-class-name: com.mysql.cj.jdbc.Driver #(디폴트)
-      jdbc-url: jdbc:mysql://localhost:3307/spt_web_fw?serverTimezone=UTC
+      #디폴트
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      #동작 쿼리를 보고 싶을때
       #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3307/spt_web_fw?serverTimezone=UTC
+      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+
       username: sptek
       password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
       pool-name: Hikari read Connection Pool
