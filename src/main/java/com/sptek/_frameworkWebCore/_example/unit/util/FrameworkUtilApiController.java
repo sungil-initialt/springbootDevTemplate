@@ -26,7 +26,7 @@ import java.util.Map;
 @Tag(name = "util", description = "")
 
 public class FrameworkUtilApiController {
-    @GetMapping("/public/util/a_testRequestUtil")
+    @GetMapping("/util/a_testRequestUtil")
     @Operation(summary = "request 요청과 관련해 URL, reqIP, Header, parameter를 제공", description = "")
     public Object reqResUtil(HttpServletRequest request) {
         String reqFullUrl = RequestUtil.getRequestUrlQuery(request);

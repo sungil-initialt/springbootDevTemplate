@@ -29,13 +29,13 @@ import java.util.Map;
 
 public class EncryptionApiController {
 
-    @GetMapping("/public/encryption/a_jasyptForProperty")
+    @GetMapping("/encryption/a_jasyptForProperty")
     @Operation(summary = "jasypt로 암호호 된 서버 프로퍼티 값이 자동으로 복호화 되어 바인딩 되는지 확인 ", description = "")
     public Object JasyptForProperty(@Parameter(hidden = true) @Value("${jasypt.decryptTest.encValue}") String encValue) {
         return encValue;
     }
 
-    @PostMapping("/public/encryption/b_allTypeEncryptForString")
+    @PostMapping("encryption/b_allTypeEncryptForString")
     @Operation(summary = "plain text 파람에 대해 DES, AES, RSA, Jasypt 로 각각 암/복호화 처리", description = "")
     public Object allTypeEncryptForString(@RequestBody String plainText) {
         //4가지 방식으로 암호화 처리
@@ -60,13 +60,13 @@ public class EncryptionApiController {
         return resultMap;
     }
 
-    @PostMapping("/public/encryption/c_allTypeDecryptForString")
+    @PostMapping("/encryption/c_allTypeDecryptForString")
     @Operation(summary = "암호화된 (DES, AES, RSA, Jasypt) 파람 값의 복호화", description = "")
     public Object allTypeDecryptForString(@RequestBody String encryptText) {
         return GlobalEncryptor.decrypt(encryptText);
     }
 
-    @PostMapping("/public/encryption/d_allTypeDecryptForDto")
+    @PostMapping("/encryption/d_allTypeDecryptForDto")
     @Operation(summary = "암호화된(DES, AES, RSA, Jasypt) 필드를 포함 하는 객체의 복호화", description = "")
     public Object allTypeDecryptForDto(@RequestBody ParentDto parentDto) throws Exception {
         return GlobalEncryptor.decrypt(parentDto);

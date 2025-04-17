@@ -4,7 +4,7 @@ import com.sptek._frameworkWebCore.annotation.EnableThymeleafSpringSecurityDiale
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 
 @Configuration //Thymeleaf 관련 Bean 의 설정

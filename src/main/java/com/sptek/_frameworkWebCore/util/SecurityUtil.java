@@ -38,7 +38,7 @@ public class SecurityUtil {
                 , "/error/**"
                 , "/err/**"
                 , "/static/**"
-                , "/system-Support-api/**"
+                , "/systemSupportApi/**"
                 , "/github-markdown-css/**"
                 , "/h2-console/**"
                 , "/static/favicon.ico"
@@ -65,10 +65,10 @@ public class SecurityUtil {
     public static List<String> getStaticResourceRequestPatterns(){
         //return Arrays.asList("foo", "bar");
         return Arrays.asList(
-                "/**/*.html**", "/**/*.htm**", "/**/*.css**", "/**/*.js**", "/**/*.png**", "/**/*.jpg**", "/**/*.jpeg**", "/**/*.gif**"
-                , "/**/*.svg**", "/**/*.webp**", "/**/*.ico**", "/**/*.mp4**", "/**/*.webm**", "/**/*.ogg**", "/**/*.mp3**", "/**/*.wav**"
-                , "/**/*.woff**", "/**/*.woff2**", "/**/*.ttf**", "/**/*.otf**", "/**/*.eot**", "/**/*.pdf**", "/**/*.xml**", "/**/*.json**"
-                , "/**/*.csv**", "/**/*.txt**"
+                "/**/*.html", "/**/*.htm", "/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg", "/**/*.gif"
+                , "/**/*.svg", "/**/*.webp", "/**/*.ico", "/**/*.mp4", "/**/*.webm", "/**/*.ogg", "/**/*.mp3", "/**/*.wav"
+                , "/**/*.woff", "/**/*.woff2", "/**/*.ttf", "/**/*.otf", "/**/*.eot", "/**/*.pdf", "/**/*.xml", "/**/*.json"
+                , "/**/*.csv", "/**/*.txt"
         );
     }
 

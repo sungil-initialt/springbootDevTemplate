@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 public class XssApiController {
 
-    @GetMapping("/public/xss/a_xssProtect")
+    @GetMapping("/xss/a_xssProtect")
     @Operation(summary = "parameter의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     public Object XssProtectGet(@Parameter(name = "originParameter", description = "스크립트 요소를 포함한 요청 파람") @RequestParam String originParameter) {
         return originParameter;
     }
 
-    @PostMapping("/public/xss/b_xssProtect")
+    @PostMapping("/xss/b_xssProtect")
     @Operation(summary = "body의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     //post Req에 대한 xss 처리 결과 확인
     public Object XssProtectPost(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {

@@ -29,7 +29,6 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
         resourceHandlerRegistry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
     }
 
-
     @HasAnnotationOnMain_InBean(EnableHttpCachePublicForStaticResource_InMain.class)
     @Configuration
     public class EnableHttpCachePublicForStaticResource implements WebMvcConfigurer {
@@ -58,7 +57,6 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
         }
 
     }
-
 
     @HasAnnotationOnMain_InBean(value = EnableHttpCachePublicForStaticResource_InMain.class, negate = true)
     @Configuration

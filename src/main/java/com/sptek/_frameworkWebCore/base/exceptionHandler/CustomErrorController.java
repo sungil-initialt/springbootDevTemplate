@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.auth.AuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
@@ -73,7 +73,12 @@ public class CustomErrorController implements ErrorController {
 
         // 상위 레벨 에서 발생할 수 있는 에러의 종류를 이정도 로 정의함(더 구체화 가능)
         if (errorStatusCode == 401) {
-            throw new AuthenticationException(errMessage);
+            throw new AuthenticationException(errMessage) {
+                @Override
+                public String getMessage() {
+                    return super.getMessage();
+                }
+            };
 
         } else if (errorStatusCode == 403) {
             throw new AccessDeniedException(errMessage);

@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.*;
 
 public class UsefulComponentApiController {
 
-    @PostMapping(value = "/public/usefulComponent/a_withoutArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value = "/usefulComponent/a_withoutArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @Operation(summary = "ArgumentResolver 비적용", description = "")
     public Object withoutArgumentResolver(@ModelAttribute ExUserDto exUserDto) {
         //단순히 바인딩 처리됨
         return exUserDto;
     }
 
-    @PostMapping(value = "/public/usefulComponent/b_withArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value = "/usefulComponent/b_withArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @Operation(summary = "ArgumentResolver 적용", description = "")
     public Object withArgumentResolver(@EnableArgumentResolver_InParam ExUserDto exUserDto) {
         //정의에 따라 바인딩 처리됨 ArgumentResolver(ExampleArgumentResolverForExUserDto)

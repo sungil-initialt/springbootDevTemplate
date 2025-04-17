@@ -22,13 +22,13 @@ public class ResponseErrorViewController {
     @NonFinal
     private final String pageBasePath = "pages/_example/unit/";
 
-    @GetMapping({"/public/responseError"})
+    @GetMapping({"/responseError"})
     public String responseError() {
         return pageBasePath + "responseError";
     }
 
     //500
-    @GetMapping({"/public/responseError/runtimeException"})
+    @GetMapping({"/responseError/runtimeException"})
     public String runtimeException() {
         if (true) {
             throw new NullPointerException("테스트 를 위해 임의로 발생 시킨 RuntimeException");
@@ -37,7 +37,7 @@ public class ResponseErrorViewController {
     }
 
     //400
-    @GetMapping({"/public/responseError/serviceException"})
+    @GetMapping({"/responseError/serviceException"})
     public String serviceException() {
         if (true) {
             throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "테스를 위해 임의로 발생 시킨 ServiceException");
@@ -47,7 +47,7 @@ public class ResponseErrorViewController {
 
     //403
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping({"/public/responseError/authException"})
+    @GetMapping({"/responseError/authException"})
     public String authException() {
         return pageBasePath + "index";
     }

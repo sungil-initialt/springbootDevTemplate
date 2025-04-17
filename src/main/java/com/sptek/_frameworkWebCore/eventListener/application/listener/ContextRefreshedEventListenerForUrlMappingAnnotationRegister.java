@@ -17,8 +17,8 @@ public class ContextRefreshedEventListenerForUrlMappingAnnotationRegister {
         new RequestMappingAnnotationRegister(contextRefreshedEvent.getApplicationContext());
         log.info(SptFwUtil.convertSystemNotice("UrlMapping Annotation Register", "created"));
 
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/public/anyone/butNeedControllAuth", EnableResponseOfApiCommonSuccess_InRestController.class));
-        log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/public/anyone/butNeedControllAuth", EnableResponseOfApplicationGlobalException_InMain.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/anyone/butNeedControllAuth", EnableResponseOfApiCommonSuccess_InRestController.class));
+        log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/anyone/butNeedControllAuth", EnableResponseOfApplicationGlobalException_InMain.class));
         log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", EnableResponseOfApiCommonSuccess_InRestController.class));
         log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", EnableResponseOfViewGlobalException_InViewController.class));
         log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/httpCache", EnableDeduplicationRequest_InRestController_RestControllerMethod.class));

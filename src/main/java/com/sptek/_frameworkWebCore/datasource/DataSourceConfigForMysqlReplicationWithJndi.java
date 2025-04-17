@@ -34,19 +34,15 @@ public class DataSourceConfigForMysqlReplicationWithJndi {
 
 
     @Bean(name = "writeDataSource", destroyMethod = "")
-    public org.apache.tomcat.jdbc.pool.DataSource writeDataSource() {
+    public DataSource writeDataSource() {
         JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) dataSourceLookup
-                .getDataSource(this.jndiWriteDatasourceLookupName);
-        return dataSource;
+        return dataSourceLookup.getDataSource(this.jndiWriteDatasourceLookupName);
     }
 
     @Bean(name = "readDataSource", destroyMethod = "")
-    public org.apache.tomcat.jdbc.pool.DataSource readDataSource() {
+    public DataSource readDataSource() {
         JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) dataSourceLookup
-                .getDataSource(this.jndiReadDatasourceLookupName);
-        return dataSource;
+        return dataSourceLookup.getDataSource(this.jndiReadDatasourceLookupName);
     }
 
     @Bean(name = "routingDataSource")

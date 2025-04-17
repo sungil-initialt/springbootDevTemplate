@@ -25,34 +25,34 @@ import org.springframework.web.bind.annotation.*;
 public class ResponseErrorApiController {
     private final ResponseErrorService responseErrorService;
 
-    @PostMapping("/public/responseError/a_dtoValidation")
+    @PostMapping("/responseError/a_dtoValidation")
     @Operation(summary = "객체의 validation 에러", description = "")
     public Object dtoValidation(@RequestBody ValidatedDto validatedDto) {
         int userIdSize = validatedDto.getUserId().length(); //NPE 발생 시키기 위해 임의 작성
         return validatedDto;
     }
 
-    @GetMapping("/public/responseError/b_runtimeError")
+    @GetMapping("/responseError/b_runtimeError")
     @Operation(summary = "Runtime 에러 ", description = "")
     public Object runtimeError(@Parameter(hidden = true) @RequestHeader("X-Auth") String authHeader) {
         return authHeader;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/public/responseError/c_authError")
+    @GetMapping("/responseError/c_authError")
     @Operation(summary = "권한 에러", description = "")
     public Object authError() {
         return "authError";
     }
 
-    @GetMapping("/public/responseError/d_serviceErrorWithDefaultMessage")
+    @GetMapping("/responseError/d_serviceErrorWithDefaultMessage")
     @Operation(summary = "서비스 에러 처리 (기본 메시지)", description = "")
     public Object serviceErrorWithDefaultMessage() {
         if(true) throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR);
         return "serviceErrorWithDefaultMessage";
     }
 
-    @GetMapping("/public/responseError/e_serviceErrorWithUserMessage")
+    @GetMapping("/responseError/e_serviceErrorWithUserMessage")
     @Operation(summary = "서비스 에러 처리 (유저 메세지)", description = "")
     public Object serviceErrorWithUserMessage() {
         if (true) {
@@ -61,13 +61,13 @@ public class ResponseErrorApiController {
         return "serviceErrorWithUserMessage";
     }
 
-    @GetMapping("/public/responseError/f_badServiceErrorUsage")
+    @GetMapping("/responseError/f_badServiceErrorUsage")
     @Operation(summary = "서비스 에러 처리의 Bad 예시 (ID 중복 검사 가정)", description = "")
     public Object badServiceErrorUsage(@RequestParam String userId) {
         return responseErrorService.isAvailableId_badExample(userId);
     }
 
-    @GetMapping("/public/responseError/g_goodServiceErrorUsage")
+    @GetMapping("/responseError/g_goodServiceErrorUsage")
     @Operation(summary = "서비스 에러 처리의 Good 예시 (ID 중복 검사 가정)", description = "")
     public Object goodServiceErrorUsage(@RequestParam String userId) {
         return responseErrorService.isAvailableId_goodExample(userId);

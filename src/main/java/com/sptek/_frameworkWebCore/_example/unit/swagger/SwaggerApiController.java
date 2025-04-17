@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class SwaggerApiController {
 
-    @GetMapping("/public/swagger/a_echoMessage")
+    @GetMapping("/swagger/a_echoMessage")
     @Operation(summary = "parameter echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(type = "string", description = "응답 메시지", example = "message1:message2")))
     public Object echoMessage(
@@ -37,7 +37,7 @@ public class SwaggerApiController {
         return message1 + ":" + message2;
     }
 
-    @GetMapping("/public/swagger/b_echoDto")
+    @GetMapping("/swagger/b_echoDto")
     @Operation(summary = "객체의 echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(implementation = ValidatedDto.class)))
     public Object echoDto(ValidatedDto validatedDto) {

@@ -21,19 +21,19 @@ import org.springframework.web.bind.annotation.*;
 
 public class ValidationApiController {
 
-    @GetMapping("/public/validation/a_validationAnnotation")
+    @GetMapping("/validation/a_validationAnnotation")
     @Operation(summary = "parameter 의 validation 확인과 에러 처리", description = "")
     public Object validationAnnotationGet(@Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
-    @PostMapping("/public/validation/b_validationAnnotation")
+    @PostMapping("/validation/b_validationAnnotation")
     @Operation(summary = "body 의 validation 확인과 에러 처리", description = "")
     public Object validationAnnotation(@RequestBody @Validated ValidatedDto validationTestDto) {
         return validationTestDto;
     }
 
-    @PostMapping("/public/validation/c_validationAnnotationIgnore")
+    @PostMapping("/validation/c_validationAnnotationIgnore")
     @Operation(summary = "body 의 validation 미적용 처리", description = "")
     public Object validationAnnotationIgnore(@RequestBody ValidatedDto validationTestDto) {
         return validationTestDto;

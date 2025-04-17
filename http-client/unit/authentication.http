@@ -1,0 +1,48 @@
+### 1. 권한 제한이 없는 path
+GET {{api-server-ver}}/authentication/authFree
+Content-Type: text/html
+
+### 2. Any Auth 가 필요함
+GET {{api-server-ver}}/secured-Any-Auth/authentication/needAuth
+Content-Type: text/html
+
+### 3. Special Auth 가 필요함
+GET {{api-server-ver}}/secured-Special-Auth/authentication/needAuth
+Content-Type: text/html
+
+### 4. User Role 이 필요함
+GET {{api-server-ver}}/secured-User-Role/authentication/needAuth
+Content-Type: application/json
+
+#### 5. System Role 이 필요함
+GET {{api-server-ver}}/secured-System-Role/authentication/needAuth
+Content-Type: application/json
+
+#### 6. Admin or AdminSpecial Role 이 필요함
+GET {{api-server-ver}}/secured-Admin-AdminSpecial-Role/authentication/needAuth
+Content-Type: application/json
+
+#### 7. POST 요청은 Any Auth 가 필요함
+GET {{api-server-ver}}/postSecured-Any-Auth/authentication/needAuthWhenPost
+#POST {{api-server-ver}}/postSecured-Any-Auth/authentication/needAuthWhenPost
+Content-Type: application/json
+
+#### 8. public 영역 이지만 내부 적으로 Auth 체크 메소드 를 사용 하는 경우
+GET {{api-server-ver}}/authentication/authFreeWithAuthCheckMethod
+Content-Type: application/json
+
+#### 9. public 영역 이지만 내부 적으로 Role 체크 메소드 를 사용 하는 경우
+GET {{api-server-ver}}/authentication/authFreeWithRoleCheckMethod
+Content-Type: application/json
+
+#### 10. 로그인 API (인증 토큰)
+POST {{api-server-ver}}/authentication/login
+Content-Type: application/json
+
+{
+  "username": "sungilry1@naver.com",
+  "password": "1q2w3e4r5t!Q"
+}
+> {%
+    client.global.set("jwt", response.body.result);
+%}
