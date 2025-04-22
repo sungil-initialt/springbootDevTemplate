@@ -6,14 +6,19 @@ import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalExceptio
 import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
 import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
+import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHandlerForView;
+import com.sptek._frameworkWebCore.springSecurity.spt.RedirectHelperAfterLogin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,11 +75,26 @@ public class SystemSupportController {
 
         @GetMapping({"/"})
         public String index() {
-            return "pages/_example/unit/index";
-            // todo: 실 서비스 운영시 실제 url로 포워딩?
+            // todo: 무엇 으로 처리 할까?
+            //return "pages/_example/unit/index"; // 직접 페이지 이동
+            return "redirect:/view/index"; //리다이렉트 방식
+            //return "forward:/view/index"; //포워딩 방식
         }
 
-        @RequestMapping("/error/{errViewName}")
+        @GetMapping({"/view/index"})
+        public String indexForward() {
+            return "pages/_example/unit/index";
+        }
+
+        //@GetMapping({"/login", "/signup"}) // todo: 왜 signup을 추가했지?
+        // 공통 기능 으로 보아 이곳에 작성
+        @GetMapping({"/view/login"})
+        public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
+            model.addAttribute(CustomAuthenticationSuccessHandlerForView.LOGIN_SUCCESS_TARGETURL_PARAMETER, RedirectHelperAfterLogin.getRedirectUrlAfterLogging(request, response));
+            return  "pages/_systemSupport/login";
+        }
+
+        @RequestMapping("/view/error/{errViewName}")
         public String error(@PathVariable("errViewName") String errViewName) {
             //해당 RequestMapping 은 에러 페이지 들의 UI 개발 및 체크등 위한 용도 이며 실제 상황 에서 ex 발생시 정상 적인 메커니즘을 통해 에러 페이지 로 연결 된다.
 

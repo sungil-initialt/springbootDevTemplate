@@ -72,14 +72,14 @@
         </p>
         <!--윗쪽 p테그에 한번에 묶지 못한 이유는 p테그안에 form 이 규칙상 못들어가기 때문, spring-security의 로그아웃 처리의 경우 CSRF 가능성있어서 post로 처리되는게 보통, get으로 해야 겠다면 csrf 토큰사용 disable 처리 필요//-->
         <form th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}"
-              action="/logout" method="POST" th:action="@{/logout}">
+              action="/view/logout" method="POST" th:action="@{/view/logout}">
             <button type="submit">Logout</button>
         </form>
 
         <!-- 비로그인 상태 -->
         <p th:if="${#authentication?.getPrincipal() == null or #authentication?.getPrincipal() == 'anonymousUser'}">
-            <a th:href="@{/login?button}">Login</a>&nbsp;&nbsp;
-            <a th:href="@{/signup}">Signup</a>
+            <a th:href="@{/view/login?button}">Login</a>&nbsp;&nbsp;
+            <a th:href="@{/view/example/authentication/signup}">Signup</a>
         </p>
 
     </div>

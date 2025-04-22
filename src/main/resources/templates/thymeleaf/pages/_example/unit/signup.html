@@ -10,6 +10,7 @@
   <title>테스트 페이지</title>
 
   <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
   <style th:inline="css" type="text/css">
   </style>
 
@@ -19,50 +20,47 @@
 </head>
 
 <body>
-<div>
-  <div class="my-3 border-bottom">
+<div class="base-div">
+  <div class="inner-div">
     <b>signup with spring security</b>
   </div>
 
-  <form th:action="@{/signup}" th:object="${signupRequestDto}" method="post">
-    <div th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
+  <form th:action="@{/view/example/authentication/signup}" th:object="${signupRequestDto}" method="post">
+    <div class="inner-div" th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
 
-    <label for="name">name</label>
-    <input type="text" th:field="*{name}">
 
-    <label for="email">email</label>
-    <input type="text" th:field="*{email}">
+    <label class="label-normal" for="name">name</label>
+    <input class="input-normal" type="text" th:field="*{name}">
 
-    <label for="password">password</label>
-    <input type="text" th:field="*{password}">
+    <label class="label-normal" for="email">email</label>
+    <input class="input-normal" type="text" th:field="*{email}">
 
-    <br><br>
+    <label class="label-normal" for="password">password</label>
+    <input class="input-normal" type="text" th:field="*{password}">
 
     <div th:each="userAddress : ${signupRequestDto.userAddresses}">
-      <label>Address Type:</label>
-      <input type="text" th:field="${signupRequestDto.userAddresses[__${userAddressStat.index}__].addressType}" />
+      <label class="label-normal">Address Type:</label>
+      <input class="input-normal" type="text" th:field="${signupRequestDto.userAddresses[__${userAddressStat.index}__].addressType}" />
 
-      <label>Address:</label>
-      <input type="text" th:field="${signupRequestDto.userAddresses[__${userAddressStat.index}__].address}" />
+      <label class="label-normal">Address:</label>
+      <input class="input-normal" type="text" th:field="${signupRequestDto.userAddresses[__${userAddressStat.index}__].address}" />
       <br/>
-    </div>
+    </div><br>
 
-    <br><br>
-    <label>User Roles:</label>
+    <label class="label-normal">Roles:</label>
     <div th:each="role : ${signupRequestDto.allRoles}">
       <input type="checkbox" th:name="${'roles[' + roleStat.index + '].roleName'}" th:value="${role.roleName}" th:checked="${#lists.contains(signupRequestDto.userRoleNames, role.roleName)}"/>
       <label th:text="${role.roleName}"></label>
-    </div>
+    </div><br>
 
-    <br><br>
-    <label>Terms Agreement:</label>
+    <label class="label-normal">Terms:</label>
     <div th:each="terms : ${signupRequestDto.allTerms}">
       <input type="checkbox" th:name="${'terms[' + termsStat.index + '].termsName'}" th:value="${terms.termsName}" th:checked="${#lists.contains(signupRequestDto.userTermsNames, terms.termsName)}"/>
       <label th:text="${terms.termsName}"></label>
     </div>
 
     <br>
-    <button type="submit">submit</button>
+    <button class="btn-normal" type="submit">submit</button>
   </form>
 </div>
 

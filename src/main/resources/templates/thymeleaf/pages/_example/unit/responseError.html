@@ -9,47 +9,8 @@
 <head>
     <title>Fetch 테스트 페이지</title>
     <!-- inline CSS 영역-->
+    <link rel="stylesheet" th:href="@{/css/_example.default.css}">
     <style th:inline="css" type="text/css">
-        .base-div {
-            background-color: #f0f8ff;
-            padding: 10px;
-            border-radius: 10px;
-            line-height: 1.6;
-            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            font-weight: 350;
-        }
-        .inner-div {
-            background-color: #F9F0FFFF;
-            padding: 5px;
-            border-radius: 5px;
-            margin: 16px 0;
-            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            font-weight: 400;
-        }
-        .btn-normal {
-            background-color: #e9ecef;
-            color: #212529;
-            border: 1px solid #ced4da;
-            padding: 2px 8px;
-            font-size: 0.8rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-normal:hover {
-            background-color: #e3e7ea; /* 아주 미묘하게 밝기 조정 */
-        }
-
-        .btn-normal:active {
-            background-color: #dfe3e6;
-        }
-
-        .btn-normal:disabled {
-            background-color: #f1f3f5;
-            color: #adb5bd;
-            cursor: not-allowed;
-        }
     </style>
 
     <!-- inline JS 영역-->
@@ -60,12 +21,12 @@
 </head>
 <body>
 <div class="inner-div">
-    🔔 시스템 에서 기본 제공 하는 에러 페이지 가이드 입니다<br>
+    시스템 에서 기본 제공 하는 에러 페이지 가이드 입니다<br>
     400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.
 </div>
 
 <div class="base-div">
-    <label>🟢 존재하지 않는 URL (GET /xxx) :</label>
+    <label class="label-normal"> >> 존재하지 않는 URL (GET /xxx) :</label>
     <button class="btn-normal" id="notExist">404 Not Exist URL</button>
     <script>
         document.getElementById('notExist').addEventListener('click', function () {
@@ -74,7 +35,7 @@
         });
     </script><br><br>
 
-    <label>🟢 존재하지 않는 Request Method (POST /index) :</label>
+    <label class="label-normal"> >> 존재하지 않는 Request Method (POST /index) :</label>
     <button class="btn-normal" id="notSupportMethod">405 Not Support Method</button>
     <script>
         document.getElementById('notSupportMethod').addEventListener('click', function () {
@@ -86,7 +47,7 @@
         });
     </script><br><br>
 
-    <label>🟢 Runtime Exception (GET /runtimeException) :</label>
+    <label class="label-normal"> >> Runtime Exception (GET /runtimeException) :</label>
     <button class="btn-normal" id="runtimeException">500 Runtime Exception</button>
     <script>
         document.getElementById('runtimeException').addEventListener('click', function () {
@@ -95,7 +56,7 @@
         });
     </script><br><br>
 
-    <label>🟢 Service Exception (GET /serviceException) :</label>
+    <label class="label-normal"> >> Service Exception (GET /serviceException) :</label>
     <button class="btn-normal" id="serviceException">400 Service Exception</button>
     <script>
         document.getElementById('serviceException').addEventListener('click', function () {
@@ -104,7 +65,7 @@
         });
     </script><br><br>
 
-    <label>🟢 Authentication Exception (GET /authException) :</label>
+    <label class="label-normal"> >> Authentication Exception (GET /authException) :</label>
     <button class="btn-normal" id="authException">401/403 Authentication Exception</button>
     <script>
         document.getElementById('authException').addEventListener('click', function () {
@@ -114,15 +75,11 @@
     </script><br><br>
 
     <div class="inner-div">
-        💡 프로파일에 따라 프로퍼티 " ignoreCustomErrorViewForDebug: true " 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
+        프로파일에 따라 프로퍼티 " ignoreCustomErrorViewForDebug: true " 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
     </div>
-
-
-
-
-
-
 </div>
+
+
 <div class="inner-div">
     abc
 </div>

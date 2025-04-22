@@ -8,15 +8,26 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+
+// todo: 해당 동작은 기본적 으로 링크를 클릭 하여 접속 되는 경우 동작 하며 browser 에 주소를 직접 일력 하는 방식 에서는 동작 하지 않음.
 public class RedirectHelperAfterLogin {
 
     private final static String LOGIN_SUCCESS_REDIRECT_URL = "LOGIN_SUCCESS_REDIRECT_URL";
     private final static String THE_TIME_SPRING_OWN_REDIRECT_URL = "THE_TIME_SPRING_OWN_REDIRECT_URL";
 
+    // 로그인 전 시도한 요청을 세션에 저장 하기 위한 용도 (로그인 전 로그인 필요 페이지 를 클릭 했을때 로그인 페이지 로 이동 하여 로그인 이후 원래의 요청 페이지 로 연결 하기 위함)
     private final static HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+    
+    // todo: 필요시 추가 (로그인 이후 리다이리렉트 되면 안되는 경로)
+    private static List<String> NOT_REDIRECT_URLS = List.of(
+            "login", "/login", "/view/login",
+            "logout", "/logout", "view/logout",
+            "signup", "/signup", "/view/signup", "/view/example/authentication/signup"
+    );
 
     public static String getRedirectUrlAfterLogging(HttpServletRequest request, HttpServletResponse response) {
         String referer = request.getHeader("referer");
@@ -38,7 +49,7 @@ public class RedirectHelperAfterLogin {
             }
         }
 
-        //url 로 직접 치고 들어온 케이스 (referer 가 없는 경우)
+        //referer 가 없는 경우 (browser 에 url 로 직접 치고 들어온 케이스임, 이전의 요청 으로 인해 남아 있는 LOGIN_SUCCESS_REDIRECT_URL 과 spring 자체 RedirectUrl 정보를 삭제)
         if(refererPath.equals("")) {
             removeRedirectUrlSpringOwn(request, response);
             request.getSession().removeAttribute(LOGIN_SUCCESS_REDIRECT_URL);
@@ -51,8 +62,9 @@ public class RedirectHelperAfterLogin {
             log.debug("came into the login by click the login button.");
         }
 
-        //referer 를 로그인 성공시 redirect url 설정 (단 로그인 페이지에서 로그인 실패 또는 logout 등 이유로.. referer 가 login 자신이 되는 케이스는 제외하고)
-        if (!refererPath.equals("/login")) {
+        //referer 를 로그인 성공시 redirect url 설정 (단 로그인 페이지에서 로그인 실패 또는 logout 등 이유로.. referer 가 되면 안되는 케이스 는 제외)
+        String finalRefererPath = refererPath;
+        if (RedirectHelperAfterLogin.NOT_REDIRECT_URLS.stream().noneMatch(url -> url.equals(finalRefererPath))) {
             request.getSession().setAttribute(LOGIN_SUCCESS_REDIRECT_URL, redirectParam);
         }
 
@@ -60,7 +72,7 @@ public class RedirectHelperAfterLogin {
         log.debug("helper's redirect url : {}", attrLoginSuccessRedirectUrl);
         log.debug("spring's redirect url : {}", getRedirectUrlSpringOwn(request, response));
 
-        //위 케이스별 처리에도 불고하고 SpringOwn RedirectUrl 이 존재한다면 spring 에게 Redirect 처리를 맞기기 위해 redirectParam 을 null 로 내림
+        //위 케이스별 처리에도 불고하고 SpringOwn RedirectUrl 이 존재한다면 spring 에게 Redirect 처리를 맞기기 위해 redirectParam 을 null 로 내림 (둘다 없을 경우 springSecurity 가 디폴트 경로로 내림)
         return hasOkRedirectUrlSpringOwn(request, response) ? null :  attrLoginSuccessRedirectUrl;
     }
 
@@ -82,7 +94,9 @@ public class RedirectHelperAfterLogin {
              }
          }
 
-         return savedRequest != null && (!savedRequestRedirectPath.equals("/login") && !savedRequestRedirectPath.equals("login"));
+        //true 이면 SpringOwn RedirectUrl 로 이동됨
+        String finalSavedRequestRedirectPath = savedRequestRedirectPath;
+        return (!savedRequestRedirectPath.isEmpty() && RedirectHelperAfterLogin.NOT_REDIRECT_URLS.stream().noneMatch(url -> url.equals(finalSavedRequestRedirectPath)));
     }
 
     public static String getRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
