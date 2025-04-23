@@ -10,6 +10,7 @@
   <title>테스트 페이지</title>
 
   <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
   <style th:inline="css" type="text/css">
   </style>
 
@@ -19,51 +20,48 @@
 </head>
 
 <body>
-<div>
-  <div class="my-3 border-bottom">
-    <b>user information update</b>
+<div class="base-div">
+  <div class="inner-div">
+    <b>User Info Update</b>
   </div>
-  <p th:if="${userEmail} != null" style="color: blueviolet;"><span th:text="${userEmail}"></span>님 정보를 수정 했습니다.!</p>
 
-  <form th:action="@{/auth/user/update}" th:object="${userUpdateRequestDto}" method="post">
-    <div th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
+  <p class="p-normal" th:if="${userEmail} != null" style="color: blueviolet;"><span th:text="${userEmail}"></span>님 정보를 수정 했습니다.!</p>
 
-    <label for="name">name</label>
-    <input type="text" th:field="*{name}">
+  <form th:action="@{/view/example/secured-Any-Role/authentication/userUpdate}" th:object="${userUpdateRequestDto}" method="post">
+    <div class="inner-div" th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
 
-    <label for="email">email</label>
-    <input type="text" th:field="*{email}" readonly>
+    <label class="label-normal">name</label>
+    <input class="input-normal" type="text" th:field="*{name}">
 
-    <label for="password">password</label>
-    <input type="text" th:field="*{password}">
+    <label class="label-normal">email</label>
+    <input class="input-normal" type="text" th:field="*{email}">
 
-    <br><br>
+    <label class="label-normal">password</label>
+    <input class="input-normal" type="text" th:field="*{password}">
 
     <div th:each="userAddress : ${userUpdateRequestDto.userAddresses}">
-      <label>Address Type:</label>
-      <input type="text" th:field="${userUpdateRequestDto.userAddresses[__${userAddressStat.index}__].addressType}" />
+      <label class="label-normal">Address Type:</label>
+      <input class="input-normal" type="text" th:field="${userUpdateRequestDto.userAddresses[__${userAddressStat.index}__].addressType}" />
 
-      <label>Address:</label>
-      <input type="text" th:field="${userUpdateRequestDto.userAddresses[__${userAddressStat.index}__].address}" />
+      <label class="label-normal">Address:</label>
+      <input class="input-normal" type="text" th:field="${userUpdateRequestDto.userAddresses[__${userAddressStat.index}__].address}" />
       <br/>
-    </div>
+    </div><br>
 
-    <br><br>
-    <label>User Roles:</label>
+    <label class="label-normal">Roles:</label>
     <div th:each="role : ${userUpdateRequestDto.allRoles}">
       <input type="checkbox" th:name="${'roles[' + roleStat.index + '].roleName'}" th:value="${role.roleName}" th:checked="${#lists.contains(userUpdateRequestDto.userRoleNames, role.roleName)}"/>
       <label th:text="${role.roleName}"></label>
-    </div>
+    </div><br>
 
-    <br><br>
-    <label>Terms Agreement:</label>
+    <label class="label-normal">Terms:</label>
     <div th:each="terms : ${userUpdateRequestDto.allTerms}">
       <input type="checkbox" th:name="${'terms[' + termsStat.index + '].termsName'}" th:value="${terms.termsName}" th:checked="${#lists.contains(userUpdateRequestDto.userTermsNames, terms.termsName)}"/>
       <label th:text="${terms.termsName}"></label>
     </div>
 
     <br>
-    <button type="submit">submit</button>
+    <button class="btn-normal" type="submit">submit</button>
   </form>
 </div>
 

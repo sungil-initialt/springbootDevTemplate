@@ -21,15 +21,15 @@ public class CustomAuthenticationFailureHandlerForView implements Authentication
         String exCode = "000";
 
         if (exception instanceof UsernameNotFoundException) {
-            log.info("Bad credentials");
+            log.error("Username not found");
             exCode = "EX001";
 
         } else if (exception instanceof BadCredentialsException) {
-            log.info("Username not found");
+            log.error("Bad credentials");
             exCode = "EX002";
 
         } else {
-            log.info("Unknown exception");
+            log.error("Unknown exception");
             exCode = "EX000";
         }
 

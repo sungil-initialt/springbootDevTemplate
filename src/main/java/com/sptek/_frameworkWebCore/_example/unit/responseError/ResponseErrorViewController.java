@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 public class ResponseErrorViewController {
     @NonFinal
-    private final String pageBasePath = "pages/_example/unit/";
+    private final String htmlBasePath = "pages/_example/unit/";
 
     @GetMapping({"/responseError"})
     public String responseError() {
-        return pageBasePath + "responseError";
+        return htmlBasePath + "responseError";
     }
 
     //500
@@ -33,7 +33,7 @@ public class ResponseErrorViewController {
         if (true) {
             throw new NullPointerException("테스트 를 위해 임의로 발생 시킨 RuntimeException");
         }
-        return pageBasePath + "index";
+        return htmlBasePath + "index";
     }
 
     //400
@@ -42,13 +42,13 @@ public class ResponseErrorViewController {
         if (true) {
             throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "테스를 위해 임의로 발생 시킨 ServiceException");
         }
-        return pageBasePath + "index";
+        return htmlBasePath + "index";
     }
 
     //403
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"/responseError/authException"})
     public String authException() {
-        return pageBasePath + "index";
+        return htmlBasePath + "index";
     }
 }

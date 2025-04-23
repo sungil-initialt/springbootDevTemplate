@@ -22,20 +22,19 @@
 <body>
 <div class="base-div">
   <div class="inner-div">
-    <b>signup with spring security</b>
+    <b>Signup</b>
   </div>
 
   <form th:action="@{/view/example/authentication/signup}" th:object="${signupRequestDto}" method="post">
     <div class="inner-div" th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
 
-
-    <label class="label-normal" for="name">name</label>
+    <label class="label-normal">name</label>
     <input class="input-normal" type="text" th:field="*{name}">
 
-    <label class="label-normal" for="email">email</label>
+    <label class="label-normal">email</label>
     <input class="input-normal" type="text" th:field="*{email}">
 
-    <label class="label-normal" for="password">password</label>
+    <label class="label-normal">password</label>
     <input class="input-normal" type="text" th:field="*{password}">
 
     <div th:each="userAddress : ${signupRequestDto.userAddresses}">

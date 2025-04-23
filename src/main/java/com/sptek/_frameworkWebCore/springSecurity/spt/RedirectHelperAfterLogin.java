@@ -26,7 +26,7 @@ public class RedirectHelperAfterLogin {
     private static List<String> NOT_REDIRECT_URLS = List.of(
             "login", "/login", "/view/login",
             "logout", "/logout", "view/logout",
-            "signup", "/signup", "/view/signup", "/view/example/authentication/signup"
+            "signup", "/signup", "/view/signup", "/view/example/authentication/signup", "/view/example/authentication/signupForm"
     );
 
     public static String getRedirectUrlAfterLogging(HttpServletRequest request, HttpServletResponse response) {

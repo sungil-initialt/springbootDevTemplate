@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "authentication", description = "")
 
 public class AuthenticationApiController {
-    @NonFinal
-    private final String pageBasePath = "pages/_example/unit/";
 
     private final AuthenticationManager authenticationManager;
     private final GeneralTokenProvider generalTokenProvider;

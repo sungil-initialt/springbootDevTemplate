@@ -41,13 +41,13 @@ import java.util.concurrent.TimeUnit;
 
 public class Domain1ViewController {
     @NonFinal
-    private final String pageBasePath = "pages/_example/html/";
+    private final String htmlBasePath = "pages/_example/html/";
     private final Domain1ViewService domain1ViewService;
     private final Domain1ApiService domain1ApiService;
 
     @GetMapping({"/pageForApiTestWithFetch"})
     public String pageForFetchTest() {
-        return pageBasePath + "pageForApiTestWithFetch";
+        return htmlBasePath + "pageForApiTestWithFetch";
     }
 
     //기본 테스트
@@ -55,14 +55,14 @@ public class Domain1ViewController {
     @GetMapping({"/welcome"})
     public String welcome(Model model) {
         model.addAttribute("message", "welcome");
-        return pageBasePath + "welcome";
+        return htmlBasePath + "welcome";
     }
 //
 //    //기본 테스트
 //    @PostMapping({"/postUrl"})
 //    public String postUrl(Model model) {
 //        model.addAttribute("message", "postUrl");
-//        return pageBasePath + "welcome";
+//        return htmlBasePath + "welcome";
 //    }
 
 
@@ -72,7 +72,7 @@ public class Domain1ViewController {
     public String interceptor(Model model) {
         log.debug("origin caller here.");
         model.addAttribute("message", "welcome");
-        return pageBasePath + "interceptor";
+        return htmlBasePath + "interceptor";
     }
 
     //내부 로직에직 발생한 EX에 대한 처리.
@@ -81,7 +81,7 @@ public class Domain1ViewController {
         //if(1==1) throw new NullPointerException("NP Exception for Test");
         if(1==1) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR);
 
-        return pageBasePath + "xx"; //not to reach here
+        return htmlBasePath + "xx"; //not to reach here
     }
 
 
@@ -121,7 +121,7 @@ public class Domain1ViewController {
             log.debug(localeDto.toString() + " : " + localeDto.toLocaleParam());
         }
 
-        return pageBasePath + "i18n";
+        return htmlBasePath + "i18n";
     }
 
     //thyleaf 에러 처리 테스트
@@ -130,7 +130,7 @@ public class Domain1ViewController {
         //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
 
         log.debug("called by GET");
-        return pageBasePath + "validationWithBindingResult";
+        return htmlBasePath + "validationWithBindingResult";
     }
 
     @PostMapping("/validationWithBindingResult")
@@ -138,12 +138,12 @@ public class Domain1ViewController {
         log.debug("called by POST");
 
         if (bindingResult.hasErrors()) {
-            return pageBasePath + "validationWithBindingResult";
+            return htmlBasePath + "validationWithBindingResult";
         }
 
         if (StringUtils.hasText(validationTestDto.getEmail()) && validationTestDto.getEmail().contains("@naver.com")) {
             bindingResult.rejectValue("email", "emailFail", "네이버 메일은 사용할 수 없습니다.");
-            return pageBasePath + "validationWithBindingResult";
+            return htmlBasePath + "validationWithBindingResult";
         }
 
         //do what you want.
@@ -163,7 +163,7 @@ public class Domain1ViewController {
         model.addAttribute("result", result);
         response.setHeader("Cache-Control", cacheControl.getHeaderValue());
 
-        return pageBasePath + "simpleModelView";
+        return htmlBasePath + "simpleModelView";
     }
 
     @RequestMapping("/modelMapperTest")
@@ -200,14 +200,14 @@ public class Domain1ViewController {
         result.put("ExampleADto-exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
-        return pageBasePath + "simpleModelView";
+        return htmlBasePath + "simpleModelView";
     }
 
     @RequestMapping("/viewServiceError")
     public String viewServiceError(@RequestParam("errorCaseNum") int errorCaseNum, Model model) {
         int result = domain1ApiService.raiseServiceError(errorCaseNum);
         model.addAttribute("result", result);
-        return pageBasePath + "simpleModelView";
+        return htmlBasePath + "simpleModelView";
     }
 }
 

@@ -79,7 +79,7 @@
         <!-- 비로그인 상태 -->
         <p th:if="${#authentication?.getPrincipal() == null or #authentication?.getPrincipal() == 'anonymousUser'}">
             <a th:href="@{/view/login?button}">Login</a>&nbsp;&nbsp;
-            <a th:href="@{/view/example/authentication/signup}">Signup</a>
+            <a th:href="@{/view/example/authentication/signupForm}">Signup</a>
         </p>
 
     </div>
