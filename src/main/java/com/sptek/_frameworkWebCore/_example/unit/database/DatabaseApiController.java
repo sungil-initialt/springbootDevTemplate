@@ -19,32 +19,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "database", description = "")
 
 public class DatabaseApiController {
     private final DatabaseService databaseService;
 
-    @GetMapping("/databasea/a_checkDbConnection")
-    @Operation(summary = "DB 연결 상태 체크", description = "")
+    @GetMapping("/01/example/databasea/checkDbConnection")
+    @Operation(summary = "01. DB 연결 상태 체크", description = "")
     public Object checkDbConnection() {
         return databaseService.checkDbConnection() == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/databasea/b_checkReplicationMaster")
-    @Operation(summary = "@Transactional(readOnly = false) 통해 Master DB로 연결 체크", description = "")
+    @GetMapping("/02/example/databasea/checkReplicationMaster")
+    @Operation(summary = "02. @Transactional(readOnly = false) 통해 Master DB로 연결 체크", description = "")
     public Object checkReplicationMaster(Model model) {
         return databaseService.checkReplicationMaster() == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/databasea/c_checkReplicationSlave")
-    @Operation(summary = "@Transactional(readOnly = true) 통해 Slave DB로 연결 체크", description = "")
+    @GetMapping("/03/example/databasea/checkReplicationSlave")
+    @Operation(summary = "03. @Transactional(readOnly = true) 통해 Slave DB로 연결 체크", description = "")
     public Object checkReplicationSlave(Model model) {
         return databaseService.checkReplicationSlave() == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/databasea/d_myBatisCommonDaoInsert")
-    @Operation(summary = "myBatisCommonDao insert", description = "")
+    @GetMapping("/04/example/databasea/myBatisCommonDaoInsert")
+    @Operation(summary = "04. myBatisCommonDao insert", description = "")
     public Object myBatisCommonDaoInsert() {
         TbTestDto tbTestDto = TbTestDto.builder()
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
@@ -53,8 +53,8 @@ public class DatabaseApiController {
         return databaseService.insertTbTest(tbTestDto) == 1 ? "success" : "fail";
     }
 
-    @GetMapping("/databasea/e_myBatisCommonDaoUpdate")
-    @Operation(summary = "myBatisCommonDao update", description = "")
+    @GetMapping("/05/example/databasea/myBatisCommonDaoUpdate")
+    @Operation(summary = "05. myBatisCommonDao update", description = "")
     public Object myBatisCommonDaoUpdate() {
         TbTestDto tbTestDto = TbTestDto.builder()
                 .c1((int) (System.currentTimeMillis() % Integer.MAX_VALUE))
@@ -63,38 +63,38 @@ public class DatabaseApiController {
         return databaseService.updateTbTest(tbTestDto) > 0 ? "success" : "fail";
     }
 
-    @GetMapping("/databasea/f_myBatisCommonDaoDelete")
-    @Operation(summary = "myBatisCommonDao delete", description = "")
+    @GetMapping("/06/example/databasea/myBatisCommonDaoDelete")
+    @Operation(summary = "06. myBatisCommonDao delete", description = "")
     public Object myBatisCommonDaoDelete() {
         return databaseService.deleteTbTest() > 0 ? "success" : "fail";
     }
 
-    @GetMapping("/databasea/g_myBatisCommonDaoSelectOne")
-    @Operation(summary = "myBatisCommonDao selectOne", description = "")
+    @GetMapping("/07/example/databasea/myBatisCommonDaoSelectOne")
+    @Operation(summary = "07. myBatisCommonDao selectOne", description = "")
     public Object myBatisCommonDaoSelectOne() {
         return databaseService.getOneTbTest();
     }
 
-    @GetMapping("/databasea/h_myBatisCommonDaoSelectList")
-    @Operation(summary = "myBatisCommonDao selectList", description = "")
+    @GetMapping("/08/example/databasea/myBatisCommonDaoSelectList")
+    @Operation(summary = "08. myBatisCommonDao selectList", description = "")
     public Object myBatisCommonDaoSelectList() {
         return databaseService.getListTbTest();
     }
     
-    @GetMapping("/databasea/i_myBatisCommonDaoSelectListWithResultHandler")
-    @Operation(summary = "myBatisCommonDao selectListWithResultHandler", description = "")
+    @GetMapping("/09/example/databasea/myBatisCommonDaoSelectListWithResultHandler")
+    @Operation(summary = "09. myBatisCommonDao selectListWithResultHandler", description = "")
     public Object myBatisCommonDaoSelectListWithResultHandler() {
         return databaseService.getListTbTestWithResultHandler();
     }
 
-    @GetMapping("/databasea/j_myBatisCommonDaoSelectMap")
-    @Operation(summary = "myBatisCommonDao selectMap(단일, 리스트)", description = "")
+    @GetMapping("/10/example/databasea/myBatisCommonDaoSelectMap")
+    @Operation(summary = "10. myBatisCommonDao selectMap(단일, 리스트)", description = "")
     public Object myBatisCommonDaoSelectMap() {
         return databaseService.getMapTbTest();
     }
 
-    @GetMapping("/databasea/k_myBatisCommonDaoSelectListWithPagination")
-    @Operation(summary = "myBatisCommonDao selectListWithPagination", description = "")
+    @GetMapping("/11/example/databasea/myBatisCommonDaoSelectListWithPagination")
+    @Operation(summary = "11. myBatisCommonDao selectListWithPagination", description = "")
     public Object myBatisCommonDaoSelectListWithPagination(
             @RequestParam(name = "currentPageNum", required = false, defaultValue = "1") int currentPageNum,
             @RequestParam(name = "setRowSizePerPage", required = false, defaultValue = "20") int setRowSizePerPage,

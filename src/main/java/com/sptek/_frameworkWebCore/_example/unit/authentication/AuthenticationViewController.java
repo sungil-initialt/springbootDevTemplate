@@ -3,7 +3,7 @@ package com.sptek._frameworkWebCore._example.unit.authentication;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.User;
-import com.sptek._frameworkWebCore.springSecurity.test.SecurityService;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -28,20 +28,22 @@ import java.util.List;
 @EnableResponseOfViewGlobalException_InViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
+//signup 과 관련한 부분 들도 실제 서비스 환경 에서 변경 사항이 많은 영역 이라 example 영역에 둠 (login 은 systemSuport 영역에 둠)
+
 public class AuthenticationViewController {
 
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
     private final ModelMapper modelMapper;
-    private final SecurityService securityService;
+    private final AuthenticationService authenticationService;
 
 
     @GetMapping("/authentication/signupForm")
     public String signupForm(Model model , SignupRequestDto signupRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         //화면에 그리기 위한 값들
         signupRequestDto.setUserAddresses(List.of(new UserAddressDto()));
-        signupRequestDto.setAllRoles(securityService.findAllRoles());
-        signupRequestDto.setAllTerms(securityService.findAllTerms());
+        signupRequestDto.setAllRoles(authenticationService.findAllRoles());
+        signupRequestDto.setAllTerms(authenticationService.findAllTerms());
 
         //model.addAttribute("signupRequestDto", signupRequestDto); //파람에 들어 있음으로 addAttribute 불필요
         return htmlBasePath + "signup";
@@ -53,11 +55,11 @@ public class AuthenticationViewController {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 다시 그리기 위해
-            signupRequestDto.setAllRoles(securityService.findAllRoles());
-            signupRequestDto.setAllTerms(securityService.findAllTerms());
+            signupRequestDto.setAllRoles(authenticationService.findAllRoles());
+            signupRequestDto.setAllTerms(authenticationService.findAllTerms());
             return htmlBasePath + "signup";
         }
-        User savedUser = securityService.saveUser(signupRequestDto);
+        User savedUser = authenticationService.saveUser(signupRequestDto);
 
         //redirect 페이지에 model을 보내기 위해 addFlashAttribute 사용(1회성으로 전달됨)
         redirectAttributes.addFlashAttribute("username", savedUser.getName());
@@ -71,7 +73,7 @@ public class AuthenticationViewController {
             + "|| hasRole('ADMIN')"
     )
     public String userInfoView(@PathVariable("email") String email, Model model) {
-        UserDto resultUserDto = securityService.findUserByEmail(email);
+        UserDto resultUserDto = authenticationService.findUserByEmail(email);
         model.addAttribute("result", resultUserDto);
         return htmlBasePath + "simpleModelView";
     }
@@ -82,13 +84,13 @@ public class AuthenticationViewController {
             + "|| #email == authentication.principal.userDto.email"
     )
     public String userUpdateForm(@PathVariable("email") String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
-        UserDto userDto = securityService.findUserByEmail(email);
+        UserDto userDto = authenticationService.findUserByEmail(email);
         userUpdateRequestDto = modelMapper.map(userDto, UserUpdateRequestDto.class);
         userUpdateRequestDto.setPassword("");
 
         //화면에 그리기 위한 값들
-        userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
-        userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
+        userUpdateRequestDto.setAllRoles(authenticationService.findAllRoles());
+        userUpdateRequestDto.setAllTerms(authenticationService.findAllTerms());
 
         model.addAttribute("userUpdateRequestDto", userUpdateRequestDto);
         return htmlBasePath + "userUpdate";
@@ -103,36 +105,44 @@ public class AuthenticationViewController {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             //체크박스를 다시 그리기 위해
-            userUpdateRequestDto.setAllRoles(securityService.findAllRoles());
-            userUpdateRequestDto.setAllTerms(securityService.findAllTerms());
+            userUpdateRequestDto.setAllRoles(authenticationService.findAllRoles());
+            userUpdateRequestDto.setAllTerms(authenticationService.findAllTerms());
 
             return htmlBasePath + "userUpdate";
         }
-        User savedUser = securityService.updateUser(userUpdateRequestDto);
+        User savedUser = authenticationService.updateUser(userUpdateRequestDto);
 
         redirectAttributes.addFlashAttribute("userEmail", savedUser.getEmail());
         return "redirect:/view/example/secured-Any-Role/authentication/userUpdateForm/" + userUpdateRequestDto.getEmail();
     }
 
-    @GetMapping("/secured-System-Role/authentication/roleUpdateForm")
+    @GetMapping("/role-system/authentication/roleUpdateForm")
     public String roleUpdateForm(Model model, RoleMngRequestDto roleMngRequestDto) {
-        roleMngRequestDto.setAllRoles(securityService.findAllRoles());
-        roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
+        roleMngRequestDto.setAllRoles(authenticationService.findAllRoles());
+        roleMngRequestDto.setAllAuthorities(authenticationService.findAllAuthorities());
         return htmlBasePath + "role";
     }
 
-    @PostMapping("/secured-System-Role/authentication/roleUpdate")
+    @PostMapping("/role-system/authentication/roleUpdate")
     public String roleUpdate(Model model, RedirectAttributes redirectAttributes, @Valid RoleMngRequestDto roleMngRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {
-            roleMngRequestDto.setAllRoles(securityService.findAllRoles());
-            roleMngRequestDto.setAllAuthorities(securityService.findAllAuthorities());
+            roleMngRequestDto.setAllRoles(authenticationService.findAllRoles());
+            roleMngRequestDto.setAllAuthorities(authenticationService.findAllAuthorities());
             return htmlBasePath + "role";
         }
 
-        securityService.saveRoles(roleMngRequestDto);
-        return "redirect:/view/example/secured-System-Role/authentication/roleUpdateForm";
+        authenticationService.saveRoles(roleMngRequestDto);
+        return "redirect:/view/example/role-system/authentication/roleUpdateForm";
     }
 
+    @GetMapping("/secured-Any-Role/authentication/myAuthentication")
+    public String myAuthentication(Model model) {
+        String myAuthentication = SecurityUtil.getUserAuthentication().toString();
+        //myAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인 을 요청 했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
+
+        model.addAttribute("result", myAuthentication);
+        return htmlBasePath + "simpleModelView";
+    }
 }

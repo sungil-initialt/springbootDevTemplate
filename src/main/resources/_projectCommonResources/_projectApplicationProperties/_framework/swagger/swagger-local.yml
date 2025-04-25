@@ -12,6 +12,6 @@ springdoc:
   swagger-ui:
     path: swagger-ui.html         # Swagger UI 경로
     tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
-    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+    operations-sorter: alpha      # alpha: url 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
   cache:
     disabled: false

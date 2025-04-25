@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
-@RequestMapping(value = {"/api/v1/example/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
+@RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "swagger", description = "")
 
 public class SwaggerApiController {
 
-    @GetMapping("/swagger/a_echoMessage")
-    @Operation(summary = "parameter echo 테스트", description = "", tags = {""})
+    @GetMapping("/01/example/swagger/echoMessage")
+    @Operation(summary = "01. parameter echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(type = "string", description = "응답 메시지", example = "message1:message2")))
     public Object echoMessage(
             @Parameter(description = "echo 내용1") @RequestParam("message1") String message1,
@@ -37,8 +37,8 @@ public class SwaggerApiController {
         return message1 + ":" + message2;
     }
 
-    @GetMapping("/swagger/b_echoDto")
-    @Operation(summary = "객체의 echo 테스트", description = "", tags = {""})
+    @GetMapping("/02/example/swagger/echoDto")
+    @Operation(summary = "02. 객체의 echo 테스트", description = "", tags = {""})
     @ApiResponse(content = @Content(schema = @Schema(implementation = ValidatedDto.class)))
     public Object echoDto(ValidatedDto validatedDto) {
         return validatedDto;

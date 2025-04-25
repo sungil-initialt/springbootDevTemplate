@@ -27,16 +27,16 @@ public class RepositoryViewController {
     private final RepositoryService repositoryService;
 
     //for test
-    @GetMapping("/user/test/{key}")
-    public String test(@PathVariable("key") String key, Model model) {
+    @GetMapping("/test/testRepo1/{key}")
+    public String repoTest(@PathVariable("key") String key, Model model) {
         Map<String, Object> resultMap = repositoryService.testRepository(key);
         model.addAttribute("result", resultMap);
         return htmlBasePath + "simpleModelView";
     }
 
     //for test
-    @GetMapping("/user/test")
-    public String test(Model model) {
+    @GetMapping("/test/testRepo2")
+    public String testRepo2(Model model) {
         AuthorityIfEnum authority = AuthorityIfEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
         AuthorityDto authDto = ModelMapperUtil.map(authority, AuthorityDto.class);
         model.addAttribute("result", authDto);

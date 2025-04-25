@@ -1,0 +1,111 @@
+create table PUBLIC.AUTHORITY
+(
+    ID          BIGINT auto_increment
+        primary key,
+    ALIAS       CHARACTER VARYING(255)
+        constraint UK_E7P16L22BNDBNBM1HD5DAHK42
+            unique,
+    AUTHORITY   CHARACTER VARYING(255)
+        constraint UK_MH4UJP6XCTMCXE3UP55NKW7BW
+            unique,
+    CODE        CHARACTER VARYING(255)
+        constraint UK_SOEHEY9TMTYDMALWNIWQKWFT1
+            unique,
+    DESCRIPTION CHARACTER VARYING(255),
+    STATUS      CHARACTER VARYING(255),
+    check ("AUTHORITY" IN
+           ('AUTH_SPECIAL_FOR_TEST', 'AUTH_RETRIEVE_USER_ALL_FOR_MARKETING', 'AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY'))
+);
+
+create table PUBLIC.PHONEBOOK
+(
+    USER_NAME    CHARACTER VARYING(50) not null,
+    PHONE_NUMBER CHARACTER VARYING(20) not null
+);
+
+create table PUBLIC.ROLE
+(
+    ID       BIGINT auto_increment
+        primary key,
+    ROLENAME CHARACTER VARYING(255)
+        constraint UK_NFWGTW7JN5H1ILUD74CRAQ02Q
+            unique
+);
+
+create table PUBLIC.ROLE_AUTHORITY_MAP
+(
+    ROLE_ID      BIGINT not null,
+    AUTHORITY_ID BIGINT not null,
+    constraint FK6FRMLM7LF2UL6UVAS8MY4R5RX
+        foreign key (ROLE_ID) references PUBLIC.ROLE,
+    constraint FKEFFDNWYU4LUWA4DKTNF43LI8H
+        foreign key (AUTHORITY_ID) references PUBLIC.AUTHORITY
+);
+
+create table PUBLIC.TERMS
+(
+    ID        BIGINT auto_increment
+        primary key,
+    TERMSNAME CHARACTER VARYING(255)
+        constraint UK_DKKFK1DYLSEVS9OVOIEV9FTT2
+            unique
+);
+
+create table PUBLIC.TEST
+(
+    C1 CHARACTER VARYING(10),
+    C2 CHARACTER VARYING(10),
+    C3 CHARACTER VARYING(10)
+);
+
+create table PUBLIC.TESTJPA
+(
+    ID      BIGINT auto_increment
+        primary key,
+    MYKEY   CHARACTER VARYING(255)
+        constraint UK_AFXEL70FY7OO8G35IKAL4XN5U
+            unique,
+    MYVALUE CHARACTER VARYING(255)
+);
+
+create table PUBLIC.USERS
+(
+    ID       BIGINT auto_increment
+        primary key,
+    EMAIL    CHARACTER VARYING(255)
+        constraint UK_AVH1B2EC82AUDUM2LYJX2P1WS
+            unique,
+    NAME     CHARACTER VARYING(255),
+    PASSWORD CHARACTER VARYING(255)
+);
+
+create table PUBLIC.USER_ADDRESS
+(
+    ID          BIGINT auto_increment
+        primary key,
+    ADDRESS     CHARACTER VARYING(255),
+    ADDRESSTYPE CHARACTER VARYING(255),
+    USER_ID     BIGINT,
+    constraint FK36X9E9N4VLIYESQXBJ5CC8AXD
+        foreign key (USER_ID) references PUBLIC.USERS
+);
+
+create table PUBLIC.USER_ROLE_MAP
+(
+    USER_ID BIGINT not null,
+    ROLE_ID BIGINT not null,
+    constraint FK2OKLONXJSUPRETBDYM1JSOATH
+        foreign key (ROLE_ID) references PUBLIC.ROLE,
+    constraint FKA74WSU6BB10J9CLLTOGNJ89DN
+        foreign key (USER_ID) references PUBLIC.USERS
+);
+
+create table PUBLIC.USER_TERMS_MAP
+(
+    USER_ID  BIGINT not null,
+    TERMS_ID BIGINT not null,
+    constraint FK5EBF2OSVN36NW21KJND0U8J4X
+        foreign key (TERMS_ID) references PUBLIC.TERMS,
+    constraint FK6TYX5KY82RE8OHTGANKVJ1HC3
+        foreign key (USER_ID) references PUBLIC.USERS
+);

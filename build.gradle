@@ -20,6 +20,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -46,6 +47,7 @@ dependencies {
 
 	// SpringDoc
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+	//implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
 
 	// 암호화 및 기타
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'

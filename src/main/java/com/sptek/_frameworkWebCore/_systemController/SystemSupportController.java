@@ -33,6 +33,7 @@ import java.util.Base64;
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/systemSupportApi/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트 가 Accept 해더를 보낼 경우 제공 하는 미디어 타입이 일치 해야함(없으면 406)
 @Tag(name = "system Support Api", description = "")
+
 public class SystemSupportController {
 
     private final ProjectInfoVo projectInfoVo;
