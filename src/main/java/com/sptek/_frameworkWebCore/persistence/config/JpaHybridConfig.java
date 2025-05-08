@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.datasource.extraConfig;
+package com.sptek._frameworkWebCore.persistence.config;
 
 import com.sptek._frameworkWebCore.annotation.EnableJpaHybrid_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;

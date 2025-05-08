@@ -30,6 +30,6 @@ public class XssApiController {
     @Operation(summary = "02. body의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     //post Req에 대한 xss 처리 결과 확인
     public Object XssProtectPost(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
-        return "XssProtectedText = " + originBody;
+        return originBody;
     }
 }

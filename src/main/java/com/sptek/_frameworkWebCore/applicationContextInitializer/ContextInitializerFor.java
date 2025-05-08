@@ -1,10 +1,6 @@
-package com.sptek._frameworkWebCore.ApplicationContextInitializer;
+package com.sptek._frameworkWebCore.applicationContextInitializer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;

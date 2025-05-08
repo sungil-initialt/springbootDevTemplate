@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController(value = "securityApiControllerTemp")
+@RestController
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})

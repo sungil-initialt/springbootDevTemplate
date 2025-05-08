@@ -47,7 +47,7 @@ public class FrameworkSecurityFilterChainConfig {
                 .securityMatcher("/", "/view/index", "/view/login", "/view/loginProcess", "/view/logout")
 
                 // CSRF를 비활성화할 경로 지정
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/view/**")) // todo: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시하도록 임시 처리
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/**")) // todo: 테스트 를 편하게 하기 위해 모든 경로 에서 dsrf 토큰을 무시 하도록 임시 처리
 
                 // .httpBasic(Customizer.withDefaults()) //얼럿창형
                 // .formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
@@ -113,15 +113,15 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    public static final String exampleViewPattern = "/view/example/";
     @Bean
     @Profile(value = {"local", "dev", "stg"})
-    public SecurityFilterChain securityFilterChainForView(HttpSecurity httpSecurity) throws Exception {
-        String defaultPath = "/view/example/";
+    public SecurityFilterChain securityFilterChainForExampleView(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                // view example 적용
-                .securityMatcher(defaultPath + "**")
+                // example view 만 적용
+                .securityMatcher(exampleViewPattern + "**")
 
-                // CSRF를 비활성화할 경로 지정
+                // CSRF 비활성화 경로 지정
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/view/example/**") // todo: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시하도록 임시 처리
                         .ignoringRequestMatchers("/view/example/noCsrfToken/**")
@@ -143,20 +143,19 @@ public class FrameworkSecurityFilterChainConfig {
                 // todo: 이곳 에서 정의 하는 filter 방식과 Controller 에서 정의 하는 @PreAuthorize 방식의 선택 기준 고민 필요
                 .authorizeHttpRequests(authorize ->
                     authorize
-                            // 필요시 추가해 나감.
-                            .requestMatchers(defaultPath + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
-                            .requestMatchers(defaultPath + "auth-special/**").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
-                            .requestMatchers(defaultPath + "role-user/**").hasAnyRole("USER")
-                            .requestMatchers(defaultPath + "role-system/**").hasAnyRole("SYSTEM")
-                            .requestMatchers(defaultPath + "role-admin-adminSpecial/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
 
-                            .requestMatchers(HttpMethod.POST,defaultPath + "postLogin/**").authenticated()
-                            .requestMatchers(HttpMethod.POST,defaultPath + "postAuth-special/**").authenticated()
-                            .requestMatchers(HttpMethod.POST,defaultPath + "postRole-system/**").authenticated()
+                            .requestMatchers(exampleViewPattern + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
+                            .requestMatchers(exampleViewPattern + "auth-special/**").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
+                            .requestMatchers(exampleViewPattern + "role-user/**").hasAnyRole("USER")
+                            .requestMatchers(exampleViewPattern + "role-system/**").hasAnyRole("SYSTEM")
+                            .requestMatchers(exampleViewPattern + "role-admin-adminSpecial/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
+
+                            .requestMatchers(HttpMethod.POST, exampleViewPattern + "postLogin/**").authenticated()
+                            .requestMatchers(HttpMethod.POST, exampleViewPattern + "postAuth-special/**").authenticated()
+                            .requestMatchers(HttpMethod.POST, exampleViewPattern + "postRole-system/**").authenticated()
 
                             .anyRequest().permitAll()
                             //.anyRequest().authenticated()
-
                 )
 
                 // .httpBasic(Customizer.withDefaults()) //얼럿창형
@@ -194,30 +193,30 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    public static final String exampleApiPattern = "/api/*/example/";
     @Bean
     @Profile(value = {"local", "dev", "stg"})
-    public SecurityFilterChain securityFilterChainForApi(HttpSecurity httpSecurity) throws Exception {
-        String defaultPath = "/api/*/example/";
+    public SecurityFilterChain securityFilterChainForExampleApi(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 // api example 적용
-                .securityMatcher(defaultPath + "**")
+                .securityMatcher(exampleApiPattern + "**")
 
-                // JWT를 사용하는 경우 CSRF방지 기능을 사용 할 필요가 없음.(CSRF 공격이 session 쿠키 방식의 문제 점에 기인한 것으로 JWT만 사용하여 세션을 사용하지 않는다면 disable 처리)
+                // JWT를 사용하는 경우 CSRF방지 기능을 사용 할 필요가 없음.(CSRF 공격이 쿠키 방식의 session 문제에 기인한 것으로 JWT만 사용하여 세션을 사용하지 않는다면 disable 처리)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 // 필요시 추가해 나감.
-                                .requestMatchers(defaultPath + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
-                                .requestMatchers(defaultPath + "auth-special/**").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
-                                .requestMatchers(defaultPath + "role-user/**").hasAnyRole("USER")
-                                .requestMatchers(defaultPath + "role-system/**").hasAnyRole("SYSTEM")
-                                .requestMatchers(defaultPath + "role-admin-adminSpecial/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
+                                .requestMatchers(exampleApiPattern + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
+                                .requestMatchers(exampleApiPattern + "auth-special/**").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
+                                .requestMatchers(exampleApiPattern + "role-user/**").hasAnyRole("USER")
+                                .requestMatchers(exampleApiPattern + "role-system/**").hasAnyRole("SYSTEM")
+                                .requestMatchers(exampleApiPattern + "role-admin-adminSpecial/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
 
-                                .requestMatchers(HttpMethod.POST,defaultPath + "postLogin/**").authenticated()
-                                .requestMatchers(HttpMethod.POST,defaultPath + "postAuth-special/**").authenticated()
-                                .requestMatchers(HttpMethod.POST,defaultPath + "postRole-system/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, exampleApiPattern + "postLogin/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, exampleApiPattern + "postAuth-special/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, exampleApiPattern + "postRole-system/**").authenticated()
 
                                 .anyRequest().permitAll()
                                 //.requestMatchers("/api/*/example/signup", "/api/*/example/login", "/api/*/example/logout").permitAll()
