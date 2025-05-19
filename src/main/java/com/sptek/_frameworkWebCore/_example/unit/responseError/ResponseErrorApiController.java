@@ -38,8 +38,9 @@ public class ResponseErrorApiController {
         return authHeader;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/03/example/responseError/authError")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "03. 권한 에러", description = "")
     public Object authError() {
         return "authError";

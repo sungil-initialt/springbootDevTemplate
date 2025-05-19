@@ -259,7 +259,6 @@ Content-Type: application/json
 GET {{api-server-ver}}/public/hello
 Content-Type: application/json
 
-
 ### 테스트
 GET {{api-server-ver}}/user/hello
 Authorization: Bearer {{jwt}}

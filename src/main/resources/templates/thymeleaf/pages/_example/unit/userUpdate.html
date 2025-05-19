@@ -27,7 +27,7 @@
 
   <p class="p-normal" th:if="${userEmail} != null" style="color: blueviolet;"><span th:text="${userEmail}"></span>님 정보를 수정 했습니다.!</p>
 
-  <form th:action="@{/view/example/secured-Any-Role/authentication/userUpdate}" th:object="${userUpdateRequestDto}" method="post">
+  <form th:action="@{/view/example/login/authentication/userUpdate}" th:object="${userUpdateRequestDto}" method="post">
     <div class="inner-div" th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
 
     <label class="label-normal">name</label>

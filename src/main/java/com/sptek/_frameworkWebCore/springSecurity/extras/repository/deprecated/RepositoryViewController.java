@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.springSecurity.extras.repository.test;
+package com.sptek._frameworkWebCore.springSecurity.extras.repository.deprecated;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;

@@ -7,7 +7,7 @@ cors:
     #defaultAccessControlAllowOrigin: "https://back.localhost"
 
     #내가 허용할 url목록(공백 없이 ,로 구분, 80, 443 port가 아닌 경우 명시)
-    accessControlAllowOrigins: "https://localhost, https://back.localhost, https://front.localhost"
+    accessControlAllowOrigins: "https://localhost, https://back.localhost, https://front.localhost, https://spt.com"
 
     #클라이언트가 option 메소드로 확인을 요청할때 알려주는 요소들
     accessControlAllowMethods: "GET, POST, PUT, DELETE, OPTIONS"

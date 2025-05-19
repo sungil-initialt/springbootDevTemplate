@@ -64,7 +64,6 @@ public class Domain1ApiController {
     private final RestTemplate restTemplate;
     private final RestTemplateSupport restTemplateSupport;
     private final ObjectMapper objectMapper;
-    private final Domain1ApiService domain1ApiService;
     private final CustomEventPublisher customEventPublisher;
 
 
@@ -224,11 +223,6 @@ public class Domain1ApiController {
         //CacheControl cacheControl = CacheControl.maxAge(60, TimeUnit.SECONDS).cachePublic();//.mustRevalidate();
         // 200 OK로 응답
         return ResponseEntity.ok().body(new ApiCommonSuccessResponseDto<>(currentTimeMillis));
-    }
-
-    @GetMapping("/apiServiceError")
-    public Object apiServiceError(@RequestParam("errorCaseNum") int errorCaseNum) {
-        return domain1ApiService.raiseServiceError(errorCaseNum);
     }
 
     @GetMapping("/exampleEvent")

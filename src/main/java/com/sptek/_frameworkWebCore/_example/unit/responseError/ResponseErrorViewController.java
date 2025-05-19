@@ -30,8 +30,9 @@ public class ResponseErrorViewController {
     //500
     @GetMapping({"/responseError/runtimeException"})
     public String runtimeException() {
-        if (true) {
-            throw new NullPointerException("테스트 를 위해 임의로 발생 시킨 RuntimeException");
+        String nullString = null;
+        if (nullString.equals("test")) {
+            log.debug("temp is test");
         }
         return htmlBasePath + "index";
     }
@@ -46,8 +47,8 @@ public class ResponseErrorViewController {
     }
 
     //403
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"/responseError/authException"})
+    @PreAuthorize("hasRole('ADMIN')")
     public String authException() {
         return htmlBasePath + "index";
     }

@@ -1,14 +1,11 @@
 package com.sptek._frameworkWebCore._example.view.domain1;
 
-import com.sptek._frameworkWebCore._example.unit.domain1.Domain1ApiService;
 import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
-import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -42,21 +38,13 @@ import java.util.concurrent.TimeUnit;
 public class Domain1ViewController {
     @NonFinal
     private final String htmlBasePath = "pages/_example/html/";
-    private final Domain1ViewService domain1ViewService;
-    private final Domain1ApiService domain1ApiService;
 
     @GetMapping({"/pageForApiTestWithFetch"})
     public String pageForFetchTest() {
         return htmlBasePath + "pageForApiTestWithFetch";
     }
 
-    //기본 테스트
-    //@RequestMapping({"/", "/welcome"})
-    @GetMapping({"/welcome"})
-    public String welcome(Model model) {
-        model.addAttribute("message", "welcome");
-        return htmlBasePath + "welcome";
-    }
+
 //
 //    //기본 테스트
 //    @PostMapping({"/postUrl"})
@@ -74,16 +62,6 @@ public class Domain1ViewController {
         model.addAttribute("message", "welcome");
         return htmlBasePath + "interceptor";
     }
-
-    //내부 로직에직 발생한 EX에 대한 처리.
-    @RequestMapping("/serviceErr")
-    public String serviceErr(Model model) {
-        //if(1==1) throw new NullPointerException("NP Exception for Test");
-        if(1==1) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR);
-
-        return htmlBasePath + "xx"; //not to reach here
-    }
-
 
 
 
@@ -200,13 +178,6 @@ public class Domain1ViewController {
         result.put("ExampleADto-exampleBDto", exampleBDto);
         model.addAttribute("result", result);
 
-        return htmlBasePath + "simpleModelView";
-    }
-
-    @RequestMapping("/viewServiceError")
-    public String viewServiceError(@RequestParam("errorCaseNum") int errorCaseNum, Model model) {
-        int result = domain1ApiService.raiseServiceError(errorCaseNum);
-        model.addAttribute("result", result);
         return htmlBasePath + "simpleModelView";
     }
 }

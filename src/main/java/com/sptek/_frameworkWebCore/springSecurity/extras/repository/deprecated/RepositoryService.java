@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.springSecurity.extras.repository.test;
+package com.sptek._frameworkWebCore.springSecurity.extras.repository.deprecated;
 
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.TestJpa;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.TestJpaRepository;
