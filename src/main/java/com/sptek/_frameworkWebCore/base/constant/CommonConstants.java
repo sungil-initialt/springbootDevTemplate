@@ -14,4 +14,6 @@ public class CommonConstants {
     public static final String TIMEZONE_NAME = "timezone";
     public static final int LOCALE_COOKIE_MAX_AGE_SEC = 60*60*24*7;
 
+    public static final String UV_CHECK_LOG_CREATE_NEW = "UV_CHECK_LOG_CREATE_NEW";
+    public static final String UV_CHECK_LOG_UPDATE_EXPIRE_TIME = "UV_CHECK_LOG_UPDATE_EXPIRE_TIME";
 }

@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.eventListener.application.listener;
 import com.sptek._frameworkWebCore.annotation.EnableConsoleLogEnvironmentProperties_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +16,6 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,13 +56,6 @@ public class ContextRefreshedEventListenerForConsoleLogEnvironmentProperties {
                 });
 
         log.info(SptFwUtil.convertSystemNotice("Major Environment Information ( " + EnableConsoleLogEnvironmentProperties_InMain.class.getSimpleName() + " )", logBody.toString()));
-
-        log.info("===== 등록된 필터 순서 =====");
-        Map<String, Filter> filters = applicationContext.getBeansOfType(Filter.class);
-        filters.forEach((name, filter) ->
-                System.out.println("Filter Bean: " + name + " -> " + filter.getClass().getSimpleName())
-        );
-        log.info("=========================");
     }
 
     //예외 키워드 설정

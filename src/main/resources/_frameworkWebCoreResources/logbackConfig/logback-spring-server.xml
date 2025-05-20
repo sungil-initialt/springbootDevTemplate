@@ -71,7 +71,7 @@
     </appender>
 
     <appender name="systemStart" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="com.sptek._frameworkWebCore.logging.LogbackKeywordFilterForXXX"/>
+        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForUvCheck"/>
 
         <file>${base_log_path}/systemStart/systemStart.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

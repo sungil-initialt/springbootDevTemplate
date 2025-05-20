@@ -1,7 +1,6 @@
 package com.sptek._projectCommon.interceptor;
 
 
-import com.sptek._frameworkWebCore.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -20,13 +19,14 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(@NotNull InterceptorRegistry interceptorRegistry) {
 
-//        //필요한 interceptor 등록 (exampleInterceptor 참고)
-//        if(exampleInterceptor != null) {
-//            interceptorRegistry.addInterceptor(this.exampleInterceptor).addPathPatterns("/**")
+        //필요한 interceptor 등록 (exampleInterceptor 참고)
+        if(exampleInterceptor != null) {
+            interceptorRegistry.addInterceptor(this.exampleInterceptor).addPathPatterns("/yourInterceptorPath/**")
 //                    .excludePathPatterns("/api/**")
 //                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
-//                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
-//        }
+//                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns())
+            ;
+        }
 
         WebMvcConfigurer.super.addInterceptors(interceptorRegistry);
     }

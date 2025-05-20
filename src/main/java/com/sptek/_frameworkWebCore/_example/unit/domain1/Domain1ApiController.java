@@ -2,10 +2,7 @@ package com.sptek._frameworkWebCore._example.unit.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
-import com.sptek._frameworkWebCore.annotation.EnableDeduplicationRequest_InRestController_RestControllerMethod;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
+import com.sptek._frameworkWebCore.annotation.*;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
@@ -14,6 +11,7 @@ import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +39,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -169,19 +168,19 @@ public class Domain1ApiController {
         return result;
     }
 
-//    @TestAnnotation_InAll
-//    @EnableDetailLog_InMain_Controller_ControllerMethod("1111")
-//    @PostMapping({"/httpCache", "/httpCache2"})
-//    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
-//    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCachePost() {
-//        log.debug("httpCache: post");
-//        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
-//        long cacheSec = 60L;
-//        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
-//        long result = System.currentTimeMillis();
-//
-//        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
-//    }
+    @TestAnnotation_InAll
+    @EnableDetailLog_InMain_Controller_ControllerMethod("1111")
+    @PostMapping({"/httpCache", "/httpCache2"})
+    @Operation(summary = "httpCache", description = "httpCache 테스트", tags = {""})
+    public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCachePost() {
+        log.debug("httpCache: post");
+        //todo : 현재 cache가 되지 않음, 이유 확인이 필요함
+        long cacheSec = 60L;
+        CacheControl cacheControl = CacheControl.maxAge(cacheSec, TimeUnit.SECONDS).cachePublic().mustRevalidate();
+        long result = System.currentTimeMillis();
+
+        return ResponseEntity.ok().cacheControl(cacheControl).body(new ApiCommonSuccessResponseDto<>(result));
+    }
 
 
 

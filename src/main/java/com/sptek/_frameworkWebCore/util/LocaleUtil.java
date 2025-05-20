@@ -10,10 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class LocaleUtil {
 
     //클레스 처음으로 사용될때 한번 실행됨, static final 상수 초기화에 사용, 생성자 보다 먼저 실행됨
     static {
-        messageSource = SpringUtil.getBean(MessageSource.class);
+        messageSource = SpringUtil.getSpringBean(MessageSource.class);
     }
 
 
