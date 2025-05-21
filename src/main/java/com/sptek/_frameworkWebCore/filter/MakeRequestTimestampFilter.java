@@ -2,8 +2,8 @@ package com.sptek._frameworkWebCore.filter;
 
 import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,7 +33,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
         //log.debug("MakeRequestTimestampFilter start");
         // 매번 호출 되는 것을 방지 하기 위해서
         if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
-            enableNoFilterAndSessionForMinorRequest_InMain = SpringUtil.hasAnnotationOnMain(EnableNoFilterAndSessionForMinorRequest_InMain.class);
+            enableNoFilterAndSessionForMinorRequest_InMain = MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class);
         }
 
         if (enableNoFilterAndSessionForMinorRequest_InMain) {

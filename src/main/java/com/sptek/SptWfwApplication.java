@@ -9,7 +9,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
-@TestAnnotation_InAll
+@TestAnnotation_InAll("abcdef")
 
 //@EnableResponseOfApplicationGlobalException_InMain
 @EnableMdcTagging_InMain
@@ -31,6 +31,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnableGlobalViewModelForStatic_InMain
 @EnableGlobalViewModelForUserAuthentication_InMain
 @EnableResponseOfApplicationGlobalException_InMain
+
+@EnableUvCheckLog_InMain
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

@@ -12,8 +12,7 @@ public class CommonConstants {
 
     public static final String LOCALE_NAME = "locale";
     public static final String TIMEZONE_NAME = "timezone";
-    public static final int LOCALE_COOKIE_MAX_AGE_SEC = 60*60*24*7;
+    public static final int LOCALE_COOKIE_MAX_AGE_SEC = 60*60*24*7; //사용자 가 설정한 로케일 정보 쿠키를 얼마 동안 보존할 것인지
 
-    public static final String UV_CHECK_LOG_CREATE_NEW = "UV_CHECK_LOG_CREATE_NEW";
-    public static final String UV_CHECK_LOG_UPDATE_EXPIRE_TIME = "UV_CHECK_LOG_UPDATE_EXPIRE_TIME";
+    public static final String UV_CHECK_LOG_NEW_VISITOR = "UV_CHECK_LOG_NEW_VISITOR";
 }

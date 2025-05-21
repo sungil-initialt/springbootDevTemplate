@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.interceptor.config;
 
 
-import com.sptek._frameworkWebCore.interceptor.UvCheckInterceptor;
+import com.sptek._frameworkWebCore.interceptor.UvCheckLogInterceptor;
 import com.sptek._frameworkWebCore.interceptor.ViewErrorLogSupportInterceptor;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +12,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorGlobalConfig implements WebMvcConfigurer {
 
-    private final UvCheckInterceptor uvCheckInterceptor;
+    private final UvCheckLogInterceptor uvCheckLogInterceptor;
     private final ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor;
 
     //조건에 따라 Interceptor 들이 Bean 으로 등독 될수도 안 될수도 있는 상황이 있기 때문에 @Nullable 을 사용한 생성자 를 직접 구현 하였음
-    public InterceptorGlobalConfig(@Nullable UvCheckInterceptor uvCheckInterceptor, @Nullable ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor) {
-        this.uvCheckInterceptor = uvCheckInterceptor;
+    public InterceptorGlobalConfig(@Nullable UvCheckLogInterceptor uvCheckLogInterceptor, @Nullable ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor) {
+        this.uvCheckLogInterceptor = uvCheckLogInterceptor;
         this.viewErrorLogSupportInterceptor = viewErrorLogSupportInterceptor;
     }
 
@@ -25,8 +25,8 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
 
         //필요한 interceptor 등록 (exampleInterceptor 참고)
-        if(uvCheckInterceptor != null) {
-            interceptorRegistry.addInterceptor(this.uvCheckInterceptor).addPathPatterns("/**")
+        if(uvCheckLogInterceptor != null) {
+            interceptorRegistry.addInterceptor(this.uvCheckLogInterceptor).addPathPatterns("/**")
                     .excludePathPatterns("/api/**")
                     .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
                     .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());

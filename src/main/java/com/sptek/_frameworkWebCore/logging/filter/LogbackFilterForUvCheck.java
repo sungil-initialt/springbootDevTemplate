@@ -10,7 +10,7 @@ public class LogbackFilterForUvCheck extends Filter<ILoggingEvent>{
 
     @Override
     public FilterReply decide(ILoggingEvent event) {
-        if (event.getMessage().startsWith(CommonConstants.UV_CHECK_LOG_CREATE_NEW)) {
+        if (event.getMessage().startsWith(CommonConstants.UV_CHECK_LOG_NEW_VISITOR)) {
             //조건에 맞을때 log 처리함
             return FilterReply.ACCEPT;
         }else{

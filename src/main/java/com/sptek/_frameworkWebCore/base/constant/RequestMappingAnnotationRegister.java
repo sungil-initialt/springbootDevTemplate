@@ -15,24 +15,25 @@ import java.util.stream.Collectors;
 
 // todo: --> 코드 개선이 필요한지 살펴보자
 @Slf4j
+
+// Controller class 와 그 내부 method 에 적용된 타멧 페키지 Annotation 정보를 모두 가지고 있는 역할
 public class RequestMappingAnnotationRegister {
-    // 컨트롤러 매서드에 적용된 타멧 페키지 어노테이션(클레스와 메소드 모두에 적용된 어노테이션) 정보를 모두 가지고 있는 역할
     private static final String TARGET_ANNOTATION_PACKAGE = "com.sptek._frameworkWebCore.annotation";
 
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
-    private static Map<String, Map<String, Map<String, Object>>> requestAnnotationCache = Collections.emptyMap();
+    private static Map<String, Map<String, Map<String, Object>>> requestAnnotationRegister = Collections.emptyMap();
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     //OPTIONS은 메소드가 없어도 스프링 단에서 처림됨, HEAD는 메소드가 없어도 스프링단에서 GET이 호출됨(단 body를 내리지 않는다)
     private static final List<String> ALL_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"/*, "OPTIONS", "HEAD"*/);
 
     public RequestMappingAnnotationRegister(ApplicationContext applicationContext) {
-        if (!requestAnnotationCache.isEmpty()) {
+        if (!requestAnnotationRegister.isEmpty()) {
             return;
         }
 
         RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-        Map<String, Map<String, Map<String, Object>>> tempRequestAnnotationCache = new HashMap<>();
+        Map<String, Map<String, Map<String, Object>>> tempRequestAnnotationRegister = new HashMap<>();
         StringBuilder logBodyForPathEmpty = new StringBuilder();
         StringBuilder logBodyForNonSpecificMapping = new StringBuilder();
 
@@ -53,15 +54,15 @@ public class RequestMappingAnnotationRegister {
 
             if (!patterns.isEmpty()) {
                 patterns.forEach(urlPattern -> {
-                    methods.forEach(method -> tempRequestAnnotationCache.put(method + ":" + urlPattern, annotations));
+                    methods.forEach(method -> tempRequestAnnotationRegister.put(method + ":" + urlPattern, annotations));
                 });
             } else {
                 logBodyForPathEmpty.append(requestMappingInfo).append("\n");
             }
         });
 
-        requestAnnotationCache = Collections.unmodifiableMap(tempRequestAnnotationCache);
-        log.debug(SptFwUtil.convertSystemNotice("Url Mapping Annotation List", requestAnnotationCache.toString()));
+        requestAnnotationRegister = Collections.unmodifiableMap(tempRequestAnnotationRegister);
+        log.debug(SptFwUtil.convertSystemNotice("Url Mapping Annotation List", requestAnnotationRegister.toString()));
         log.info(SptFwUtil.convertSystemNotice("Except Url List (PathPatternsCondition and DirectPaths are both empty)", logBodyForPathEmpty.isEmpty() ? "No List" : logBodyForPathEmpty.toString()));
         log.info(SptFwUtil.convertSystemNotice("Non-specific mapping Check List (it's not recommended)", logBodyForNonSpecificMapping.isEmpty() ? "No List" : logBodyForNonSpecificMapping.toString()));
     }
@@ -108,10 +109,10 @@ public class RequestMappingAnnotationRegister {
 
     public static boolean hasAnnotation(String methodAndUrl, Class<? extends Annotation> annotation) {
         // 우선 단순 매칭 후, 패턴 매칭
-        if (requestAnnotationCache.containsKey(methodAndUrl)) {
-            return requestAnnotationCache.get(methodAndUrl).containsKey(annotation.getName());
+        if (requestAnnotationRegister.containsKey(methodAndUrl)) {
+            return requestAnnotationRegister.get(methodAndUrl).containsKey(annotation.getName());
         } else {
-            return requestAnnotationCache.entrySet().stream()
+            return requestAnnotationRegister.entrySet().stream()
                     .anyMatch(entry -> pathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()));
         }
     }
@@ -121,10 +122,10 @@ public class RequestMappingAnnotationRegister {
     }
 
     public static Map<String, Object> getAnnotationAttributes(String methodAndUrl, Class<? extends Annotation> annotation) {
-        if (requestAnnotationCache.containsKey(methodAndUrl)) {
-            return requestAnnotationCache.get(methodAndUrl).getOrDefault(annotation.getName(), Map.of());
+        if (requestAnnotationRegister.containsKey(methodAndUrl)) {
+            return requestAnnotationRegister.get(methodAndUrl).getOrDefault(annotation.getName(), Map.of());
         } else {
-            return requestAnnotationCache.entrySet().stream()
+            return requestAnnotationRegister.entrySet().stream()
                     .filter(entry -> pathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()))
                     .findFirst()
                     .map(entry -> entry.getValue().getOrDefault(annotation.getName(), Map.of()))

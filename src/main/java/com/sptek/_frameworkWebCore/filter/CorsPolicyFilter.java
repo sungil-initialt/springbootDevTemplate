@@ -2,9 +2,9 @@ package com.sptek._frameworkWebCore.filter;
 
 import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.globalVo.CorsPropertiesVo;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._frameworkWebCore.util.SpringUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,7 +40,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         //log.debug("CorsPolicyFilter start");
         // 매번 호출되는 것을 방지 하기 위해서
         if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
-            enableNoFilterAndSessionForMinorRequest_InMain = SpringUtil.hasAnnotationOnMain(EnableNoFilterAndSessionForMinorRequest_InMain.class);
+            enableNoFilterAndSessionForMinorRequest_InMain = MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class);
         }
 
         // todo: 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요

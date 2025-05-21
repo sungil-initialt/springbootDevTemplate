@@ -3,6 +3,7 @@ package com.sptek._frameworkWebCore.filter;
 import com.sptek._frameworkWebCore.annotation.EnableDetailLog_InMain_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.*;
 import jakarta.annotation.PostConstruct;
@@ -23,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })
 //@WebFilter(urlPatterns = "/*")
-public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
+public class DetailLogFilter extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
     private Boolean enableNoFilterAndSessionForMinorRequest_InMain = null;
     private Boolean enableDetailLog_InMain_Controller_ControllerMethod = null;
@@ -40,8 +41,8 @@ public class DetailLogFilterWithAnnotation extends OncePerRequestFilter {
 
         // 매번 호출 되는 것을 방지 하기 위해서
         if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
-            enableNoFilterAndSessionForMinorRequest_InMain = SpringUtil.hasAnnotationOnMain(EnableNoFilterAndSessionForMinorRequest_InMain.class);
-            enableDetailLog_InMain_Controller_ControllerMethod = SpringUtil.hasAnnotationOnMain(EnableDetailLog_InMain_Controller_ControllerMethod.class);
+            enableNoFilterAndSessionForMinorRequest_InMain = MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class);
+            enableDetailLog_InMain_Controller_ControllerMethod = MainClassAnnotationRegister.hasAnnotation(EnableDetailLog_InMain_Controller_ControllerMethod.class);
         }
 
         if (enableNoFilterAndSessionForMinorRequest_InMain) {

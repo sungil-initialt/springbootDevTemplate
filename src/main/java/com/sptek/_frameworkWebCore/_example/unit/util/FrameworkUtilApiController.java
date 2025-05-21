@@ -23,7 +23,7 @@ import java.util.Map;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "util", description = "")
+@Tag(name = "utils", description = "")
 
 public class FrameworkUtilApiController {
     @GetMapping("/01/example/util/testRequestUtil")

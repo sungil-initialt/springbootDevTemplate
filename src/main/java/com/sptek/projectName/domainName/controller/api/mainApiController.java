@@ -2,14 +2,10 @@ package com.sptek.projectName.domainName.controller.api;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -18,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "domainName-main", description = "")
+// @Tag(name = "domainName-main", description = "")
+// 실 Project 쪽의 Security filter chain Test Code
 
 public class mainApiController {
 
+    /*
     @GetMapping("/01/domainName/main/authFree")
     @Operation(summary = "01. 권한 제한이 없는 path", description = "") //swagger
     public Object authFree() {
@@ -63,4 +61,5 @@ public class mainApiController {
     public Object needAnyAuthWhenPost() {
         return "you need Auth (Any) when you request with POST";
     }
+     */
 }

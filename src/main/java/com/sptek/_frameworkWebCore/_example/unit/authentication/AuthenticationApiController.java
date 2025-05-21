@@ -35,7 +35,7 @@ public class AuthenticationApiController {
     @GetMapping("/01/example/authentication/authFree")
     @Operation(summary = "01. 권한 제한이 없는 path", description = "") //swagger
     public Object authFree() {
-        return "Any one can access.";
+        return "Anyone can access.";
     }
 
     @GetMapping("/02/example/login/authentication/needAuth")

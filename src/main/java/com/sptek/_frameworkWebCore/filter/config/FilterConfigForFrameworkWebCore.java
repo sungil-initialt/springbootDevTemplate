@@ -50,9 +50,9 @@ public class FilterConfigForFrameworkWebCore {
 
     @Bean
     @Profile(value = { "local", "dev", "stg", "prd" })
-    public FilterRegistrationBean<DetailLogFilterWithAnnotation> detailLogFilterWithAnnotation() {
-        FilterRegistrationBean<DetailLogFilterWithAnnotation> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new DetailLogFilterWithAnnotation());
+    public FilterRegistrationBean<DetailLogFilter> detailLogFilterWithAnnotation() {
+        FilterRegistrationBean<DetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new DetailLogFilter());
         filterRegistrationBean.addUrlPatterns("/*");
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;

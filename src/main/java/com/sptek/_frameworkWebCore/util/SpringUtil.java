@@ -7,14 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.lang.annotation.Annotation;
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -31,18 +27,19 @@ public class SpringUtil implements ApplicationContextAware {
         return applicationContext.getBean(beanClass);
     }
 
-    public static boolean hasAnnotationOnMain(Class<? extends Annotation> annotation){
-        Environment environment = Objects.requireNonNull(SpringUtil.applicationContext).getEnvironment();
-        String mainClassName = environment.getProperty("sun.java.command");
-        //log.debug("mainClassName: {}", mainClassName);
-
-        try {
-            Class<?> mainClass = Class.forName(mainClassName);
-            return mainClass.isAnnotationPresent(annotation);
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
+//    // MainClassAnnotationRegister 를 사용하는 방법으로 변경
+//    public static boolean hasAnnotationOnMain(Class<? extends Annotation> annotation){
+//        Environment environment = Objects.requireNonNull(SpringUtil.applicationContext).getEnvironment();
+//        String mainClassName = environment.getProperty("sun.java.command"); // todo: 일부 JVM 환경 에서 동작 하지 않을 수도 있음
+//        //log.debug("mainClassName: {}", mainClassName);
+//
+//        try {
+//            Class<?> mainClass = Class.forName(mainClassName);
+//            return mainClass.isAnnotationPresent(annotation);
+//        } catch (ClassNotFoundException e) {
+//            return false;
+//        }
+//    }
 
     public static HttpServletRequest getRequest() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
