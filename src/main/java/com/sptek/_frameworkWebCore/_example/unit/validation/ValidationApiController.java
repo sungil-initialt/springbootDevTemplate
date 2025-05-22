@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "validation", description = "")
+@Tag(name = "Validation", description = "")
 
 public class ValidationApiController {
 

@@ -27,10 +27,10 @@ public class ExampleInterceptor implements HandlerInterceptor {
     @Override
     //컨트롤러 진입전 (인증, 권한 검사, 로깅 등의 작업 등)
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
-        log.debug("[ Interceptor >>> ({}) {} ]", request.getMethod(), RequestUtil.getRequestUrlQuery(request));
+        log.debug("\n\n[ Example Interceptor Log >>> ({}) {} ]", request.getMethod(), RequestUtil.getRequestUrlQuery(request));
 
         if (handler instanceof HandlerMethod handlerMethod) {
-            log.debug("preHandle information : \n" +
+            log.debug("---> 1. Interceptor preHandle\n" +
                             "getMethod : {}\n" +
                             "getBeanType : {}\n" +
                             "getReturnType : {}\n" +
@@ -49,7 +49,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     //컨트롤러 처리후 view 렌더링 전(모델에 데이터 추가, 응답 수정 등)
     public void postHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, ModelAndView modelAndView) {
         if (handler instanceof HandlerMethod) {
-            log.debug("postHandle");
+            log.debug("---> 3. Interceptor postHandle");
             // do what you want.
         }
     }
@@ -58,7 +58,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     //View가 렌더링되고 요청이 완료된 후 (주요 자원 정리, 예외 처리 로깅 등)
     public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) {
         if (handler instanceof HandlerMethod) {
-            log.debug("afterCompletion");
+            log.debug("---> 4. Interceptor afterCompletion \n\n");
             // do what you want,
         }
     }

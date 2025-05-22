@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.unit.usefulComponent;
+package com.sptek._frameworkWebCore._example.unit.argumentResolver;
 
 import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import com.sptek._frameworkWebCore.annotation.EnableArgumentResolver_InParam;
@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.*;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "useful Component", description = "")
+@Tag(name = "Argument Resolver", description = "")
 
-public class UsefulComponentApiController {
+public class ArgumentResolverApiController {
 
-    @PostMapping(value = "/01/example/usefulComponent/withoutArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value = "/01/example/argumentResolver/withoutArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @Operation(summary = "01. ArgumentResolver 비적용", description = "")
     public Object withoutArgumentResolver(@ModelAttribute ExUserDto exUserDto) {
         //단순히 바인딩 처리됨
         return exUserDto;
     }
 
-    @PostMapping(value = "/02/example/usefulComponent/withArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value = "/02/example/argumentResolver/withArgumentResolver", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @Operation(summary = "02. ArgumentResolver 적용", description = "")
     public Object withArgumentResolver(@EnableArgumentResolver_InParam ExUserDto exUserDto) {
         //정의에 따라 바인딩 처리됨 ArgumentResolver(ExampleArgumentResolverForExUserDto)

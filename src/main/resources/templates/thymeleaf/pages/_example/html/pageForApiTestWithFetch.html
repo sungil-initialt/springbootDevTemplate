@@ -58,7 +58,7 @@
     <script>
         document.getElementById('deDuplication1').addEventListener('click', async function() {
             try {
-                const data = await requestFetch('/duplicatedRequest', {
+                const data = await requestFetch('/domain1/duplicatedRequest', {
                     useTimestamp: true,
                 });
                 console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
@@ -75,7 +75,7 @@
     <script>
         document.getElementById('deDuplication2').addEventListener('click', async function() {
             try {
-                const data = await requestFetch('/duplicatedRequest', {
+                const data = await requestFetch('/domain1/duplicatedRequest', {
                 });
                 console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
             } catch (error) {
@@ -110,7 +110,7 @@
 
         document.getElementById('sendForRsa').addEventListener('click', async function() {
             try {
-                const data = await requestFetch('/decryptRsa', {
+                const data = await requestFetch('/domain1/decryptRsa', {
                     method: 'POST',
                     body: document.getElementById('rsaEncryptText').value
                 });

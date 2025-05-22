@@ -20,7 +20,7 @@ public class SptFwUtil {
 
     public static String convertSystemNotice(String tagName, String title, String logBody) {
         return String.format(
-                "%s\n\n"
+                "%s\n"
                         + "--------------------\n"
                         + "SPT-FW [ **** %s **** ]\n"
                         + "--------------------\n"

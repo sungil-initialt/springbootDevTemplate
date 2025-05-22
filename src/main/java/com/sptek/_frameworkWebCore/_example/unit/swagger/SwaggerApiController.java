@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "swagger Annotation", description = "")
+@Tag(name = "Swagger Annotation", description = "")
 
 public class SwaggerApiController {
 

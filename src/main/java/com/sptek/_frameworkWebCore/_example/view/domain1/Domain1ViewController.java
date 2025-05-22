@@ -2,12 +2,10 @@ package com.sptek._frameworkWebCore._example.view.domain1;
 
 import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +13,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.ZoneId;
@@ -32,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
 @EnableResponseOfViewGlobalException_InViewController
+@RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
 public class Domain1ViewController {
     @NonFinal
@@ -43,27 +38,6 @@ public class Domain1ViewController {
     public String pageForFetchTest() {
         return htmlBasePath + "pageForApiTestWithFetch";
     }
-
-
-//
-//    //기본 테스트
-//    @PostMapping({"/postUrl"})
-//    public String postUrl(Model model) {
-//        model.addAttribute("message", "postUrl");
-//        return htmlBasePath + "welcome";
-//    }
-
-
-
-    @RequestMapping("/interceptor")
-    @TestAnnotation_InAll
-    public String interceptor(Model model) {
-        log.debug("origin caller here.");
-        model.addAttribute("message", "welcome");
-        return htmlBasePath + "interceptor";
-    }
-
-
 
 
 
@@ -102,31 +76,15 @@ public class Domain1ViewController {
         return htmlBasePath + "i18n";
     }
 
-    //thyleaf 에러 처리 테스트
-    @GetMapping("/validationWithBindingResult")
-    public String validationWithBindingResult(ValidatedDto validationTestDto) {
-        //thyleaf 쪽에 default 값을 만들기 위해 validationTestDto 필요함
 
-        log.debug("called by GET");
-        return htmlBasePath + "validationWithBindingResult";
-    }
 
-    @PostMapping("/validationWithBindingResult")
-    public String validationWithBindingResult(@Valid ValidatedDto validationTestDto, BindingResult bindingResult) {
-        log.debug("called by POST");
 
-        if (bindingResult.hasErrors()) {
-            return htmlBasePath + "validationWithBindingResult";
-        }
 
-        if (StringUtils.hasText(validationTestDto.getEmail()) && validationTestDto.getEmail().contains("@naver.com")) {
-            bindingResult.rejectValue("email", "emailFail", "네이버 메일은 사용할 수 없습니다.");
-            return htmlBasePath + "validationWithBindingResult";
-        }
 
-        //do what you want.
-        return "redirect:" + "validationWithBindingResult";
-    }
+
+
+
+
 
     //todo : Document에 대한 cache 처리를 위한건데.. 현재 cache 가 동작하지 않음(이유 확인이 필요함)
     @RequestMapping("/httpCache")

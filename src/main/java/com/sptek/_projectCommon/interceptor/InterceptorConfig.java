@@ -21,7 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         //필요한 interceptor 등록 (exampleInterceptor 참고)
         if(exampleInterceptor != null) {
-            interceptorRegistry.addInterceptor(this.exampleInterceptor).addPathPatterns("/yourInterceptorPath/**")
+            interceptorRegistry.addInterceptor(this.exampleInterceptor).addPathPatterns("/*/01/projectName/interceptor/**")
 //                    .excludePathPatterns("/api/**")
 //                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
 //                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns())

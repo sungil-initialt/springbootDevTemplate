@@ -101,9 +101,13 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
             );
 
+            // todo: Annotation 이 main 과 controller 에 각각 적용 되어 있을때 controller 쪽의 tab 값으로 처리 되야 하는데 현재 그렇게 동작 하는지 확인 필요
             //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
             String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLog_InMain_Controller_ControllerMethod.class).get("value"));
-            log.info("Tag Name: " + SptFwUtil.convertSystemNotice(StringUtils.hasText(tagName) ? tagName : "No Name","Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
+            log.info("↓ Tag Name: " + SptFwUtil.convertSystemNotice(
+                        StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "No tag name"
+                        ,"Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody)
+                    );
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableResponseOfApiCommonSuccess_InRestController
 @EnableResponseOfApiGlobalException_InRestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "database", description = "")
+@Tag(name = "Database", description = "")
 
 public class DatabaseApiController {
     private final DatabaseService databaseService;
