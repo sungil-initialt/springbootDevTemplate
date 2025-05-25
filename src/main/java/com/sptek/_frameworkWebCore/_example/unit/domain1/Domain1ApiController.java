@@ -2,7 +2,6 @@ package com.sptek._frameworkWebCore._example.unit.domain1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
-import com.sptek._frameworkWebCore.annotation.EnableDeduplicationRequest_InRestController_RestControllerMethod;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
@@ -160,14 +159,7 @@ public class Domain1ApiController {
         return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
     }
 
-    @EnableDeduplicationRequest_InRestController_RestControllerMethod
-    @RequestMapping(value="/duplicatedRequest", method = {RequestMethod.GET, RequestMethod.POST})
-    public Object duplicatedRequest() throws Exception {
-        //log.debug("AOP order : ??");
-        String result = "duplicatedRequest test ok";
-        Thread.sleep(3000L);
-        return result;
-    }
+
 
 //    @TestAnnotation_InAll
 //    @EnableDetailLog_InMain_Controller_ControllerMethod("1111")

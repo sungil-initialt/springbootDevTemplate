@@ -20,12 +20,14 @@
     </script>
 </head>
 <body>
-<div class="inner-div">
-    시스템 에서 기본 제공 하는 에러 페이지 가이드 입니다<br>
-    400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.
-</div>
 
 <div class="base-div">
+    <div>
+        시스템 에서 기본 제공 하는 에러 페이지 가이드 입니다<br>
+        400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.
+    </div>
+    <br>
+
     <label class="label-normal"> >> 존재하지 않는 URL (GET /xxx) :</label>
     <button class="btn-normal" id="notExist">404 Not Exist URL</button>
     <script>
@@ -78,46 +80,7 @@
         프로파일에 따라 프로퍼티 " ignoreCustomErrorViewForDebug: true " 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
     </div>
 </div>
-
-
-<div class="inner-div">
-    abc
-</div>
 <br>
-
-<div class="base-div">
-    <label>async :</label> <button id="deDuplication1">deDuplication</button>
-    <script>
-        document.getElementById('deDuplication1').addEventListener('click', async function() {
-            try {
-                const data = await requestFetch('/duplicatedRequest', {
-                    useTimestamp: true,
-                });
-                console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-            } catch (error) {
-                console.error("Error requestFetch:", error);
-            }
-        });
-    </script>
-</div>
-<br>
-
-<div class="base-div">
-    <label>sync :</label> <button id="deDuplication2">deDuplication</button>
-    <script>
-        document.getElementById('deDuplication2').addEventListener('click', async function() {
-            try {
-                const data = await requestFetch('/duplicatedRequest', {
-                });
-                console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-            } catch (error) {
-                console.error("Error requestFetch:", error);
-            }
-        });
-    </script>
-</div>
-<br>
-
 
 <div class="base-div">
     <label>plainText for RSA :</label> <input type="text" id="plainText" placeholder="Enter Confidential Information" style="width: 400px;"/>
@@ -155,56 +118,5 @@
 </div>
 <br>
 
-<!--<div>-->
-<!--    <button id="btn3">httpCache(async)</button>-->
-<!--    <script>-->
-<!--        document.getElementById('btn3').addEventListener('click', function() {-->
-<!--            const apiUrl = host + 'httpCache'; // 실제 API 주소로 변경 필요-->
-
-<!--            // 로컬 스토리지에서 Last-Modified 값을 가져옴-->
-<!--            let lastModified = localStorage.getItem("lastModified");-->
-
-<!--            // 요청 헤더 설정-->
-<!--            const headers = {};-->
-
-<!--            // 이전 요청에서 받은 Last-Modified 값이 있다면 If-Modified-Since 추가-->
-<!--            if (lastModified) {-->
-<!--                headers["If-Modified-Since"] = lastModified;-->
-<!--            }-->
-
-<!--            // Fetch 요청 설정-->
-<!--            const options = {-->
-<!--                method: 'GET',-->
-<!--                headers: headers, // 동적으로 설정된 헤더 사용-->
-<!--                cache: "default", // 브라우저 캐시 정책 사용-->
-<!--            };-->
-
-<!--            fetch(apiUrl, options)-->
-<!--                .then(response => {-->
-<!--                    // 응답이 200 OK인 경우: 새로운 데이터를 받아서 캐시 업데이트-->
-<!--                    if (response.status === 200) {-->
-<!--                        const newLastModified = response.headers.get("Last-Modified");-->
-<!--                        if (newLastModified) {-->
-<!--                            localStorage.setItem("lastModified", newLastModified);-->
-<!--                        }-->
-<!--                        return response.json(); // JSON 데이터 반환-->
-<!--                    }-->
-<!--                    // 응답이 304 Not Modified인 경우: 기존 캐시된 데이터 사용-->
-<!--                    else if (response.status === 304) {-->
-<!--                        console.log("304 Not Modified: Using cached data.");-->
-<!--                        return Promise.resolve(null);-->
-<!--                    }-->
-<!--                })-->
-<!--                .then(data => {-->
-<!--                    if (data) {-->
-<!--                        console.log("Received Data:", data);-->
-<!--                    } else {-->
-<!--                        console.log("Using Cached Data.");-->
-<!--                    }-->
-<!--                })-->
-<!--                .catch(error => console.error('Error:', error));-->
-<!--        });-->
-<!--    </script>-->
-<!--</div>-->
 </body>
 </html>

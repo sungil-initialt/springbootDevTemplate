@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+  <script type="module" th:inline="javascript">
+    import { requestFetch, rsaEncrypt } from [[@{/js/_framework/frameworkUtil.js}]];
+    window.requestFetch = requestFetch;
+    window.rsaEncrypt = rsaEncrypt;
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>Prevent Duplicate Request</b>
+  </div>
+
+  <div>
+    <label class="label-normal">async GET with time Stamp param (browser 가 동일 요청 차단을 막는 것을 방지) :</label> <button class="btn-normal" id="request1">request1</button>
+    <script>
+      document.getElementById('request1').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+            useTimestamp: true,
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async POST :</label> <button class="btn-normal" id="request2">request2</button>
+    <script>
+      document.getElementById('request2').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+            method: 'POST',
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div><br>
+
+  <div>
+    <label class="label-normal">sync request from browser :</label> <button class="btn-normal" id="asyncRequest">Promise All</button>
+    <script>
+      document.getElementById('asyncRequest').addEventListener('click', async function() {
+        try {
+          // 두 요청을 동시에 실행
+          const [data1, data2] = await Promise.all([
+            requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+              useTimestamp: true,
+            }),
+            requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+              useTimestamp: true,
+            })
+          ]);
+
+          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
+          console.log('response 2:', typeof data2 === 'string' ? data2 : JSON.stringify(data2, null, 2));
+        } catch (error) {
+          console.error("Error in requestFetch:", error);
+        }
+      });
+    </script>
+  </div><br>
+
+</div>
+
+</body>
+</html>

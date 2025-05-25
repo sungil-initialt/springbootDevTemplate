@@ -43,7 +43,7 @@ HttpStatus.OK(200)
  * @param {Object} options - 사용자 정의 옵션 (method, headers, body, query 등)
  * @returns {Promise<any>} 응답 JSON 또는 필요한 데이터
  */
-const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api/v1';
+const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api';
 //console.log("API_BASE_URL: " + API_BASE_URL);
 
 export async function requestFetch(url, options = {}) {
@@ -90,7 +90,7 @@ export async function requestFetch(url, options = {}) {
     fetchOptions.signal = controller.signal;
 
 
-    // 5. 실제 처리 !!
+    // 5. 실제 처리
     try {
         const response = await fetch(fullUrl, fetchOptions);
         clearTimeout(timeoutId);
