@@ -30,7 +30,23 @@
   </div>
 
   <div>
-    <label class="label-normal">async GET with time Stamp param (browser 가 동일 요청 차단을 막는 것을 방지) :</label> <button class="btn-normal" id="request1">request1</button>
+    <label class="label-normal">async GET :</label> <button class="btn-normal" id="request0">request</button>
+    <script>
+      document.getElementById('request0').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async GET (with time Stamp query) :</label> <button class="btn-normal" id="request1">request</button>
     <script>
       document.getElementById('request1').addEventListener('click', async function() {
         try {
@@ -47,7 +63,7 @@
   <br>
 
   <div>
-    <label class="label-normal">async POST :</label> <button class="btn-normal" id="request2">request2</button>
+    <label class="label-normal">async POST :</label> <button class="btn-normal" id="request2">request</button>
     <script>
       document.getElementById('request2').addEventListener('click', async function() {
         try {
