@@ -33,7 +33,7 @@ public class EncryptionApiController {
         return encValue;
     }
 
-    @PostMapping("/02/exampleencryption/allTypeEncryptForString")
+    @PostMapping("/02/example/encryption/allTypeEncryptForString")
     @Operation(summary = "02. plain text 파람에 대해 DES, AES, RSA, Jasypt 로 각각 암/복호화 처리", description = "")
     public Object allTypeEncryptForString(@RequestBody String plainText) {
         //4가지 방식으로 암호화 처리

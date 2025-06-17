@@ -50,7 +50,8 @@ public class SystemSupportController {
         return serverName;
     }
 
-    @GetMapping("/healthCheck")
+    //notEssential 를 경로에 포함하여 주요 필터 및 logging 처리를 막는다.
+    @GetMapping("/notEssential/healthCheck")
     @Operation(summary = "healthCheck api", description = "") //swagger
     public Object healthCheck() {
         return "ok";

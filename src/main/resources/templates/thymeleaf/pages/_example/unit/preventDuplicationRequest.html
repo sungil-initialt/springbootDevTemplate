@@ -30,7 +30,7 @@
   </div>
 
   <div>
-    <label class="label-normal">async GET :</label> <button class="btn-normal" id="request0">request</button>
+    <label class="label-normal">async fetch GET request: 브라우저가 중복 요청을 강제적으로 순차 처리함</label> <button class="btn-normal" id="request0">request</button>
     <script>
       document.getElementById('request0').addEventListener('click', async function() {
         try {
@@ -46,7 +46,7 @@
   <br>
 
   <div>
-    <label class="label-normal">async GET (with time Stamp query) :</label> <button class="btn-normal" id="request1">request</button>
+    <label class="label-normal">async fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request1">request</button>
     <script>
       document.getElementById('request1').addEventListener('click', async function() {
         try {
@@ -63,7 +63,7 @@
   <br>
 
   <div>
-    <label class="label-normal">async POST :</label> <button class="btn-normal" id="request2">request</button>
+    <label class="label-normal">async fetch POST request: post 는 강제 순차 처리 되지 않음</label> <button class="btn-normal" id="request2">request</button>
     <script>
       document.getElementById('request2').addEventListener('click', async function() {
         try {
@@ -73,30 +73,6 @@
           console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
         } catch (error) {
           console.error("Error requestFetch:", error);
-        }
-      });
-    </script>
-  </div><br>
-
-  <div>
-    <label class="label-normal">sync request from browser :</label> <button class="btn-normal" id="asyncRequest">Promise All</button>
-    <script>
-      document.getElementById('asyncRequest').addEventListener('click', async function() {
-        try {
-          // 두 요청을 동시에 실행
-          const [data1, data2] = await Promise.all([
-            requestFetch('/01/example/deduplication/preventDuplicateRequest', {
-              useTimestamp: true,
-            }),
-            requestFetch('/01/example/deduplication/preventDuplicateRequest', {
-              useTimestamp: true,
-            })
-          ]);
-
-          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
-          console.log('response 2:', typeof data2 === 'string' ? data2 : JSON.stringify(data2, null, 2));
-        } catch (error) {
-          console.error("Error in requestFetch:", error);
         }
       });
     </script>

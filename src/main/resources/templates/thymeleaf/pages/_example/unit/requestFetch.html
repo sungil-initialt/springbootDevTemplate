@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+  <script type="module" th:inline="javascript">
+    import { requestFetch, rsaEncrypt, API_BASE_URL} from [[@{/js/_framework/frameworkUtil.js}]];
+    window.requestFetch = requestFetch;
+    window.rsaEncrypt = rsaEncrypt;
+    window.apiBaseUrl = API_BASE_URL;
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>JS Fetch 사용</b>
+  </div>
+
+  <div>
+    <label class="label-normal">async fetch request with All opts</label> <button class="btn-normal" id="request0">request</button>
+    <script>
+      document.getElementById('request0').addEventListener('click', async function() {
+        try {
+          const data1 = await requestFetch('/systemSupportApi/projectInfo', {
+            baseUrl: apiBaseUrl.replace("/api", ""), // systemSupportApi 는 base 경로가 다름
+            method: 'GET', // 요청 방식 지정
+            headers: {
+              'Authorization': 'Bearer your-token-here', // 커스텀 헤더 추가
+              'X-Custom-Header': 'my-value'
+            },
+            body: {
+              name: 'Lee sung il',
+            },
+            query: {
+              lang: 'ko',
+            },
+            useTimestamp: true, // 캐시 회피용
+            timeout: 5000, // 5초 초과 시 Abort
+            rawResponseOpt: false, // 원본 아닌 JSON 파싱된 응답 사용
+            showErrorAlertOpt: true, // 오류 발생 시 alert 띄움
+            credentialsOpt: 'include' // 쿠키 포함 요청 (예: 인증용)
+          });
+
+          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
+        } catch (error) {
+          console.error("Error in requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async fetch GET multy request:</label> <button class="btn-normal" id="request1">Promise All</button>
+    <script>
+      document.getElementById('request1').addEventListener('click', async function() {
+        try {
+          // 두 요청을 동시에 실행
+          const [data1, data2] = await Promise.all([
+            requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+            }),
+            requestFetch('/systemSupportApi/serverName', {
+              baseUrl: apiBaseUrl.replace("/api", "")
+            })
+          ]);
+
+          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
+          console.log('response 2:', typeof data2 === 'string' ? data2 : JSON.stringify(data2, null, 2));
+        } catch (error) {
+          console.error("Error in requestFetch:", error);
+        }
+      });
+    </script>
+  </div><br>
+
+</div>
+
+</body>
+</html>

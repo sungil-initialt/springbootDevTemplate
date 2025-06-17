@@ -22,7 +22,7 @@ logging:
 
     org:
       #Mybatis
-      mybatis: error #(debug -> sqlSession 처리과정 확인)
+      mybatis: error #(debug -> sqlSession 처리 과정 확인)
       apache.ibatis: error
 
       #JPA

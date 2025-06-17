@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.unit.encryption;
+package com.sptek._frameworkWebCore._example.unit.requestFetch;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import lombok.RequiredArgsConstructor;
@@ -10,17 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
-@Controller
 @RequiredArgsConstructor
+@Controller
 @EnableResponseOfViewGlobalException_InViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
-public class EncryptionViewController {
+public class RequestFetchViewController {
+
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
 
-    @GetMapping("/encryption/encryptionForWeb")
+    @GetMapping("/jsApiCall/requestFetch")
     public String preventDuplicateRequest() {
-        return htmlBasePath + "encryption";
+        return htmlBasePath + "requestFetch";
     }
 }

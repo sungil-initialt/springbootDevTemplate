@@ -43,7 +43,7 @@ HttpStatus.OK(200)
  * @param {Object} options - 사용자 정의 옵션 (method, headers, body, query 등)
  * @returns {Promise<any>} 응답 JSON 또는 필요한 데이터
  */
-const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api';
+export const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api';
 //console.log("API_BASE_URL: " + API_BASE_URL);
 
 export async function requestFetch(url, options = {}) {
@@ -57,7 +57,10 @@ export async function requestFetch(url, options = {}) {
         timeout = 10000,    // 기본 timeout 10초
         rawResponseOpt = false, // JSON 파싱 말고 원본 응답 받고 싶을 때
         showErrorAlertOpt = true, // 에러 메시지 알림 표시 여부
-        credentialsOpt = 'same-origin', // 기본적으로 same-origin 설정, 필요에 따라 변경 가능
+        credentialsOpt = 'same-origin', //브라우저와 fetch url이 동일한 경우만
+        //credentialsOpt = 'omit', //쿠키및 보안정보 항상 안보냄
+        //credentialsOpt = 'include', //브라우저와 fetch url이 다르더라도 fetch url과 관련된 쿠키 및 보안정보를 보냄 (CORS 관련 Access-Control-Allow-Credentials: true 설정 필요)
+
     } = options;
 
 
@@ -171,7 +174,8 @@ try {
 
 export async function rsaEncrypt(plainText) {
     try {
-        const response = await requestFetch('/system-support-api/rsaPublicKeyBase64', {
+        const response = await requestFetch('/systemSupportApi/rsaPublicKeyBase64', {
+            baseUrl: API_BASE_URL.replace("/api", ""),
         });
         console.log('response:', typeof response === 'string' ? response : JSON.stringify(response, null, 2));
 
