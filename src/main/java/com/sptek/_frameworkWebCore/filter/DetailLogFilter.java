@@ -82,7 +82,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
         String requestBody = SptFwUtil.getRequestBody(contentCachingRequestWrapper);
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
 
-        if(request.getRequestURI().startsWith("/api/")) {
+        if((request.getRequestURI().startsWith("/api/") || request.getRequestURI().startsWith("/systemSupportApi/")) && !request.getRequestURI().contains("/notEssential/") ) {
             String responseBody = SptFwUtil.getResponseBody(contentCachingResponseWrapper);
             String logBody = String.format(
                       "session : %s\n"

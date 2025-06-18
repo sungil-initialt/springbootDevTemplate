@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore._systemController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
 import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHandlerForView;
@@ -60,11 +59,11 @@ public class SystemSupportController {
     @GetMapping("/rsaPublicKeyBase64")
     @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공 api", description = "") //swagger
     public Object rsaPublicKeyBase64() {
-        String plainText = "originPlainText";
-        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText);
-        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
+//        String plainText = "originPlainText";
+//        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText);
+//        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
+//        log.debug("plainText: {}, decryptedText: {}, decryptedText: {}", plainText, encryptedText, decryptedText);
 
-        log.debug("plainText: {}, decryptedText: {}, decryptedText: {}", plainText, encryptedText, decryptedText);
         return Base64.getEncoder().encodeToString(RsaEncryptor.getPublicKey().getEncoded());
     }
 
