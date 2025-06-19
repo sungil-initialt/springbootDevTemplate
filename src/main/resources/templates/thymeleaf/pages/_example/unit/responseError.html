@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!-- Default Layout Import-->
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
@@ -7,28 +6,32 @@
       layout:fragment="Content"
 >
 <head>
-    <title>Fetch 테스트 페이지</title>
+    <title>테스트 페이지</title>
+
     <!-- inline CSS 영역-->
     <link rel="stylesheet" th:href="@{/css/_example.default.css}">
     <style th:inline="css" type="text/css">
     </style>
 
     <!-- inline JS 영역-->
+    <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
     <script type="module" th:inline="javascript">
-        import { requestFetch, rsaEncrypt } from [[@{/js/_framework/frameworkUtil.js}]];
+        import { requestFetch, rsaEncrypt, API_BASE_URL} from [[@{/js/_framework/frameworkUtil.js}]];
         window.requestFetch = requestFetch;
+        window.rsaEncrypt = rsaEncrypt;
+        window.apiBaseUrl = API_BASE_URL;
     </script>
 </head>
-<body>
 
+<body>
 <div class="base-div">
-    <div>
-        시스템 에서 기본 제공 하는 에러 페이지 가이드 입니다<br>
-        400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.
+    <div class="inner-div">
+        <b>Global Error Views</b>
     </div>
+    <p>400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.</p>
     <br>
 
-    <label class="label-normal"> >> 존재하지 않는 URL (GET /xxx) :</label>
+    <p>• 존재 하지 않는 URL (GET /xxx) :</p>
     <button class="btn-normal" id="notExist">404 Not Exist URL</button>
     <script>
         document.getElementById('notExist').addEventListener('click', function () {
@@ -37,7 +40,7 @@
         });
     </script><br><br>
 
-    <label class="label-normal"> >> 존재하지 않는 Request Method (POST /index) :</label>
+    <p>• 지원 하지 않는 Request Method (POST /index) :</p>
     <button class="btn-normal" id="notSupportMethod">405 Not Support Method</button>
     <script>
         document.getElementById('notSupportMethod').addEventListener('click', function () {
@@ -49,7 +52,7 @@
         });
     </script><br><br>
 
-    <label class="label-normal"> >> Runtime Exception (GET /runtimeException) :</label>
+    <p>• Runtime Exception (GET /runtimeException) :</p>
     <button class="btn-normal" id="runtimeException">500 Runtime Exception</button>
     <script>
         document.getElementById('runtimeException').addEventListener('click', function () {
@@ -58,7 +61,7 @@
         });
     </script><br><br>
 
-    <label class="label-normal"> >> Service Exception (GET /serviceException) :</label>
+    <p>• Service Exception (GET /serviceException) :</p>
     <button class="btn-normal" id="serviceException">400 Service Exception</button>
     <script>
         document.getElementById('serviceException').addEventListener('click', function () {
@@ -67,7 +70,7 @@
         });
     </script><br><br>
 
-    <label class="label-normal"> >> Authentication Exception (GET /authException) :</label>
+    <p>• Authentication Exception (GET /authException) :</p>
     <button class="btn-normal" id="authException">401/403 Authentication Exception</button>
     <script>
         document.getElementById('authException').addEventListener('click', function () {
@@ -76,45 +79,9 @@
         });
     </script><br><br>
 
-    <div class="inner-div">
+    <p>
         프로파일에 따라 프로퍼티 " ignoreCustomErrorViewForDebug: true " 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
-    </div>
-</div>
-<br>
-
-<div class="base-div">
-    <label>plainText for RSA :</label> <input type="text" id="plainText" placeholder="Enter Confidential Information" style="width: 400px;"/>
-    <button id="encrypt">Encrypt</button>
-    <br><br>
-    <label>rsa Encrypted :</label> <input type="text" id="rsaEncryptText" style="width: 400px;"/>
-    <button id="sendForRsa">send to server</button>
-    <script>
-        document.getElementById('encrypt').addEventListener('click', async function () {
-            try {
-                const plainText = document.getElementById('plainText').value;
-                if (!plainText) {
-                    alert(" PlainText is required");
-                    return;
-                }
-                const encryptedData = await rsaEncrypt(plainText);
-                document.getElementById('rsaEncryptText').value = encryptedData;
-            } catch (error) {
-                console.error('Error rsaEncrypt:', error);
-            }
-        });
-
-        document.getElementById('sendForRsa').addEventListener('click', async function() {
-            try {
-                const data = await requestFetch('/decryptRsa', {
-                    method: 'POST',
-                    body: document.getElementById('rsaEncryptText').value
-                });
-                console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-            } catch (error) {
-                console.error("Error requestFetch:", error);
-            }
-        });
-    </script>
+    </p>
 </div>
 <br>
 

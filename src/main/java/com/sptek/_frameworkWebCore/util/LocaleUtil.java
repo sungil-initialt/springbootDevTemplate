@@ -2,10 +2,9 @@ package com.sptek._frameworkWebCore.util;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import jakarta.servlet.http.Cookie;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -127,20 +126,19 @@ public class LocaleUtil {
         return localeDtos;
     }
 
-    @AllArgsConstructor
     @Getter
-    @Setter
-    public static class LocaleDto{
-        public String languageCode;
-        public String countryCode;
-        public String timeZone;
+    @ToString
+    public static class LocaleDto {
+        private final String languageCode;
+        private final String countryCode;
+        private final String timeZone;
+        private final String queryString;
 
-        public String toString() {
-            return languageCode + "-" + countryCode + " " + timeZone;
-        }
-
-        public String toLocaleParam() {
-            return String.format("locale=%s-%s&timezone=%s", languageCode, countryCode, timeZone);
+        public LocaleDto(String languageCode, String countryCode, String timeZone) {
+            this.languageCode = languageCode;
+            this.countryCode = countryCode;
+            this.timeZone = timeZone;
+            this.queryString = String.format("locale=%s-%s&timezone=%s", languageCode, countryCode, timeZone);
         }
     }
 }

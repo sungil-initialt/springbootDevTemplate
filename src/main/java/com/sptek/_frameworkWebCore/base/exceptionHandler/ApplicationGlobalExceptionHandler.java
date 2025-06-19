@@ -92,7 +92,7 @@ public class ApplicationGlobalExceptionHandler {
                 .map(Object::toString)
                 .orElse("");
 
-        if (requestUri.startsWith("/api/") || errorRequestUri.startsWith("/api/")) {
+        if (requestUri.startsWith("/api/") || requestUri.startsWith("/systemSupportApi/") || errorRequestUri.startsWith("/api/") || errorRequestUri.startsWith("/systemSupportApi/")) {
             ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ex.getMessage());
             return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
 

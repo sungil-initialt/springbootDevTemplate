@@ -23,7 +23,7 @@ public class InterceptorApiController {
     @GetMapping("/01/projectName/interceptor/interceptorGuide")
     @Operation(summary = "01. Interceptor 구성을 위한 기본 가이드 ", description = "")
     public Object interceptorGuide() {
-        log.debug("---> 2. Inside Controller");
+        log.debug("---> 2. Inside of Controller");
         return "Log 와 ExampleInterceptor class 를 참고 하세요.";
     }
 

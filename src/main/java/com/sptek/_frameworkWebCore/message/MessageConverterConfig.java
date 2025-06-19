@@ -36,7 +36,6 @@ public class MessageConverterConfig implements WebMvcConfigurer {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
         objectMapper.getFactory().setCharacterEscapes(new XssProtectHelper()); //Xss 방지 적용
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
         return objectMapper;
     }
 

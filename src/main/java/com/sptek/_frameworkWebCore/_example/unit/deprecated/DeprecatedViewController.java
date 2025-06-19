@@ -1,10 +1,8 @@
-package com.sptek._frameworkWebCore._example.view.domain1;
+package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.sptek._frameworkWebCore._example.dto.*;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -13,14 +11,9 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -30,61 +23,9 @@ import java.util.concurrent.TimeUnit;
 @EnableResponseOfViewGlobalException_InViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
-public class Domain1ViewController {
+public class DeprecatedViewController {
     @NonFinal
-    private final String htmlBasePath = "pages/_example/html/";
-
-    @GetMapping({"/pageForApiTestWithFetch"})
-    public String pageForFetchTest() {
-        return htmlBasePath + "pageForApiTestWithFetch";
-    }
-
-
-
-
-
-
-
-    @RequestMapping("/i18n")
-    public String i18n(Model model) {
-        ZonedDateTime zonedDateTimeForSystem = ZonedDateTime.now(ZoneId.systemDefault());
-        ZonedDateTime zonedDateTimeForUser = ZonedDateTime.now(LocaleUtil.getCurTimeZone().toZoneId());
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String systemFormattedDateTime = zonedDateTimeForSystem.format(dateTimeFormatter);
-        String userFormattedDateTime = zonedDateTimeForUser.format(dateTimeFormatter);
-
-        //Controller 에서 다국어 변환을 직접 하는 케이스
-        String welcome = LocaleUtil.getI18nMessage("welcome", SecurityUtil.getUserAuthentication().getName());
-        String language = LocaleUtil.getI18nMessage("language");
-
-        String userLanguageTag = LocaleUtil.getCurLanguageTag();
-        String userTimeZone = LocaleUtil.getCurTimeZoneName();
-
-        model.addAttribute("welcome", welcome);
-        model.addAttribute("language", language);
-        model.addAttribute("userLanguageTag", userLanguageTag);
-        model.addAttribute("userTimeZone", userTimeZone);
-        model.addAttribute("systemFormattedDateTime", systemFormattedDateTime);
-        model.addAttribute("userFormattedDateTime", userFormattedDateTime);
-
-        List<LocaleUtil.LocaleDto> localeDtos = LocaleUtil.getMajorLocales();
-        for(LocaleUtil.LocaleDto localeDto : localeDtos) {
-            log.debug(localeDto.toString() + " : " + localeDto.toLocaleParam());
-        }
-
-        return htmlBasePath + "i18n";
-    }
-
-
-
-
-
-
-
-
-
-
+    private final String htmlBasePath = "pages/_example/unit/";
 
     //todo : Document에 대한 cache 처리를 위한건데.. 현재 cache 가 동작하지 않음(이유 확인이 필요함)
     @RequestMapping("/httpCache")
@@ -118,7 +59,6 @@ public class Domain1ViewController {
 
         //example 2
         ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsNProductDto.class);
-
         ExampleADto exampleADto = ExampleADto.builder()
                 .aDtoLastName("이")
                 .aDtoFirstName("성일")
@@ -126,7 +66,6 @@ public class Domain1ViewController {
 
         //example 3
         ExampleBDto exampleBDto = ModelMapperUtil.map(exampleADto, ExampleBDto.class);
-
         Map<String, Object> result = new HashMap();
         result.put("ExampleProductDto-origin", exampleProductDto);
         result.put("ExampleProductDto-exampleGoodsDto", exampleGoodsDto);

@@ -12,18 +12,12 @@ public class ViewControllerConfig implements WebMvcConfigurer {
     //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함
     @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
-        //swagger.
+        //for swagger.
         viewControllerRegistry.addRedirectViewController("/api/demo-ui.html", "/demo-ui.html");
 
         //별도 컨트럴러 매핑 없이 view로 넘어가도록 설정 (이경우 @ControllerAdvice 가 동작 하지 않음을 주의)
         viewControllerRegistry.addViewController("/").setViewName("/pages/_example/unit/index");
-
-        viewControllerRegistry.addViewController("/none").setViewName("/pages/_example/html/none");
-        viewControllerRegistry.addViewController("/temporaryParkingPageForXXX").setViewName("/pages/_example/html/temporaryParkingView");
-        viewControllerRegistry.addViewController("/sorry").setViewName("/pages/_example/html/temporaryParkingView");
         viewControllerRegistry.addViewController("/fileUpload").setViewName("/pages/_example/html/fileUpload");
-        viewControllerRegistry.addViewController("/pageForSubmitTest").setViewName("/pages/_example/html/pageForSubmitTest");
-        viewControllerRegistry.addViewController("/pageForApiTest").setViewName("/pages/_example/html/pageForApiTest");
     }
 
     /*

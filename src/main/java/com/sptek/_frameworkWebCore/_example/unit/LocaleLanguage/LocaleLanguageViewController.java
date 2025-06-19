@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,32 +30,28 @@ public class LocaleLanguageViewController {
     public String i18n(Model model) {
         ZonedDateTime zonedDateTimeForSystem = ZonedDateTime.now(ZoneId.systemDefault());
         ZonedDateTime zonedDateTimeForUser = ZonedDateTime.now(LocaleUtil.getCurTimeZone().toZoneId());
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         String systemFormattedDateTime = zonedDateTimeForSystem.format(dateTimeFormatter);
         String userFormattedDateTime = zonedDateTimeForUser.format(dateTimeFormatter);
-
-        //Controller 에서 다국어 변환을 직접 하는 케이스
-        String welcome = LocaleUtil.getI18nMessage("welcome"
-                , new Object[] {SecurityUtil.getUserAuthentication().getName()
-                        , SecurityUtil.getUserAuthentication().getAuthorities()});
-
-        String language = LocaleUtil.getI18nMessage("language");
 
         String userLanguageTag = LocaleUtil.getCurLanguageTag();
         String userTimeZone = LocaleUtil.getCurTimeZoneName();
 
-        model.addAttribute("welcome", welcome);
-        model.addAttribute("language", language);
+        String language = LocaleUtil.getI18nMessage("language");
+        //Controller 에서 다국어 변환을 직접 하는 케이스
+        String welcome = LocaleUtil.getI18nMessage("welcome"
+                , new Object[] {SecurityUtil.getUserAuthentication().getName()
+                        , SecurityUtil.getUserAuthentication().getAuthorities().toString().replaceAll("\\[|ROLE_|AUTH_|\\]", "")});
+
         model.addAttribute("userLanguageTag", userLanguageTag);
         model.addAttribute("userTimeZone", userTimeZone);
+
+        model.addAttribute("language", language);
+        model.addAttribute("welcome", welcome);
+
         model.addAttribute("systemFormattedDateTime", systemFormattedDateTime);
         model.addAttribute("userFormattedDateTime", userFormattedDateTime);
-
-        List<LocaleUtil.LocaleDto> localeDtos = LocaleUtil.getMajorLocales();
-        for(LocaleUtil.LocaleDto localeDto : localeDtos) {
-            log.debug(localeDto.toString() + " : " + localeDto.toLocaleParam());
-        }
 
         return htmlBasePath + "localeLanguage";
     }

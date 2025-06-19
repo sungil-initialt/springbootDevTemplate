@@ -20,7 +20,7 @@
 
 <body>
 <div>
-    부가정보를 입력 하세요:<br>
+    부가 정보를 입력 하세요:<br>
     <input id="fileDescription" name="fileDescription" type="text"><br><br>
     <input name="uploadFiles" type="file" multiple>
     <button class="uploadBtn">Upload</button>
@@ -44,7 +44,7 @@
             for(let i = 0; i<result.result.length; i++){
                 const reqParams = 'uuidForFileName=' + result.result[i].uuidForFileName + '&originFileName=' + result.result[i].originFileName;
                 alert(reqParams);
-                divArea.append("<img src='/api/v1/byteForImage?"+reqParams+"' alt='..null'>");
+                divArea.append("<img src='/api/0/example/byteForImage?"+reqParams+"' alt='..null'>");
             }
         }
 
@@ -54,7 +54,7 @@
         /*실제 업로드 부분*/
         /*upload ajax*/
         $.ajax({
-            url: '/api/v1/fileUpload',
+            url: '/api/0/example/fileUpload',
             processData: false,
             contentType: false, // 파일 업로드를 multipart/form-data 타입을 사용하기 위함
             data: formData,

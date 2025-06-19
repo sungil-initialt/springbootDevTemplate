@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.unit.domain1;
+package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
@@ -51,10 +51,10 @@ import java.util.function.Predicate;
 //@EnableDetailLogFilter("aaa")
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-@RequestMapping(value = {"/api/v1/domain1/"})
-@Tag(name = "domain1", description = "테스트를 위한 기본 api 그룹") // for swagger
+@RequestMapping(value = {"/api/"})
+@Tag(name = "Deprecate 예정", description = "Deprecate 예정 APIs") // for swagger
 
-public class Domain1ApiController {
+public class DeprecatedApiController {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
     private final ProjectInfoVo projectInfoVo;
@@ -69,7 +69,7 @@ public class Domain1ApiController {
 
 
 
-    @GetMapping("/closeableHttpClient")
+    @GetMapping("/0/example/closeableHttpClient")
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
     public Object closeableHttpClient() throws Exception{
         log.debug("closeableHttpClient identityHashCode : {}", System.identityHashCode(closeableHttpClient));
@@ -82,7 +82,7 @@ public class Domain1ApiController {
         return EntityUtils.toString(httpEntity);
     }
 
-    @GetMapping("/closeableHttpClientSupport")
+    @GetMapping("/0/example/closeableHttpClientSupport")
     //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
     public Object closeableHttpClientSupport() throws Exception{
         log.debug("closeableHttpClientSupport identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
@@ -93,7 +93,7 @@ public class Domain1ApiController {
         return CloseableHttpClientSupport.convertResponseToString(httpEntity);
     }
 
-    @GetMapping("/restTemplate")
+    @GetMapping("/0/example/restTemplate")
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하여 req 요청
     public Object restTemplate() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
@@ -106,7 +106,7 @@ public class Domain1ApiController {
         return responseEntity.getBody();
     }
 
-    @GetMapping("/restTemplateSupport")
+    @GetMapping("/0/example/restTemplateSupport")
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
     public Object restTemplateSupport() {
         ResponseEntity<String> responseEntity = restTemplateSupport.requestGet(fooResponseUrl, null, null);
@@ -121,7 +121,7 @@ public class Domain1ApiController {
 
 
 
-    @PostMapping(value = "/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
             , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
             , @RequestParam("fileDescription") String fileDescription) throws Exception {
@@ -136,7 +136,7 @@ public class Domain1ApiController {
         return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
     }
 
-    @GetMapping(value = "/byteForImage")
+    @GetMapping(value = "/0/example/byteForImage")
     public ResponseEntity<byte[]> byteForImage(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
             , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
@@ -177,7 +177,7 @@ public class Domain1ApiController {
 
 
 
-    @GetMapping("/httpCache")
+    @GetMapping("/0/example/httpCache")
     public ResponseEntity<ApiCommonSuccessResponseDto<Long>> httpCacheGet(HttpServletResponse response, HttpServletRequest request) {
         log.debug("xxx");
         // 현재 시간 (밀리초)
@@ -217,7 +217,7 @@ public class Domain1ApiController {
         return ResponseEntity.ok().body(new ApiCommonSuccessResponseDto<>(currentTimeMillis));
     }
 
-    @GetMapping("/exampleEvent")
+    @GetMapping("/0/example/exampleEvent")
     public Object exampleEvent() {
         customEventPublisher.publishEvent(ExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
         return "published exampleEvent ";

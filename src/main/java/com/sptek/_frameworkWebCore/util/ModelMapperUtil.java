@@ -25,9 +25,9 @@ public class ModelMapperUtil {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STANDARD) //MatchingStrategies.LOOSE, MatchingStrategies.STRICT
-                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE) //get,set이 없는 외부 클레의 private 필드에 직접 접근가능
-                .setSkipNullEnabled(true) //src쪽 값이 null 일때 바인딩하지 않으며 des쪽 값을 그데로 유지함
-                .setAmbiguityIgnored(true); //모호한 매핑상황에서 에러를 ex를 발생시키지 않고 mapper가 판단하여 처리함
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE) //get,set이 없는 외부 클레의 private 필드에 직접 접근 가능
+                .setSkipNullEnabled(true) //src 쪽 값이 null 일때 바인딩 하지 않으며 des쪽 값을 그데로 유지함
+                .setAmbiguityIgnored(true); //모호한 매핑 상황 에서 에러를 ex를 발생 시키지 않고 mapper 가 판단 하여 처리함
 
         //todo: 계속해서 추가? (괜찮은 방법일까? 고민필요)
         modelMapper.createTypeMap(ExampleProductDto.class, ExampleGoodsDto.class).addMappings(
@@ -48,7 +48,7 @@ public class ModelMapperUtil {
         return modelMapper;
     }
 
-    //실행시간 테스트를 위해 임시로 만듬
+    //실행 시간 테스트 를 위해 임시로 만듬
     public static <S, D> D map(S sourceObject, Class<D> destinationType) {
         //for execute time test.
         long starttime = System.currentTimeMillis();

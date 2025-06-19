@@ -7,6 +7,7 @@ import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
 import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHandlerForView;
 import com.sptek._frameworkWebCore.springSecurity.spt.RedirectHelperAfterLogin;
+import com.sptek._frameworkWebCore.util.LocaleUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,22 +52,22 @@ public class SystemSupportController {
 
     //notEssential 를 경로에 포함하여 주요 필터 및 logging 처리를 막는다.
     @GetMapping("/notEssential/healthCheck")
-    @Operation(summary = "healthCheck api", description = "") //swagger
+    @Operation(summary = "healthCheck 용 api 제공", description = "") //swagger
     public Object healthCheck() {
         return "ok";
     }
 
     @GetMapping("/rsaPublicKeyBase64")
-    @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공 api", description = "") //swagger
+    @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공", description = "") //swagger
     public Object rsaPublicKeyBase64() {
-//        String plainText = "originPlainText";
-//        String encryptedText = GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText);
-//        String decryptedText = GlobalEncryptor.decrypt(encryptedText);
-//        log.debug("plainText: {}, decryptedText: {}, decryptedText: {}", plainText, encryptedText, decryptedText);
-
         return Base64.getEncoder().encodeToString(RsaEncryptor.getPublicKey().getEncoded());
     }
 
+    @GetMapping("/supportedLocaleLanguage")
+    @Operation(summary = "지원 하는 Locale/Language 목록 제공", description = "") //swagger
+    public Object supportedLocaleLanguage() {
+        return LocaleUtil.getMajorLocales();
+    }
 
     @Controller
     @RequiredArgsConstructor
