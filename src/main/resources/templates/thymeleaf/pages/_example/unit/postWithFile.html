@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+  <script type="module" th:inline="javascript">
+    import { requestFetch, rsaEncrypt, API_BASE_URL} from [[@{/js/_framework/frameworkUtil.js}]];
+    window.requestFetch = requestFetch;
+    window.rsaEncrypt = rsaEncrypt;
+    window.apiBaseUrl = API_BASE_URL;
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>Post with Files</b>
+  </div>
+
+  <div>
+    <label class="label-normal">title:</label>
+    <input class="input-normal" type="text" style="width: 250px;" id="title" />
+    <label class="label-normal">content:</label>
+    <input class="input-normal" type="text" style="width: 250px;" id="content" />
+    <br><br>
+
+    <input class="input-normal" type="file"  id="files" style="width: 250px;" multiple>
+    <br><br>
+
+    <button class="btn-normal" type="button" id="uploadFiles">Upload Files</button>
+    <script>
+      document.getElementById('uploadFiles').addEventListener('click', async function() {
+        const formData = new FormData();
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+        const files = document.getElementById("files").files;
+
+        formData.append("title", title);
+        formData.append("content", content);
+        for (let i = 0; i < files.length; i++) {
+          formData.append("files", files[i]); // 서버에서 List<MultipartFile> files 로 받을 수 있음
+        }
+
+        try {
+          const data1 = await requestFetch('/01/example/multipartFile/multipartFilePost', {
+            method: 'POST',
+            body: formData
+          });
+
+          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
+        } catch (error) {
+          console.error("Error in requestFetch:", error);
+        }
+      });
+    </script>
+  </div><br>
+
+</div>
+
+</body>
+</html>

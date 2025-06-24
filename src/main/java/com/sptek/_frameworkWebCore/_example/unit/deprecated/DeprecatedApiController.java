@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
+import com.sptek._frameworkWebCore._example.unit.database.DatabaseService;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
@@ -11,7 +11,6 @@ import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
-import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +25,11 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
@@ -39,8 +40,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.function.Predicate;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,7 +63,7 @@ public class DeprecatedApiController {
     private final RestTemplateSupport restTemplateSupport;
     private final ObjectMapper objectMapper;
     private final CustomEventPublisher customEventPublisher;
-
+    private final DatabaseService databaseService;
 
 
 
@@ -106,6 +105,7 @@ public class DeprecatedApiController {
         return responseEntity.getBody();
     }
 
+
     @GetMapping("/0/example/restTemplateSupport")
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
     public Object restTemplateSupport() {
@@ -120,21 +120,42 @@ public class DeprecatedApiController {
 
 
 
+//    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> filesUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
+//            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
+//            , @RequestPart("extraData") TbTestDto extraData) throws Exception {
+//
+//        MultipartFileUploadSupport multipartFileUploadSupport = new MultipartFileUploadSupport(
+//                new MultipartFilesUploadServiceForEx(()-> databaseService.insertTbTest(extraData)));
+//
+//        multipartFileUploadSupport.uploadFile(extraData, uploadFiles);
+//
+//
+//
+//        String additionalPath = ""; //로그인 계정 번호등 필요한 구분 디렉토리 가 있다면 추가
+//        Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
+//        List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
+//
+//        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
+//    }
 
-    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
-            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
-            , @RequestParam("fileDescription") String fileDescription) throws Exception {
 
-        log.debug("file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
-        //todo: 실제 상황에서는 부가정보 저장 처리등 조치 필요
 
-        String additionalPath = ""; //로그인계정번호등 필요한 구분 디렉토리가 있는다면 추가
-        Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
-        List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
 
-        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
-    }
+//    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
+//            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
+//            , @RequestParam("fileDescription") String fileDescription) throws Exception {
+//
+//        log.debug("file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
+//        //todo: 실제 상황에서는 부가정보 저장 처리등 조치 필요
+//
+//        String additionalPath = ""; //로그인 계정 번호등 필요한 구분 디렉토리 가 있다면 추가
+//        Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
+//        List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
+//
+//        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
+//    }
 
     @GetMapping(value = "/0/example/byteForImage")
     public ResponseEntity<byte[]> byteForImage(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath

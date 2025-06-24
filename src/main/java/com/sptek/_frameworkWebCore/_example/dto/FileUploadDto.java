@@ -12,14 +12,13 @@ import java.nio.charset.StandardCharsets;
 @AllArgsConstructor
 @Slf4j
 public class FileUploadDto implements Serializable {
-    private String uuidForFileName;
     private String originFileName;
-
-    public String getUuidForFileName() {
-        return URLEncoder.encode(uuidForFileName, StandardCharsets.UTF_8);
-    }
+    private String finalFileName;
 
     public String getOriginFileName() {
         return URLEncoder.encode(originFileName, StandardCharsets.UTF_8);
+    }
+    public String getFinalFileName() {
+        return URLEncoder.encode(finalFileName, StandardCharsets.UTF_8);
     }
 }

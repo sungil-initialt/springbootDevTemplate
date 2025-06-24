@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -70,4 +73,8 @@ public class SpringUtil implements ApplicationContextAware {
         throw new IllegalStateException("No request bound to current thread");
     }
 
+    public static Object getApplicationProperty(String key) {
+        Environment environment = Objects.requireNonNull(applicationContext).getEnvironment();
+        return environment.getProperty("key"); // todo: 일부 JVM 환경 에서 동작 하지 않을 수도 있음
+    }
 }

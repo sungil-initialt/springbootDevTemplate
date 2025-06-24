@@ -15,5 +15,4 @@ public class TbTestDto {
     private int c1;
     private int c2;
     private int c3;
-
 }
