@@ -1,7 +1,8 @@
-package com.sptek._frameworkWebCore.support.MultipartFileUploadSupport;
+package com.sptek._frameworkWebCore._example.unit.multipartFilePost;
 
-import com.sptek._frameworkWebCore._example.dto.PostExDto;
+import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
 import com.sptek._frameworkWebCore._example.dto.FileUploadDto;
+import com.sptek._frameworkWebCore._example.dto.PostExDto;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.util.FileUtil;
@@ -23,12 +24,18 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service
 
-public class MultipartFilesUploadServiceForEx {
+public class MultipartFilePostService {
     private final MyBatisCommonDao myBatisCommonDao;
 
     @Transactional(readOnly = false)
-    public PostExDto composeInsertJobs(@Nullable PostExDto postExDto, @Nullable MultipartFile[] multipartFiles) throws Exception {
+    public PostExDto createPost(ExamplePostDto examplePostDto, List<MultipartFile> multipartFiles) throws Exception {
         checkFileValidation(multipartFiles);
+
+        this.myBatisCommonDao.insert("framework_example.insertPostEx", examplePostDto);
+
+        //-->셀렉트해서 파일쪽 dto를 체우고 파일 테이블 인서트 필요
+        this.myBatisCommonDao.insert("framework_example.insertPostEx", examplePostDto);
+
 
         if(postExDto != null) {
             insertDb(postExDto);
@@ -43,14 +50,21 @@ public class MultipartFilesUploadServiceForEx {
     }
 
     @Transactional(readOnly = false)
-    public List<FileUploadDto> composeUpdateJobs(@Nullable MultipartFile[] multipartFiles) throws Exception {
+    public List<FileUploadDto> updatePost(@Nullable MultipartFile[] multipartFiles) throws Exception {
         return null;
     }
 
     @Transactional(readOnly = false)
-    public List<FileUploadDto> composeDeleteJobs(@Nullable MultipartFile[] multipartFiles) throws Exception {
+    public List<FileUploadDto> deletePost(@Nullable MultipartFile[] multipartFiles) throws Exception {
         return null;
     }
+
+
+
+
+
+
+
 
     public int insertDb(PostExDto postExDto) {
         return this.myBatisCommonDao.insert("framework_example.insertPostEx", postExDto);
@@ -68,7 +82,7 @@ public class MultipartFilesUploadServiceForEx {
         return postExDto;
     }
 
-    public void checkFileValidation(@Nullable MultipartFile[] multipartFiles) throws Exception{
+    public void checkFileValidation(@Nullable List<MultipartFile> multipartFiles) throws Exception{
         long maxSize = 5 * 1024 * 1024;
 
         if (multipartFiles != null) {

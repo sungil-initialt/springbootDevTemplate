@@ -58,4 +58,11 @@
         ]]>
     </select>
 
+    <select id="insertPostEx" resultType="com.sptek._frameworkWebCore._example.dto.PostExDto">
+        <![CDATA[
+        INSERT INTO POST_EX (BOARD_NAME, CREATE_AT, UPDATE_AT, USER_ID, USER_EMAIL, USER_NAME)
+        VALUES (#{boardName}, NOW(), NOW(), #{userId}, #{userEmail}, #{userName})
+        ]]>
+    </select>
+
 </mapper>

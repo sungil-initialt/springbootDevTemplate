@@ -1,34 +1,17 @@
 package com.sptek._frameworkWebCore._example.dto;
 
-import com.sptek._frameworkWebCore._example.dto.IF.MultiPartPostBaseIF;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.sptek._projectCommon.commonDtos.FileBaseDto;
+import com.sptek._projectCommon.commonDtos.PostBaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.nio.file.Path;
-import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@Builder
-@AllArgsConstructor
 @Data
-public class ExamplePostDto extends MultiPartPostBaseIF {
-    private String title;
-    private String content;
+public class ExamplePostDto extends PostBaseDto {
+    String title;
+    String content;
 
-    @Override
-    public Path getBaseFilePath() {
-        String categoryDir = "exPost";
-
-        return Path.of(categoryDir
-                , String.valueOf(LocalDate.now().getYear())
-                , String.valueOf(LocalDate.now().getMonthValue())
-                , String.valueOf(LocalDate.now().getDayOfMonth()));
-    }
-
-    @Override
-    public Path getFinalFilePath() {
-        return getBaseFilePath().resolve(Path.of(String.valueOf(getPostId() == null ? "" : getPostId())));
-    }
+    private List<FileBaseDto> attachedFiles;
 }

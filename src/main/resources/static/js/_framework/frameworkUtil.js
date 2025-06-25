@@ -76,7 +76,6 @@ export async function requestFetch(url, options = {}) {
     const fetchOptions = {
         method,
         headers: {
-            'Content-Type': 'application/json',
             ...headers,
         },
         credentials: credentialsOpt, // todo: credentials 테스트 필요
@@ -84,7 +83,21 @@ export async function requestFetch(url, options = {}) {
 
     // 3. body 처리 (GET/HEAD에는 넣지 않음)
     if (body && method !== 'GET' && method !== 'HEAD') {
-        fetchOptions.body = typeof body === 'string' ? body : JSON.stringify(body);
+        // FormData인 경우: Content-Type을 브라우저가 자동으로 설정하게 둔다
+        if (body instanceof FormData) {
+            fetchOptions.body = body;
+            // Content-Type 명시 X (브라우저가 boundary 포함한 multipart/form-data 자동 설정)
+        }
+        // 문자열인 경우: 그대로 사용하고 Content-Type은 직접 지정
+        else if (typeof body === 'string') {
+            fetchOptions.body = body;
+            fetchOptions.headers['Content-Type'] = 'application/json'; // 혹은 text/plain도 가능
+        }
+        // 객체인 경우: JSON으로 직렬화해서 전송
+        else if (typeof body === 'object') {
+            fetchOptions.body = JSON.stringify(body);
+            fetchOptions.headers['Content-Type'] = 'application/json';
+        }
     }
 
     // 4. AbortController로 timeout 설정
@@ -105,15 +118,27 @@ export async function requestFetch(url, options = {}) {
         let responseJson = await response.json();
         if (!response.ok) {
             if (showErrorAlertOpt) {
-                if (responseJson?.resultCode?.startsWith('GE')) {
-                    alert('에러가 발생 하였습니다. 관리자에 문의 주세요\n\n' + responseJson.resultCode + '\n' + responseJson.resultMessage + '\n' + responseJson.exceptionMessage);
+                const code = responseJson?.resultCode ?? '';
+                const message = responseJson?.resultMessage ?? '';
+                const exception = responseJson?.exceptionMessage;
 
-                } else if (responseJson?.resultCode?.startsWith('SE')) {
-                    if (response.status === 429) { // HTTP 429: Too Many Requests
+                if (code.startsWith('GE')) {
+                    let alertMsg = '에러가 발생 하였습니다. 관리자에 문의 주세요\n\n';
+                    alertMsg += `${code}\n${message}`;
+                    if (exception) {
+                        alertMsg += `\n${exception}`;
+                    }
+                    alert(alertMsg);
+
+                } else if (code.startsWith('SE')) {
+                    if (response.status === 429) {
                         console.error('Too many requests. This error has been ignored.');
-
                     } else {
-                        alert(responseJson.exceptionMessage);
+                        if (exception) {
+                            alert(exception);
+                        } else {
+                            alert(message || '알 수 없는 오류가 발생했습니다.');
+                        }
                     }
                 }
             }
