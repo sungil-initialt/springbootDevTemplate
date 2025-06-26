@@ -8,6 +8,8 @@ import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.SpringUtil;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonDtos.PostBaseDto;
+import com.sptek._projectCommon.commonDtos.UploadFileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,39 +17,76 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 
 public class MultipartFilePostService {
+
     private final MyBatisCommonDao myBatisCommonDao;
 
     @Transactional(readOnly = false)
-    public PostExDto createPost(ExamplePostDto examplePostDto, List<MultipartFile> multipartFiles) throws Exception {
+    public ExamplePostDto createPost(ExamplePostDto examplePostDto, List<MultipartFile> multipartFiles) throws Exception {
         checkFileValidation(multipartFiles);
 
+        //파일외 정보 저장
         this.myBatisCommonDao.insert("framework_example.insertPostEx", examplePostDto);
+        examplePostDto.setUploadFileDtos(this.makeUploadFileDtoReady(examplePostDto, multipartFiles));
 
-        //-->셀렉트해서 파일쪽 dto를 체우고 파일 테이블 인서트 필요
-        this.myBatisCommonDao.insert("framework_example.insertPostEx", examplePostDto);
-
-
-        if(postExDto != null) {
-            insertDb(postExDto);
-            postExDto = selectDb(postExDto);
-        }
-
-        if(multipartFiles != null) {
-            postExDto.setSavedFileNames(saveMultipartFiles(multipartFiles, postExDto.getFinalFilePath()));
-        }
-
-        return postExDto;
+        return examplePostDto;
     }
+
+    public List<UploadFileDto> makeUploadFileDtoReady(PostBaseDto postBaseDto, List<MultipartFile> multipartFiles) throws Exception {
+        Path rootFilePath = Path.of((String) SpringUtil.getApplicationProperty("storage.localMultipartFilesBasePath"));
+
+        Path postFilePath = Path.of(
+                postBaseDto.getBoardName()
+                , LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+                , String.valueOf(postBaseDto.getPostId())
+        );
+
+        Path realPostFilePath = rootFilePath.resolve(postFilePath);
+        Files.createDirectories(realPostFilePath);
+
+        Optional.ofNullable(postBaseDto.getUploadFileDtos()).ifPresent(uploadFileDtos ->
+                uploadFileDtos.forEach(uploadFileDto -> {
+                    uploadFileDto.setPostId(postBaseDto.getPostId());
+                    uploadFileDto.setFilePath(postFilePath.toString());
+
+                    Path realPostFilePathName = realPostFilePath.resolve(uploadFileDto.getFileName());
+                    if (Files.notExists(realPostFilePathName)) {
+                        multipartFiles.stream()
+                                .filter(multipartFile -> uploadFileDto.getFileName().equals(multipartFile.getOriginalFilename()))
+                                .findFirst()
+                                .ifPresentOrElse(multipartFile -> {
+                                    String multipartFileName = FileUtil.extractFileNameOnly(multipartFile.getOriginalFilename());
+
+                                    try {
+                                        String finalFileName = UUID.randomUUID() + multipartFileName.substring(multipartFileName.lastIndexOf("."));
+                                        multipartFile.transferTo(Path.of(realPostFilePath.toString(), finalFileName));
+                                        uploadFileDto.setFileName(finalFileName);
+
+
+                                        log.info("파일 저장 완료: {} -> {}", multipartFileName, finalFileName);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(String.format("%s 파일 저장 중 오류 발생", multipartFileName), e);
+                                    }
+                                }, () -> {
+                                    log.warn("{} 파일이 Multipart 목록에 없음", uploadFileDto.getFileName());
+                                });
+                    }
+                })
+        );
+        return postBaseDto.getUploadFileDtos();
+    }
+
 
     @Transactional(readOnly = false)
     public List<FileUploadDto> updatePost(@Nullable MultipartFile[] multipartFiles) throws Exception {
@@ -58,12 +97,6 @@ public class MultipartFilePostService {
     public List<FileUploadDto> deletePost(@Nullable MultipartFile[] multipartFiles) throws Exception {
         return null;
     }
-
-
-
-
-
-
 
 
     public int insertDb(PostExDto postExDto) {
