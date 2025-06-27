@@ -9,27 +9,35 @@ CREATE TABLE IF NOT EXISTS TEST (
     c3 varchar(10)
 );
 
-CREATE TABLE IF NOT EXISTS POST_EX (
-                         BOARD_NAME VARCHAR(100) NOT NULL,
-                         POST_ID BIGINT auto_increment NOT NULL,
-                         CREATE_AT DATETIME NOT NULL,
-                         UPDATE_AT DATETIME NOT NULL,
+create table PUBLIC.POST_EXAMPLE
+(
+    BOARD_ID       BIGINT NOT NULL,
+    BOARD_NAME     CHARACTER VARYING(100) NOT NULL,
+    POST_ID        BIGINT auto_increment,
+    CREATE_AT      TIMESTAMP NOT NULL,
+    UPDATE_AT      TIMESTAMP NOT NULL,
 
-                         USER_ID BIGINT NOT NULL,
-                         USER_EMAIL VARCHAR(255),
-                         USER_NAME VARCHAR(255),
+    USER_ID        BIGINT NOT NULL,
+    USER_EMAIL     CHARACTER VARYING(255),
+    USER_NAME      CHARACTER VARYING(255),
 
-                         BASE_FILE_PATH VARCHAR(1024),
+    TITLE          VARCHAR(200),
+    CONTENT        TEXT,
 
-                         PRIMARY KEY (BOARD_NAME, POST_ID),
-                         CONSTRAINT FK_POSTEX_USER FOREIGN KEY (USER_ID) REFERENCES USERS(ID)
+    primary key (BOARD_ID, POST_ID),
+    constraint FK_POSTEXAMPLE_USER
+        foreign key (USER_ID) references PUBLIC.USERS (ID)
 );
 
-CREATE TABLE IF NOT EXISTS POST_FILES (
-                            BOARD_NAME VARCHAR(100) NOT NULL,
-                            POST_ID BIGINT NOT NULL,
-                            FILE_PATH_NAME VARCHAR(1024),
+create table PUBLIC.POST_FILES
+(
+    BOARD_ID       BIGINT NOT NULL,
+    POST_ID        BIGINT NOT NULL,
 
-                            CONSTRAINT FK_POSTFILES_POST FOREIGN KEY (BOARD_NAME, POST_ID)
-                                REFERENCES POST_EX (BOARD_NAME, POST_ID)
+    FILE_NAME      CHARACTER VARYING(255),
+    FILE_ORDER     INT,
+    FILE_PATH      CHARACTER VARYING(255),
+
+    constraint FK_POSTFILES_POST
+        foreign key (BOARD_ID, POST_ID) references PUBLIC.POST_EXAMPLE (BOARD_ID, POST_ID)
 );

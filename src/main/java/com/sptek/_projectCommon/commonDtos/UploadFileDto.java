@@ -4,9 +4,11 @@ import lombok.Data;
 
 @Data
 public class UploadFileDto {
-    private long postId;
-    private String filePath;
+    private Long boardId;
+    private Long postId;
+
     private String fileName;
-    private int fileOrder;
+    private Integer fileOrder;
+    private String filePath; //서버 에서 생성됨
 }
 

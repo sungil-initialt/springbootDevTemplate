@@ -58,11 +58,48 @@
         ]]>
     </select>
 
-    <insert id="insertPostEx" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="insertExamplePostDto" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" useGeneratedKeys="true" keyProperty="postId">
         <![CDATA[
-        INSERT INTO POST_EX (BOARD_NAME, CREATE_AT, UPDATE_AT, USER_ID, USER_EMAIL, USER_NAME)
+        INSERT INTO POST_EXAMPLE (BOARD_ID, BOARD_NAME, CREATE_AT, UPDATE_AT, USER_ID, USER_EMAIL, USER_NAME, TITLE, CONTENT)
         VALUES (#{boardName}, NOW(), NOW(), #{userId}, #{userEmail}, #{userName})
         ]]>
     </insert>
 
+    <select id="selectExamplePostDto" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" resultType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto">
+        <![CDATA[
+        SELECT *
+        FROM POST_EXAMPLE
+        <where>
+            POST_ID = #{postId}
+        </where>
+        ]]>
+    </select>
+
+    <insert id="insertUploadFileDtos" parameterType="java.util.List">
+        <![CDATA[
+        INSERT INTO POST_FILES (
+            BOARD_ID, POST_ID, FILE_NAME, FILE_ORDER, FILE_PATH
+        )
+        VALUES
+        <foreach collection="list" item="uploadFileDto" separator=",">
+            (
+            #{uploadFileDto.boardId},
+            #{uploadFileDto.postId},
+            #{uploadFileDto.fileName},
+            #{uploadFileDto.fileOrder},
+            #{uploadFileDto.filePath}
+            )
+        </foreach>
+        ]]>
+    </insert>
+
+    <select id="selectUploadFileDto" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" resultType="com.sptek._frameworkWebCore._example.dto.UploadFileDto">
+        <![CDATA[
+        SELECT *
+        FROM POST_FILES
+        <where>
+            BOARD_ID = #{boardId} and POST_ID = #{postId}
+        </where>
+        ]]>
+    </select>
 </mapper>
