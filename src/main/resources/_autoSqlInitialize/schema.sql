@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS TEST (
     c3 varchar(10)
 );
 
-create table PUBLIC.POST_EXAMPLE
+CREATE TABLE IF NOT EXISTS PUBLIC.POST_EXAMPLE
 (
-    BOARD_ID       BIGINT NOT NULL,
-    BOARD_NAME     CHARACTER VARYING(100) NOT NULL,
-    POST_ID        BIGINT auto_increment,
+    POST_ID        BIGINT AUTO_INCREMENT,
+    BOARD_ID       INT,
+    BOARD_NAME     CHARACTER VARYING(100),
     CREATE_AT      TIMESTAMP NOT NULL,
     UPDATE_AT      TIMESTAMP NOT NULL,
 
@@ -24,20 +24,18 @@ create table PUBLIC.POST_EXAMPLE
     TITLE          VARCHAR(200),
     CONTENT        TEXT,
 
-    primary key (BOARD_ID, POST_ID),
-    constraint FK_POSTEXAMPLE_USER
-        foreign key (USER_ID) references PUBLIC.USERS (ID)
+    primary key (POST_ID)
 );
 
-create table PUBLIC.POST_FILES
+CREATE TABLE IF NOT EXISTS PUBLIC.POST_FILES
 (
-    BOARD_ID       BIGINT NOT NULL,
     POST_ID        BIGINT NOT NULL,
+    BOARD_ID       INT,
 
     FILE_NAME      CHARACTER VARYING(255),
     FILE_ORDER     INT,
     FILE_PATH      CHARACTER VARYING(255),
 
     constraint FK_POSTFILES_POST
-        foreign key (BOARD_ID, POST_ID) references PUBLIC.POST_EXAMPLE (BOARD_ID, POST_ID)
+        foreign key (POST_ID) references PUBLIC.POST_EXAMPLE (POST_ID)
 );

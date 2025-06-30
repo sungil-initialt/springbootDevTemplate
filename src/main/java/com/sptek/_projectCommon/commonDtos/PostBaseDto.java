@@ -6,16 +6,16 @@ import java.util.List;
 
 @Data
 public abstract class PostBaseDto {
-    private Long boardId = 1L;
     private Long postId;
-    private String boardName = "POST_EX";
+    private Integer boardId;
+    private String boardName;
 
     private String createAt;
     private String updateAt;
 
-    private Long userId = 1L;
-    private String userEmail = "sungilry@naver.com";
-    private String userName = "이성일1";
+    private Long userId;
+    private String userEmail;
+    private String userName;
 
     private List<UploadFileDto> uploadFileDtos;
 }

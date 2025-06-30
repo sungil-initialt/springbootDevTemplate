@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class UploadFileDto {
-    private Long boardId;
     private Long postId;
+    private Integer boardId;
 
     private String fileName;
     private Integer fileOrder;

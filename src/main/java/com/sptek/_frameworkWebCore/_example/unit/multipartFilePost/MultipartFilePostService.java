@@ -1,15 +1,18 @@
 package com.sptek._frameworkWebCore._example.unit.multipartFilePost;
 
 import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
+import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
+import com.sptek._frameworkWebCore.springSecurity.spt.CustomUserDetails;
 import com.sptek._frameworkWebCore.util.FileUtil;
-import com.sptek._frameworkWebCore.util.SpringUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import com.sptek._projectCommon.commonDtos.PostBaseDto;
 import com.sptek._projectCommon.commonDtos.UploadFileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,18 +33,39 @@ import java.util.stream.Stream;
 public class MultipartFilePostService {
 
     private final MyBatisCommonDao myBatisCommonDao;
+    @Value("${storage.multipartFile.localRootFilePath}")
+    private String localRootFilePath;
 
     @Transactional(readOnly = false)
     public ExamplePostDto createPost(ExamplePostDto examplePostDto, List<MultipartFile> multipartFiles) throws Exception {
-        //컨첸츠 정보 저장
-        this.myBatisCommonDao.insert("framework_example.insertPostEx", examplePostDto);
+        //임시로 셋팅
+        examplePostDto.setBoardId(1);
+        examplePostDto.setBoardName("POST_EX");
+
+        //작성자 정보 셋팅
+        setCurrentUserInfo(examplePostDto);
+        
+        //text insert
+        this.insertExamplePostDto(examplePostDto);
 
         //파일과 관련한 처리 후 UploadFileDtos 재 설정
         examplePostDto.setUploadFileDtos(this.doFileJob(examplePostDto, multipartFiles));
+
+        //UploadFileDtos insert
+        this.insertUploadFileDtos(examplePostDto.getUploadFileDtos());
         return examplePostDto;
     }
     
-    
+    public void setCurrentUserInfo(PostBaseDto postBaseDto) {
+        // SecurityUtil.getUserAuthentication().isAuthenticated() 을 사용 하지 않는 이유는 spring-security 가 비 로그인 상태도 anonymousUser 상태의 로그인 으로 간주 하는게 default 이기 때문
+        // 디볼트 동작 으로 인한 장점이 있기 때문에.. 그대로 유지 시킴
+        if (!CommonConstants.ANONYMOUS_USER.contains(SecurityUtil.getUserAuthentication().getPrincipal().toString())) {
+            postBaseDto.setUserId(((CustomUserDetails) SecurityUtil.getUserAuthentication().getPrincipal()).getUserDto().getId());
+            postBaseDto.setUserName(((CustomUserDetails) SecurityUtil.getUserAuthentication().getPrincipal()).getUserDto().getName());
+            postBaseDto.setUserEmail(((CustomUserDetails) SecurityUtil.getUserAuthentication().getPrincipal()).getUserDto().getEmail());
+        }
+    }
+
     public List<UploadFileDto> doFileJob(PostBaseDto postBaseDto, List<MultipartFile> orignMultipartFiles) throws Exception {
 
         // 공통 작업 -------
@@ -66,7 +90,7 @@ public class MultipartFilePostService {
             }
         });
 
-        // 공요 변수들
+        // 공용 변수들
         final Integer uploadFileDtoMaxFileOrder; //null 인 경우는 평가를 할수 없는 경우임
         if (uploadFileDtos.isEmpty()) {
             uploadFileDtoMaxFileOrder = 0;
@@ -89,15 +113,13 @@ public class MultipartFilePostService {
         }
 
         // 저장 경로 조합
-        Path rootFilePath = java.nio.file.Path.of((String) SpringUtil.getApplicationProperty("storage.localMultipartFilesBasePath"));
+        Path rootFilePath = Path.of(localRootFilePath);
         Path postOwnFilePath = Path.of(
                 postBaseDto.getBoardName()
                 , LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
                 , String.valueOf(postBaseDto.getPostId())
         );
         Path realPostFilePath = rootFilePath.resolve(postOwnFilePath);
-        //-------
-
 
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
         for (int i = 0; i < multipartFiles.size(); i++) {
@@ -114,7 +136,6 @@ public class MultipartFilePostService {
                 } else {
                     newUploadFileDto.setFileOrder(uploadFileDtoMaxFileOrder + i);
                 }
-
                 uploadFileDtos.add(newUploadFileDto);
             }
         }
@@ -173,17 +194,21 @@ public class MultipartFilePostService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        try (Stream<Path> files = Files.list(realPostFilePath)) {
-            files.filter(Files::isRegularFile)
-                    .filter(path -> !fileNamesToKeep.contains(path.getFileName().toString()))
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                            log.debug("{} 삭제됨" ,path);
-                        } catch (IOException e) {
-                            log.debug("{} 삭제 실패 : {}" ,path, e.getMessage());
-                        }
-                    });
+        if (Files.exists(realPostFilePath) && Files.isDirectory(realPostFilePath)) {
+            try (Stream<Path> files = Files.list(realPostFilePath)) {
+                files.filter(Files::isRegularFile)
+                        .filter(path -> !fileNamesToKeep.contains(path.getFileName().toString()))
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                                log.debug("{} 삭제됨", path);
+                            } catch (IOException e) {
+                                log.debug("{} 삭제 실패 : {}", path, e.getMessage());
+                            }
+                        });
+            }
+        } else {
+            log.debug("디렉토리가 존재하지 않음: {}", realPostFilePath);
         }
 
         return postBaseDto.getUploadFileDtos();
@@ -198,7 +223,10 @@ public class MultipartFilePostService {
     }
 
     public int insertUploadFileDtos(List<UploadFileDto> uploadFileDtos) {
-        return this.myBatisCommonDao.insert("framework_example.insertUploadFileDtos", uploadFileDtos);
+        if (uploadFileDtos != null && !uploadFileDtos.isEmpty()) {
+            return this.myBatisCommonDao.insert("framework_example.insertUploadFileDtos", uploadFileDtos);
+        }
+        return 0;
     }
 
     public List<UploadFileDto> selectUploadFileDtos(ExamplePostDto examplePostDto) {

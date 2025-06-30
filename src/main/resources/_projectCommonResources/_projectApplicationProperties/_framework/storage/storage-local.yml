@@ -1,2 +1,3 @@
 storage:
-  localMultipartFilesBasePath: c:/multipartFilesBasePath
+  multipartFile:
+    localRootFilePath: c:/multipartFilesBasePath

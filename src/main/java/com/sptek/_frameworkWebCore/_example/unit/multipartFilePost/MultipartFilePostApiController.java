@@ -7,10 +7,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -30,9 +40,23 @@ public class MultipartFilePostApiController {
 //        return multipartFilesUploadServiceForEx.composeInsertJobs(postExDto, multipartFiles);
 //    }
 
-    @PostMapping("/01/example/multipartFile/createFilePost")
+    @PostMapping("/01/example/post/createPostWithFile")
     @Operation(summary = "01. multipartFile 을 포함 하는 Form 데이터 처리", description = "")
     public Object multipartFilePost(@ModelAttribute ExamplePostDto examplePostDto, @RequestParam(required = false) List<MultipartFile> multipartFiles) throws Exception {
         return multipartFilePostService.createPost(examplePostDto, multipartFiles);
+    }
+
+    @GetMapping(value = "/02/example/post/byteForImage")
+    public ResponseEntity<byte[]> byteForImage(@Value("${storage.multipartFile.localRootFilePath}") String localRootFilePath
+            , @RequestParam("realFilePath") String realFilePath)  throws Exception {
+
+        realFilePath = URLDecoder.decode(realFilePath, StandardCharsets.UTF_8);
+        log.debug("realFilePath : {}", realFilePath);
+
+        File imageFile = new File(Path.of(localRootFilePath, realFilePath).toString());
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", Files.probeContentType(imageFile.toPath())); // MIME 타입 처리
+
+        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
     }
 }

@@ -51,21 +51,45 @@
         formData.append("title", title);
         formData.append("content", content);
         for (let i = 0; i < files.length; i++) {
-          formData.append("files", files[i]); // 서버에서 List<MultipartFile> files 로 받을 수 있음
+          formData.append("multipartFiles", files[i]); // 서버에서 List<MultipartFile> files 로 받을 수 있음
         }
 
         try {
-          const data1 = await requestFetch('/01/example/multipartFile/multipartFilePost', {
+          const data1 = await requestFetch('/01/example/post/createPostWithFile', {
             method: 'POST',
             body: formData
           });
 
-          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
+          prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
+          console.log('response 1:', prettyData1);
+          //text 내용
+          document.getElementById("textResult").innerHTML
+                  = `<pre>post id : ${data1.result.postId}<br>title : ${data1.result.title}<br>content : ${data1.result.content}</pre>`;
+
+          //이미지 내용
+          const uploadFileDtos = data1.result.uploadFileDtos;
+          if (Array.isArray(uploadFileDtos) && uploadFileDtos.length > 0) {
+            uploadFileDtos.forEach(fileDto => {
+              const realFilePath = '${data1.result.uploadFileDtos.filePath}/${data1.result.uploadFileDtos.fileName}';  --> 여기 정리 필요
+
+              document.getElementById("imageResult").innerHTML
+                      = "<img src='/02/example/post/byteForImage?realFilePath=${realFilePath}' >";
+            });
+          }
+
+
         } catch (error) {
           console.error("Error in requestFetch:", error);
         }
       });
     </script>
+
+    <div class="inner-div" id="textResult">
+    </div>
+
+    <div class="inner-div" id="imageResult">
+    </div>
+
   </div><br>
 
 </div>

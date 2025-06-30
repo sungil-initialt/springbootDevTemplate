@@ -19,7 +19,7 @@ public class MultipartFilePostViewController {
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
 
-    @GetMapping("/multipartFile/multipartFilePost")
+    @GetMapping("/post/postWithFile")
     public String preventDuplicateRequest() {
         return htmlBasePath + "postWithFile";
     }

@@ -121,7 +121,7 @@ public class DeprecatedApiController {
 
 
 //    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> filesUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
+//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> filesUpload(@Value("${storage.multipartFile.localRootFilePath}") String baseStoragePath
 //            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
 //            , @RequestPart("extraData") TbTestDto extraData) throws Exception {
 //
@@ -143,7 +143,7 @@ public class DeprecatedApiController {
 
 
 //    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
+//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.rootFilePathString}") String baseStoragePath
 //            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
 //            , @RequestParam("fileDescription") String fileDescription) throws Exception {
 //
@@ -158,7 +158,7 @@ public class DeprecatedApiController {
 //    }
 
     @GetMapping(value = "/0/example/byteForImage")
-    public ResponseEntity<byte[]> byteForImage(@Value("${storage.localMultipartFilesBasePath}") String baseStoragePath
+    public ResponseEntity<byte[]> byteForImage(@Value("${storage.multipartFile.localRootFilePath}") String baseStoragePath
             , @RequestParam("originFileName") String originFileName
             , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
 

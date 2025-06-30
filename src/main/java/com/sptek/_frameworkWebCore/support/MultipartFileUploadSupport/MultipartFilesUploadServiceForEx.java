@@ -89,7 +89,7 @@ public class MultipartFilesUploadServiceForEx {
         List<String> savedFileNames = new ArrayList<>();
 
         if(multipartFiles != null) {
-            String rootDir = (String) SpringUtil.getApplicationProperty("storage.localMultipartFilesBasePath");
+            String rootDir = (String) SpringUtil.getApplicationProperty("storage.multipartFile.localRootFilePath");
 
             for (MultipartFile multipartFile : multipartFiles) {
                 String originFileName = FileUtil.extractFileNameOnly(multipartFile.getOriginalFilename()); //브라우저에따라 파일명에 경로가 포함되는 경우가 있어 제거 추가
