@@ -3,24 +3,15 @@ package com.sptek._frameworkWebCore._example.unit.multipartFilePost;
 import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -34,29 +25,34 @@ import java.util.List;
 public class MultipartFilePostApiController {
     private final MultipartFilePostService multipartFilePostService;
 
-//    @PostMapping("/01/example/multipartFile/multipartFilePost")
-//    @Operation(summary = "01. multipartFile 을 포함 하는 Form 데이터 처리", description = "")
-//    public Object multipartFilePost(@ModelAttribute PostExDto postExDto, @RequestParam(required = false) MultipartFile[] multipartFiles) throws Exception {
-//        return multipartFilesUploadServiceForEx.composeInsertJobs(postExDto, multipartFiles);
-//    }
-
-    @PostMapping("/01/example/post/createPostWithFile")
+    @PostMapping(value = "/01/example/post/createPostWithFile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}) //미디어 타입 없어도 동작 하지만 미디어 타입별 동일 매핑이 있을 때는 반드시 추가
     @Operation(summary = "01. multipartFile 을 포함 하는 Form 데이터 처리", description = "")
     public Object multipartFilePost(@ModelAttribute ExamplePostDto examplePostDto, @RequestParam(required = false) List<MultipartFile> multipartFiles) throws Exception {
         return multipartFilePostService.createPost(examplePostDto, multipartFiles);
     }
 
-    @GetMapping(value = "/02/example/post/byteForImage")
-    public ResponseEntity<byte[]> byteForImage(@Value("${storage.multipartFile.localRootFilePath}") String localRootFilePath
-            , @RequestParam("realFilePath") String realFilePath)  throws Exception {
+    @GetMapping(value = "/02/example/post/fileByteFromAnyone")
+    public Object fileByteFromAnyone(@RequestParam("requestFile") String requestFile)  throws Exception {
+        return ResponseUtil.makeFileResponseEntityFromAnyone(requestFile);
+    }
 
-        realFilePath = URLDecoder.decode(realFilePath, StandardCharsets.UTF_8);
-        log.debug("realFilePath : {}", realFilePath);
+    @GetMapping(value = "/02/example/login/post/fileByteFromLoginUser")
+    public Object fileByteFromLoginUser(@RequestParam("requestFile") String requestFile)  throws Exception {
+        return ResponseUtil.makeFileResponseEntityFromLoginUser(requestFile);
+    }
 
-        File imageFile = new File(Path.of(localRootFilePath, realFilePath).toString());
-        HttpHeaders header = new HttpHeaders();
-        header.add("Content-Type", Files.probeContentType(imageFile.toPath())); // MIME 타입 처리
+    @GetMapping(value = "/02/example/post/fileByteFromSpecificUser")
+    public Object fileByteFromSpecificUser(@RequestParam("requestFile") String requestFile)  throws Exception {
+        return ResponseUtil.makeFileResponseEntityFromSpecificUser(requestFile);
+    }
 
-        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
+    @GetMapping(value = "/02/example/post/fileByteFromSpecificRole")
+    public Object fileByteFromSpecificRole(@RequestParam("requestFile") String requestFile)  throws Exception {
+        return ResponseUtil.makeFileResponseEntityFromSpecificRole(requestFile);
+    }
+
+    @GetMapping(value = "/02/example/post/fileByteFromSpecificAuth")
+    public Object fileByteFromSpecificAuth(@RequestParam("requestFile") String requestFile)  throws Exception {
+        return ResponseUtil.makeFileResponseEntityFromSpecificAuth(requestFile);
     }
 }

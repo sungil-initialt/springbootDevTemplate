@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.support;
+package com.sptek._frameworkWebCore.support.deplicated;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;

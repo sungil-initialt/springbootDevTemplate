@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.filter.deprecated;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
-import com.sptek._frameworkWebCore.support.DEPRECATED_HttpServletResponseWrapperSupport;
+import com.sptek._frameworkWebCore.support.deplicated.DPRECATED_HttpServletRequestWrapperSupport;
+import com.sptek._frameworkWebCore.support.deplicated.DEPRECATED_HttpServletResponseWrapperSupport;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

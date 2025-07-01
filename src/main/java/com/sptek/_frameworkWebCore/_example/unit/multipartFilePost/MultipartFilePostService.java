@@ -1,18 +1,16 @@
 package com.sptek._frameworkWebCore._example.unit.multipartFilePost;
 
 import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
-import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
-import com.sptek._frameworkWebCore.springSecurity.spt.CustomUserDetails;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
+import com.sptek._frameworkWebCore.util.SpringUtil;
 import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
 import com.sptek._projectCommon.commonDtos.PostBaseDto;
 import com.sptek._projectCommon.commonDtos.UploadFileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +29,7 @@ import java.util.stream.Stream;
 @Service
 
 public class MultipartFilePostService {
-
     private final MyBatisCommonDao myBatisCommonDao;
-    @Value("${storage.multipartFile.localRootFilePath}")
-    private String localRootFilePath;
 
     @Transactional(readOnly = false)
     public ExamplePostDto createPost(ExamplePostDto examplePostDto, List<MultipartFile> multipartFiles) throws Exception {
@@ -57,12 +52,10 @@ public class MultipartFilePostService {
     }
     
     public void setCurrentUserInfo(PostBaseDto postBaseDto) {
-        // SecurityUtil.getUserAuthentication().isAuthenticated() 을 사용 하지 않는 이유는 spring-security 가 비 로그인 상태도 anonymousUser 상태의 로그인 으로 간주 하는게 default 이기 때문
-        // 디볼트 동작 으로 인한 장점이 있기 때문에.. 그대로 유지 시킴
-        if (!CommonConstants.ANONYMOUS_USER.contains(SecurityUtil.getUserAuthentication().getPrincipal().toString())) {
-            postBaseDto.setUserId(((CustomUserDetails) SecurityUtil.getUserAuthentication().getPrincipal()).getUserDto().getId());
-            postBaseDto.setUserName(((CustomUserDetails) SecurityUtil.getUserAuthentication().getPrincipal()).getUserDto().getName());
-            postBaseDto.setUserEmail(((CustomUserDetails) SecurityUtil.getUserAuthentication().getPrincipal()).getUserDto().getEmail());
+        if (SecurityUtil.isRealLogin()) {
+            postBaseDto.setUserId(SecurityUtil.getMyCustomUserDetails().getUserDto().getId());
+            postBaseDto.setUserName(SecurityUtil.getMyCustomUserDetails().getUserDto().getName());
+            postBaseDto.setUserEmail(SecurityUtil.getMyCustomUserDetails().getUserDto().getEmail());
         }
     }
 
@@ -113,9 +106,9 @@ public class MultipartFilePostService {
         }
 
         // 저장 경로 조합
-        Path rootFilePath = Path.of(localRootFilePath);
-        Path postOwnFilePath = Path.of(
-                postBaseDto.getBoardName()
+        Path rootFilePath = Path.of(String.valueOf(SpringUtil.getApplicationProperty("storage.anyone.localRootPath")));
+        Path postOwnFilePath = Path.of("post"
+                , postBaseDto.getBoardName()
                 , LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
                 , String.valueOf(postBaseDto.getPostId())
         );

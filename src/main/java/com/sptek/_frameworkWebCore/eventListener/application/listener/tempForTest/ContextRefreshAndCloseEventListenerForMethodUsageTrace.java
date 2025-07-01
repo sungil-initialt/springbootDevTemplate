@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.eventListener.application.listener.temp;
+package com.sptek._frameworkWebCore.eventListener.application.listener.tempForTest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;

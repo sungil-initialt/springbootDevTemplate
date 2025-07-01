@@ -22,22 +22,14 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
@@ -105,7 +97,6 @@ public class DeprecatedApiController {
         return responseEntity.getBody();
     }
 
-
     @GetMapping("/0/example/restTemplateSupport")
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하는, 좀더 사용성을 편리하게 만든 restTemplateSupport 사용하는 req 요청
     public Object restTemplateSupport() {
@@ -113,72 +104,21 @@ public class DeprecatedApiController {
         return responseEntity.getBody();
     }
 
-
-
-
-
-
-
-
-//    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> filesUpload(@Value("${storage.multipartFile.localRootFilePath}") String baseStoragePath
-//            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
-//            , @RequestPart("extraData") TbTestDto extraData) throws Exception {
-//
-//        MultipartFileUploadSupport multipartFileUploadSupport = new MultipartFileUploadSupport(
-//                new MultipartFilesUploadServiceForEx(()-> databaseService.insertTbTest(extraData)));
-//
-//        multipartFileUploadSupport.uploadFile(extraData, uploadFiles);
-//
-//
-//
-//        String additionalPath = ""; //로그인 계정 번호등 필요한 구분 디렉토리 가 있다면 추가
-//        Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
-//        List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
-//
-//        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
-//    }
-
-
-
-
-//    @PostMapping(value = "/0/example/fileUpload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<ApiCommonSuccessResponseDto<List<FileUploadDto>>> fileUpload(@Value("${storage.rootFilePathString}") String baseStoragePath
-//            , @RequestParam("uploadFiles") MultipartFile[] uploadFiles
-//            , @RequestParam("fileDescription") String fileDescription) throws Exception {
-//
-//        log.debug("file count = {}, fileDescription = {}", uploadFiles.length, fileDescription);
-//        //todo: 실제 상황에서는 부가정보 저장 처리등 조치 필요
-//
-//        String additionalPath = ""; //로그인 계정 번호등 필요한 구분 디렉토리 가 있다면 추가
-//        Predicate<MultipartFile> exceptionFilter = multipartFile -> multipartFile.getContentType().startsWith("image") ? false : true; //ex를 발생시키는 조건 (필요에 따라 수정)
-//        List<FileUploadDto> FileUploadDtos = FileUtil.saveMultipartFiles(uploadFiles, baseStoragePath, additionalPath, exceptionFilter);
-//
-//        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(FileUploadDtos));
-//    }
-
-    @GetMapping(value = "/0/example/byteForImage")
-    public ResponseEntity<byte[]> byteForImage(@Value("${storage.multipartFile.localRootFilePath}") String baseStoragePath
-            , @RequestParam("originFileName") String originFileName
-            , @RequestParam("uuidForFileName") String uuidForFileName)  throws Exception {
-
-        originFileName = URLDecoder.decode(originFileName, StandardCharsets.UTF_8);
-        uuidForFileName = URLDecoder.decode(uuidForFileName, StandardCharsets.UTF_8);
-        log.debug("originFileName = {}, uuidForFileName = {}", originFileName, uuidForFileName);
-
-        //todo : 실제 상황에서는 uuid 값을 통해 저장 위치를 검색해오도록 수정 필요
-        String realFilePath = baseStoragePath + File.separator +  LocalDate.now().getYear()
-                + File.separator + LocalDate.now().getMonthValue()
-                + File.separator + LocalDate.now().getDayOfMonth()
-                + File.separator + uuidForFileName + "_" + originFileName;
-        log.debug("realFilePath : {}", realFilePath);
-
-        File imageFile = new File(realFilePath);
-        HttpHeaders header = new HttpHeaders();
-        header.add("Content-Type", Files.probeContentType(imageFile.toPath())); // MIME 타입 처리
-
-        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(imageFile), header, HttpStatus.OK);
+    @GetMapping("/0/example/exampleEvent")
+    public Object exampleEvent() {
+        customEventPublisher.publishEvent(ExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
+        return "published exampleEvent ";
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -238,9 +178,5 @@ public class DeprecatedApiController {
         return ResponseEntity.ok().body(new ApiCommonSuccessResponseDto<>(currentTimeMillis));
     }
 
-    @GetMapping("/0/example/exampleEvent")
-    public Object exampleEvent() {
-        customEventPublisher.publishEvent(ExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
-        return "published exampleEvent ";
-    }
+
 }

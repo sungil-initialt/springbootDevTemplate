@@ -41,7 +41,7 @@ public class SecurityFilterChainConfig {
 
                 // CSRF 비활성화 경로 지정
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/**") // todo: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시하도록 임시 처리
+                        .ignoringRequestMatchers("/**") // todo: 테스트 를 편하게 하기 위해 모든 경로 에서 csrf 토큰을 무시 하도록 임시 처리
                         .ignoringRequestMatchers("/noCsrfToken/**")
                 )
 

@@ -3,7 +3,7 @@ package com.sptek._frameworkWebCore.filter.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.support.DPRECATED_HttpServletRequestWrapperSupport;
+import com.sptek._frameworkWebCore.support.deplicated.DPRECATED_HttpServletRequestWrapperSupport;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -51,7 +51,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         try {
             // todo: 멤버 계정을 보여주는 부분은 해당 시스템 별로 변경이 필요할수 있음, 또한 상용 적용시 보안이슈 체크 필요
             MDC.put("sessionId", request.getSession(true).getId());
-            MDC.put("memberId", Optional.ofNullable(SecurityUtil.getUserAuthentication()).map(Authentication::getName).orElse("No Authentication"));
+            MDC.put("memberId", Optional.ofNullable(SecurityUtil.getMyAuthentication()).map(Authentication::getName).orElse("No Authentication"));
             filterChain.doFilter(request, response);
         } finally {
             // 요청이 끝난 뒤 반드시 MDC 정리

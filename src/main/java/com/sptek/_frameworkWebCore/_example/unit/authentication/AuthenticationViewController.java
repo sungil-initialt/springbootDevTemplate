@@ -70,7 +70,7 @@ public class AuthenticationViewController {
 
     @GetMapping("/authentication/curAuthentication")
     public String curAuthentication(Model model) {
-        String curAuthentication = SecurityUtil.getUserAuthentication().toString();
+        String curAuthentication = SecurityUtil.getMyAuthentication().toString();
         //curAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인 을 요청 했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
 
         model.addAttribute("result", curAuthentication);

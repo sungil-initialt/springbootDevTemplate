@@ -1,9 +1,22 @@
 package com.sptek._frameworkWebCore.util;
 
+import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
+import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 
-import java.util.*;
+import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Set;
 
 @Slf4j
 public class ResponseUtil {
@@ -38,6 +51,62 @@ public class ResponseUtil {
             headers.put(headerName, values.append(delimiter).toString());
         }
         return headers;
+    }
+
+    public static ResponseEntity makeFileResponseEntityFromAnyone(String requestFile) throws Exception {
+        return makeFileResponseEntity(requestFile, "storage.anyone.localRootPath");
+    }
+
+    public static ResponseEntity makeFileResponseEntityFromLoginUser(String requestFile) throws Exception {
+        if (SecurityUtil.isRealLogin()) {
+            return makeFileResponseEntity(requestFile, "storage.loginUser.localRootPath");
+        } else {
+          throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+        }
+    }
+
+    public static ResponseEntity makeFileResponseEntityFromSpecificUser(String requestFile) throws Exception {
+        if (SecurityUtil.isRealLogin()) {
+            String extraPath = String.valueOf(SecurityUtil.getMyCustomUserDetails().getUserDto().getId());
+            return makeFileResponseEntity(requestFile, extraPath, "storage.specificUser.localRootPath");
+        } else {
+            throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+        }
+    }
+
+    public static ResponseEntity makeFileResponseEntityFromSpecificRole(String requestFile) throws Exception {
+        if (SecurityUtil.isRealLogin()) {
+            requestFile = URLDecoder.decode(requestFile, StandardCharsets.UTF_8);
+
+            return makeFileResponseEntity(requestFile, "storage.specificRole.localRootPath");
+        } else {
+            throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+        }
+    }
+
+    public static ResponseEntity makeFileResponseEntityFromSpecificAuth(String requestFile) throws Exception {
+        if (SecurityUtil.isRealLogin()) {
+            return makeFileResponseEntity(requestFile, "storage.specificRole.localRootPath");
+        } else {
+            throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+        }
+    }
+
+
+
+    private static ResponseEntity makeFileResponseEntity(String requestFile, String storageKey) throws Exception {
+        return makeFileResponseEntity(requestFile, "", storageKey);
+    }
+
+    private static ResponseEntity makeFileResponseEntity(String requestFile, String extraPath, String storageKey) throws Exception {
+        requestFile = URLDecoder.decode(requestFile, StandardCharsets.UTF_8);
+        File file = new File(Path.of(String.valueOf(SpringUtil.getApplicationProperty(storageKey)), extraPath, requestFile).toString());
+        log.debug("final request file: {}", file.getAbsolutePath());
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", Files.probeContentType(file.toPath()));
+        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+
     }
 }
 

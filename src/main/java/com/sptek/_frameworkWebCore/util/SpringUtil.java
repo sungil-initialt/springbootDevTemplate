@@ -74,7 +74,8 @@ public class SpringUtil implements ApplicationContextAware {
     }
 
     public static Object getApplicationProperty(String key) {
+        // todo: 일부 JVM 환경 에서 동작 하지 않을 수도 있음
         Environment environment = Objects.requireNonNull(applicationContext).getEnvironment();
-        return environment.getProperty("key"); // todo: 일부 JVM 환경 에서 동작 하지 않을 수도 있음
+        return environment.getProperty(key);
     }
 }
