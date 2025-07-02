@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Component
 @Data
-@ConfigurationProperties(prefix = "global-property-view-model")
-public class GlobalPropertyViewModelVo {
+@ConfigurationProperties(prefix = "properties-for-model-attributes")
+public class PropertiesForModelAttributeVo {
     private Map<String, Object> attributes = new HashMap<>();
 }

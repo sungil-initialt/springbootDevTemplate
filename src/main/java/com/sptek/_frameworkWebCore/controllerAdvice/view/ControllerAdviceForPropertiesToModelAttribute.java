@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore.controllerAdvice.view;
 
-import com.sptek._frameworkWebCore.annotation.EnableGlobalViewModelForStatic_InMain;
+import com.sptek._frameworkWebCore.annotation.EnablePropertiesToModelAttribute_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
-import com.sptek._frameworkWebCore.globalVo.GlobalPropertyViewModelVo;
+import com.sptek._frameworkWebCore.globalVo.PropertiesForModelAttributeVo;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Slf4j
 @Data
-@HasAnnotationOnMain_InBean(EnableGlobalViewModelForStatic_InMain.class)
+@HasAnnotationOnMain_InBean(EnablePropertiesToModelAttribute_InMain.class)
 @ControllerAdvice
 //@ControllerAdvice(basePackages = {"com.sptek.a", "com.aptek.b"})
 //@ControllerAdvice(assignableTypes = {a.class, b.class})
 @RequiredArgsConstructor
-public class GlobalPropertyViewModelControllerAdvice {
-    private final GlobalPropertyViewModelVo globalPropertyViewModelVo;
+public class ControllerAdviceForPropertiesToModelAttribute {
+    private final PropertiesForModelAttributeVo propertiesForModelAttributeVo;
 
     @ModelAttribute
     public void addModelAttributes(Model model) {
-        globalPropertyViewModelVo.getAttributes()
+        propertiesForModelAttributeVo.getAttributes()
                 .forEach(model::addAttribute);
     }
 

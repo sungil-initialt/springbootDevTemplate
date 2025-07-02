@@ -16,9 +16,10 @@ import org.springframework.context.annotation.Profile;
 public class FilterConfigForFrameworkWebCore {
     // todo: 아래 필터 설정보다 Spring Security Filter Chain 이 항상 우선함
 
-    @Bean
+
     @Profile(value = { "local", "dev", "stg", "prd" })
     @HasAnnotationOnMain_InBean(EnableMdcTagging_InMain.class)
+    @Bean
     public FilterRegistrationBean<MakeMdcFilter> makeMdcFilter() {
         FilterRegistrationBean<MakeMdcFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeMdcFilter());
@@ -27,9 +28,9 @@ public class FilterConfigForFrameworkWebCore {
         return filterRegistrationBean;
     }
 
-    @Bean
     @Profile(value = { "local", "dev", "stg", "prd" })
     @HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
+    @Bean
     public FilterRegistrationBean<NoSessionFilterForMinorRequest> noSessionFilterForMinorRequest() {
         FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new NoSessionFilterForMinorRequest());
@@ -38,8 +39,8 @@ public class FilterConfigForFrameworkWebCore {
         return filterRegistrationBean;
     }
 
-    @Bean
     @Profile(value = { "local", "dev", "stg", "prd" })
+    @Bean
     public FilterRegistrationBean<MakeRequestTimestampFilter> makeRequestTimestampFilter() {
         FilterRegistrationBean<MakeRequestTimestampFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeRequestTimestampFilter());
@@ -48,8 +49,8 @@ public class FilterConfigForFrameworkWebCore {
         return filterRegistrationBean;
     }
 
-    @Bean
     @Profile(value = { "local", "dev", "stg", "prd" })
+    @Bean
     public FilterRegistrationBean<DetailLogFilter> detailLogFilterWithAnnotation() {
         FilterRegistrationBean<DetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new DetailLogFilter());

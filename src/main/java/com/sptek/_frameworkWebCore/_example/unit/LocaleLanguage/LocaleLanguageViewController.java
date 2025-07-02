@@ -41,8 +41,8 @@ public class LocaleLanguageViewController {
         String language = LocaleUtil.getI18nMessage("language");
         //Controller 에서 다국어 변환을 직접 하는 케이스
         String welcome = LocaleUtil.getI18nMessage("welcome"
-                , new Object[] {SecurityUtil.getMyAuthentication().getName()
-                        , SecurityUtil.getMyAuthentication().getAuthorities().toString().replaceAll("\\[|ROLE_|AUTH_|\\]", "")});
+                , new Object[] {SecurityUtil.getMyCustomUserDetails().getUsername()
+                        , SecurityUtil.getMyRole().toString()});
 
         model.addAttribute("userLanguageTag", userLanguageTag);
         model.addAttribute("userTimeZone", userTimeZone);

@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableGlobalViewModelForUserAuthentication_InMain {
+public @interface EnablePropertiesToModelAttribute_InMain {
 }

@@ -33,7 +33,7 @@ spring:
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/swagger/swagger.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/_frameworkOption/frameworkOption.yml
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/storage/storage.yml
-      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/globalPropertyViewModel/globalPropertyViewModel.yml
+      - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/propertyForModelAttribute/globalPropertyViewModel.yml
       #_projectCommonResources(extra)
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/example1/example1.yml
 

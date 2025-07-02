@@ -4,19 +4,21 @@ import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Set;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ResponseUtil {
@@ -53,6 +55,11 @@ public class ResponseUtil {
         return headers;
     }
 
+    public static ResponseEntity makeFileResponseEntity(String requestFile) throws Exception {
+        return makeFileResponseEntity(requestFile, "storage.anyone.localRootPath");
+    }
+
+
     public static ResponseEntity makeFileResponseEntityFromAnyone(String requestFile) throws Exception {
         return makeFileResponseEntity(requestFile, "storage.anyone.localRootPath");
     }
@@ -76,8 +83,6 @@ public class ResponseUtil {
 
     public static ResponseEntity makeFileResponseEntityFromSpecificRole(String requestFile) throws Exception {
         if (SecurityUtil.isRealLogin()) {
-            requestFile = URLDecoder.decode(requestFile, StandardCharsets.UTF_8);
-
             return makeFileResponseEntity(requestFile, "storage.specificRole.localRootPath");
         } else {
             throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
@@ -92,21 +97,92 @@ public class ResponseUtil {
         }
     }
 
+    //현재 사용자 가 권한 형식의 주어진 Path 를 통과할 권한이 있는지 확인 함
+    public static boolean hasAuthOnPath(String pathString) {
+        if (StringUtils.isBlank(pathString))
+            throw new ServiceException(CommonErrorCodeEnum.NOT_VALID_ERROR, "요청이 올바르지 않습니다.");
+
+        Path path = Paths.get(pathString);
+        if (path.getNameCount() == 0) throw new ServiceException(CommonErrorCodeEnum.NOT_VALID_ERROR, "path 가 올바르지 않습니다.");
+
+        // 첫 번째 디렉토리 추출 (ex. role-admin-adminTop-system)
+        String firstSegment = path.getName(0).toString();
+        if (firstSegment.toLowerCase().startsWith("role-")) {
+            Set<String> pathRoles = Arrays.stream(firstSegment.substring("role-".length()).split("-"))
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toSet());
+            return !Collections.disjoint(pathRoles, SecurityUtil.getMyRole());
+
+        } else if (firstSegment.toLowerCase().startsWith("auth-")) {
+            Set<String> pathRoles = Arrays.stream(firstSegment.substring("auth-".length()).split("-"))
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toSet());
+            return !Collections.disjoint(pathRoles, SecurityUtil.getMyAuth());
+
+        } else {
+
+        }
+    }
+
+
+
 
 
     private static ResponseEntity makeFileResponseEntity(String requestFile, String storageKey) throws Exception {
         return makeFileResponseEntity(requestFile, "", storageKey);
     }
 
-    private static ResponseEntity makeFileResponseEntity(String requestFile, String extraPath, String storageKey) throws Exception {
+    private static ResponseEntity makeFileResponseEntity(@Nullable String requestFile) throws Exception {
+        if (StringUtils.isBlank(requestFile))
+            throw new ServiceException(CommonErrorCodeEnum.NOT_VALID_ERROR, "요청이 올바르지 않습니다.");
+
         requestFile = URLDecoder.decode(requestFile, StandardCharsets.UTF_8);
-        File file = new File(Path.of(String.valueOf(SpringUtil.getApplicationProperty(storageKey)), extraPath, requestFile).toString());
-        log.debug("final request file: {}", file.getAbsolutePath());
+        Path path = Paths.get(requestFile);
+        if (path.getNameCount() == 0)
+            throw new ServiceException(CommonErrorCodeEnum.NOT_VALID_ERROR, "path 가 올바르지 않습니다.");
 
-        HttpHeaders header = new HttpHeaders();
-        header.add("Content-Type", Files.probeContentType(file.toPath()));
-        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+        // 첫 번째 디렉토리 추출 (ex. role-admin-adminTop-system)
+        String checkDirName = path.getName(0).toString();
+        File realFile = null;
+        if (checkDirName.equalsIgnoreCase("login")) {
+            if (!SecurityUtil.isRealLogin())
+                throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+            realFile = new File(Path.of(String.valueOf(SpringUtil.getApplicationProperty("storage.loginUser.localRootPath")), requestFile).toString());
 
+        } else if (checkDirName.toLowerCase().startsWith("role-")) {
+            Set<String> pathRoles = Arrays.stream(checkDirName.substring("role-".length()).split("-")).map(String::toLowerCase).collect(Collectors.toSet());
+            if (Collections.disjoint(pathRoles, SecurityUtil.getMyRole()))
+                throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+            realFile = new File(Path.of(String.valueOf(SpringUtil.getApplicationProperty("storage..localRootPath")), requestFile).toString());
+
+        } else if (firstSegment.toLowerCase().startsWith("auth-")) {
+            Set<String> pathRoles = Arrays.stream(firstSegment.substring("auth-".length()).split("-"))
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toSet());
+            return !Collections.disjoint(pathRoles, getMyAuth());
+
+        } else {
+            return true;
+        }
+
+
+        try {
+            requestFile = URLDecoder.decode(requestFile, StandardCharsets.UTF_8);
+
+
+
+
+
+
+            File file = new File(Path.of(String.valueOf(SpringUtil.getApplicationProperty(storageKey)), extraPath, requestFile).toString());
+            log.debug("final request file: {}", file.getAbsolutePath());
+            HttpHeaders header = new HttpHeaders();
+            header.add("Content-Type", Files.probeContentType(file.toPath()));
+            return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+
+        } catch (Exception e) {
+            throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+        }
     }
 }
 

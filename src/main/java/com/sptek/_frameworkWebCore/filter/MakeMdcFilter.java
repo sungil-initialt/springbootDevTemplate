@@ -49,9 +49,11 @@ public class MakeMdcFilter extends OncePerRequestFilter {
 //        }
 
         try {
-            // todo: 멤버 계정을 보여주는 부분은 해당 시스템 별로 변경이 필요할수 있음, 또한 상용 적용시 보안이슈 체크 필요
+            // todo: 멤버 계정 사용과 관련한 보안 이슈 체크 필요
+            // todo: 로그인 처리 과정 중에 로그를 남기는 경우 아직 CustomUserDetails 객체가 없는 상태일 수 있어 있어서 아래 방식으로 변경함
+            // MDC.put("memberId", SecurityUtil.isRealLogin() ? SecurityUtil.getMyCustomUserDetails().getUserDto().getEmail() : "Not Logged In");
+            MDC.put("memberId", Optional.ofNullable(SecurityUtil.getMyAuthentication()).map(Authentication::getName).orElse("User not authenticated yet"));
             MDC.put("sessionId", request.getSession(true).getId());
-            MDC.put("memberId", Optional.ofNullable(SecurityUtil.getMyAuthentication()).map(Authentication::getName).orElse("No Authentication"));
             filterChain.doFilter(request, response);
         } finally {
             // 요청이 끝난 뒤 반드시 MDC 정리
