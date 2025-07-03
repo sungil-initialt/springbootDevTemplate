@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.globalVo;
+package com.sptek._frameworkWebCore.commonObject.vo;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

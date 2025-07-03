@@ -8,7 +8,7 @@ import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
-import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
+import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
 import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;

@@ -1,9 +1,10 @@
 package com.sptek._frameworkWebCore.util;
 
-import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.base.exception.ServiceException;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
 import com.sptek._frameworkWebCore.springSecurity.spt.CustomUserDetails;
+import com.sptek._projectCommon.commonObject.code.SecurePathTypeEnum;
+import com.sptek._projectCommon.commonObject.dto.FileStorageDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.security.core.Authentication;
@@ -11,10 +12,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 
+import javax.annotation.Nullable;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class SecurityUtil {
@@ -114,22 +118,22 @@ public class SecurityUtil {
     }
 
     // spring security 필터에 의해 처리된 접속자 정보(정리된 정보)
-    public static CustomUserDetails getMyCustomUserDetails() {
+    public static CustomUserDetails getMyCustomUserDetails() throws Exception {
         //log.debug("getMyCustomUserDetails : {}", getMyAuthentication().getPrincipal());
 
         if (!(getMyAuthentication().getPrincipal() instanceof CustomUserDetails))
-            throw new ServiceException(CommonErrorCodeEnum.NOT_VALID_ERROR, "Not Login yet.");
+            throw new Exception("Not Login yet.");
         return (CustomUserDetails) getMyAuthentication().getPrincipal();
     }
 
-    private static Set<String> getMyAuthorities(String authType) {
+    private static Set<String> getMyAuthorities(String filterStr) {
         Set<String> uniqueGrantedAuthorities = new HashSet<>();
         getMyAuthentication().getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(grantedAuthority -> grantedAuthority != null && grantedAuthority.startsWith(authType))
-                .forEach(grantedAuthority -> uniqueGrantedAuthorities.add(grantedAuthority.substring(authType.length())));
+                .filter(grantedAuthority -> grantedAuthority != null && grantedAuthority.startsWith(filterStr))
+                .forEach(grantedAuthority -> uniqueGrantedAuthorities.add(grantedAuthority.substring(filterStr.length())));
 
-        log.debug("getMy{} : {}", authType, uniqueGrantedAuthorities);
+        log.debug("getMy{} : {}", filterStr, uniqueGrantedAuthorities);
         return uniqueGrantedAuthorities;
     }
 
@@ -141,5 +145,31 @@ public class SecurityUtil {
         return getMyAuthorities("AUTH_");
     }
 
+    public static FileStorageDto makeFileStoragePath(SecurePathTypeEnum securePathTypeEnum, @Nullable Long userId, @Nullable List<String> roleNames, @Nullable List<AuthorityIfEnum> authorityIfEnums) throws Exception {
+        // todo: 하나의 폴더에 file 또는 dir 이 무수히 (백만, 천만) 늘어 날때의 해결이 필요함
+
+        Path rootPath = Path.of(String.valueOf(SpringUtil.getApplicationProperty(String.format("storage.%s.localRootPath", securePathTypeEnum.getPathName()))));
+        switch (securePathTypeEnum) {
+            case ANYONE, LOGIN:
+                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName()));
+
+            case USER:
+                if (userId == null) throw new Exception("userId is required");
+                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName(), userId.toString()));
+
+            case ROLE:
+                if (roleNames == null) throw new Exception("roleNames is required");
+                String roleNamesStr = String.join("-", roleNames);
+                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName(), roleNamesStr));
+
+            case AUTH:
+                if (authorityIfEnums == null) throw new Exception("authorityIfEnums is required");
+                String authorityIfEnumsStr = authorityIfEnums.stream().map(AuthorityIfEnum::name).collect(Collectors.joining("-"));
+                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName(), authorityIfEnumsStr));
+
+            default:
+                throw new IllegalArgumentException("Unsupported SecurePathEnum value: " + securePathTypeEnum);
+        }
+    }
 
 }

@@ -3,7 +3,7 @@ package com.sptek._frameworkWebCore.filter;
 import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.globalVo.CorsPropertiesVo;
+import com.sptek._frameworkWebCore.commonObject.vo.CorsPropertiesVo;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;

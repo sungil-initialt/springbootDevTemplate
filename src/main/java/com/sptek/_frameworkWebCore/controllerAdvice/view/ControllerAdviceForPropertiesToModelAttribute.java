@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.controllerAdvice.view;
 
 import com.sptek._frameworkWebCore.annotation.EnablePropertiesToModelAttribute_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
-import com.sptek._frameworkWebCore.globalVo.PropertiesForModelAttributeVo;
+import com.sptek._frameworkWebCore.commonObject.vo.PropertiesForModelAttributeVo;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

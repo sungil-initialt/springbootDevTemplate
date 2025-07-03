@@ -1,11 +1,8 @@
 package com.sptek._frameworkWebCore.aspect;
 
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
-import com.sptek._frameworkWebCore.util.RequestUtil;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.util.SpringUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

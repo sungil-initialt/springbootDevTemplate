@@ -1,4 +1,4 @@
-package com.sptek._projectCommon.code;
+package com.sptek._projectCommon.commonObject.code;
 
 import com.sptek._frameworkWebCore.base.code.BaseCode;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.globalVo;
+package com.sptek._frameworkWebCore.commonObject.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.PostConstruct;

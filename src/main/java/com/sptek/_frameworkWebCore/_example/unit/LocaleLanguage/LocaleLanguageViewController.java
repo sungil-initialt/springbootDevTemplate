@@ -27,7 +27,7 @@ public class LocaleLanguageViewController {
     private final String htmlBasePath = "pages/_example/unit/";
 
     @RequestMapping("/localeLanguage/myLocaleLanguage")
-    public String i18n(Model model) {
+    public String i18n(Model model) throws Exception {
         ZonedDateTime zonedDateTimeForSystem = ZonedDateTime.now(ZoneId.systemDefault());
         ZonedDateTime zonedDateTimeForUser = ZonedDateTime.now(LocaleUtil.getCurTimeZone().toZoneId());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

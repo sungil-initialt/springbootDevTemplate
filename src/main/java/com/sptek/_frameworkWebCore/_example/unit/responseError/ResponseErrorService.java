@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore._example.unit.responseError;
 
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

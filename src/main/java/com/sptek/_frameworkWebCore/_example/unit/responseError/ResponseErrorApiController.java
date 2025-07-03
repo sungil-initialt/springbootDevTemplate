@@ -4,7 +4,7 @@ import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

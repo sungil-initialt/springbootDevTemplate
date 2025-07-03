@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.dto;
 
-import com.sptek._projectCommon.commonDtos.PostBaseDto;
+import com.sptek._projectCommon.commonObject.dto.PostBaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

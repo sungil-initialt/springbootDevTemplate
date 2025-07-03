@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.external;
 
-import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
+import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

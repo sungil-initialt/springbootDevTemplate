@@ -5,10 +5,11 @@ import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._frameworkWebCore.util.SpringUtil;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
-import com.sptek._projectCommon.commonDtos.PostBaseDto;
-import com.sptek._projectCommon.commonDtos.UploadFileDto;
+import com.sptek._projectCommon.commonObject.code.SecurePathTypeEnum;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonObject.dto.FileStorageDto;
+import com.sptek._projectCommon.commonObject.dto.PostBaseDto;
+import com.sptek._projectCommon.commonObject.dto.UploadFileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class MultipartFilePostService {
         return examplePostDto;
     }
     
-    public void setCurrentUserInfo(PostBaseDto postBaseDto) {
+    public void setCurrentUserInfo(PostBaseDto postBaseDto) throws Exception {
         if (SecurityUtil.isRealLogin()) {
             postBaseDto.setUserId(SecurityUtil.getMyCustomUserDetails().getUserDto().getId());
             postBaseDto.setUserName(SecurityUtil.getMyCustomUserDetails().getUserDto().getName());
@@ -106,8 +107,10 @@ public class MultipartFilePostService {
         }
 
         // 저장 경로 조합
-        Path rootFilePath = Path.of(String.valueOf(SpringUtil.getApplicationProperty("storage.anyone.localRootPath")));
-        Path postOwnFilePath = Path.of("post"
+        FileStorageDto fileStorageDto = SecurityUtil.makeFileStoragePath(SecurePathTypeEnum.ANYONE, null, null, null);
+        Path rootFilePath = fileStorageDto.getRootPath();
+        Path postOwnFilePath = Path.of(
+                  fileStorageDto.getAuthPath().toString()
                 , postBaseDto.getBoardName()
                 , LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
                 , String.valueOf(postBaseDto.getPostId())
@@ -186,7 +189,6 @@ public class MultipartFilePostService {
                 .map(UploadFileDto::getFileName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
-
         if (Files.exists(realPostFilePath) && Files.isDirectory(realPostFilePath)) {
             try (Stream<Path> files = Files.list(realPostFilePath)) {
                 files.filter(Files::isRegularFile)

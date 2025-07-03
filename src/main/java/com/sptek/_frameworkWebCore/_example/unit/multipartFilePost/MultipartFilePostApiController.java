@@ -31,28 +31,28 @@ public class MultipartFilePostApiController {
         return multipartFilePostService.createPost(examplePostDto, multipartFiles);
     }
 
-    @GetMapping(value = "/02/example/post/fileByteFromAnyone")
-    public Object fileByteFromAnyone(@RequestParam("requestFile") String requestFile)  throws Exception {
-        return ResponseUtil.makeFileResponseEntityFromAnyone(requestFile);
+    @GetMapping(value = "/02/example/post/fileByteFromStorage")
+    public Object fileByteFromStorage(@RequestParam("requestFile") String requestFile)  throws Exception {
+        return ResponseUtil.makeFileResponseEntityFromStorage(requestFile);
     }
 
-    @GetMapping(value = "/02/example/login/post/fileByteFromLoginUser")
-    public Object fileByteFromLoginUser(@RequestParam("requestFile") String requestFile)  throws Exception {
-        return ResponseUtil.makeFileResponseEntityFromLoginUser(requestFile);
-    }
-
-    @GetMapping(value = "/02/example/post/fileByteFromSpecificUser")
-    public Object fileByteFromSpecificUser(@RequestParam("requestFile") String requestFile)  throws Exception {
-        return ResponseUtil.makeFileResponseEntityFromSpecificUser(requestFile);
-    }
-
-    @GetMapping(value = "/02/example/post/fileByteFromSpecificRole")
-    public Object fileByteFromSpecificRole(@RequestParam("requestFile") String requestFile)  throws Exception {
-        return ResponseUtil.makeFileResponseEntityFromSpecificRole(requestFile);
-    }
-
-    @GetMapping(value = "/02/example/post/fileByteFromSpecificAuth")
-    public Object fileByteFromSpecificAuth(@RequestParam("requestFile") String requestFile)  throws Exception {
-        return ResponseUtil.makeFileResponseEntityFromSpecificAuth(requestFile);
-    }
+//    @GetMapping(value = "/02/example/login/post/fileByteFromLoginUser")
+//    public Object fileByteFromLoginUser(@RequestParam("requestFile") String requestFile)  throws Exception {
+//        return ResponseUtil.makeFileResponseEntityFromLoginUser(requestFile);
+//    }
+//
+//    @GetMapping(value = "/02/example/post/fileByteFromSpecificUser")
+//    public Object fileByteFromSpecificUser(@RequestParam("requestFile") String requestFile)  throws Exception {
+//        return ResponseUtil.makeFileResponseEntityFromSpecificUser(requestFile);
+//    }
+//
+//    @GetMapping(value = "/02/example/post/fileByteFromSpecificRole")
+//    public Object fileByteFromSpecificRole(@RequestParam("requestFile") String requestFile)  throws Exception {
+//        return ResponseUtil.makeFileResponseEntityFromSpecificRole(requestFile);
+//    }
+//
+//    @GetMapping(value = "/02/example/post/fileByteFromSpecificAuth")
+//    public Object fileByteFromSpecificAuth(@RequestParam("requestFile") String requestFile)  throws Exception {
+//        return ResponseUtil.makeFileResponseEntityFromSpecificAuth(requestFile);
+//    }
 }

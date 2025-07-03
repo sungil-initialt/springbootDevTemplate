@@ -1,16 +1,17 @@
 #보안 처리를 위해 anyone, loginUser, specificUser ,specificAuth 의 RootPath 는 반드시 분리 해야 함
 storage:
+
   anyone:
-    localRooPath: c:/localStorage/anyone # 이후 path 는 자유 롭게 ex ) c:/localStorage/anyone/post/post_ex/
+    localRooPath: c:/localStorage/A/ # 이후 path 는 자유 롭게 ex ) c:/localStorage/anyone/post/post_ex/
 
-  loginUser:
-    localRootPath: c:/localStorage/loginUser # 이후 path 는 자유 롭게 ex ) c:/localStorage/loginUser/member/membership/
+  login:
+    localRootPath: c:/localStorage/B/ # 이후 path 는 자유 롭게 ex ) c:/localStorage/loginUser/member/membership/
 
-  specificUser:
-    localRootPath: c:/localStorage/specificUser/ #다음 path 는 user id 로 구성 되야 함, 이후 path 는 자유 롭게 ex ) c:/localStorage/specificUser/1/profile/
+  user:
+    localRootPath: c:/localStorage/C/ #다음 path 는 user id 로 구성 되야 함, 이후 path 는 자유 롭게 ex ) c:/localStorage/specificUser/1/profile/
 
-  specificRole:
-    localRootPath: c:/localStorage/specificRole/ #다음 path 는 허용 Role 의 조합 으로 구성 되야 함, 이후 path 는 자유 롭게 ex ) c:/localStorage/specificUser/role-admin-system/customer/info/
+  role:
+    localRootPath: c:/localStorage/D/ #다음 path 는 허용 Role 의 조합 으로 구성 되야 함, 이후 path 는 자유 롭게 ex ) c:/localStorage/specificUser/role-admin-system/customer/info/
 
-  specificAuth:
-    localRootPath: c:/localStorage/specificAuth/ #다음 path 는 허용 Auth 의 조합 으로 구성 되야 함, 이후 path 는 자유 롭게 ex ) c:/localStorage/specificUser/auth-special/company/info/
+  auth:
+    localRootPath: c:/localStorage/E/ #다음 path 는 허용 Auth 의 조합 으로 구성 되야 함, 이후 path 는 자유 롭게 ex ) c:/localStorage/specificUser/auth-special/company/info/

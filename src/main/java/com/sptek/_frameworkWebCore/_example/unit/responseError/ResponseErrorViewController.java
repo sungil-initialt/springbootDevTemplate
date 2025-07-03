@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore._example.unit.responseError;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;

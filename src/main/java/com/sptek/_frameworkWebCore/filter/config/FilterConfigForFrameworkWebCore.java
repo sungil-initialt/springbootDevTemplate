@@ -5,7 +5,7 @@ import com.sptek._frameworkWebCore.annotation.EnableMdcTagging_InMain;
 import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.filter.*;
-import com.sptek._frameworkWebCore.globalVo.CorsPropertiesVo;
+import com.sptek._frameworkWebCore.commonObject.vo.CorsPropertiesVo;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

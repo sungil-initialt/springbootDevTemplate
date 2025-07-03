@@ -4,7 +4,7 @@ import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_I
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
-import com.sptek._frameworkWebCore.globalVo.ProjectInfoVo;
+import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHandlerForView;
 import com.sptek._frameworkWebCore.springSecurity.spt.RedirectHelperAfterLogin;
 import com.sptek._frameworkWebCore.util.LocaleUtil;

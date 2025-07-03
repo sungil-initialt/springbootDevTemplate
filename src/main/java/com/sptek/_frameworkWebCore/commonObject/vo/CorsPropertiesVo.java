@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.globalVo;
+package com.sptek._frameworkWebCore.commonObject.vo;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.SptFwUtil;

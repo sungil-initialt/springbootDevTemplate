@@ -7,7 +7,7 @@ import com.sptek._frameworkWebCore.springSecurity.extras.repository.AuthorityRep
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.RoleRepository;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.TermsRepository;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.UserRepository;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.springSecurity.extras.repository.deprecated;
 
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.TestJpa;
 import com.sptek._frameworkWebCore.springSecurity.extras.repository.TestJpaRepository;
-import com.sptek._projectCommon.code.ServiceErrorCodeEnum;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

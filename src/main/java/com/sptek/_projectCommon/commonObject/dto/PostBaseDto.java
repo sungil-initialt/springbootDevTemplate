@@ -1,4 +1,4 @@
-package com.sptek._projectCommon.commonDtos;
+package com.sptek._projectCommon.commonObject.dto;
 
 import lombok.Data;
 
