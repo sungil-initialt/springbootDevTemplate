@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
-public enum AuthorityIfEnum implements AuthorityIf {
+public enum AuthorityEnum implements AuthorityIf {
     AUTH_SPECIAL_FOR_TEST("R000", "SFT", "테스트를 위해 만든 권한", ""),
     AUTH_RETRIEVE_USER_ALL_FOR_MARKETING("R001", "RUAFM", "모든 User에 대해서 마케팅에 필요한 정보를 조회할 수 있는 권한", ""),
     AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY("R002", "RUAFD", "모든 User에 대해서 배송에 필요한 정보를 조회할 수 있는 권한", "");
@@ -17,21 +17,21 @@ public enum AuthorityIfEnum implements AuthorityIf {
     private final String description;
     private final String status;
 
-    public static AuthorityIfEnum getAuthorityFromCode(String code) {
+    public static AuthorityEnum getAuthorityFromCode(String code) {
         return Arrays.stream(values())
                 .filter(authorityEnum -> authorityEnum.getCode().equals(code))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from value. Unknown code: " + code));
     }
 
-    public static AuthorityIfEnum getAuthorityFromAlias(String alias) {
+    public static AuthorityEnum getAuthorityFromAlias(String alias) {
         return Arrays.stream(values())
                 .filter(authorityEnum -> authorityEnum.getAlias().equals(alias))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from value. Unknown alias: " + alias));
     }
 
-    public static AuthorityIfEnum getAuthorityFromDesc(String description) {
+    public static AuthorityEnum getAuthorityFromDesc(String description) {
         return Arrays.stream(values())
                 .filter(authorityEnum -> authorityEnum.getDescription().equals(description))
                 .findFirst()

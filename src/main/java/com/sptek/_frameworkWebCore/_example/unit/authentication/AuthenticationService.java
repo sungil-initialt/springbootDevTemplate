@@ -165,7 +165,7 @@ public class AuthenticationService {
         return modelMapper.map(originRoles, new TypeToken<List<RoleDto>>() {}.getType());
     }
 
-    @PreAuthorize("hasAuthority(T(com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST)")
+    @PreAuthorize("hasAuthority(T(com.sptek._frameworkWebCore.springSecurity.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
     public String iNeedAuth() {
         return "I Need Specific Auth";
     }

@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.springSecurity.extras.dto;
 
-import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -12,5 +12,5 @@ public class AuthorityDto {
     private Long id;
 
     @NotNull
-    private AuthorityIfEnum authority;
+    private AuthorityEnum authority;
 }

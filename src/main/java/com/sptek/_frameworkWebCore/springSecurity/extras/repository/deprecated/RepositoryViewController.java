@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.springSecurity.extras.repository.deprecated;
 
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.AuthorityDto;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class RepositoryViewController {
     //for test
     @GetMapping("/test/testRepo2")
     public String testRepo2(Model model) {
-        AuthorityIfEnum authority = AuthorityIfEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
+        AuthorityEnum authority = AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
         AuthorityDto authDto = ModelMapperUtil.map(authority, AuthorityDto.class);
         model.addAttribute("result", authDto);
         return htmlBasePath + "simpleModelView";

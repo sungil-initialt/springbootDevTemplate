@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum SecurePathTypeEnum {
+public enum SecureFilePathTypeEnum {
     ANYONE("anyone"),
     LOGIN("login"),
     USER("user"),

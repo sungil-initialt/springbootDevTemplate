@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.springSecurity.extras.entity;
 
-import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +21,7 @@ public class Authority {
 
     @Column(unique = true)
     @Enumerated(EnumType.STRING)
-    private AuthorityIfEnum authority;
+    private AuthorityEnum authority;
 
     @Column(unique = true)
     private String code;

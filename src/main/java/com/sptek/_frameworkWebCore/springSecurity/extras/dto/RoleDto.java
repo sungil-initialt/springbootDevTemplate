@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.springSecurity.extras.dto;
 
-import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -24,9 +24,9 @@ public class RoleDto {
     private List<AuthorityDto> authorities;
 
     @Setter(AccessLevel.NONE)
-    private List<AuthorityIfEnum> authorityEnums;
+    private List<AuthorityEnum> authorityEnums;
 
-    public List<AuthorityIfEnum> getAuthorityEnums() {
+    public List<AuthorityEnum> getAuthorityEnums() {
         return Optional.ofNullable(authorities).orElseGet(Collections::emptyList)
                 .stream().map(AuthorityDto::getAuthority).collect(Collectors.toList());
     }

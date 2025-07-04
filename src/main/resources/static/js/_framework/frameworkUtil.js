@@ -137,7 +137,7 @@ export async function requestFetch(url, options = {}) {
                         if (exception) {
                             alert(exception);
                         } else {
-                            alert(message || '알 수 없는 오류가 발생했습니다.');
+                            alert(message || '알 수 없는 오류가 발생 했습니다.');
                         }
                     }
                 }
@@ -217,6 +217,6 @@ export async function rsaEncrypt(plainText) {
 
     } catch (error) {
         console.error("Error requestFetch:", error);
-        throw err;
+        throw error;
     }
 }

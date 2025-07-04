@@ -1,10 +1,9 @@
 package com.sptek._frameworkWebCore.util;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import com.sptek._frameworkWebCore.springSecurity.spt.CustomUserDetails;
-import com.sptek._projectCommon.commonObject.code.SecurePathTypeEnum;
-import com.sptek._projectCommon.commonObject.dto.FileStorageDto;
+import com.sptek._projectCommon.commonObject.code.SecureFilePathTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.security.core.Authentication;
@@ -12,12 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 
-import javax.annotation.Nullable;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -126,14 +121,16 @@ public class SecurityUtil {
         return (CustomUserDetails) getMyAuthentication().getPrincipal();
     }
 
-    private static Set<String> getMyAuthorities(String filterStr) {
+    private static Set<String> getMyAuthorities(String authFilterStr) {
         Set<String> uniqueGrantedAuthorities = new HashSet<>();
         getMyAuthentication().getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(grantedAuthority -> grantedAuthority != null && grantedAuthority.startsWith(filterStr))
-                .forEach(grantedAuthority -> uniqueGrantedAuthorities.add(grantedAuthority.substring(filterStr.length())));
+                .filter(grantedAuthority -> grantedAuthority != null && grantedAuthority.startsWith(authFilterStr))
+                // ROLE_, AUTH_ prefix 를 제외 할지 여부
+                // .forEach(grantedAuthority -> uniqueGrantedAuthorities.add(grantedAuthority.substring(authFilterStr.length())));
+                .forEach(uniqueGrantedAuthorities::add);
 
-        log.debug("getMy{} : {}", filterStr, uniqueGrantedAuthorities);
+        log.debug("getMy{} : {}", authFilterStr, uniqueGrantedAuthorities);
         return uniqueGrantedAuthorities;
     }
 
@@ -145,31 +142,72 @@ public class SecurityUtil {
         return getMyAuthorities("AUTH_");
     }
 
-    public static FileStorageDto makeFileStoragePath(SecurePathTypeEnum securePathTypeEnum, @Nullable Long userId, @Nullable List<String> roleNames, @Nullable List<AuthorityIfEnum> authorityIfEnums) throws Exception {
-        // todo: 하나의 폴더에 file 또는 dir 이 무수히 (백만, 천만) 늘어 날때의 해결이 필요함
+    public static Path getSecuredFilePathForAnyone() {
+        return Path.of(SecureFilePathTypeEnum.ANYONE.getPathName());
+    }
 
-        Path rootPath = Path.of(String.valueOf(SpringUtil.getApplicationProperty(String.format("storage.%s.localRootPath", securePathTypeEnum.getPathName()))));
-        switch (securePathTypeEnum) {
-            case ANYONE, LOGIN:
-                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName()));
+    public static Path getSecuredFilePathForLogin() {
+        // 만드는 시점 에도 로그인 상태가 체크가 필요 할까?
+        return Path.of(SecureFilePathTypeEnum.LOGIN.getPathName());
+    }
 
-            case USER:
-                if (userId == null) throw new Exception("userId is required");
-                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName(), userId.toString()));
+    public static Path getSecuredFilePathForUser() throws Exception {
+        if (!SecurityUtil.isRealLogin()) throw new Exception("로그인 상태가 아닙니다.");
+        return Path.of(SecureFilePathTypeEnum.USER.getPathName(), String.valueOf(SecurityUtil.getMyCustomUserDetails().getUserDto().getId()));
+    }
 
-            case ROLE:
-                if (roleNames == null) throw new Exception("roleNames is required");
-                String roleNamesStr = String.join("-", roleNames);
-                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName(), roleNamesStr));
+    public static Path getSecuredFilePathForRole(Set<String> roleNames) {
+        if (roleNames == null || roleNames.isEmpty()) throw new IllegalArgumentException("roleNames is required");
+        return Path.of(SecureFilePathTypeEnum.ROLE.getPathName(), String.join("-", roleNames));
+    }
 
-            case AUTH:
-                if (authorityIfEnums == null) throw new Exception("authorityIfEnums is required");
-                String authorityIfEnumsStr = authorityIfEnums.stream().map(AuthorityIfEnum::name).collect(Collectors.joining("-"));
-                return new FileStorageDto(rootPath, Path.of(securePathTypeEnum.getPathName(), authorityIfEnumsStr));
+    public static Path getSecuredFilePathForAuth(Set<AuthorityEnum> Authorities) {
+        if (Authorities == null || Authorities.isEmpty()) throw new IllegalArgumentException("Authorities is required");
+        return Path.of(SecureFilePathTypeEnum.AUTH.getPathName()
+                , Authorities.stream().map(AuthorityEnum::name).collect(Collectors.joining("-")));
+    }
 
-            default:
-                throw new IllegalArgumentException("Unsupported SecurePathEnum value: " + securePathTypeEnum);
+    public static Path getStorageRootPath(SecureFilePathTypeEnum secureFilePathTypeEnum) {
+        return getStorageRootPath(Path.of(secureFilePathTypeEnum.getPathName()));
+    }
+
+    public static Path getStorageRootPath(Path securedFilePath) {
+        if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
+        try {
+            return Path.of(String.valueOf(SpringUtil.getApplicationProperty(String.format("storage.%s.localRootPath", securedFilePath.getName(0).toString()))));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unsupported SecurePathEnum value: " + securedFilePath.getName(0).toString());
         }
     }
 
+    //현재 사용자 가 해당 securedFilePath 에 Access 권한이 있는지 확인 함
+    public static boolean hasPermissionForSecuredFilePath(Path securedFilePath) throws Exception {
+        if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
+
+        try {
+            String SecurePathType = securedFilePath.getName(0).toString();
+            if (SecurePathType.equals(SecureFilePathTypeEnum.ANYONE.getPathName())) {
+                return true;
+
+            } else if (SecurePathType.equals(SecureFilePathTypeEnum.LOGIN.getPathName()) && SecurityUtil.isRealLogin()) {
+                return true;
+
+            } else if (SecurePathType.equals(SecureFilePathTypeEnum.USER.getPathName())) {
+                return securedFilePath.getName(1).toString().equals(String.valueOf(SecurityUtil.getMyCustomUserDetails().getUserDto().getId()));
+
+            } else if (SecurePathType.equals(SecureFilePathTypeEnum.ROLE.getPathName())) {
+                Set<String> rolesInSecuredFilePath = Arrays.stream(securedFilePath.getName(1).toString().split("-")).collect(Collectors.toSet());
+                return !Collections.disjoint(rolesInSecuredFilePath, SecurityUtil.getMyRole());
+
+            } else if (SecurePathType.equals(SecureFilePathTypeEnum.AUTH.getPathName())) {
+                Set<String> authsInSecuredFilePath = Arrays.stream(securedFilePath.getName(1).toString().split("-")).collect(Collectors.toSet());
+                return !Collections.disjoint(authsInSecuredFilePath, SecurityUtil.getMyAuth());
+
+            } else {
+                throw new Exception("Unsupported securedFilePath: " +  securedFilePath);
+            }
+        } catch (Exception ex) {
+            throw new Exception("Unsupported securedFilePath: " +  securedFilePath);
+        }
+    }
 }

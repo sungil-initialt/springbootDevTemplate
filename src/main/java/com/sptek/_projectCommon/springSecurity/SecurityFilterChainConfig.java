@@ -52,7 +52,7 @@ public class SecurityFilterChainConfig {
                             .requestMatchers(myPattern + "login/**").authenticated()
 
                             //authority 체크
-                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name())
+                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name())
 
                             //role 체크
                             .requestMatchers(myPattern + "role-user/**").hasAnyRole("USER")
@@ -107,7 +107,7 @@ public class SecurityFilterChainConfig {
                             .requestMatchers(myPattern + "login/**").authenticated()
 
                             //authority 체크
-                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AuthorityIfEnum.AUTH_SPECIAL_FOR_TEST.name())
+                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name())
 
                             //role 체크
                             .requestMatchers(myPattern + "role-user/**").hasAnyRole("USER")

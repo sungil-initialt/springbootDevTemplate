@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -32,27 +33,8 @@ public class MultipartFilePostApiController {
     }
 
     @GetMapping(value = "/02/example/post/fileByteFromStorage")
-    public Object fileByteFromStorage(@RequestParam("requestFile") String requestFile)  throws Exception {
-        return ResponseUtil.makeFileResponseEntityFromStorage(requestFile);
+    public Object fileByteFromStorage(@RequestParam("securedFilePath") String securedFilePath)  throws Exception {
+        return ResponseUtil.makeResponseEntityFromFile(Path.of(securedFilePath));
     }
 
-//    @GetMapping(value = "/02/example/login/post/fileByteFromLoginUser")
-//    public Object fileByteFromLoginUser(@RequestParam("requestFile") String requestFile)  throws Exception {
-//        return ResponseUtil.makeFileResponseEntityFromLoginUser(requestFile);
-//    }
-//
-//    @GetMapping(value = "/02/example/post/fileByteFromSpecificUser")
-//    public Object fileByteFromSpecificUser(@RequestParam("requestFile") String requestFile)  throws Exception {
-//        return ResponseUtil.makeFileResponseEntityFromSpecificUser(requestFile);
-//    }
-//
-//    @GetMapping(value = "/02/example/post/fileByteFromSpecificRole")
-//    public Object fileByteFromSpecificRole(@RequestParam("requestFile") String requestFile)  throws Exception {
-//        return ResponseUtil.makeFileResponseEntityFromSpecificRole(requestFile);
-//    }
-//
-//    @GetMapping(value = "/02/example/post/fileByteFromSpecificAuth")
-//    public Object fileByteFromSpecificAuth(@RequestParam("requestFile") String requestFile)  throws Exception {
-//        return ResponseUtil.makeFileResponseEntityFromSpecificAuth(requestFile);
-//    }
 }

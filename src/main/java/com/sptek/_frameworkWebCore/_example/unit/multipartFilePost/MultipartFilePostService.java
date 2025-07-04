@@ -5,7 +5,7 @@ import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._projectCommon.commonObject.code.SecurePathTypeEnum;
+import com.sptek._projectCommon.commonObject.code.SecureFilePathTypeEnum;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import com.sptek._projectCommon.commonObject.dto.FileStorageDto;
 import com.sptek._projectCommon.commonObject.dto.PostBaseDto;
@@ -106,16 +106,16 @@ public class MultipartFilePostService {
                     .orElse(0);
         }
 
-        // 저장 경로 조합
-        FileStorageDto fileStorageDto = SecurityUtil.makeFileStoragePath(SecurePathTypeEnum.ANYONE, null, null, null);
-        Path rootFilePath = fileStorageDto.getRootPath();
-        Path postOwnFilePath = Path.of(
-                  fileStorageDto.getAuthPath().toString()
-                , postBaseDto.getBoardName()
+        // 관련 경로
+        Path storageRootPath = SecurityUtil.getStorageRootPath(SecureFilePathTypeEnum.ANYONE);
+        Path secureFilePath = SecurityUtil.getSecuredFilePathForAnyone();
+        Path extraFilePath = Path.of( // 각 서비스 별 각자의 로직에 따라 구성
+                postBaseDto.getBoardName()
                 , LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
                 , String.valueOf(postBaseDto.getPostId())
         );
-        Path realPostFilePath = rootFilePath.resolve(postOwnFilePath);
+        Path postOwnFilePath = secureFilePath.resolve(extraFilePath); // File DB 에 저장 되는 경로
+        Path realPostFilePath = storageRootPath.resolve(postOwnFilePath);
 
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
         for (int i = 0; i < multipartFiles.size(); i++) {

@@ -76,7 +76,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// 개발용 DB (선택)
-	runtimeOnly 'com.h2database:h2:2.2.224'
+	runtimeOnly 'com.h2database:h2'
 }
 
 //task renameStaticFilesWithTimestamp(type: Copy) {

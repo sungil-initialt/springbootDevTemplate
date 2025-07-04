@@ -87,7 +87,7 @@ public class AuthenticationViewController {
 
     @GetMapping("/login/authentication/userUpdateForm/{email}")
     //hasRole 과 hasAuthority 차이는 둘다 Authentication 의 authorities 에서 찾는데 hasRole('USER') 은 내부적으로 ROLE_USER 처럼 ROLE_ 를 붙여서 찾고 hasAuthority 는 그대로 찾는다.
-    @PreAuthorize("hasAuthority(T(com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST) or #email == authentication.principal.userDto.email")
+    @PreAuthorize("hasAuthority(T(com.sptek._frameworkWebCore.springSecurity.AuthorityEnum).AUTH_SPECIAL_FOR_TEST) or #email == authentication.principal.userDto.email")
     public String userUpdateForm(@PathVariable("email") String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         UserDto userDto = authenticationService.findUserByEmail(email);
         userUpdateRequestDto = modelMapper.map(userDto, UserUpdateRequestDto.class);
@@ -102,7 +102,7 @@ public class AuthenticationViewController {
     }
 
     @PostMapping("/login/authentication/userUpdate")
-    @PreAuthorize("hasAuthority(T(com.sptek._frameworkWebCore.springSecurity.AuthorityIfEnum).AUTH_SPECIAL_FOR_TEST) or #userUpdateRequestDto.email == authentication.principal.userDto.email")
+    @PreAuthorize("hasAuthority(T(com.sptek._frameworkWebCore.springSecurity.AuthorityEnum).AUTH_SPECIAL_FOR_TEST) or #userUpdateRequestDto.email == authentication.principal.userDto.email")
     public String userUpdate(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
 
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
