@@ -3,11 +3,10 @@ package com.sptek._frameworkWebCore._example.unit.multipartFilePost;
 import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
+import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._projectCommon.commonObject.code.SecureFilePathTypeEnum;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
-import com.sptek._projectCommon.commonObject.dto.FileStorageDto;
 import com.sptek._projectCommon.commonObject.dto.PostBaseDto;
 import com.sptek._projectCommon.commonObject.dto.UploadFileDto;
 import lombok.RequiredArgsConstructor;
@@ -72,17 +71,21 @@ public class MultipartFilePostService {
         List<MultipartFile> multipartFiles = Optional.ofNullable(orignMultipartFiles)
                 .orElseGet(ArrayList::new);
 
-        // 각 파일 들의 개별 크기 및 타입 확인
-        long maxSize = 5 * 1024 * 1024;
-        multipartFiles.forEach(multipartFile -> {
-            if (!Objects.requireNonNull(multipartFile.getContentType()).startsWith("image/")) {
-                throw new ServiceException(ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR, "이미지 파일만 업로드 가능 합니다.");
-            }
+        // 전체 파일 용량 제한: 5MB
+        long maxTotalSize = 5 * 1024 * 1024;
+        long totalSize = multipartFiles.stream()
+                .peek(multipartFile -> {
+                    if (!Objects.requireNonNull(multipartFile.getContentType()).startsWith("image/")) {
+                        throw new ServiceException(ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR, "이미지 파일만 업로드 가능합니다.");
+                    }
+                })
+                .mapToLong(MultipartFile::getSize)
+                .sum();
 
-            if (multipartFile.getSize() > maxSize) {
-                throw new ServiceException(ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR, "파일 크기 제한에 초과 되었 습니다. (최대 " + maxSize + ")");
-            }
-        });
+        if (totalSize > maxTotalSize) {
+            throw new ServiceException(ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR,
+                    "전체 파일 크기 제한을 초과했습니다. (최대 " + maxTotalSize / (1024 * 1024) + " M)");
+        }
 
         // 공용 변수들
         final Integer uploadFileDtoMaxFileOrder; //null 인 경우는 평가를 할수 없는 경우임
@@ -106,16 +109,13 @@ public class MultipartFilePostService {
                     .orElse(0);
         }
 
-        // 관련 경로
-        Path storageRootPath = SecurityUtil.getStorageRootPath(SecureFilePathTypeEnum.ANYONE);
-        Path secureFilePath = SecurityUtil.getSecuredFilePathForAnyone();
-        Path extraFilePath = Path.of( // 각 서비스 별 각자의 로직에 따라 구성
-                postBaseDto.getBoardName()
-                , LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-                , String.valueOf(postBaseDto.getPostId())
-        );
-        Path postOwnFilePath = secureFilePath.resolve(extraFilePath); // File DB 에 저장 되는 경로
-        Path realPostFilePath = storageRootPath.resolve(postOwnFilePath);
+        // 조건 별 경로 구성
+        Path postOwnFilePath = getPostOwnFilePathForAnyone(postBaseDto);
+//        Path postOwnFilePath = getPostOwnFilePathForLogin(postBaseDto);
+//        Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);
+//        Path postOwnFilePath = getPostOwnFilePathForRole(postBaseDto, Set.of("ROLE_ADMIN", "ROLE_ADMIN_SPECIAL", "ROLE_SYSTEM"));
+//        Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
+        Path realPostFilePath = SecurityUtil.getStorageRootPath(postOwnFilePath).resolve(postOwnFilePath);
 
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
         for (int i = 0; i < multipartFiles.size(); i++) {
@@ -226,5 +226,40 @@ public class MultipartFilePostService {
 
     public List<UploadFileDto> selectUploadFileDtos(ExamplePostDto examplePostDto) {
         return this.myBatisCommonDao.selectList("framework_example.selectUploadFileDtos", examplePostDto);
+    }
+
+    public Path getPostOwnFilePathForAnyone(PostBaseDto postBaseDto) {
+        return buildFilePath(SecurityUtil.getSecuredFilePathForAnyone(), postBaseDto);
+    }
+
+    public Path getPostOwnFilePathForLogin(PostBaseDto postBaseDto) {
+        return buildFilePath(SecurityUtil.getSecuredFilePathForAnyone(), postBaseDto);
+    }
+
+    public Path getPostOwnFilePathForUser(PostBaseDto postBaseDto) {
+        return buildFilePath(SecurityUtil.getSecuredFilePathForLogin(), postBaseDto);
+    }
+
+    public Path getPostOwnFilePathForRole(PostBaseDto postBaseDto, Set<String> roles) throws Exception {
+        return buildFilePath(
+                SecurityUtil.getSecuredFilePathForRole(roles),
+                postBaseDto
+        );
+    }
+
+    public Path getPostOwnFilePathForAuth(PostBaseDto postBaseDto, Set<AuthorityEnum> authorities) throws Exception {
+        return buildFilePath(
+                SecurityUtil.getSecuredFilePathForAuth(authorities),
+                postBaseDto
+        );
+    }
+
+    private Path buildFilePath(Path secureFilePath, PostBaseDto postBaseDto) {
+        Path extraFilePath = Path.of(
+                postBaseDto.getBoardName(),
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                String.valueOf(postBaseDto.getPostId())
+        );
+        return secureFilePath.resolve(extraFilePath); // File DB에 저장되는 경로
     }
 }

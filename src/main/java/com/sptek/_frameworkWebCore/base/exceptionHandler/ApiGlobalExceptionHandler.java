@@ -9,10 +9,10 @@ import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.IOException;
 /*
@@ -110,6 +111,14 @@ public class ApiGlobalExceptionHandler {
 
         final ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(CommonErrorCodeEnum.JACKSON_PROCESS_ERROR, ex.getMessage());
         return new ResponseEntity<>(apiCommonErrorResponseDto, CommonErrorCodeEnum.JACKSON_PROCESS_ERROR.getHttpStatusCode());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiCommonErrorResponseDto> handleMaxUploadSizeExceededException(Exception ex) {
+        log.error(ex.getMessage());
+
+        final ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(CommonErrorCodeEnum.PAYLOAD_EXCEEDED_ERROR, ex.getMessage());
+        return new ResponseEntity<>(apiCommonErrorResponseDto, CommonErrorCodeEnum.PAYLOAD_EXCEEDED_ERROR.getHttpStatusCode());
     }
 
     //권한 오류는 ApplicationGlobalExceptionHandler 처리 이지만.. 필터가 아닌 controller 에서 권한 체크를 하는 경우도 있음 으로 이곳 에도 필요 하다.

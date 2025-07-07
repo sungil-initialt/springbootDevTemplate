@@ -37,7 +37,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //log.debug("DetailLogFilterWithAnnotation start");
-        //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 변환하여 하위 플로우로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
+        //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 bod y를 여러번 읽기 위한 용도로 활용됨)
 
         // 매번 호출 되는 것을 방지 하기 위해서
         if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
@@ -69,7 +69,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
             amIContentCachingResponseWrapperOwner = true;
         }
 
-        // 다른 필터나 컨트롤러 쪽에서 변형 될수 있음으로 필터 체인 전에 처리
+        // 다른 필터나 controller 쪽에서 변형 될수 있음 으로 필터 체인 전에 처리
         String session = contentCachingRequestWrapper.getSession().getId();
         String methodType = RequestUtil.getRequestMethodType(contentCachingRequestWrapper);
         String url = RequestUtil.getRequestUrlQuery(contentCachingRequestWrapper);
@@ -80,6 +80,8 @@ public class DetailLogFilter extends OncePerRequestFilter {
 
         // 컨트롤러 쪽에서 requestBody 먼저 한번 읽을수 있도록 필터 체인이 다시 돌아 왔을때 처리
         String requestBody = SptFwUtil.getRequestBody(contentCachingRequestWrapper);
+
+        // responseHeader 의 항목중 browser 가 생산 하는 내용도 많이 있음(서버의 로그와 browser 내용이 일치 않지 않는게 정상임)
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
 
         if((request.getRequestURI().startsWith("/api/") || request.getRequestURI().startsWith("/systemSupportApi/")) && !request.getRequestURI().contains("/notEssential/") ) {
@@ -134,7 +136,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
             log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
         }
 
-        // contentCachingResponseWrapper 을 자신이 직접 생성했다면 필터 체인 이후 response body 복사 (필수)
+        // contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)
         if (amIContentCachingResponseWrapperOwner) {
             contentCachingResponseWrapper.copyBodyToResponse();
         }

@@ -24,8 +24,8 @@ public class MultipartResolverConfig implements WebMvcConfigurer {
     //Multipart config 설정
     @Bean
     public MultipartConfigElement multipartConfigElement() {
-        long maxUploadSize = 10 * 1024 * 1024; //10M
-        long maxUploadSizePerFile = 50 * 1024 * 1024; //50M
+        long maxUploadSizePerFile = 5 * 1024 * 1024; //M
+        long maxUploadSize = 5 * 1024 * 1024; //M
 
         MultipartConfigFactory factory = new MultipartConfigFactory();
         factory.setMaxRequestSize(DataSize.ofBytes(maxUploadSize));

@@ -52,6 +52,10 @@ public class SptFwUtil {
     }
 
     public static String getResponseBody(ContentCachingResponseWrapper responseWrapper) {
+        // todo: CharacterEncoding 으로 판단 하는게 조금 무리가 있긴함
+//        if ("ISO-8859-1".equals(responseWrapper.getCharacterEncoding())) {
+//            return "*** Request body appears to be a binary file – skipped logging ****";
+//        }
         byte[] content = responseWrapper.getContentAsByteArray();
         if (content.length == 0) {
             return "No Content";

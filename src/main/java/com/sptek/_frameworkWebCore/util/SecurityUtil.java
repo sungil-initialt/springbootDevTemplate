@@ -167,10 +167,6 @@ public class SecurityUtil {
                 , Authorities.stream().map(AuthorityEnum::name).collect(Collectors.joining("-")));
     }
 
-    public static Path getStorageRootPath(SecureFilePathTypeEnum secureFilePathTypeEnum) {
-        return getStorageRootPath(Path.of(secureFilePathTypeEnum.getPathName()));
-    }
-
     public static Path getStorageRootPath(Path securedFilePath) {
         if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
         try {

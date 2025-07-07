@@ -27,6 +27,7 @@ public class ResponseUtil {
 
         // 요청 헤더 이름을 가져오기
         Set<String> headerNames = TypeConvertUtil.collectionToSet(response.getHeaderNames());
+
         // 모든 헤더를 순회하며 로그로 남기기
         for (String headerName : headerNames) {
             Enumeration<String> headerValues = TypeConvertUtil.collectionToEnumeration(response.getHeaders(headerName));

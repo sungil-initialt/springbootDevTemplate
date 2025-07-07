@@ -7,14 +7,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -89,6 +90,9 @@ public class CustomErrorController implements ErrorController {
 
         } else if (errorStatusCode == 405) {
             throw new HttpRequestMethodNotSupportedException(errMessage);
+
+        } else if (errorStatusCode == 413) {  --> 추가해도 바디가 없는 현상.. 413의 처리는 원래 그런가??
+            throw new MaxUploadSizeExceededException(0);
 
         } else {
             throw new Exception(errMessage);
