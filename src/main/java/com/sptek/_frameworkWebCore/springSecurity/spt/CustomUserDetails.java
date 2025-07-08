@@ -16,6 +16,7 @@ import java.util.Set;
 @Slf4j
 @Builder
 @Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomUserDetails  implements UserDetails {

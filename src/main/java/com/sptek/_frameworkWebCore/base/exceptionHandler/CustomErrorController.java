@@ -34,9 +34,10 @@ public class CustomErrorController implements ErrorController {
     //private final ObjectMapper objectMapper;
     @RequestMapping("/error") //프로퍼티 내 server.error.path 와 동일한 값으로 설정
     public Object handleError(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        log.debug("Higher-level Error occurred: requestUri({}), methodType({}), url({}), params({})", request.getRequestURI(), request.getMethod(), request.getRequestURL(), request.getParameterMap());
 
         /*
-        // todo: 아래 방식으로 ex 바로 throw 하는 방법을 생각했으나.. RequestDispatcher.ERROR_STATUS_CODE 는 있는데 RequestDispatcher.ERROR_EXCEPTION 이 정확히 들어 오지 않는 케이스가 있음
+        // todo: 아래 방식으로 ex를 바로 throw 하는 방법을 생각했으나.. RequestDispatcher.ERROR_STATUS_CODE 는 있는데 RequestDispatcher.ERROR_EXCEPTION 이 정확히 들어 오지 않는 케이스가 있음
         String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
                 .map(Object::toString)
                 .orElse("");
@@ -91,7 +92,8 @@ public class CustomErrorController implements ErrorController {
         } else if (errorStatusCode == 405) {
             throw new HttpRequestMethodNotSupportedException(errMessage);
 
-        } else if (errorStatusCode == 413) {  --> 추가해도 바디가 없는 현상.. 413의 처리는 원래 그런가??
+        } else if (errorStatusCode == 413) {
+            // todo: 413 이 이곳 에서 케치 되지 않고 있음..
             throw new MaxUploadSizeExceededException(0);
 
         } else {

@@ -21,6 +21,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -75,6 +76,14 @@ public class ApplicationGlobalExceptionHandler {
     public Object handleHttpRequestMethodNotSupportedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         logWithCondition(ex, request, response, HttpStatus.METHOD_NOT_ALLOWED);
         return handleError(request, response, ex, CommonErrorCodeEnum.METHOD_NOT_ALLOWED, "error/commonMethodNotSupportError");
+    }
+
+    // todo: 413, 실제로 413은 이곳 으로 도달 하지 못함(원인 확인 필요)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    public Object handleMaxUploadSizeExceededException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
+        logWithCondition(ex, request, response, HttpStatus.PAYLOAD_TOO_LARGE);
+        return handleError(request, response, ex, CommonErrorCodeEnum.PAYLOAD_EXCEEDED_ERROR, "error/commonInternalError");
     }
 
     @ExceptionHandler(Exception.class)

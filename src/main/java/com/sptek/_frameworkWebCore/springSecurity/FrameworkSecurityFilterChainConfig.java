@@ -58,17 +58,6 @@ public class FrameworkSecurityFilterChainConfig {
                         .successHandler(customAuthenticationSuccessHandlerForView)
                         .failureHandler(customAuthenticationFailureHandlerForView)
                 )
-                // View 로그인 처리
-                // 로그인 폼에서 정보 입력 후 <form action=/{loginProcessingUrl}}> 으로 하면 서버의 AuthenticationManager 로 입력 정보가 자동 으로 전달됨
-                // 전달 받은 로그인 정보를 보고 어떤 타입의 로그인 처리 인지 확인후 등록된 AuthenticationProvider(CustomAuthenticationProvider)의 support 타입을 보고 그에 맞는 대상에 전달됨(security 내부 적으로 처리됨)
-                // AuthenticationProvider(CustomAuthenticationProvider) 에서 관련 처리를 하고(개발자) 리턴 타입을 맟춰 응답 하면 AuthenticationManager SecurityContextHolder 및 session 에 관련 처리를 함
-                // security 설정에 따라 다르지 만 이후 요청이 들어 오면 SecurityFilterChain 에소 세션(쿠키)을 기준 으로 SecurityContextHolder 다시 가져 와서 로그인 상태를 유지함
-                // 세션에 SecurityContextHolder 가 없거나 만료 되었 다면.. 그에 따른 후속 처리 진행
-
-                // view 로그 아웃 처리
-                // 1. SecurityContext에 저장된 인증 정보 제거
-                // 2. 기본 적으로 JSESSIONID 쿠키를 삭제
-                // 3. {logoutUrl}?logout 으로 redirect 처리 (logoutSuccessHandler 추가 시에는 logoutSuccessHandler 에서 해줘야 함)
                 .logout(logout -> logout
                                 // 로그아웃 처리 url 설정 (해당 req 매핑이 존재할 필요는 없음)
                                 .logoutUrl("/view/logout")
@@ -222,7 +211,7 @@ public class FrameworkSecurityFilterChainConfig {
                                 //.requestMatchers("/api/*/example/signup", "/api/*/example/login", "/api/*/example/logout").permitAll()
                 )
 
-                // CustomErrorController 를 이용해서 Controller 외부 에러(필터쪽이나.. 기타 등등) 상황에 대한 처리를 하고 있어서 사용할 필요가 없음 (Controller 에러 처리 흐름과 동일하게 처리되도록 함)
+                // CustomErrorController 를 이용 해서 Controller 외부 에러(필터쪽이나.. 기타 등등) 상황에 대한 처리를 하고 있어서 사용할 필요가 없음 (Controller 에러 처리 흐름과 동일하게 처리되도록 함)
                 //.exceptionHandling(exceptionHandling ->
                 //        exceptionHandling
                 //                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
@@ -231,7 +220,7 @@ public class FrameworkSecurityFilterChainConfig {
 
                 //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, {loginProcessingUrl} 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
-                //api 방식일 경우 UsernamePasswordAuthenticationFilter 가 동작하면 안됨으로 그 앞에 CustomJwtFilter 두어 인증 관련 처리를 먼저 하도록 처리함
+                //api 방식일 경우 UsernamePasswordAuthenticationFilter 가 동작 하면 안됨 으로 그 앞에 CustomJwtFilter 두어 인증 관련 처리를 먼저 하도록 처리함
                 .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

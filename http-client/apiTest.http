@@ -28,19 +28,19 @@ abcde:abd
 
 
 ### hello
-GET {{api-server-ver}}/hello?message=hi
+GET {{api-server}}/hello?message=hi
 Content-Type: application/json
 
 ### helloGet
-GET {{api-server-ver}}/helloGet?message=hi
+GET {{api-server}}/helloGet?message=hi
 Content-Type: application/json
 
 ### helloGet
-POST {{api-server-ver}}/helloGet?message=hi
+POST {{api-server}}/helloGet?message=hi
 Content-Type: application/json
 
 ### helloPost
-POST {{api-server-ver}}/helloPost?message=hi
+POST {{api-server}}/helloPost?message=hi
 Content-Type: application/json
 
 {
@@ -48,12 +48,12 @@ Content-Type: application/json
 }
 
 ### hello
-GET {{api-server-ver}}/testJpa
+GET {{api-server}}/testJpa
 Content-Type: application/json
 
 
 ### apiServiceError
-GET {{api-server-ver}}/apiServiceError?errorCaseNum=1
+GET {{api-server}}/apiServiceError?errorCaseNum=1
 Content-Type: application/json
 
 
@@ -112,17 +112,17 @@ if (eTag) {
 }
 %}
 ### 서버정보
-GET {{api-server-ver}}/projectinfo
+GET {{api-server}}/projectinfo
 Content-Type: application/json
 
 
 
 ### XssProtectSupport 테스트
-GET {{api-server-ver}}/XssProtectSupportGet?originText=<javascript>alert('hello');</javascript>
+GET {{api-server}}/XssProtectSupportGet?originText=<javascript>alert('hello');</javascript>
 Content-Type: application/json
 
 ### XssProtectSupport 테스트
-POST {{api-server-ver}}/XssProtectSupportPost
+POST {{api-server}}/XssProtectSupportPost
 Content-Type: application/json
 
 {
@@ -148,47 +148,47 @@ Content-Type: application/json
 
 
 ### httpCache?c=c 테스트
-GET {{api-server-ver}}/httpCache
+GET {{api-server}}/httpCache
 Content-Type: application/json
 
 ### httpCache?c=c 테스트
-POST {{api-server-ver}}/httpCache?c=c
+POST {{api-server}}/httpCache?c=c
 Content-Type: application/json
 
 ### httpCache?c=c 테스트
-PUT {{api-server-ver}}/httpCache?c=c
+PUT {{api-server}}/httpCache?c=c
 Content-Type: application/json
 
 ### httpCache?c=c 테스트
-PATCH {{api-server-ver}}/httpCache?c=c
+PATCH {{api-server}}/httpCache?c=c
 Content-Type: application/json
 
 
 
 ### closeableHttpClient 테스트
-GET {{api-server-ver}}/closeableHttpClient
+GET {{api-server}}/closeableHttpClient
 Content-Type: application/json
 
 ### closeableHttpClientSupport 테스트
-POST {{api-server-ver}}/closeableHttpClientSupport
+POST {{api-server}}/closeableHttpClientSupport
 Content-Type: application/json
 
 ### restTemplate 테스트
-GET {{api-server-ver}}/restTemplate
+GET {{api-server}}/restTemplate
 Content-Type: application/json
 
 ### restTemplateSupport 테스트
-GET {{api-server-ver}}/restTemplateSupport
+GET {{api-server}}/restTemplateSupport
 Content-Type: application/json
 
 ### reqResUtil 테스트
-POST {{api-server-ver}}/reqResUtil?a=1&b=2&a=3
+POST {{api-server}}/reqResUtil?a=1&b=2&a=3
 Content-Type: application/json
 
 
 
 ### validationAnnoTationt Post 테스트
-POST {{api-server-ver}}/validationAnnotationPost
+POST {{api-server}}/validationAnnotationPost
 Content-Type: application/json
 
 {
@@ -200,37 +200,37 @@ Content-Type: application/json
 }
 
 ### validationAnnoTationt Get 테스트
-GET {{api-server-ver}}/validationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
+GET {{api-server}}/validationAnnotationGet?userId=sungilry&userName=sungilry&age=43&email=sungilry%40naver.com&mobileNumber=01042983113
 Content-Type: application/json
 
 
 
 ### property 테스트
-GET {{api-server-ver}}/propertyConfigImport
+GET {{api-server}}/propertyConfigImport
 Content-Type: application/json
 
 
 
 ### customMyUserHandler 테스트
-GET {{api-server-ver}}/argumentResolverForMyUser?id=admin
+GET {{api-server}}/argumentResolverForMyUser?id=admin
 Content-Type: application/json
 
 ### customMyUserHandler2 테스트1
-GET {{api-server-ver}}/argumentResolverForMyUser2?id=admin
+GET {{api-server}}/argumentResolverForMyUser2?id=admin
 Content-Type: application/json
 
 ### customMyUserHandler2 테스트2
-GET {{api-server-ver}}/argumentResolverForMyUser2?id=sungil
+GET {{api-server}}/argumentResolverForMyUser2?id=sungil
 Content-Type: application/json
 
 
 
 ### duplicatedRequest 테스트
-GET {{api-server-ver}}/duplicatedRequest
+GET {{api-server}}/duplicatedRequest
 Content-Type: application/json
 
 ### duplicatedRequest 테스트2
-POST {{api-server-ver}}/duplicatedRequest
+POST {{api-server}}/duplicatedRequest
 Content-Type: application/json
 
 ### duplicatedRequest 테스트(View)
@@ -244,7 +244,7 @@ Content-Type: text/html
 
 ### Security ---------------------------------
 ### API 방식 인증 요청 테스트
-POST {{api-server-ver}}/login
+POST {{api-server}}/login
 Content-Type: application/json
 
 {
@@ -256,60 +256,60 @@ Content-Type: application/json
 %}
 
 ### 테스트
-GET {{api-server-ver}}/public/hello
+GET {{api-server}}/public/hello
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/user/hello
+GET {{api-server}}/user/hello
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/auth/hello?a=a
+GET {{api-server}}/auth/hello?a=a
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/admin/anyone
+GET {{api-server}}/admin/anyone
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/admin/marketing
+GET {{api-server}}/admin/marketing
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/admin/delivery
+GET {{api-server}}/admin/delivery
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/system/anyone
+GET {{api-server}}/system/anyone
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/public/anyone/butNeedControllRole
+GET {{api-server}}/public/anyone/butNeedControllRole
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/public/anyone/butNeedFilterAuth
+GET {{api-server}}/public/anyone/butNeedFilterAuth
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/public/anyone/butNeedControllAuth
+GET {{api-server}}/public/anyone/butNeedControllAuth
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/public/postPutAfterAuth
+GET {{api-server}}/public/postPutAfterAuth
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 ### 테스트
-GET {{api-server-ver}}/exampleEvent
+GET {{api-server}}/exampleEvent
 Authorization: Bearer {{jwt}}
 Content-Type: application/json

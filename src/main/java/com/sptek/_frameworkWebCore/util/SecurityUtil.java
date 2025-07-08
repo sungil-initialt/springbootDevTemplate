@@ -182,11 +182,12 @@ public class SecurityUtil {
 
         try {
             String SecurePathType = securedFilePath.getName(0).toString();
+
             if (SecurePathType.equals(SecureFilePathTypeEnum.ANYONE.getPathName())) {
                 return true;
 
-            } else if (SecurePathType.equals(SecureFilePathTypeEnum.LOGIN.getPathName()) && SecurityUtil.isRealLogin()) {
-                return true;
+            } else if (SecurePathType.equals(SecureFilePathTypeEnum.LOGIN.getPathName())) {
+                return SecurityUtil.isRealLogin();
 
             } else if (SecurePathType.equals(SecureFilePathTypeEnum.USER.getPathName())) {
                 return securedFilePath.getName(1).toString().equals(String.valueOf(SecurityUtil.getMyCustomUserDetails().getUserDto().getId()));

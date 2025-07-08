@@ -76,14 +76,14 @@ public class MultipartFilePostService {
         long totalSize = multipartFiles.stream()
                 .peek(multipartFile -> {
                     if (!Objects.requireNonNull(multipartFile.getContentType()).startsWith("image/")) {
-                        throw new ServiceException(ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR, "이미지 파일만 업로드 가능합니다.");
+                        throw new ServiceException(ServiceErrorCodeEnum.FILE_UPLOAD_ERROR, "이미지 파일만 업로드 가능합니다.");
                     }
                 })
                 .mapToLong(MultipartFile::getSize)
                 .sum();
 
         if (totalSize > maxTotalSize) {
-            throw new ServiceException(ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR,
+            throw new ServiceException(ServiceErrorCodeEnum.PAYLOAD_TOO_LARGE_ERROR,
                     "전체 파일 크기 제한을 초과했습니다. (최대 " + maxTotalSize / (1024 * 1024) + " M)");
         }
 
@@ -110,13 +110,13 @@ public class MultipartFilePostService {
         }
 
         // 조건 별 경로 구성
-        Path postOwnFilePath = getPostOwnFilePathForAnyone(postBaseDto);
-//        Path postOwnFilePath = getPostOwnFilePathForLogin(postBaseDto);
-//        Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);
-//        Path postOwnFilePath = getPostOwnFilePathForRole(postBaseDto, Set.of("ROLE_ADMIN", "ROLE_ADMIN_SPECIAL", "ROLE_SYSTEM"));
-//        Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
-        Path realPostFilePath = SecurityUtil.getStorageRootPath(postOwnFilePath).resolve(postOwnFilePath);
+        //Path postOwnFilePath = getPostOwnFilePathForAnyone(postBaseDto);
+        //Path postOwnFilePath = getPostOwnFilePathForLogin(postBaseDto);
+        Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);
+        //Path postOwnFilePath = getPostOwnFilePathForRole(postBaseDto, Set.of("ROLE_ADMIN", "ROLE_ADMIN_SPECIAL", "ROLE_SYSTEM"));
+        //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
 
+        Path realPostFilePath = SecurityUtil.getStorageRootPath(postOwnFilePath).resolve(postOwnFilePath);
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
         for (int i = 0; i < multipartFiles.size(); i++) {
             MultipartFile multipartFile = multipartFiles.get(i);
@@ -233,11 +233,11 @@ public class MultipartFilePostService {
     }
 
     public Path getPostOwnFilePathForLogin(PostBaseDto postBaseDto) {
-        return buildFilePath(SecurityUtil.getSecuredFilePathForAnyone(), postBaseDto);
+        return buildFilePath(SecurityUtil.getSecuredFilePathForLogin(), postBaseDto);
     }
 
-    public Path getPostOwnFilePathForUser(PostBaseDto postBaseDto) {
-        return buildFilePath(SecurityUtil.getSecuredFilePathForLogin(), postBaseDto);
+    public Path getPostOwnFilePathForUser(PostBaseDto postBaseDto) throws Exception {
+        return buildFilePath(SecurityUtil.getSecuredFilePathForUser(), postBaseDto);
     }
 
     public Path getPostOwnFilePathForRole(PostBaseDto postBaseDto, Set<String> roles) throws Exception {

@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.controllerAdvice.view;
 import com.sptek._frameworkWebCore.annotation.EnablePropertiesToModelAttribute_InMain;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
 import com.sptek._frameworkWebCore.commonObject.vo.PropertiesForModelAttributeVo;
-import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +26,8 @@ public class ControllerAdviceForPropertiesToModelAttribute {
                 .forEach(model::addAttribute);
     }
 
-    @PostConstruct //Bean 생성 이후 호출
-    public void init() {
-        //log.debug("StaticModelAttribute from property : {}", this);
-    }
+//    @PostConstruct //Bean 생성 이후 호출
+//    public void init() {
+//        log.debug("StaticModelAttribute from property : {}", this);
+//    }
 }

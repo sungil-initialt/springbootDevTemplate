@@ -43,7 +43,7 @@ HttpStatus.OK(200)
  * @param {Object} options - 사용자 정의 옵션 (method, headers, body, query 등)
  * @returns {Promise<any>} 응답 JSON 또는 필요한 데이터
  */
-export const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://back.abc/api';
+export const API_BASE_URL = document.querySelector('meta[name="apiBaseUrl"]')?.content ?? 'https://localhost/api';
 //console.log("API_BASE_URL: " + API_BASE_URL);
 
 export async function requestFetch(url, options = {}) {
