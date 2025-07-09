@@ -4,6 +4,7 @@ import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
 import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
+import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import com.sptek._frameworkWebCore.util.FileUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
@@ -52,10 +53,10 @@ public class MultipartFilePostService {
     }
     
     public void setCurrentUserInfo(PostBaseDto postBaseDto) throws Exception {
-        if (SecurityUtil.isRealLogin()) {
-            postBaseDto.setUserId(SecurityUtil.getMyCustomUserDetails().getUserDto().getId());
-            postBaseDto.setUserName(SecurityUtil.getMyCustomUserDetails().getUserDto().getName());
-            postBaseDto.setUserEmail(SecurityUtil.getMyCustomUserDetails().getUserDto().getEmail());
+        if (AuthenticationUtil.isRealLogin()) {
+            postBaseDto.setUserId(AuthenticationUtil.getMyId());
+            postBaseDto.setUserName(AuthenticationUtil.getMyName());
+            postBaseDto.setUserEmail(AuthenticationUtil.getMyEmail());
         }
     }
 

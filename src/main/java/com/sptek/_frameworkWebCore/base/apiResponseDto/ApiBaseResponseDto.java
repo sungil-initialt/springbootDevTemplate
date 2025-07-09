@@ -1,12 +1,7 @@
 package com.sptek._frameworkWebCore.base.apiResponseDto;
 
-import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.SpringUtil;
-import org.springframework.util.StringUtils;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import com.sptek._frameworkWebCore.commonObject.dto.ExcuteTimeDto;
+import com.sptek._frameworkWebCore.util.SptFwUtil;
 
 public class ApiBaseResponseDto {
     public String resultCode;
@@ -16,8 +11,11 @@ public class ApiBaseResponseDto {
     public String durationMsec;
 
     public void makeTimestamp() {
-        this.requestTime = Optional.ofNullable(SpringUtil.getRequest().getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
-        this.responseTime = LocalDateTime.now().toString();
-        this.durationMsec = StringUtils.hasText(requestTime) ? String.valueOf(Duration.between(LocalDateTime.parse(requestTime), LocalDateTime.parse(responseTime)).toMillis()) : "";
+        ExcuteTimeDto excuteTimeDto = SptFwUtil.traceDurationFromRequest();
+        if (excuteTimeDto != null) {
+            this.requestTime = excuteTimeDto.getStartTime();
+            this.responseTime = excuteTimeDto.getCurrentTime();
+            this.durationMsec = excuteTimeDto.getDurationMsec();
+        }
     }
 }

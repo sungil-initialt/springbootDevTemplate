@@ -20,7 +20,7 @@ public class EncryptionViewController {
     private final String htmlBasePath = "pages/_example/unit/";
 
     @GetMapping("/encryption/encryptionForWeb")
-    public String preventDuplicateRequest() {
+    public String encryptionForWeb() {
         return htmlBasePath + "encryption";
     }
 }

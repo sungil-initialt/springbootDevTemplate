@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.filter;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
+import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,11 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 //@Profile(value = { "local", "dev", "stg" }) //todo : 상용적용은 고민해 볼것(성능?)
@@ -52,7 +50,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
             // todo: 멤버 계정 사용과 관련한 보안 이슈 체크 필요
             // todo: 로그인 처리 과정 중에 로그를 남기는 경우 아직 CustomUserDetails 객체가 없는 상태일 수 있어 있어서 아래 방식으로 변경함
             // MDC.put("memberId", SecurityUtil.isRealLogin() ? SecurityUtil.getMyCustomUserDetails().getUserDto().getEmail() : "Not Logged In");
-            MDC.put("memberId", Optional.ofNullable(SecurityUtil.getMyAuthentication()).map(Authentication::getName).orElse("User not authenticated yet"));
+            MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName() : CommonConstants.ANONYMOUS_USER);
             MDC.put("sessionId", request.getSession(true).getId());
             filterChain.doFilter(request, response);
         } finally {

@@ -11,6 +11,7 @@ Xss 방지 적용을 위한 클레스로 버그가 있지않는 한 수정할 �
 public class XssProtectHelper extends CharacterEscapes {
     private final int[] asciiEscapes;
 
+    // todo: 성능 측면 고려 필요
     public XssProtectHelper() {
         asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
         asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
@@ -22,6 +23,16 @@ public class XssProtectHelper extends CharacterEscapes {
         asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['/'] = CharacterEscapes.ESCAPE_CUSTOM;
+
+        // 추가 적용 고려 가능
+        /*
+        asciiEscapes['='] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['+'] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes[';'] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['%'] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['\\'] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes[':'] = CharacterEscapes.ESCAPE_CUSTOM;
+        */
     }
 
     @Override

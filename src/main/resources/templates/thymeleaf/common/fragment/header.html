@@ -66,7 +66,7 @@
 
     <div class="header-right">
 
-        <!-- 로그인 상태 -->
+        <!-- 로그인 상태, authentication 는 thymeleaf 로 자동 으로 주입 되는 객체임 -->
         <p th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}">
             Welcome, <span th:text="${#authentication.getPrincipal().userDto.email}" class="user-email">User</span> 님!
         </p>

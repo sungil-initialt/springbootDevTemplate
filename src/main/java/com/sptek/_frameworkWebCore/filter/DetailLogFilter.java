@@ -122,12 +122,14 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     + "requestHeader : %s\n"
                     + "requestBody : %s\n"
                     + "responseHeader : %s\n"
+                    + "timeStamp : %s\n"
                     + "modelAndView(%s) : %s\n"
                     + "exceptionMsg : %s\n"
                     , session
                     , methodType, url
                     , params
                     , requestHeader
+                    , SptFwUtil.traceDurationFromRequest()
                     , StringUtils.hasText(requestBody)? "\n" + requestBody : ""
                     , responseHeader
                     , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : ""

@@ -3,7 +3,7 @@ package com.sptek._frameworkWebCore._example.unit.authentication;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.User;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
+import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -70,7 +71,7 @@ public class AuthenticationViewController {
 
     @GetMapping("/authentication/curAuthentication")
     public String curAuthentication(Model model) {
-        String curAuthentication = SecurityUtil.getMyAuthentication().toString();
+        Authentication curAuthentication = AuthenticationUtil.getMyAuthentication();
         //curAuthentication 내 RemoteIpAddress는 로그인을 요청한 ip주소, SessionId는 로그인 을 요청 했던 당시의 세션값(로그인 이후 새 값으로 변경됨)
 
         model.addAttribute("result", curAuthentication);
