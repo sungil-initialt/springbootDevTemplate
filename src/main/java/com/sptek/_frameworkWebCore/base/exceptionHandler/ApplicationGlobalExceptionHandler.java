@@ -132,17 +132,23 @@ public class ApplicationGlobalExceptionHandler {
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
             String logBody = String.format(
-                      "session : %s\n"
+                    "session : %s\n"
                     + "(%s) url : %s\n"
                     + "header : %s\n"
                     + "params : %s\n"
                     + "responseStatus : %s\n"
+                    + "requestTime : %s\n"
+                    + "responseTime : %s\n"
+                    + "durationMsec : %s\n"
                     + "exceptionMsg : %s\n"
                     , sessionId
                     , methodType, url
-                    , params
                     , requestHeader
+                    , params
                     , httpStatus
+                    , RequestUtil.traceRequestDuration().getStartTime()
+                    , RequestUtil.traceRequestDuration().getCurrentTime()
+                    , RequestUtil.traceRequestDuration().getDurationMsec()
                     , ex.getMessage()
             );
             log.info(SptFwUtil.convertSystemNotice("Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler", logBody));

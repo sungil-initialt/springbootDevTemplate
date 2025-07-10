@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.EnableXssProtectorForView_InControllerMethod;
+import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +16,11 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class)
+//@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class) //HasAnnotationOnMain 설정 으로 처리 하려다 성능을 고려 하여 controller Annotation 적용 으로 변경함
 @Slf4j
 @Component
 
-public class ModelAndViewXssProtectInterceptor implements HandlerInterceptor {
+public class ModelViewXssProtectInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(
@@ -29,10 +29,12 @@ public class ModelAndViewXssProtectInterceptor implements HandlerInterceptor {
             @NotNull Object handler,
             ModelAndView modelAndView
     ) {
-        if (handler instanceof HandlerMethod && modelAndView != null) {
-            log.debug("🛡️ Interceptor: XSS escaping ModelAndView");
-            Map<String, Object> model = modelAndView.getModel();
-            model.replaceAll((key, value) -> escapeIfNeeded(value));
+        if (handler instanceof HandlerMethod handlerMethod && modelAndView != null) {
+            if (handlerMethod.hasMethodAnnotation(EnableXssProtectorForView_InControllerMethod.class)) {
+                log.debug("ModelView Xss Protector On");
+                Map<String, Object> model = modelAndView.getModel();
+                model.replaceAll((key, value) -> escapeIfNeeded(value));
+            }
         }
     }
 
@@ -45,6 +47,10 @@ public class ModelAndViewXssProtectInterceptor implements HandlerInterceptor {
             return list.stream().map(this::escapeIfNeeded).collect(Collectors.toList());
         }
 
+        if (value instanceof Set<?> set) {
+            return set.stream().map(this::escapeIfNeeded).collect(Collectors.toSet());
+        }
+
         if (value instanceof Map<?, ?> map) {
             return map.entrySet().stream()
                     .collect(Collectors.toMap(
@@ -55,31 +61,35 @@ public class ModelAndViewXssProtectInterceptor implements HandlerInterceptor {
                     ));
         }
 
-        if (isDto(value)) {
-            return escapeDto(value);
+        if (value instanceof Object[] array) {
+            return Arrays.stream(array).map(this::escapeIfNeeded).toArray();
+        }
+
+        if (isMyDtoObject(value)) {
+            return escapeDtoObject(value);
         }
 
         return value;
     }
 
-    private boolean isDto(Object obj) {
+    private boolean isMyDtoObject(Object obj) {
         return obj != null
                 && !(obj instanceof Enum)
-                && obj.getClass().getPackageName().startsWith("com.sptek.");
+                && obj.getClass().getPackageName().startsWith(CommonConstants.PROJECT_PACKAGE_NAME);
     }
 
-    private Object escapeDto(Object dto) {
+    private Object escapeDtoObject(Object dto) {
         for (Field field : getAllFields(dto.getClass())) {
             field.setAccessible(true);
             try {
                 Object fieldValue = field.get(dto);
                 if (fieldValue instanceof String str) {
                     field.set(dto, StringEscapeUtils.escapeHtml4(str));
-                } else if (fieldValue instanceof List<?> || fieldValue instanceof Map<?, ?> || isDto(fieldValue)) {
+                } else if (fieldValue instanceof List<?> || fieldValue instanceof Map<?, ?> || isMyDtoObject(fieldValue)) {
                     field.set(dto, escapeIfNeeded(fieldValue));
                 }
             } catch (Exception e) {
-                log.warn("XSS 필터링 중 DTO 처리 실패 - 클래스: {}, 필드: {}", dto.getClass().getName(), field.getName(), e);
+                log.warn("Xss Protecting Fail - class: {}, field: {}", dto.getClass().getName(), field.getName(), e);
             }
         }
         return dto;

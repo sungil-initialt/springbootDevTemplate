@@ -23,23 +23,24 @@ import java.util.stream.Collectors;
 @Component
 public class GeneralTokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
-    private final String secureKey;
+    private final String secretKey;
     private final long tokenValidityInMilliseconds;
     private Key key;
 
-    public GeneralTokenProvider(@Value("${jwt.base64SecretKey}") String secureKey, @Value("${jwt.tokenValidityInMilliseconds}") long tokenValidityInMilliseconds) {
-        this.secureKey = secureKey;
+    public GeneralTokenProvider(@Value("${jwt.base64SecretKey}") String secretKey, @Value("${jwt.tokenValidityInMilliseconds}") long tokenValidityInMilliseconds) {
+        this.secretKey = secretKey;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }
 
     // Bean의 실제 생성(생성자) 이후 동작
     @Override
     public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secureKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String convertAuthenticationToJwt(Authentication authentication){
+        log.debug("origin authentication: {}", authentication);
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -50,10 +51,21 @@ public class GeneralTokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY,authorities)
+                .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+        /*
+        todo:
+        최종 토큰 형태 : eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdW5naWxyeTFAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTc1MjEzNzUxNn0.qfb5BBjZktqcif9XBCSDpk2okoYj5qO19qUGSaM1xjSF9hc-xylgjvGtgkbzd9XmpD5-zi6PdlmghyTW8EZ9xw
+        토큰은 암호화 된것이 아니라 Base64 인코딩된 상태로 그런 이유로 주요 정보는 포함하지 않아야 함.
+        그러한 이유로 브라우저에서 직접 로그인하고 sessionId로 인증 처리가 되는 케이스와(view) 와 Authorization: Bearer 토큰으로 인증받은 케이스의 SecurityContextHolder 에서 Authentication 을 가져왔을때 서로 정보의 량이 틀릴수 있음을 꼭 알아야 함!)
+        단지 시그니쳐 값을 통해서 위변조 여부를 판단할 뿐이다. (서버로 토큰이 들어오면 본문 필드와 시그니쳐 시크릿 값으로 서명했을때 동일하면 유효로 판담)
+        <토큰 구조>
+            eyJhbGciOiJIUzUxMiJ9 ← Header (Base64 인코딩).
+            eyJzdWIiOiJzdW5naWxyeTFAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTc1MjEzNzUxNn0  ← Payload (Base64 인코딩).
+            qfb5BBjZktqcif9XBCSDpk2okoYj5qO19qUGSaM1xjSF9hc-xylgjvGtgkbzd9XmpD5-zi6PdlmghyTW8EZ9xw ← Signature
+         */
     }
 
     // 토큰에 정보를 이용해 Authentication (UsernamePasswordAuthenticationToken) 변환

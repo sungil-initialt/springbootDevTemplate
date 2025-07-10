@@ -31,6 +31,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @EnablePropertiesToModelAttribute_InMain
 @EnableUserAuthenticationToModelAttribute_InMain
 
+
+@EnableXssProtectorForApi_InMain
 @EnableUvCheckLog_InMain
 
 public class SptWfwApplication {

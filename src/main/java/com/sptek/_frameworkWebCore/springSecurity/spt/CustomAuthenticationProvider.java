@@ -12,13 +12,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /*
-AuthenticationProvider 와 UserDetailsService를 만드는 주체가 별개일수 있는 관점에서 봐야 함 (왜 이런 여러 단계를 두었을까에 대한..)
-그래서 AuthenticationProvider 의 실질적인 처리를 위한 UserDetailsService를 주입받는 것이고
-또 그래서 서로 다른 주체간에 interface 를 마추기 위해서  UserDetailsService 의 loadUserByUsername 처리 리턴을 UserDetails 로 규정해 놓은 것임
-ex:
-정책은 통합으로 한곳(AuthenticationProvider)에서 만들어서 내려주는데 서비스별로 User테이블의 컬럼이름도 다 다르고 할수 있음 (여기서는 id 격의 값을 email을 사용)
-그래서 UserDetailsService 는 서비스 별로 각자 구현해서 최종 결과만 UserDetails 규격으로 리턴해 주면 통일된 동작이 가능함.
- */
+AuthenticationProvider와 UserDetailsService를 만드는 주체가 서로 다를 수 있다는 관점에서 이해해야 함
+(왜 이런 여러 단계를 두었을까에 대한 고민이 필요함).
+
+그래서 AuthenticationProvider는 실질적인 인증 처리를 위해 UserDetailsService를 주입받는 것이고,
+또 서로 다른 주체 간에 인터페이스를 맞추기 위해 UserDetailsService의 loadUserByUsername 리턴 타입을 UserDetails로 규정해 놓은 것임.
+
+예를 들어,
+인증 정책은 통합하여 한 곳(AuthenticationProvider)에서 만들고 내려주지만,
+서비스별로 User 테이블의 컬럼 이름이나 구조가 다를 수 있음.
+(예: 여기서는 id에 해당하는 값을 email로 사용)
+
+따라서 UserDetailsService는 서비스별로 각자 구현하고,
+최종적으로 UserDetails 규격만 맞춰서 리턴하면
+AuthenticationProvider 입장에서는 통일된 방식으로 처리할 수 있음.
+*/
 @Slf4j
 @RequiredArgsConstructor
 @Component

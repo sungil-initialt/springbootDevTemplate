@@ -1,11 +1,15 @@
 package com.sptek._frameworkWebCore.util;
 
+import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.commonObject.dto.ExcuteTimeDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -124,5 +128,17 @@ public class RequestUtil {
         return headers;
     }
 
+    public static ExcuteTimeDto traceRequestDuration() {
+        String startTime = Optional.ofNullable(SpringUtil.getRequest()
+                        .getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
+
+        if (!StringUtils.hasText(startTime)) {
+            return new ExcuteTimeDto("fail to trace.", LocalDateTime.now().toString(), "fail to trace.");
+        }
+
+        String currentTime = LocalDateTime.now().toString();
+        String durationMsec = String.valueOf(Duration.between(LocalDateTime.parse(startTime), LocalDateTime.parse(currentTime)).toMillis());
+        return new ExcuteTimeDto(startTime, currentTime, durationMsec);
+    }
 }
 

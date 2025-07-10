@@ -218,11 +218,12 @@ public class FrameworkSecurityFilterChainConfig {
                 //                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
                 //)
 
-                //security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
-                //UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, {loginProcessingUrl} 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
-                //api 방식일 경우 UsernamePasswordAuthenticationFilter 가 동작 하면 안됨 으로 그 앞에 CustomJwtFilter 두어 인증 관련 처리를 먼저 하도록 처리함
+                // security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
+                // UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, {loginProcessingUrl} 경로 요청시 동작하며 해당 POST request로 전달된 정보를 이용해 스프링의 authenticationManager 통한 인증 절차를 요청함
+                // api jwt 방식일 경우 UsernamePasswordAuthenticationFilter 만으로는 로그인 처리를 해줄수 없음(Session Id가 없음으로) 그 앞에 CustomJwtFilter 두어 JWT로 인증 처리가 가능하도록 함
+                // CustomJwtFilter 가 성공/실패 하더라도 나머지 인증 AuthenticationManager 가 가지고 있는 나머지 Provider 들도 계속해서 동작하는 것으로 보임(support 조건이 맞을때)
+                // 그래서 브라우저로 API를 호출 하는 경우에 Authorization: Bearer 에 JWT 값이 없더라도 다음 Provider 에 의해 (SessionID값으로) 처리 되고 있음
                 .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
         return httpSecurity.build();
     }
 }

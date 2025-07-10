@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,22 +38,39 @@ public class AuthenticationUtil {
     // spring security 필터에 의해 처리된 접속자 정보(정리된 정보)
     public static UserDto getMyUserDto() {
         if (!isRealLogin()) return null;
-        return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto();
+        try {
+            return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto();
+        } catch (ClassCastException e) {
+            // todo: ClassCastException 하는 이유는 sessionId로(view) 인증 받는 케이스와 JWT로 인증 받는 케이스에 SecurityContextHolder 의 Authentication 정보 구조가 서로 다르기 때문임
+            return null;
+        }
     }
 
     public static Long getMyId() {
         if (!isRealLogin()) return null;
-        return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getId();
+        try {
+            return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getId();
+        } catch (ClassCastException e) {
+            return null;
+        }
     }
 
     public static String getMyName() {
         if (!isRealLogin()) return CommonConstants.ANONYMOUS_USER;
-        return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getName();
+        try {
+            return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getEmail();
+        } catch (ClassCastException e) {
+            return ((UserDetails)AuthenticationUtil.getMyAuthentication().getPrincipal()).getUsername();
+        }
     }
 
     public static String getMyEmail() {
         if (!isRealLogin()) return null;
-        return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getEmail();
+        try {
+            return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getEmail();
+        } catch (ClassCastException e) {
+            return null;
+        }
     }
 
     public static Set<String> getMyRoles() {

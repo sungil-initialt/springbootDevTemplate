@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommonConstants {
+    // project
+    public static final String PROJECT_PACKAGE_NAME = "com.sptek.";
+    public static final String FRAMEWORK_WEBCORE_PACKAGE_NAME = "com.sptek._frameworkWebCore.";
 
     // Logging
     public static final String REQ_PROPERTY_FOR_LOGGING_TIMESTAMP = "REQ_PROPERTY_FOR_LOGGING_TIMESTAMP";

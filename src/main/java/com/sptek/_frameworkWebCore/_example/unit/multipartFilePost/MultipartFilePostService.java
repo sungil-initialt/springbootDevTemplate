@@ -113,7 +113,7 @@ public class MultipartFilePostService {
         // 조건 별 경로 구성
         //Path postOwnFilePath = getPostOwnFilePathForAnyone(postBaseDto);
         //Path postOwnFilePath = getPostOwnFilePathForLogin(postBaseDto);
-        Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);
+        Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);  // ---> 아래 케이스 부터 테스트 필요함!! , 이미지 바이트 스트림 메소드등 등 파일 위치등의 조정이 필요함, 필터쪽에 if문 제확인 필요
         //Path postOwnFilePath = getPostOwnFilePathForRole(postBaseDto, Set.of("ROLE_ADMIN", "ROLE_ADMIN_SPECIAL", "ROLE_SYSTEM"));
         //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
 

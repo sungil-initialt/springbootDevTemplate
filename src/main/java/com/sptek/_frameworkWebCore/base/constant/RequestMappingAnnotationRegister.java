@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 // Controller class 와 그 내부 method 에 적용된 타멧 페키지 Annotation 정보를 모두 가지고 있는 역할
 public class RequestMappingAnnotationRegister {
-    private static final String TARGET_ANNOTATION_PACKAGE = "com.sptek._frameworkWebCore.annotation";
+    private static final String TARGET_ANNOTATION_PACKAGE = CommonConstants.FRAMEWORK_WEBCORE_PACKAGE_NAME + "annotation";
 
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
     private static Map<String, Map<String, Map<String, Object>>> requestAnnotationRegister = Collections.emptyMap();
