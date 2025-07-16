@@ -82,7 +82,7 @@
             uploadFileDtos.forEach(fileDto => {
               const requestFile = fileDto.filePath + '/' + fileDto.fileName;
               const imgElement = document.createElement("img");
-              imgElement.src = "/api/02/example/post/fileByteFromStorage?securedFilePath=" + encodeURIComponent(requestFile);
+              imgElement.src = "/systemSupportApi/fileByteFromStorage?securedFilePath=" + encodeURIComponent(requestFile);
               imageContainer.appendChild(imgElement);
             });
           }

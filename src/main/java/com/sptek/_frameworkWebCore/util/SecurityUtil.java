@@ -7,10 +7,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.util.AntPathMatcher;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -100,24 +97,23 @@ public class SecurityUtil {
     }
 
     public static Path getSecuredFilePathForLogin() {
-        // 만드는 시점 에도 로그인 상태가 체크가 필요 할까?
         return Path.of(SecureFilePathTypeEnum.LOGIN.getPathName());
     }
 
     public static Path getSecuredFilePathForUser() throws Exception {
-        if (!AuthenticationUtil.isRealLogin()) throw new Exception("로그인 상태가 아닙니다.");
         return Path.of(SecureFilePathTypeEnum.USER.getPathName(), String.valueOf(AuthenticationUtil.getMyId()));
     }
 
     public static Path getSecuredFilePathForRole(Set<String> roleNames) {
         if (roleNames == null || roleNames.isEmpty()) throw new IllegalArgumentException("roleNames is required");
-        return Path.of(SecureFilePathTypeEnum.ROLE.getPathName(), String.join("-", roleNames));
+        Set<String> sortedSet = new TreeSet<>(roleNames);
+        return Path.of(SecureFilePathTypeEnum.ROLE.getPathName(), String.join("-", sortedSet));
     }
 
-    public static Path getSecuredFilePathForAuth(Set<AuthorityEnum> Authorities) {
-        if (Authorities == null || Authorities.isEmpty()) throw new IllegalArgumentException("Authorities is required");
-        return Path.of(SecureFilePathTypeEnum.AUTH.getPathName()
-                , Authorities.stream().map(AuthorityEnum::name).collect(Collectors.joining("-")));
+    public static Path getSecuredFilePathForAuth(Set<AuthorityEnum> authorities) {
+        if (authorities == null || authorities.isEmpty()) throw new IllegalArgumentException("Authorities is required");
+        Set<String> sortedSet = authorities.stream().map(AuthorityEnum::name).collect(Collectors.toCollection(TreeSet::new));
+        return Path.of(SecureFilePathTypeEnum.AUTH.getPathName(), String.join("-", sortedSet));
     }
 
     public static Path getStorageRootPath(Path securedFilePath) {

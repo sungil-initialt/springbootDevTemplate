@@ -41,7 +41,7 @@ public class MultipartFilePostService {
         //작성자 정보 셋팅
         setCurrentUserInfo(examplePostDto);
         
-        //text insert
+        //text 데이터에 대한 insert
         this.insertExamplePostDto(examplePostDto);
 
         //파일과 관련한 처리 후 UploadFileDtos 재 설정
@@ -60,6 +60,7 @@ public class MultipartFilePostService {
         }
     }
 
+    // 클라이언트에서 file 관련 어떤 라이브러리를 사용했는지.. 또 관련 시나리오에 따라 이 부분의 수정이 있어야 함
     public List<UploadFileDto> doFileJob(PostBaseDto postBaseDto, List<MultipartFile> orignMultipartFiles) throws Exception {
 
         // 공통 작업 -------
@@ -77,7 +78,7 @@ public class MultipartFilePostService {
         long totalSize = multipartFiles.stream()
                 .peek(multipartFile -> {
                     if (!Objects.requireNonNull(multipartFile.getContentType()).startsWith("image/")) {
-                        throw new ServiceException(ServiceErrorCodeEnum.FILE_UPLOAD_ERROR, "이미지 파일만 업로드 가능합니다.");
+                        throw new ServiceException(ServiceErrorCodeEnum.FILE_UPLOAD_ERROR, "이미지 파일만 업로드 가능 합니다.");
                     }
                 })
                 .mapToLong(MultipartFile::getSize)
@@ -85,7 +86,7 @@ public class MultipartFilePostService {
 
         if (totalSize > maxTotalSize) {
             throw new ServiceException(ServiceErrorCodeEnum.PAYLOAD_TOO_LARGE_ERROR,
-                    "전체 파일 크기 제한을 초과했습니다. (최대 " + maxTotalSize / (1024 * 1024) + " M)");
+                    "전체 파일 크기 제한을 초과 했습니다. (최대 " + maxTotalSize / (1024 * 1024) + " M)");
         }
 
         // 공용 변수들
@@ -110,12 +111,13 @@ public class MultipartFilePostService {
                     .orElse(0);
         }
 
-        // 조건 별 경로 구성
-        //Path postOwnFilePath = getPostOwnFilePathForAnyone(postBaseDto);
+        // 조건 별 경로 구성 -----------------------------------------------------------
+        Path postOwnFilePath = getPostOwnFilePathForAnyone(postBaseDto);
         //Path postOwnFilePath = getPostOwnFilePathForLogin(postBaseDto);
-        Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);  // ---> 아래 케이스 부터 테스트 필요함!! , 이미지 바이트 스트림 메소드등 등 파일 위치등의 조정이 필요함, 필터쪽에 if문 제확인 필요
+        //Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);  // ---> 아래 케이스 부터 테스트 필요함!! , 이미지 바이트 스트림 메소드등 등 파일 위치등의 조정이 필요함, 필터쪽에 if문 제확인 필요
         //Path postOwnFilePath = getPostOwnFilePathForRole(postBaseDto, Set.of("ROLE_ADMIN", "ROLE_ADMIN_SPECIAL", "ROLE_SYSTEM"));
         //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
+        //---------------------------------------------------------------------------
 
         Path realPostFilePath = SecurityUtil.getStorageRootPath(postOwnFilePath).resolve(postOwnFilePath);
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
@@ -233,15 +235,20 @@ public class MultipartFilePostService {
         return buildFilePath(SecurityUtil.getSecuredFilePathForAnyone(), postBaseDto);
     }
 
-    public Path getPostOwnFilePathForLogin(PostBaseDto postBaseDto) {
+    public Path getPostOwnFilePathForLogin(PostBaseDto postBaseDto) throws Exception {
+        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
         return buildFilePath(SecurityUtil.getSecuredFilePathForLogin(), postBaseDto);
     }
 
     public Path getPostOwnFilePathForUser(PostBaseDto postBaseDto) throws Exception {
+        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
         return buildFilePath(SecurityUtil.getSecuredFilePathForUser(), postBaseDto);
     }
 
     public Path getPostOwnFilePathForRole(PostBaseDto postBaseDto, Set<String> roles) throws Exception {
+        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        if (roles != null && Collections.disjoint(AuthenticationUtil.getMyRoles(), roles)) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "해당 롤이 없습니다.");
+
         return buildFilePath(
                 SecurityUtil.getSecuredFilePathForRole(roles),
                 postBaseDto
@@ -249,6 +256,15 @@ public class MultipartFilePostService {
     }
 
     public Path getPostOwnFilePathForAuth(PostBaseDto postBaseDto, Set<AuthorityEnum> authorities) throws Exception {
+        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        if (authorities != null &&
+                Collections.disjoint(
+                        AuthenticationUtil.getMyAuths(),
+                        authorities.stream().map(Enum::name).collect(Collectors.toSet())
+                )) {
+            throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "해당 권한이 없습니다.");
+        }
+
         return buildFilePath(
                 SecurityUtil.getSecuredFilePathForAuth(authorities),
                 postBaseDto

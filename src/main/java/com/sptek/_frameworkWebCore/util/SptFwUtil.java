@@ -57,7 +57,7 @@ public class SptFwUtil {
             return "No Content";
         }
 
-        if (content.length > 1000_00) {
+        if (content.length > 3000_0) { // 30k
             return "Logging is skipped (the body is too big)";
         }
 

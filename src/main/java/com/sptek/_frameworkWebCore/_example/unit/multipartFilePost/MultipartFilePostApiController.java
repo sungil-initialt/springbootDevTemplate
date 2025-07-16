@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore._example.unit.multipartFilePost;
 import com.sptek._frameworkWebCore._example.dto.ExamplePostDto;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
 import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -30,11 +28,6 @@ public class MultipartFilePostApiController {
     @Operation(summary = "01. multipartFile 을 포함 하는 Form 데이터 처리", description = "")
     public Object multipartFilePost(@ModelAttribute ExamplePostDto examplePostDto, @RequestParam(required = false) List<MultipartFile> multipartFiles) throws Exception {
         return multipartFilePostService.createPost(examplePostDto, multipartFiles);
-    }
-
-    @GetMapping(value = "/02/example/post/fileByteFromStorage")
-    public Object fileByteFromStorage(@RequestParam("securedFilePath") String securedFilePath)  throws Exception {
-        return ResponseUtil.makeResponseEntityFromFile(Path.of(securedFilePath));
     }
 
 }

@@ -38,7 +38,7 @@ GET {{api-server}}/08/example/authentication/authFreeWithAuthCheckMethod
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
-#### 9. Auth 경로가 아니지만 내부 적으로 Role 체크 메소드 를 사용 하는 경우
+#### 9. Auth 경로가 아니지만 내부 적으로 Role 체크 메소드를 사용 하는 경우
 GET {{api-server}}/09/example/authentication/authFreeWithRoleCheckMethod
 Authorization: Bearer {{jwt}}
 Content-Type: application/json

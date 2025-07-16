@@ -52,14 +52,13 @@ public class ResponseUtil {
 
     public static ResponseEntity<byte[]> makeResponseEntityFromFile(Path securedFilePath) throws Exception {
         if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
-
         if (!SecurityUtil.hasPermissionForSecuredFilePath(securedFilePath)) {
             throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
         }
 
         Path resolvedPath = SecurityUtil.getStorageRootPath(securedFilePath).resolve(securedFilePath);
         File finalFile = resolvedPath.toFile();
-        log.debug("Final request file: {}", finalFile.getAbsolutePath());
+        //log.debug("Final request file: {}", finalFile.getAbsolutePath());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", Files.probeContentType(resolvedPath));
