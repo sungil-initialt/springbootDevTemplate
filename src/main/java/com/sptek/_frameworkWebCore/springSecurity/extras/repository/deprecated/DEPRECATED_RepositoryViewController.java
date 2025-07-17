@@ -21,15 +21,15 @@ import java.util.Map;
 @Controller
 @Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
-public class RepositoryViewController {
+public class DEPRECATED_RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외
     private final String htmlBasePath = "pages/_example/html/";
-    private final RepositoryService repositoryService;
+    private final DEPRECATED_RepositoryService DEPRECATEDRepositoryService;
 
     //for test
     @GetMapping("/test/testRepo1/{key}")
     public String repoTest(@PathVariable("key") String key, Model model) {
-        Map<String, Object> resultMap = repositoryService.testRepository(key);
+        Map<String, Object> resultMap = DEPRECATEDRepositoryService.testRepository(key);
         model.addAttribute("result", resultMap);
         return htmlBasePath + "simpleModelView";
     }

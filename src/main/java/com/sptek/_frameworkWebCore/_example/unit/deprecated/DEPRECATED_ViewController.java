@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
-public class DeprecatedViewController {
+public class DEPRECATED_ViewController {
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
 

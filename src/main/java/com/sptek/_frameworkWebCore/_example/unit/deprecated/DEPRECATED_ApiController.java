@@ -45,7 +45,7 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping(value = {"/api/"})
 @Tag(name = "Deprecate 예정", description = "Deprecate 예정 APIs") // for swagger
 
-public class DeprecatedApiController {
+public class DEPRECATED_ApiController {
     String fooResponseUrl = "https://worldtimeapi.org/api/timezone/Asia/Seoul"; //아무 의미없는 사이트로 단순히 rest 응답을 주는 테스트용 서버가 필요했음
 
     private final ProjectInfoVo projectInfoVo;

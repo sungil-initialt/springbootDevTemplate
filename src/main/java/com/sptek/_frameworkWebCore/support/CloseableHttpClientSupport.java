@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore.support;
 
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -21,29 +22,25 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /*
-closeableHttpClient 사용을 쉽게 할수있도록 만듬.
-해당 클레스는 직접 생성(new)하지 않고 spring 주입을 통해 사용해야 함
+closeableHttpClient을 쉽게 사용하기 위한 클레스로 Spring Bean 을 통해 주입받아 사용할 것
  */
 
 @Slf4j
+@RequiredArgsConstructor
 public class CloseableHttpClientSupport {
     //todo: CloseableHttpClient 의 close 처리와 PoolingHttpClientConnectionManager shutdown 처리에 대해서 더 고민 필요함 (pool 모니터링 기능 필요)
-
-    private CloseableHttpClient closeableHttpClient;
-
-    public CloseableHttpClientSupport(CloseableHttpClient closeableHttpClient){
-        this.closeableHttpClient = closeableHttpClient;
-    }
+    private final CloseableHttpClient closeableHttpClient;
 
     public HttpEntity requestGet(String requestUrl, @Nullable HttpHeaders headers) throws Exception {
         log.debug("requestUrl = ({}), headers = ({})", requestUrl, headers);
 
         HttpGet httpGet = new HttpGet(requestUrl);
+        //해더 타입 불일치로 httpGet.addHeader(headers) 로 넣을 수 없음 (일일히 넣어 줌)
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpGet.addHeader(name, value))));
 
-        CloseableHttpResponse response = closeableHttpClient.execute(httpGet);
-        return response.getEntity();
-
+        try (CloseableHttpResponse response = closeableHttpClient.execute(httpGet)) {
+            return response.getEntity();
+        }
     }
 
     public HttpEntity requestPost(String requestUrl, @Nullable HttpHeaders headers, @Nullable Object requestBodyObject) throws IOException {
@@ -66,9 +63,9 @@ public class CloseableHttpClientSupport {
             httpPost.setEntity(requestEntity);
         }
 
-        log.debug("identityHashCode : {}", System.identityHashCode(closeableHttpClient));
-        CloseableHttpResponse response = closeableHttpClient.execute(httpPost);
-        return response.getEntity();
+        try (CloseableHttpResponse response = closeableHttpClient.execute(httpPost)) {
+            return response.getEntity();
+        }
     }
 
     public HttpEntity requestPut(String requestUrl, @Nullable HttpHeaders headers, @Nullable Object requestBodyObject) throws IOException {
@@ -90,8 +87,9 @@ public class CloseableHttpClientSupport {
             httpPut.setEntity(requestEntity);
         }
 
-        CloseableHttpResponse response = closeableHttpClient.execute(httpPut);
-        return response.getEntity();
+        try (CloseableHttpResponse response = closeableHttpClient.execute(httpPut)) {
+            return response.getEntity();
+        }
     }
 
     public HttpEntity requestDelete(String requestUrl, @Nullable HttpHeaders headers) throws IOException {
@@ -100,15 +98,16 @@ public class CloseableHttpClientSupport {
         HttpDelete httpDelete = new HttpDelete(requestUrl);
         Optional.ofNullable(headers).ifPresent(h -> h.forEach((name, values) -> values.forEach(value -> httpDelete.addHeader(name, value))));
 
-        CloseableHttpResponse response = closeableHttpClient.execute(httpDelete);
-        return response.getEntity();
+        try (CloseableHttpResponse response = closeableHttpClient.execute(httpDelete)) {
+            return response.getEntity();
+        }
     }
 
     public static String convertResponseToString(HttpEntity httpEntity) throws Exception {
         String reponseString =EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
         log.debug("responseBody to String = {}", reponseString);
 
-        if(httpEntity != null) {EntityUtils.consume(httpEntity);}
+        EntityUtils.consume(httpEntity);
         return reponseString;
         
         //todo: response 결과를 라인별로 받아서 처리가 필요한 경우 사용 (코드 테스트 필요)

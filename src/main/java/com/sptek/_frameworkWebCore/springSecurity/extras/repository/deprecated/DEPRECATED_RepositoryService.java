@@ -13,7 +13,7 @@ import java.util.*;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class RepositoryService {
+public class DEPRECATED_RepositoryService {
 
     private final TestJpaRepository testJpaRepository;
 

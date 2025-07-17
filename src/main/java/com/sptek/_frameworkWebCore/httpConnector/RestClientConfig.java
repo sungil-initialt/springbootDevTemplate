@@ -6,11 +6,10 @@ import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,70 +17,59 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RestClientConfig {
-
     @Bean
-    @DependsOn({"CloseableHttpClient"})
-    @Autowired
-    //CloseableHttpClient를 쉽게 쓸수있도록 기능 랩핑한 Bean
-    public CloseableHttpClientSupport CloseableHttpClientSupport(CloseableHttpClient closeableHttpClient){
-        CloseableHttpClientSupport myHttpClientSupport = new CloseableHttpClientSupport(closeableHttpClient);
-        return myHttpClientSupport;
-    }
-
-    @Bean
-    @DependsOn({"CloseableHttpClient"})
-    @Autowired
-    //reqConfig와 pool 관리를 내부적으로 하고 있는 RestTemplate을 @Autowired 해 사용할 수 있도록 Bean 구성함
-    public RestTemplate RestTemplate(CloseableHttpClient closeableHttpClient){
-        HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        httpComponentsClientHttpRequestFactory.setHttpClient(closeableHttpClient);
-        RestTemplate restTemplate = new RestTemplate(httpComponentsClientHttpRequestFactory);
-
-        return restTemplate;
-    }
-
-    @Bean
-    @DependsOn({"RestTemplate"})
-    @Autowired
-    //restTemplate을 쉽게 쓸수있도록 기능 랩핑한 Bean
-    public RestTemplateSupport RestTemplateSupport(RestTemplate restTemplate){
-        RestTemplateSupport myRestTemplateSupport = new RestTemplateSupport(restTemplate);
-        return myRestTemplateSupport;
-    }
-
-
-
-    private PoolingHttpClientConnectionManager getPoolingHttpClientConnectionManager() {
-        int HTTP_CLIENT_MAX_CONN_TOTAL = 100;
-        int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 50;
+    public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
+        int HTTP_CLIENT_MAX_CONN_TOTAL = 100; // pool 의 전체 커넥션 갯수
+        int HTTP_CLIENT_MAX_CONN_PER_ROUTE = 20; // 한 url 당 커넥션 최대 보유 가능 갯수
 
         PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
         poolingHttpClientConnectionManager.setMaxTotal(HTTP_CLIENT_MAX_CONN_TOTAL);
         poolingHttpClientConnectionManager.setDefaultMaxPerRoute(HTTP_CLIENT_MAX_CONN_PER_ROUTE);
-
         return poolingHttpClientConnectionManager;
     }
 
-    private RequestConfig getRequestConfig(){
-        int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
-        int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000; //connection pool 에서 커넥션을 얻어올때까지의 최대 시간
+    @Bean
+    public RequestConfig requestConfig(){
+        int DEFAULT_POOL_REQUEST_TIMEOUT = 5; //connection pool 에서 커넥션을 얻어올때까지의 최대 시간 (시간내 못받으면 에러)
+        int DEFAULT_CONNECT_TIMEOUT = 5; //서버로 TCP 연결이 완료될 때까지 기다리는 시간 (풀에서 받은 이후 연결 대기 시간)
+        int DEFAULT_RESPONSE_TIMEOUT = 10; //연결후 최종 응답 대기 시간
 
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(Timeout.of(DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS))
-                .setConnectionRequestTimeout(Timeout.of(DEFAULT_CONNECTION_REQUEST_TIMEOUT,TimeUnit.MILLISECONDS))
+        return RequestConfig.custom()
+                .setConnectionRequestTimeout(Timeout.of(DEFAULT_POOL_REQUEST_TIMEOUT,TimeUnit.SECONDS))
+                .setConnectTimeout(Timeout.of(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS))
+                .setResponseTimeout(Timeout.of(DEFAULT_RESPONSE_TIMEOUT,TimeUnit.SECONDS))
                 .build();
-
-        return requestConfig;
     }
 
     @Bean
-    //HttpClient를 사용하지 말고 CloseableHttpClient를 @Autowired 해 사용할 수 있도록 Bean 구성함
-    public CloseableHttpClient CloseableHttpClient() {
-        CloseableHttpClient closeableHttpClient = HttpClients.custom()
-                .setConnectionManager(getPoolingHttpClientConnectionManager())
-                .setDefaultRequestConfig(getRequestConfig())
-                .build();
+    //HttpClient를 대신할 CloseableHttpClient
+    public CloseableHttpClient closeableHttpClient(PoolingHttpClientConnectionManager poolingHttpClientConnectionManager, RequestConfig requestConfig) {
+        int DEFAULT_POOL_KEEP_ALIVE_TIMEOUT = 10; // pool 내 커넥션들이 해당 서버와 커넥션을 유지하고 있는 시간
 
-        return closeableHttpClient;
+        return HttpClients.custom()
+                .setConnectionManager(poolingHttpClientConnectionManager)
+                .setDefaultRequestConfig(requestConfig)
+                .setKeepAliveStrategy((response, context) -> TimeValue.ofSeconds(DEFAULT_POOL_KEEP_ALIVE_TIMEOUT))
+                .build();
+    }
+
+    @Bean
+    //CloseableHttpClient를 쉽게 쓸수있도록 기능 랩핑한 Bean
+    public CloseableHttpClientSupport closeableHttpClientSupport(CloseableHttpClient closeableHttpClient){
+        return new CloseableHttpClientSupport(closeableHttpClient);
+    }
+
+    @Bean
+    //reqConfig와 pool 관리를 내부적으로 하고 있는 RestTemplate을 @Autowired 해 사용할 수 있도록 Bean 구성함
+    public RestTemplate restTemplate(CloseableHttpClient closeableHttpClient){
+        HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpComponentsClientHttpRequestFactory.setHttpClient(closeableHttpClient);
+        return new RestTemplate(httpComponentsClientHttpRequestFactory);
+    }
+
+    @Bean
+    //restTemplate을 쉽게 쓸수있도록 기능 랩핑한 Bean
+    public RestTemplateSupport restTemplateSupport(RestTemplate restTemplate){
+        return new RestTemplateSupport(restTemplate);
     }
 }
