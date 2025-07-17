@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.controllerAdvice.view;
 
-import com.sptek._frameworkWebCore.annotation.EnableUserAuthenticationToModelAttribute_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_UserAuthenticationToModelAttribute_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Slf4j
 @Data
-@HasAnnotationOnMain_InBean(EnableUserAuthenticationToModelAttribute_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_UserAuthenticationToModelAttribute_At_Main.class)
 @ControllerAdvice
 //@ControllerAdvice(basePackages = {"com.sptek.a", "com.aptek.b"})
 //@ControllerAdvice(assignableTypes = {a.class, b.class})

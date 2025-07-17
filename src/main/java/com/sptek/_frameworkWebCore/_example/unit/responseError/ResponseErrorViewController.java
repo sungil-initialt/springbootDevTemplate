@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.responseError;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
-@EnableResponseOfViewGlobalException_InViewController
+@Enable_ResponseOfViewGlobalException_At_ViewController
 
 public class ResponseErrorViewController {
     @NonFinal

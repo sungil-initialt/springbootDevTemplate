@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApplicationGlobalException_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApplicationGlobalException_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_ResponseOfApplicationGlobalException_At_Main.class)
 @ConditionalOnProperty(name = "server.error.ignoreCustomErrorViewForDebug", havingValue = "false", matchIfMissing = false)
 @Controller
 

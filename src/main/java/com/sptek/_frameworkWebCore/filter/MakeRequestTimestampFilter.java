@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
+import com.sptek._frameworkWebCore.annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
@@ -31,7 +31,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //log.debug("MakeRequestTimestampFilter start");
 
-        if (MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class)) {
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;

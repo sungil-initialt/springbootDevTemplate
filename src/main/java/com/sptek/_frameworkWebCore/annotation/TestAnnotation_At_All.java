@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
         ElementType.LOCAL_VARIABLE, // Local variables
         ElementType.ANNOTATION_TYPE // Other annotations
 })
-public @interface TestAnnotation_InAll {
+public @interface TestAnnotation_At_All {
     // 실제 어노테이션 생성전 단순 테스트 용으로 활용함
     String value() default "";
 }

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 // fw 의 api Controller 가 object 타입으로 넘긴 결과를 ApiCommonSuccessResponseDto 형태로 변형하고, ResponseEntity 를 구성해 전송 하도록 처리.
 public class ApiCommonResponseHelperAspect {
     @Pointcut(
-            "@within(org.springframework.web.bind.annotation.RestController)" + "&& (@within(com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController) " +
-                    "|| @annotation(com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController))"
+            "@within(org.springframework.web.bind.annotation.RestController)" + "&& (@within(com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController) " +
+                    "|| @annotation(com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController))"
     )
     public void myPointCut() {}
 

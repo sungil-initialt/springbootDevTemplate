@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.eventListener.application.listener;
 
-import com.sptek._frameworkWebCore.annotation.EnableConsoleLogEnvironmentProperties_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_ConsoleLogEnvironmentProperties_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 @Profile(value = { "local", "dev", "stg", "prd" }) //prd는 제외 할까?(보안이슈)
 //@ConditionalOnProperty(name = "sptFramework.eventListener.application.ContextRefreshedEventListenerForConfigLogging", havingValue = "true", matchIfMissing = false) //@HasAnnotationOnMain_InBean 방식으로 변경
-@HasAnnotationOnMain_InBean(EnableConsoleLogEnvironmentProperties_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_ConsoleLogEnvironmentProperties_At_Main.class)
 @Component
 public class ContextRefreshedEventListenerForConsoleLogEnvironmentProperties {
     private final ApplicationContext applicationContext;
@@ -55,7 +55,7 @@ public class ContextRefreshedEventListenerForConsoleLogEnvironmentProperties {
                     logBody.append(String.format("%s : %s\n", propertyName, environment.getProperty(propertyName)));
                 });
 
-        log.info(SptFwUtil.convertSystemNotice("Major Environment Information ( " + EnableConsoleLogEnvironmentProperties_InMain.class.getSimpleName() + " )", logBody.toString()));
+        log.info(SptFwUtil.convertSystemNotice("Major Environment Information ( " + Enable_ConsoleLogEnvironmentProperties_At_Main.class.getSimpleName() + " )", logBody.toString()));
     }
 
     //예외 키워드 설정

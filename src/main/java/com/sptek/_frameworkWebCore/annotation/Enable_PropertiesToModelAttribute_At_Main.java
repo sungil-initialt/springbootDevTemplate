@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableHttpCachePublicForStaticResource_InMain {
+public @interface Enable_PropertiesToModelAttribute_At_Main {
 }

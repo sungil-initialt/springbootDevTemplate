@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableThymeleafSpringSecurityDialect_InMain {
+public @interface Enable_ResponseOfApplicationGlobalException_At_Main {
+    // Application 내부의 high-level 에러 응답시 공통 구조 사용
 }

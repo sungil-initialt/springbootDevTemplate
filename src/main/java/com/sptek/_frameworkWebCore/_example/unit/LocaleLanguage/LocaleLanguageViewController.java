@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.LocaleLanguage;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@EnableResponseOfViewGlobalException_InViewController
+@Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
 public class LocaleLanguageViewController {

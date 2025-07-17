@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore.annotation.EnableDetailLog_InMain_Controller_ControllerMethod;
-import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
+import com.sptek._frameworkWebCore.annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
+import com.sptek._frameworkWebCore.annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
@@ -38,7 +38,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 bod y를 여러번 읽기 위한 용도로 활용됨)
 
         // pass 케이스
-        if (MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class)) {
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;
@@ -46,8 +46,8 @@ public class DetailLogFilter extends OncePerRequestFilter {
         }
 
         // pass 케이스 (EnableDetailLog_InMain_Controller_ControllerMethod 가 없는 경우 그냥 페스함)
-        if (!MainClassAnnotationRegister.hasAnnotation(EnableDetailLog_InMain_Controller_ControllerMethod.class)
-                && !RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLog_InMain_Controller_ControllerMethod.class)) {
+        if (!MainClassAnnotationRegister.hasAnnotation(Enable_DetailLog_At_Main_Controller_ControllerMethod.class)
+                && !RequestMappingAnnotationRegister.hasAnnotation(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -99,7 +99,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
 
             // todo: Annotation 이 main 과 controller 에 각각 적용 되어 있을때 controller 쪽의 tab 값으로 처리 되야 하는데 현재 그렇게 동작 하는지 확인 필요
             //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
-            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, EnableDetailLog_InMain_Controller_ControllerMethod.class).get("value"));
+            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
             log.info("↓ Tag Name: " + SptFwUtil.convertSystemNotice(
                         StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "No tag name"
                         ,"Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody)

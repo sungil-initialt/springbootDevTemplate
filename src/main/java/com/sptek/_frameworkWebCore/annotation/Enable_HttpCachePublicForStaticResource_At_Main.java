@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableResponseOfViewGlobalException_InViewController {
-    // view Controller 에러 발생시 공통 에러 플로우 및 공통 에러 페이이 적용
+public @interface Enable_HttpCachePublicForStaticResource_At_Main {
 }

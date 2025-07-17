@@ -5,7 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableEncryptorJasypt_InMain {
+public @interface Enable_DetailLog_At_Main_Controller_ControllerMethod {
+    String value() default ""; // 입력 파람 값을 활용할 수 있도록 구성함
 }
+

@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableResponseOfApplicationGlobalException_InMain {
-    // Application 내부의 high-level 에러 응답시 공통 구조 사용
+public @interface Enable_DatasourceOfMysqlReplicationWithJndi_At_Main {
 }

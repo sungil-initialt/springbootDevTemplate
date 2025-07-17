@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.persistence.config;
 
-import com.sptek._frameworkWebCore.annotation.EnableJpaHybrid_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_JpaHybrid_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@HasAnnotationOnMain_InBean(EnableJpaHybrid_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_JpaHybrid_At_Main.class)
 @Configuration
 public class JpaHybridConfig implements WebMvcConfigurer {
 

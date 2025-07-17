@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableNoFilterAndSessionForMinorRequest_InMain {
+public @interface Enable_EncryptorJasypt_At_Main {
 }

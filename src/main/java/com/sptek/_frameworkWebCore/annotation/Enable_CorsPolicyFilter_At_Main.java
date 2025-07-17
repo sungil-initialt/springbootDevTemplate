@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableCorsPolicyFilter_InMain {
+public @interface Enable_CorsPolicyFilter_At_Main {
 }
 
 /*

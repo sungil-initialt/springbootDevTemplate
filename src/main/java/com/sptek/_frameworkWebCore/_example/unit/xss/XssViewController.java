@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore._example.unit.xss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
-import com.sptek._frameworkWebCore.annotation.EnableXssProtectorForView_InControllerMethod;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_XssProtectorForView_At_ControllerMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@EnableResponseOfViewGlobalException_InViewController
+@Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
 public class XssViewController {
@@ -38,7 +38,7 @@ public class XssViewController {
     }
 
     // Xss 자동 처리 됨
-    @EnableXssProtectorForView_InControllerMethod
+    @Enable_XssProtectorForView_At_ControllerMethod
     @GetMapping("/xss/xssProtectOn")
     public String xssProtectForViewModelOn(Model model) throws JsonProcessingException {
 

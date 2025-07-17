@@ -5,9 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableDetailLog_InMain_Controller_ControllerMethod {
-    String value() default ""; // 입력 파람 값을 활용할 수 있도록 구성함
+public @interface Enable_NoFilterAndSessionForMinorRequest_At_Main {
 }
-

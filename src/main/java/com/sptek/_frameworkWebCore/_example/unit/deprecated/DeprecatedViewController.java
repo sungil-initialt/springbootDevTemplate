@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.sptek._frameworkWebCore._example.dto.*;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@EnableResponseOfViewGlobalException_InViewController
+@Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
 public class DeprecatedViewController {

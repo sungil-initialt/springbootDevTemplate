@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableConsoleLogEnvironmentProperties_InMain {
+public @interface Enable_ResponseOfApiCommonSuccess_At_RestController {
+    // API 성공 응답시 공통 구조를 사용
 }

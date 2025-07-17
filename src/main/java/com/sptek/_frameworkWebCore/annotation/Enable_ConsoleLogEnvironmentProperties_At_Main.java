@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableXssProtectorForApi_InMain {
+public @interface Enable_ConsoleLogEnvironmentProperties_At_Main {
 }

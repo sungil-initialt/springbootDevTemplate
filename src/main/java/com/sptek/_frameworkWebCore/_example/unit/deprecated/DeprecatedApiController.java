@@ -2,10 +2,10 @@ package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.unit.database.DatabaseService;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore.annotation.TestAnnotation_At_All;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
@@ -35,10 +35,10 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @RequiredArgsConstructor
-@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class)
+@HasAnnotationOnMain_At_Bean(TestAnnotation_At_All.class)
 @RestController
-@EnableResponseOfApiCommonSuccess_InRestController
-@EnableResponseOfApiGlobalException_InRestController
+@Enable_ResponseOfApiCommonSuccess_At_RestController
+@Enable_ResponseOfApiGlobalException_At_RestController
 //@EnableDetailLogFilter("aaa")
 //v1, v2 경로로 모두 접근 가능, produces를 통해 MediaType을 정할수 있으며 Agent가 해당 타입을 보낼때만 응답함. (TODO : xml로 응답하는 기능도 추가하면 좋을듯)
 //@RequestMapping(value = {"/api/v1/", "/api/v2/"}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})

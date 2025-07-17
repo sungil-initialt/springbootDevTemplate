@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableMdcTagging_InMain {
+public @interface Enable_JpaHybrid_At_Main {
 }

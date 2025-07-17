@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.dto;
 
-import com.sptek._frameworkWebCore.annotation.EnableDecryptAuto_InDtoString;
+import com.sptek._frameworkWebCore.annotation.Enable_DecryptAuto_At_DtoString;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ExampleADto {
-    @EnableDecryptAuto_InDtoString
+    @Enable_DecryptAuto_At_DtoString
     private String aDtoFirstName;
-    @EnableDecryptAuto_InDtoString
+    @Enable_DecryptAuto_At_DtoString
     private String aDtoLastName;
 }

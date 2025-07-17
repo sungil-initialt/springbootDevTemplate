@@ -3,8 +3,8 @@ package com.sptek._frameworkWebCore.message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sptek._frameworkWebCore.annotation.EnableXssProtectorForApi_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_XssProtectorForApi_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ public class ObjectMapperConfig {
     //jason->object, object->jason
 
     @Bean
-    @HasAnnotationOnMain_InBean(value = EnableXssProtectorForApi_InMain.class, negate = true)
+    @HasAnnotationOnMain_At_Bean(value = Enable_XssProtectorForApi_At_Main.class, negate = true)
     //코드 내에서 object <-> json 처리하기 위한 독립적 형태로도 사용될 수 있으며 req, res 단에서 사용할 MessageConverter 의 base 로 활용
     public ObjectMapper objectMapperWithoutXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.
@@ -32,7 +32,7 @@ public class ObjectMapperConfig {
     }
 
     @Bean
-    @HasAnnotationOnMain_InBean(value = EnableXssProtectorForApi_InMain.class, negate = false)
+    @HasAnnotationOnMain_At_Bean(value = Enable_XssProtectorForApi_At_Main.class, negate = false)
     //코드 내에서 object <-> json 처리하기 위한 독립적 형태로도 사용될 수 있으며 req, res 단에서 사용할 MessageConverter 의 base 로 활용
     public ObjectMapper objectMapperWithXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.

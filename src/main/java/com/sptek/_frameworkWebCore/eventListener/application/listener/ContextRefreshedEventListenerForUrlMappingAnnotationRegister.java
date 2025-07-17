@@ -15,12 +15,12 @@ public class ContextRefreshedEventListenerForUrlMappingAnnotationRegister {
         //시스템 로딩이 완료된 시점에 UrlMappingAnnotationRegistor 를 생성해 준다.
         new RequestMappingAnnotationRegister(contextRefreshedEvent.getApplicationContext());
 
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/anyone/butNeedControllAuth", EnableResponseOfApiCommonSuccess_InRestController.class));
-        log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/anyone/butNeedControllAuth", EnableResponseOfApplicationGlobalException_InMain.class));
-        log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", EnableResponseOfApiCommonSuccess_InRestController.class));
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", EnableResponseOfViewGlobalException_InViewController.class));
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/httpCache", EnablePreventDuplicateRequest_InRestController_RestControllerMethod.class));
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("POST:/api/v1/httpCache", TestAnnotation_InAll.class));
-        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("POST:/api/v1/httpCache2", TestAnnotation_InAll.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/anyone/butNeedControllAuth", Enable_ResponseOfApiCommonSuccess_At_RestController.class));
+        log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/anyone/butNeedControllAuth", Enable_ResponseOfApplicationGlobalException_At_Main.class));
+        log.debug("test : expect:false, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", Enable_ResponseOfApiCommonSuccess_At_RestController.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/auth/user/info/sungilry@naver.com", Enable_ResponseOfViewGlobalException_At_ViewController.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("GET:/api/v1/httpCache", Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("POST:/api/v1/httpCache", TestAnnotation_At_All.class));
+        log.debug("test : expect:true, result:{}", RequestMappingAnnotationRegister.hasAnnotation("POST:/api/v1/httpCache2", TestAnnotation_At_All.class));
     }
 }

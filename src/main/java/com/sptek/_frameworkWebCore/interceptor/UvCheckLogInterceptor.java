@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.EnableUvCheckLog_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_UvCheckLog_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.util.Optional;
 /*
 UV 관련 처리를 위한 인터셉터
  */
-@HasAnnotationOnMain_InBean(EnableUvCheckLog_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_UvCheckLog_At_Main.class)
 @Slf4j
 @Component
 

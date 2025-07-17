@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore._example.unit.encryption;
 
-import com.sptek._frameworkWebCore.annotation.EnableDecryptAuto_InDtoString;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.annotation.Enable_DecryptAuto_At_DtoString;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +20,8 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@EnableResponseOfApiCommonSuccess_InRestController
-@EnableResponseOfApiGlobalException_InRestController
+@Enable_ResponseOfApiCommonSuccess_At_RestController
+@Enable_ResponseOfApiGlobalException_At_RestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "Encryption", description = "")
 
@@ -75,7 +75,7 @@ public class EncryptionApiController {
     //====================================================================================
     @Data
     public static class ParentDto {
-        @EnableDecryptAuto_InDtoString
+        @Enable_DecryptAuto_At_DtoString
         @Schema(example = "ENC_sptJASYPT(Ux9vDuJKHsiyR37oKh2ivn6C4cNOftTu07ZosIJmd4ACCs3qSc8vxNd8hWWuD9PH)")
         private String field1;
         private String field2;
@@ -84,11 +84,11 @@ public class EncryptionApiController {
 
     @Data
     public static class ChileDto {
-        @EnableDecryptAuto_InDtoString
+        @Enable_DecryptAuto_At_DtoString
         @Schema(example = "ENC_sptDES(/QUmzFi1GuzK5BnAZ1RrNxtcUMMUx+yU)")
         private String field1;
 
-        @EnableDecryptAuto_InDtoString
+        @Enable_DecryptAuto_At_DtoString
         @Schema(example = "ENC_sptAES(i7SNnO3OyWwC5CbizW5OovemxzXdFhPMbt1uuEG+kRg=)")
         private String field2;
 

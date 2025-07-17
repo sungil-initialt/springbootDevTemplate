@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.validation;
 
 import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@EnableResponseOfViewGlobalException_InViewController
+@Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
 public class ValidationViewController {

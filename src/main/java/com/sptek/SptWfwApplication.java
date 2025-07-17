@@ -9,31 +9,31 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
-@TestAnnotation_InAll("abcdef")
+@TestAnnotation_At_All("abcdef")
 
-@EnableResponseOfApplicationGlobalException_InMain
-@EnableMdcTagging_InMain
-@EnableDetailLog_InMain_Controller_ControllerMethod
+@Enable_ResponseOfApplicationGlobalException_At_Main
+@Enable_MdcTagging_At_Main
+@Enable_DetailLog_At_Main_Controller_ControllerMethod
 
 //---------------------------------------------
-@EnableDatasourceOfH2_InMain
+@Enable_DatasourceOfH2_At_Main
 //@EnableDatasourceOfMysqlReplication_InMain
 //@EnableDatasourceOfMysqlReplicationWithJndi_InMain
 //---------------------------------------------
-@EnableJpaHybrid_InMain
+@Enable_JpaHybrid_At_Main
 
-@EnableConsoleLogEnvironmentProperties_InMain
-@EnableCorsPolicyFilter_InMain
-@EnableEncryptorJasypt_InMain
-@EnableThymeleafSpringSecurityDialect_InMain //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
-@EnableNoFilterAndSessionForMinorRequest_InMain //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
-@EnableHttpCachePublicForStaticResource_InMain
-@EnablePropertiesToModelAttribute_InMain
-@EnableUserAuthenticationToModelAttribute_InMain
+@Enable_ConsoleLogEnvironmentProperties_At_Main
+@Enable_CorsPolicyFilter_At_Main
+@Enable_EncryptorJasypt_At_Main
+@Enable_ThymeleafSpringSecurityDialect_At_Main //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
+@Enable_NoFilterAndSessionForMinorRequest_At_Main //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
+@Enable_HttpCachePublicForStaticResource_At_Main
+@Enable_PropertiesToModelAttribute_At_Main
+@Enable_UserAuthenticationToModelAttribute_At_Main
 
 
-@EnableXssProtectorForApi_InMain
-@EnableUvCheckLog_InMain
+@Enable_XssProtectorForApi_At_Main
+@Enable_UvCheckLog_At_Main
 
 public class SptWfwApplication {
 	public static void main(String[] args) {

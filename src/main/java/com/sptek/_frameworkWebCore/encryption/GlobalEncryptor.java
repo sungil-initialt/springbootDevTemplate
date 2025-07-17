@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.encryption;
 
-import com.sptek._frameworkWebCore.annotation.EnableDecryptAuto_InDtoString;
+import com.sptek._frameworkWebCore.annotation.Enable_DecryptAuto_At_DtoString;
 import jakarta.validation.constraints.NotNull;
 import org.jasypt.encryption.StringEncryptor;
 
@@ -80,7 +80,7 @@ public class GlobalEncryptor {
             field.setAccessible(true);
             Object originalField = field.get(dto);
 
-            if (field.isAnnotationPresent(EnableDecryptAuto_InDtoString.class)
+            if (field.isAnnotationPresent(Enable_DecryptAuto_At_DtoString.class)
                     && originalField instanceof String strValue
                     && strValue.startsWith(encKeyword)) {
 

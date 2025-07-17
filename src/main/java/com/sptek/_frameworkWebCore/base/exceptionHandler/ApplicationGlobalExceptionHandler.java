@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApplicationGlobalException_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApplicationGlobalException_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
@@ -30,7 +30,7 @@ import java.util.Optional;
 //@Conditional(ApplicationGlobalExceptionHandler.ApplicationGlobalExceptionHandlerCondition.class) //@HasAnnotationOnMainForBean 방식 으로 변경함
 
 @Slf4j
-@HasAnnotationOnMain_InBean(EnableResponseOfApplicationGlobalException_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_ResponseOfApplicationGlobalException_At_Main.class)
 @ControllerAdvice(assignableTypes = {CustomErrorController.class})
 
 public class ApplicationGlobalExceptionHandler {

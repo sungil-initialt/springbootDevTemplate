@@ -1,7 +1,7 @@
 package com.sptek._projectCommon.argumentResolver;
 
 import com.sptek._frameworkWebCore._example.dto.ExUserDto;
-import com.sptek._frameworkWebCore.annotation.EnableArgumentResolver_InParam;
+import com.sptek._frameworkWebCore.annotation.Enable_ArgumentResolver_At_Param;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class ExampleArgumentResolverForExUserDto implements HandlerMethodArgumen
 
         //해당 클레스를 상속받은 클레스까지 적용하지만 rgumentResolver를 적용하겠다는 별도의 어노테이션이 있는 경우만 처리
         return methodParameter.getParameterType().isAssignableFrom(ExUserDto.class)
-                && methodParameter.hasParameterAnnotation(EnableArgumentResolver_InParam.class);
+                && methodParameter.hasParameterAnnotation(Enable_ArgumentResolver_At_Param.class);
     }
 
 

@@ -1,9 +1,9 @@
 package com.sptek._frameworkWebCore.filter.config;
 
-import com.sptek._frameworkWebCore.annotation.EnableCorsPolicyFilter_InMain;
-import com.sptek._frameworkWebCore.annotation.EnableMdcTagging_InMain;
-import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_CorsPolicyFilter_At_Main;
+import com.sptek._frameworkWebCore.annotation.Enable_MdcTagging_At_Main;
+import com.sptek._frameworkWebCore.annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.filter.*;
 import com.sptek._frameworkWebCore.commonObject.vo.CorsPropertiesVo;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -18,7 +18,7 @@ public class FilterConfigForFrameworkWebCore {
 
 
     @Profile(value = { "local", "dev", "stg", "prd" })
-    @HasAnnotationOnMain_InBean(EnableMdcTagging_InMain.class)
+    @HasAnnotationOnMain_At_Bean(Enable_MdcTagging_At_Main.class)
     @Bean
     public FilterRegistrationBean<MakeMdcFilter> makeMdcFilter() {
         FilterRegistrationBean<MakeMdcFilter> filterRegistrationBean = new FilterRegistrationBean<>();
@@ -29,7 +29,7 @@ public class FilterConfigForFrameworkWebCore {
     }
 
     @Profile(value = { "local", "dev", "stg", "prd" })
-    @HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
+    @HasAnnotationOnMain_At_Bean(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)
     @Bean
     public FilterRegistrationBean<NoSessionFilterForMinorRequest> noSessionFilterForMinorRequest() {
         FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();
@@ -60,7 +60,7 @@ public class FilterConfigForFrameworkWebCore {
     }
 
     @Profile(value = { "local", "dev", "stg", "prd" })
-    @HasAnnotationOnMain_InBean(EnableCorsPolicyFilter_InMain.class)
+    @HasAnnotationOnMain_At_Bean(Enable_CorsPolicyFilter_At_Main.class)
     @DependsOn({"corsPropertiesVo"})
     @Bean
     public FilterRegistrationBean<CorsPolicyFilter> corsPolicyFilter(CorsPropertiesVo corsPropertiesVo) {

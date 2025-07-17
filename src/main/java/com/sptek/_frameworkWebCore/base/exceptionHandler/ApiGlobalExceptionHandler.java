@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.base.exceptionHandler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
@@ -28,7 +28,7 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
 최종 Response 응답까지 처리해 준다.
  */
 @Slf4j
-@RestControllerAdvice(annotations = EnableResponseOfApiGlobalException_InRestController.class) // @EnableFwApiGrobalExceptionHandler 가 선언된 RestController 에서만 동작함 (정확히는  RestController 여부는 체크 안함)
+@RestControllerAdvice(annotations = Enable_ResponseOfApiGlobalException_At_RestController.class) // @EnableFwApiGrobalExceptionHandler 가 선언된 RestController 에서만 동작함 (정확히는  RestController 여부는 체크 안함)
 
 public class ApiGlobalExceptionHandler {
 

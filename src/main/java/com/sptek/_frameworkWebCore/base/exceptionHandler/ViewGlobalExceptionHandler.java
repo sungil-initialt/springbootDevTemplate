@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 //@Profile(value = { "notused" })
 @Slf4j
-@ControllerAdvice(annotations = EnableResponseOfViewGlobalException_InViewController.class)
+@ControllerAdvice(annotations = Enable_ResponseOfViewGlobalException_At_ViewController.class)
 @ConditionalOnProperty(name = "server.error.ignoreCustomErrorViewForDebug", havingValue = "false", matchIfMissing = false)
 
 public class ViewGlobalExceptionHandler {

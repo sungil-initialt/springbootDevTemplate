@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableResponseOfApiCommonSuccess_InRestController {
-    // API 성공 응답시 공통 구조를 사용
+public @interface Enable_UserAuthenticationToModelAttribute_At_Main {
 }

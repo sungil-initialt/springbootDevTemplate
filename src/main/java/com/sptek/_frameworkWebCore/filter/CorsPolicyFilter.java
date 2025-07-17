@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore.annotation.EnableNoFilterAndSessionForMinorRequest_InMain;
+import com.sptek._frameworkWebCore.annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.commonObject.vo.CorsPropertiesVo;
@@ -39,7 +39,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         //log.debug("CorsPolicyFilter start");
 
         // todo: NotEssentialRequest 에 대해 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
-        if (MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class)) {
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;

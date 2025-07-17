@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_InAll;
+import com.sptek._frameworkWebCore.annotation.TestAnnotation_At_All;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +38,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
                     , handlerMethod.getMethod().getName()
                     , handlerMethod.getBeanType().getName()
                     , handlerMethod.getReturnType().getParameterType().getName()
-                    , handlerMethod.hasMethodAnnotation(TestAnnotation_InAll.class) //해당 메소드에 특정 어노테이션이 적용되어 있는지 여부
+                    , handlerMethod.hasMethodAnnotation(TestAnnotation_At_All.class) //해당 메소드에 특정 어노테이션이 적용되어 있는지 여부
             );
             // do what you want.
         }

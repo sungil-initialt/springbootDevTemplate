@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.persistence.config;
 
-import com.sptek._frameworkWebCore.annotation.EnableJpaHybrid_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_JpaHybrid_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -52,7 +52,7 @@ public class MybatisConfig implements WebMvcConfigurer {
     }
 
     //EnableJpaHybrid_InMain 가 선언되지 않은 경우에 로딩 함(EnableJpaHybrid_InMain 사용시 JpaTransactionManager 가 동작함)
-    @HasAnnotationOnMain_InBean(value = EnableJpaHybrid_InMain.class, negate = true)
+    @HasAnnotationOnMain_At_Bean(value = Enable_JpaHybrid_At_Main.class, negate = true)
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();

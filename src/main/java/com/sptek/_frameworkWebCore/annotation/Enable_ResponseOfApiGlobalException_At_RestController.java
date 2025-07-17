@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableDatasourceOfH2_InMain {
+public @interface Enable_ResponseOfApiGlobalException_At_RestController {
+    // API 에러 응답시 공통 구조를 사용
 }

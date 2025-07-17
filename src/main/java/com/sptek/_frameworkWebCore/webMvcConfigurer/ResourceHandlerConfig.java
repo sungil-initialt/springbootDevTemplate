@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.webMvcConfigurer;
 
-import com.sptek._frameworkWebCore.annotation.EnableHttpCachePublicForStaticResource_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_HttpCachePublicForStaticResource_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
         resourceHandlerRegistry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
     }
 
-    @HasAnnotationOnMain_InBean(EnableHttpCachePublicForStaticResource_InMain.class)
+    @HasAnnotationOnMain_At_Bean(Enable_HttpCachePublicForStaticResource_At_Main.class)
     @Configuration
     public class EnableHttpCachePublicForStaticResource implements WebMvcConfigurer {
         @Override
@@ -58,7 +58,7 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
 
     }
 
-    @HasAnnotationOnMain_InBean(value = EnableHttpCachePublicForStaticResource_InMain.class, negate = true)
+    @HasAnnotationOnMain_At_Bean(value = Enable_HttpCachePublicForStaticResource_At_Main.class, negate = true)
     @Configuration
     public class DisableHttpCachePublicForStaticResource implements WebMvcConfigurer {
         @Override

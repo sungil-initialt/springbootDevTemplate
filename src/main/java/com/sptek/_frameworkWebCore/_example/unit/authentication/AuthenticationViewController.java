@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.authentication;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.User;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@EnableResponseOfViewGlobalException_InViewController
+@Enable_ResponseOfViewGlobalException_At_ViewController
 @RequestMapping(value = "/view/example/", produces = MediaType.TEXT_HTML_VALUE)
 
 //signup 과 관련한 부분 들도 실제 서비스 환경 에서 변경 사항이 많은 영역 이라 example 영역에 둠 (login 은 systemSuport 영역에 둠)

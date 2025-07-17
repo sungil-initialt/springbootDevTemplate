@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableDatasourceOfMysqlReplication_InMain {
+public @interface Enable_MdcTagging_At_Main {
 }

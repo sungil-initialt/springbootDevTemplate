@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.datasource;
 
-import com.sptek._frameworkWebCore.annotation.EnableDatasourceOfMysqlReplicationWithJndi_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_DatasourceOfMysqlReplicationWithJndi_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Slf4j
 @Profile(value = { "prd" })
-@HasAnnotationOnMain_InBean(EnableDatasourceOfMysqlReplicationWithJndi_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_DatasourceOfMysqlReplicationWithJndi_At_Main.class)
 @Configuration
 //@RequiredArgsConstructor
 //todo: JNDI 방식에 대한 테스트 필요

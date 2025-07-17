@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore._systemController;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfViewGlobalException_InViewController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
 import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHandlerForView;
@@ -28,8 +28,8 @@ import java.util.Base64;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@EnableResponseOfApiCommonSuccess_InRestController
-@EnableResponseOfApiGlobalException_InRestController
+@Enable_ResponseOfApiCommonSuccess_At_RestController
+@Enable_ResponseOfApiGlobalException_At_RestController
 @RequestMapping(value = {"/systemSupportApi/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/}) // 클라이언트 가 Accept 해더를 보낼 경우 제공 하는 미디어 타입이 일치 해야함(없으면 406)
 @Tag(name = "System Support API", description = "")
 
@@ -80,7 +80,7 @@ public class SystemSupportController {
     @Controller
     @RequiredArgsConstructor
     @RequestMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    @EnableResponseOfViewGlobalException_InViewController
+    @Enable_ResponseOfViewGlobalException_At_ViewController
     public class SystemSupportViewController {
 
         @GetMapping({"/"})

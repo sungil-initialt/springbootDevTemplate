@@ -6,6 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EnableDatasourceOfMysqlReplicationWithJndi_InMain {
+@Retention(RetentionPolicy.RUNTIME) // Annotation is retained at runtime
+public @interface Enable_UvCheckLog_At_Main {
 }

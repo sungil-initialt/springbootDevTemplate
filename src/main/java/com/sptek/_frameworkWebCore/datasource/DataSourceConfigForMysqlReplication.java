@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.datasource;
 
-import com.sptek._frameworkWebCore.annotation.EnableDatasourceOfMysqlReplication_InMain;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_InBean;
+import com.sptek._frameworkWebCore.annotation.Enable_DatasourceOfMysqlReplication_At_Main;
+import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,7 +19,7 @@ import java.util.Map;
 //실제 replica 구성이 아니더라도 write, read를 동일히 입력하여 사용가능
 @Profile(value = {"local", "dev", "stg", "prd"})
 @Slf4j
-@HasAnnotationOnMain_InBean(EnableDatasourceOfMysqlReplication_InMain.class)
+@HasAnnotationOnMain_At_Bean(Enable_DatasourceOfMysqlReplication_At_Main.class)
 @Configuration
 //DependsOn({"customJasyptStringEncryptor"})
 public class DataSourceConfigForMysqlReplication {

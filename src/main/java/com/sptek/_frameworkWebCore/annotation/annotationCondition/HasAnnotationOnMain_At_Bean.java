@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Conditional(ConditionForHasAnnotationOnMain.class)
-public @interface HasAnnotationOnMain_InBean {
+public @interface HasAnnotationOnMain_At_Bean {
     Class<? extends Annotation> value();
     boolean negate() default false; // true면 어노테이션이 없을 때 Bean 생성 됨
 }

@@ -1,7 +1,7 @@
 package com.sptek.projectName.domainName.controller.api;
 
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiCommonSuccess_InRestController;
-import com.sptek._frameworkWebCore.annotation.EnableResponseOfApiGlobalException_InRestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@EnableResponseOfApiCommonSuccess_InRestController
-@EnableResponseOfApiGlobalException_InRestController
+@Enable_ResponseOfApiCommonSuccess_At_RestController
+@Enable_ResponseOfApiGlobalException_At_RestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 // @Tag(name = "domainName-main", description = "")
 // 실 Project 쪽의 Security filter chain Test Code

@@ -12,7 +12,7 @@ public class ConditionForHasAnnotationOnMain implements Condition {
 
     @Override
     public boolean matches(@NotNull ConditionContext context, AnnotatedTypeMetadata metadata) {
-        Map<String, Object> attributes = metadata.getAnnotationAttributes(HasAnnotationOnMain_InBean.class.getName());
+        Map<String, Object> attributes = metadata.getAnnotationAttributes(HasAnnotationOnMain_At_Bean.class.getName());
 
         if (attributes == null) {
             return false;

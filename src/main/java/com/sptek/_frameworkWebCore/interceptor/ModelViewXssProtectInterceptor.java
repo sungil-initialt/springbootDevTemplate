@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.EnableXssProtectorForView_InControllerMethod;
+import com.sptek._frameworkWebCore.annotation.Enable_XssProtectorForView_At_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ public class ModelViewXssProtectInterceptor implements HandlerInterceptor {
             ModelAndView modelAndView
     ) {
         if (handler instanceof HandlerMethod handlerMethod && modelAndView != null) {
-            if (handlerMethod.hasMethodAnnotation(EnableXssProtectorForView_InControllerMethod.class)) {
+            if (handlerMethod.hasMethodAnnotation(Enable_XssProtectorForView_At_ControllerMethod.class)) {
                 log.debug("ModelView Xss Protector On");
                 Map<String, Object> model = modelAndView.getModel();
                 model.replaceAll((key, value) -> escapeIfNeeded(value));
