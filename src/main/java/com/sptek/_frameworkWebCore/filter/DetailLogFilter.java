@@ -26,8 +26,6 @@ import java.util.Optional;
 //@WebFilter(urlPatterns = "/*")
 public class DetailLogFilter extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
-    private Boolean enableNoFilterAndSessionForMinorRequest_InMain = null;
-    private Boolean enableDetailLog_InMain_Controller_ControllerMethod = null;
 
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
@@ -39,26 +37,22 @@ public class DetailLogFilter extends OncePerRequestFilter {
         //log.debug("DetailLogFilterWithAnnotation start");
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 bod y를 여러번 읽기 위한 용도로 활용됨)
 
-        // 매번 호출 되는 것을 방지 하기 위해서
-        if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
-            enableNoFilterAndSessionForMinorRequest_InMain = MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class);
-            enableDetailLog_InMain_Controller_ControllerMethod = MainClassAnnotationRegister.hasAnnotation(EnableDetailLog_InMain_Controller_ControllerMethod.class);
-        }
-
-        if (enableNoFilterAndSessionForMinorRequest_InMain) {
+        // pass 케이스
+        if (MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class)) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;
             }
         }
 
-        //추가로 EnableDetailLog_InMain_Controller_ControllerMethod 가 없는 경우 그냥 페스함
-        if (!RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLog_InMain_Controller_ControllerMethod.class) && !enableDetailLog_InMain_Controller_ControllerMethod) {
+        // pass 케이스 (EnableDetailLog_InMain_Controller_ControllerMethod 가 없는 경우 그냥 페스함)
+        if (!MainClassAnnotationRegister.hasAnnotation(EnableDetailLog_InMain_Controller_ControllerMethod.class)
+                && !RequestMappingAnnotationRegister.hasAnnotation(request, EnableDetailLog_InMain_Controller_ControllerMethod.class)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Request와 Response를 ContentCachingWrapper로 래핑
+        // 실제 필터 내용 (Request와 Response를 ContentCachingWrapper로 래핑)
         ContentCachingRequestWrapper contentCachingRequestWrapper = request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper)request : new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper contentCachingResponseWrapper;
         boolean amIContentCachingResponseWrapperOwner = false;
@@ -142,7 +136,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
             log.info(SptFwUtil.convertSystemNotice("Request-Response Information caught by the DetailLogFilterWithAnnotation", logBody));
         }
 
-        // contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)
+        // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)
         if (amIContentCachingResponseWrapperOwner) {
             contentCachingResponseWrapper.copyBodyToResponse();
         }

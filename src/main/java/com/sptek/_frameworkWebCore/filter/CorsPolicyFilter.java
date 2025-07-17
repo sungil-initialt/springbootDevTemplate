@@ -28,7 +28,6 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     // 상세한 컨트롤 및 어노테이션을 통한 사용 설정을 위해 개별 필터로 처리함(SpringSecurity 의 CORS 디폴트 처리는 disabled 처리함)
 
     private final CorsPropertiesVo corsPropertiesVo;
-    private Boolean enableNoFilterAndSessionForMinorRequest_InMain = null;
 
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
@@ -38,13 +37,9 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //log.debug("CorsPolicyFilter start");
-        // 매번 호출되는 것을 방지 하기 위해서
-        if (enableNoFilterAndSessionForMinorRequest_InMain == null) {
-            enableNoFilterAndSessionForMinorRequest_InMain = MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class);
-        }
 
-        // todo: 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
-        if (enableNoFilterAndSessionForMinorRequest_InMain) {
+        // todo: NotEssentialRequest 에 대해 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
+        if (MainClassAnnotationRegister.hasAnnotation(EnableNoFilterAndSessionForMinorRequest_InMain.class)) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;
