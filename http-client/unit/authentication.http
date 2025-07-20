@@ -54,3 +54,12 @@ Content-Type: application/json
 > {%
     client.global.set("jwt", response.body.result);
 %}
+
+#### 10. 로그인 API (인증 토큰)
+POST https://jsonplaceholder.typicode.com/posts
+Content-Type: application/json
+
+{
+  "name" : "sungil",
+  "job": "developer"
+}

@@ -19,6 +19,8 @@ public class SptFwUtil {
     }
 
     public static String convertSystemNotice(String tagName, String title, String logBody) {
+        //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
+
         return String.format(
                 "%s\n"
                         + "--------------------\n"

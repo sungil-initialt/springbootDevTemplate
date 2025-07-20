@@ -79,9 +79,7 @@ public class DEPRECATED_ApiController {
         log.debug("closeableHttpClientSupport identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
-        HttpEntity httpEntity = closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
-
-        return CloseableHttpClientSupport.convertResponseToString(httpEntity);
+        return closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
     }
 
     @GetMapping("/0/example/restTemplate")

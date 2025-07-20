@@ -34,12 +34,7 @@ public class RestTemplateSupport{
                 .method(HttpMethod.GET, finalUrl)
                 .headers(httpHeaders != null ? httpHeaders : new HttpHeaders())
                 .build();
-        try {
-            return restTemplate.exchange(requestEntity, String.class);
-        } catch (RestClientException e) {
-            log.error("POST 요청 실패: {}", e.getMessage(), e);
-            throw e;
-        }
+        return restTemplate.exchange(requestEntity, String.class);
     }
 
     public ResponseEntity<String> requestPost(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders, @Nullable Object requestBody) {
@@ -60,12 +55,7 @@ public class RestTemplateSupport{
                 .post(finalUrl)
                 .headers(httpHeaders)
                 .body(requestBody != null ? requestBody : new HashMap<>());
-        try {
-            return restTemplate.exchange(requestEntity, String.class);
-        } catch (RestClientException e) {
-            log.error("POST 요청 실패: {}", e.getMessage(), e);
-            throw e;
-        }
+        return restTemplate.exchange(requestEntity, String.class);
     }
 
     public String convertResponseToString(ResponseEntity<String> responseEntity) {
