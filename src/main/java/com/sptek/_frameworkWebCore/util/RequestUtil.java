@@ -5,9 +5,14 @@ import com.sptek._frameworkWebCore.commonObject.dto.ExcuteTimeDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpHeaders;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -126,6 +131,21 @@ public class RequestUtil {
             headers.put(headerName, values.append(delimiter).toString());
         }
         return headers;
+    }
+
+    public static void applyRequestHeaders(HttpUriRequest httpUriRequest, @Nullable HttpHeaders httpHeaders) {
+        if (httpHeaders == null || httpHeaders.isEmpty()) return;
+        httpHeaders.forEach((name, values) ->
+                values.forEach(value -> httpUriRequest.addHeader(name, value))
+        );
+
+    }
+
+    public static void applyRequestBody(HttpUriRequest httpUriRequest, @Nullable Object requestBody) throws Exception {
+        if (requestBody != null) {
+            String requestBodyString = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
+            if (StringUtils.hasText(requestBodyString)) httpUriRequest.setEntity(new StringEntity(requestBodyString, StandardCharsets.UTF_8));
+        }
     }
 
     public static ExcuteTimeDto traceRequestDuration() {

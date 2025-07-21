@@ -6,29 +6,26 @@ import com.sptek._frameworkWebCore.commonObject.dto.HttpClientResponseDto;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -40,44 +37,101 @@ import java.util.Arrays;
 
 public class HttpClientApiController {
     private final CloseableHttpClientSupport closeableHttpClientSupport;
+    String apiTestUrl = "https://jsonplaceholder.typicode.com";
+    MyTestDto apiTestDto = new MyTestDto(0, "my title!", "my content!", null);
 
-    String apiTestUrl = "https://jsonplaceholder.typicode.com/posts";
-    RequestTestDto requestTestDto = new RequestTestDto(0, "my title!", "my content!");
+    @GetMapping("/01/example/httpClient/closeableHttpClientGet")
+    @Operation(summary = "01. GET without Pool", description = "")
+    public Object closeableHttpClientGet() throws Exception {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(apiTestUrl);
+        uriComponentsBuilder.path("posts/{id}").buildAndExpand(Map.of("id", 1));
+        uriComponentsBuilder.queryParam("myKey", "myValue");
 
-    @GetMapping("/01/example/httpClient/closeableHttpClientWithoutPoolingConnectionManager")
-    @Operation(summary = "01. closeableHttpClient 단독 사용 ", description = "")
-    public Object closeableHttpClientWithoutPoolingConnectionManager() throws Exception {
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-            HttpPost httpPost = new HttpPost(apiTestUrl);
-
-            // JSON 바디 설정
-            StringEntity requestEntity = new StringEntity(TypeConvertUtil.objectToJsonWithoutRootName(requestTestDto, false), ContentType.APPLICATION_JSON);
-            httpPost.setEntity(requestEntity);
-
-            // 요청 실행
-            try (CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpPost)) {
-                if (closeableHttpResponse.getCode() < 200 || closeableHttpResponse.getCode() >= 300) {
-                    return "http client request failed. (result code: " + closeableHttpResponse.getCode() + ")";
-                }
-                return TypeConvertUtil.jsonToClass(EntityUtils.toString(closeableHttpResponse.getEntity(), StandardCharsets.UTF_8), RequestTestDto.class);
+            HttpGet request = new HttpGet(uriComponentsBuilder.build(true).toUri());
+            request.addHeader("X-TEST_KEY", "X-TEST_VALUE");
+            try (CloseableHttpResponse closeableHttpResponse = httpClient.execute(request)) {
+                return closeableHttpResponse.getCode();
             }
         }
     }
 
-    @GetMapping("/02/example/httpClient/closeableHttpClientSupport")
-    @Operation(summary = "01. closeableHttpClientSupport with PoolingConnectionManager  ", description = "")
-    public Object closeableHttpClientSupport() throws Exception {
-        HttpClientResponseDto httpClientResponseDto = closeableHttpClientSupport.requestPost(apiTestUrl, null, requestTestDto);
-        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) {
-            return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
+    @GetMapping("/02/example/httpClient/closeableHttpClientPost")
+    @Operation(summary = "02. POST without Pool", description = "")
+    public Object closeableHttpClientPost() throws Exception {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(apiTestUrl);
+        uriComponentsBuilder.path("posts");
+        uriComponentsBuilder.queryParam("myKey", "myValue");
+
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpPost request = new HttpPost(uriComponentsBuilder.build(true).toUri());
+            request.addHeader("X-TEST_KEY", "X-TEST_VALUE");
+            request.setEntity(new StringEntity(
+                    // object -> json
+                    TypeConvertUtil.objectToJsonWithoutRootName(apiTestDto, false)
+                    , ContentType.APPLICATION_JSON));
+
+            try (CloseableHttpResponse closeableHttpResponse = httpClient.execute(request)) {
+                if (closeableHttpResponse.getCode() < 200 || closeableHttpResponse.getCode() >= 300) return "http client request failed. (result code: " + closeableHttpResponse.getCode() + ")";
+                return TypeConvertUtil.jsonToClass(EntityUtils.toString(closeableHttpResponse.getEntity(), StandardCharsets.UTF_8), MyTestDto.class);
+            }
         }
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), RequestTestDto.class);
     }
 
+    @GetMapping("/03/example/httpClient/closeableHttpClientSupportGet")
+    @Operation(summary = "03. GET with Pool", description = "")
+    public Object closeableHttpClientSupportGet() throws Exception {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(apiTestUrl);
+        uriComponentsBuilder.path("posts/{id}").buildAndExpand(Map.of("id", 1));
+        uriComponentsBuilder.queryParam("myKey", "myValue");
+        HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
 
+        HttpClientResponseDto httpClientResponseDto = closeableHttpClientSupport.requestGet(uriComponentsBuilder, httpHeaders);
+        return httpClientResponseDto.code();
+    }
 
-    // Test Dto
-    private record RequestTestDto(int id, String title, String content) {}
+    @GetMapping("/04/example/httpClient/closeableHttpClientSupportPost")
+    @Operation(summary = "04. POST with Pool", description = "")
+    public Object closeableHttpClientSupportPost() throws Exception {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(apiTestUrl);
+        uriComponentsBuilder.path("posts");
+        uriComponentsBuilder.queryParam("myKey", "myValue");
+        HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
+
+        HttpClientResponseDto httpClientResponseDto = closeableHttpClientSupport.requestPost(uriComponentsBuilder, httpHeaders, apiTestDto);
+        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300)  return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
+        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), MyTestDto.class);
+    }
+
+    @GetMapping("/05/example/httpClient/closeableHttpClientSupportPut")
+    @Operation(summary = "05. PUT with Pool", description = "")
+    public Object closeableHttpClientSupportPut() throws Exception {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(apiTestUrl);
+        uriComponentsBuilder.path("posts/{id}").buildAndExpand(Map.of("id", 1));
+        uriComponentsBuilder.queryParam("myKey", "myValue");
+        HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
+
+        HttpClientResponseDto httpClientResponseDto = closeableHttpClientSupport.requestPut(uriComponentsBuilder, httpHeaders, apiTestDto);
+        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
+        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), MyTestDto.class);
+    }
+
+    @GetMapping("/06/example/httpClient/closeableHttpClientSupportDelete")
+    @Operation(summary = "06. DELETE with Pool", description = "")
+    public Object closeableHttpClientSupportDelete() throws Exception {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(apiTestUrl);
+        uriComponentsBuilder.path("posts/{id}").buildAndExpand(Map.of("id", 1));
+        uriComponentsBuilder.queryParam("myKey", "myValue");
+        HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
+
+        HttpClientResponseDto httpClientResponseDto = closeableHttpClientSupport.requestDelete(uriComponentsBuilder, httpHeaders);
+        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
+        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), MyTestDto.class);
+    }
+
+    // api Test Dto
+    private record MyTestDto(int id, String title, String content, String extraField) {}
 }
 
 

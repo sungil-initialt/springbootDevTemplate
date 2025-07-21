@@ -7,8 +7,8 @@ import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalExceptio
 import com.sptek._frameworkWebCore.annotation.TestAnnotation_At_All;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
-import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
+import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
 import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
 import com.sptek._frameworkWebCore.support.RestTemplateSupport;
 import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
@@ -17,11 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,30 +53,6 @@ public class DEPRECATED_ApiController {
     private final CustomEventPublisher customEventPublisher;
     private final DatabaseService databaseService;
 
-
-
-
-    @GetMapping("/0/example/closeableHttpClient")
-    //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하여 req 요청
-    public Object closeableHttpClient() throws Exception{
-        log.debug("closeableHttpClient identityHashCode : {}", System.identityHashCode(closeableHttpClient));
-
-        HttpGet httpGet = new HttpGet(fooResponseUrl);
-        httpGet.addHeader("X-test-id", "xyz");
-        CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet);
-
-        HttpEntity httpEntity = closeableHttpResponse.getEntity();
-        return EntityUtils.toString(httpEntity);
-    }
-
-    @GetMapping("/0/example/closeableHttpClientSupport")
-    //reqConfig와 pool이 이미 설정된 closeableHttpClient Bean을 사용하는, 좀더 사용성을 편리하게 만든 closeableHttpClientSupport 사용하는 req 요청
-    public Object closeableHttpClientSupport() throws Exception{
-        log.debug("closeableHttpClientSupport identityHashCode : {}", System.identityHashCode(closeableHttpClientSupport));
-
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(fooResponseUrl);
-        return closeableHttpClientSupport.requestPost(uriComponentsBuilder.toUriString(), null, null);
-    }
 
     @GetMapping("/0/example/restTemplate")
     //reqConfig와 pool이 이미 설정된 restTemplate Bean을 사용하여 req 요청

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -125,6 +126,31 @@ public class TypeConvertUtil {
             list.add(enumeration.nextElement());
         }
         return list;
+    }
+
+    public static HttpHeaders objMapToHttpHeaders(Map<String, Object> headerMap) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        for (Map.Entry<String, Object> entry : headerMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof String) {
+                httpHeaders.add(key, (String) value);
+            } else if (value instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<String> list = (List<String>) value;
+                httpHeaders.addAll(key, list);
+            } else if (value instanceof Set) {
+                @SuppressWarnings("unchecked")
+                Set<String> set = (Set<String>) value;
+                httpHeaders.addAll(key, new ArrayList<>(set));
+            } else {
+                throw new IllegalArgumentException("Unsupported header value type for key: " + key);
+            }
+        }
+
+        return httpHeaders;
     }
 }
 
