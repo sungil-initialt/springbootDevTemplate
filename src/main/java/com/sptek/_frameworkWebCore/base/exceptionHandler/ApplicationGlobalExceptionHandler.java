@@ -1,10 +1,12 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
+import com.sptek._frameworkWebCore.annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApplicationGlobalException_At_Main;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
@@ -129,6 +131,8 @@ public class ApplicationGlobalExceptionHandler {
                     (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
 
             String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
+            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
+            String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
             String logBody = String.format(
@@ -137,6 +141,7 @@ public class ApplicationGlobalExceptionHandler {
                     + "header : %s\n"
                     + "params : %s\n"
                     + "responseStatus : %s\n"
+                    + "relatedOutbounds : %s\n"
                     + "requestTime : %s\n"
                     + "responseTime : %s\n"
                     + "durationMsec : %s\n"
@@ -146,12 +151,15 @@ public class ApplicationGlobalExceptionHandler {
                     , requestHeader
                     , params
                     , httpStatus
+                    , relatedOutbounds
                     , RequestUtil.traceRequestDuration().getStartTime()
                     , RequestUtil.traceRequestDuration().getCurrentTime()
                     , RequestUtil.traceRequestDuration().getDurationMsec()
                     , ex.getMessage()
             );
-            log.info(SptFwUtil.convertSystemNotice("Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler", logBody));
+            log.info(SptFwUtil.convertSystemNotice(StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "--"
+                    , "Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler"
+                    , logBody));
         }
     }
 

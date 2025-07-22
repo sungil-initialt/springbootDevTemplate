@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -17,7 +16,7 @@ RestTemplate을 쉽게 사용하기 위한 클레스로 Spring Bean 을 통해 �
  */
 @Slf4j
 @RequiredArgsConstructor
-public class RestTemplateSupport{
+public class DEPRECATED_RestTemplateSupport {
 
     private final RestTemplate restTemplate;
 

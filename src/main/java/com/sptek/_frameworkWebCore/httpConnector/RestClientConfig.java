@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.httpConnector;
 
-import com.sptek._frameworkWebCore.support.CloseableHttpClientSupport;
-import com.sptek._frameworkWebCore.support.RestTemplateSupport;
+import com.sptek._frameworkWebCore.support.OutboundSupport;
+import com.sptek._frameworkWebCore.support.DEPRECATED_RestTemplateSupport;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -55,8 +55,8 @@ public class RestClientConfig {
 
     @Bean
     //CloseableHttpClient를 쉽게 쓸수있도록 기능 랩핑한 Bean
-    public CloseableHttpClientSupport closeableHttpClientSupport(CloseableHttpClient closeableHttpClient){
-        return new CloseableHttpClientSupport(closeableHttpClient);
+    public OutboundSupport outboundSupport(CloseableHttpClient closeableHttpClient){
+        return new OutboundSupport(closeableHttpClient);
     }
 
     @Bean
@@ -69,7 +69,7 @@ public class RestClientConfig {
 
     @Bean
     //restTemplate을 쉽게 쓸수있도록 기능 랩핑한 Bean
-    public RestTemplateSupport restTemplateSupport(RestTemplate restTemplate){
-        return new RestTemplateSupport(restTemplate);
+    public DEPRECATED_RestTemplateSupport restTemplateSupport(RestTemplate restTemplate){
+        return new DEPRECATED_RestTemplateSupport(restTemplate);
     }
 }
