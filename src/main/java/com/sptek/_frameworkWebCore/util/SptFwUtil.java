@@ -1,30 +1,33 @@
 package com.sptek._frameworkWebCore.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @Slf4j
 public class SptFwUtil {
 
-    public static String convertSystemNotice(String title, StringBuffer logBody) { return SptFwUtil.convertSystemNotice(title, String.valueOf(logBody));}
-    public static String convertSystemNotice(String title, String logBody) { return convertSystemNotice("", title, logBody); }
-    public static String convertSystemNotice(String tagName, String title, String logBody) {
+    public static String convertSystemNotice(@Nullable String title, @Nullable StringBuffer logContent) { return SptFwUtil.convertSystemNotice(title, String.valueOf(logContent));}
+    public static String convertSystemNotice(@Nullable String title, @Nullable String logContent) { return convertSystemNotice(null, title, logContent); }
+    public static String convertSystemNotice(@Nullable String tagName, @Nullable String title, @Nullable String logContent) {
         //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
-        return String.format(
-                "↓ Tag Name : %s\n"
-                        + "--------------------\n"
-                        + "SPT-FW [ **** %s **** ]\n"
-                        + "--------------------\n"
-                        + "%s\n"
-                        + "--------------------\n"
-                , tagName
-                , title
-                , Optional.ofNullable(logBody).map(SptFwUtil::removeLastNewline).orElse("")
-        );
+        tagName = StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "No Tag Name";
+        title = StringUtils.hasText(title) && !title.equals("null") ? title : "No Title";
+        logContent = StringUtils.hasText(logContent) && !logContent.equals("null") ? logContent : "No Log Body";
+
+        return """
+            ↓ Tag Name : %s
+            --------------------
+            SPT-FW [ **** %s **** ]
+            --------------------
+            %s
+            --------------------
+            """
+            .formatted(tagName, title, SptFwUtil.removeLastNewline(logContent));
     }
 
     public static String removeLastNewline(String string) {

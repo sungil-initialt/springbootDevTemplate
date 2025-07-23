@@ -135,31 +135,20 @@ public class ApplicationGlobalExceptionHandler {
             String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
-            String logBody = String.format(
-                    "session : %s\n"
-                    + "(%s) url : %s\n"
-                    + "header : %s\n"
-                    + "params : %s\n"
-                    + "responseStatus : %s\n"
-                    + "relatedOutbounds : %s\n"
-                    + "requestTime : %s\n"
-                    + "responseTime : %s\n"
-                    + "durationMsec : %s\n"
-                    + "exceptionMsg : %s\n"
-                    , sessionId
-                    , methodType, url
-                    , requestHeader
-                    , params
-                    , httpStatus
-                    , relatedOutbounds
-                    , RequestUtil.traceRequestDuration().getStartTime()
-                    , RequestUtil.traceRequestDuration().getCurrentTime()
-                    , RequestUtil.traceRequestDuration().getDurationMsec()
-                    , ex.getMessage()
-            );
-            log.info(SptFwUtil.convertSystemNotice(StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "--"
-                    , "Application(High-level) Error occurred. caught by the ApplicationGlobalExceptionHandler"
-                    , logBody));
+            String logContent = """
+                    sessionId: %s
+                    (%s) url: %s
+                    header: %s
+                    params: %s
+                    responseStatus: %s
+                    relatedOutbounds: %s
+                    requestTime: %s
+                    responseTime: %s
+                    durationMsec: %s
+                    exceptionMsg: %s
+                    """.formatted(sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
+                            , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), ex.getMessage());
+            log.info(SptFwUtil.convertSystemNotice(tagName, "Application(High-level) Error Log caught by the ApplicationGlobalExceptionHandler", logContent));
         }
     }
 

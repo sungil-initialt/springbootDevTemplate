@@ -51,6 +51,7 @@ public class OutboundSupport {
             default -> throw new IllegalArgumentException("Unsupported method: " + httpMethod);
         };
 
+        if (httpHeaders == null) httpHeaders = new HttpHeaders();
         if (!StringUtils.hasText(httpHeaders.getFirst(HttpHeaders.CONTENT_TYPE))) httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE); // CONTENT_TYPE 없을때 디폴트
         RequestUtil.applyRequestHeaders(request, httpHeaders);
         RequestUtil.applyRequestBody(request, requestBody);
@@ -64,43 +65,44 @@ public class OutboundSupport {
             String responseBodyStr = EntityUtils.toString(closeableHttpResponse.getEntity(), StandardCharsets.UTF_8);
             HttpClientResponseDto httpClientResponseDto = new HttpClientResponseDto(closeableHttpResponse.getCode(), responseHeaders, responseBodyStr);
 
-            if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportLog_At_Main.class)) {
-                String requestBodyStr = "";
-                if (requestBody != null) {
-                    requestBodyStr = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
-                }
-
-                String logBody = String.format(
-                        "outbound Id : %s\n"
-                                + "-->(%s) url : %s\n"
-                                + "requestHeader : %s\n"
-                                + "requestBody : %s\n"
-                                + "<--(%s)\n"
-                                + "responseHeader : %s\n"
-                                + "responseBody : %s\n"
-                        , outboundId
-                        , httpMethod.name(), uriComponents.toString()
-                        , httpHeaders.toString()
-                        , requestBodyStr
-                        , httpClientResponseDto.code()
-                        , httpClientResponseDto.headers().toString()
-                        , httpClientResponseDto.body()
-                );
-                log.info(SptFwUtil.convertSystemNotice(uriComponents.getHost(), "OutboundSupport Information", logBody));
-
-                try {
-                    // 사용자 호출이 아닌 케이스 (스케줄러등) 에서 사용시 request를 얻지 못할 수 있다.
-                    List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS);
-                    if (relatedOutbounds == null) {
-                        relatedOutbounds = new ArrayList<>();
-                    }
-                    relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
-                    SpringUtil.getRequest().setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
-                } catch (Exception e) {
-                    log.debug("SpringUtil.getRequest() is null. Not logging related outbound information.");
-                }
-            }
+            justLogging(requestBody, outboundId, httpMethod, uriComponents, httpHeaders, httpClientResponseDto);
             return httpClientResponseDto;
+        }
+    }
+
+    private void justLogging(Object requestBody, String outboundId, HttpMethod httpMethod, UriComponents uriComponents, HttpHeaders httpHeaders
+            , HttpClientResponseDto httpClientResponseDto) throws Exception {
+
+        // Ounbound 호출 정보 로깅
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportLog_At_Main.class)) {
+            String requestBodyStr = "";
+            if (requestBody != null) {
+                requestBodyStr = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, true);
+                requestBodyStr = StringUtils.hasText(requestBodyStr) ? "\n" + requestBodyStr : "";
+            }
+            String logContent = """
+                    outBoundId : %s
+                    -->(%s) url : %s
+                    requestHeader : %s
+                    requestBody : %s
+                    <--(%s)
+                    responseHeader : %s
+                    responseBody : %s
+                    """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
+                            , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
+            log.info(SptFwUtil.convertSystemNotice(uriComponents.getHost(), "Outbound Support Information", logContent));
+        }
+
+        // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함
+        try {
+            List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS);
+            if (relatedOutbounds == null) {
+                relatedOutbounds = new ArrayList<>();
+            }
+            relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
+            SpringUtil.getRequest().setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
+        } catch (Exception e) {
+            log.debug("Not logging related outbound information.");
         }
     }
 

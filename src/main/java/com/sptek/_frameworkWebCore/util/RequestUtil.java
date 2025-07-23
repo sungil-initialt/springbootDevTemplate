@@ -138,14 +138,12 @@ public class RequestUtil {
         httpHeaders.forEach((name, values) ->
                 values.forEach(value -> httpUriRequest.addHeader(name, value))
         );
-
     }
 
     public static void applyRequestBody(HttpUriRequest httpUriRequest, @Nullable Object requestBody) throws Exception {
-        if (requestBody != null) {
-            String requestBodyString = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
-            if (StringUtils.hasText(requestBodyString)) httpUriRequest.setEntity(new StringEntity(requestBodyString, StandardCharsets.UTF_8));
-        }
+        if (requestBody == null) return;
+        String requestBodyString = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
+        if (StringUtils.hasText(requestBodyString)) httpUriRequest.setEntity(new StringEntity(requestBodyString, StandardCharsets.UTF_8));
     }
 
     public static ExcuteTimeDto traceRequestDuration() {

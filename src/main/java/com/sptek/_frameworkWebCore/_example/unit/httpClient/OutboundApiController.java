@@ -27,7 +27,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -54,7 +53,6 @@ public class OutboundApiController {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(uriComponents.encode().toUri());
-            request.addHeader("X-TEST_KEY", "X-TEST_VALUE");
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 return response.getCode();
             }
@@ -94,8 +92,7 @@ public class OutboundApiController {
                 .queryParam("myKey", "myValue")
                 .buildAndExpand(Map.of("id", 1));
 
-        HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", List.of("X-TEST_VALUE", "a")));
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.GET, uriComponents, httpHeaders);
+        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.GET, uriComponents);
         return httpClientResponseDto.code();
     }
 
@@ -149,3 +146,4 @@ public class OutboundApiController {
 }
 
 
+//---> 별도 스레드로 여러개 강제로 돌려서 모니터링 해볼것
