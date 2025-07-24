@@ -8,10 +8,10 @@ import com.sptek._frameworkWebCore.annotation.TestAnnotation_At_All;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
-import com.sptek._frameworkWebCore.eventListener.publisher.CustomEventPublisher;
+import com.sptek._frameworkWebCore.event.publisher.SptEventPublisher;
 import com.sptek._frameworkWebCore.support.OutboundSupport;
 import com.sptek._frameworkWebCore.support.DEPRECATED_RestTemplateSupport;
-import com.sptek._projectCommon.eventListener.custom.event.ExampleEvent;
+import com.sptek._projectCommon.event.event.MyCustomEvent1;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,13 +51,13 @@ public class DEPRECATED_ApiController {
     private final RestTemplate restTemplate;
     private final DEPRECATED_RestTemplateSupport DEPRECATEDRestTemplateSupport;
     private final ObjectMapper objectMapper;
-    private final CustomEventPublisher customEventPublisher;
+    private final SptEventPublisher sptEventPublisher;
     private final DatabaseService databaseService;
 
 
     @GetMapping("/0/example/exampleEvent")
     public Object exampleEvent() {
-        customEventPublisher.publishEvent(ExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
+        sptEventPublisher.publishEvent(MyCustomEvent1.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
         return "published exampleEvent ";
     }
 
