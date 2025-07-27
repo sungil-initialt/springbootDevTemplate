@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class RestClientConfig {
+public class HttpClientConfig {
     @Bean
     public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
         int HTTP_CLIENT_MAX_CONN_TOTAL = 100; // pool 의 전체 커넥션 갯수

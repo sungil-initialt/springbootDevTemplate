@@ -1,4 +1,4 @@
-package com.sptek._projectCommon.event.listener.applicationEventListener;
+package com.sptek._projectCommon.event.listener.applicationEventListener.contextRefreshedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;

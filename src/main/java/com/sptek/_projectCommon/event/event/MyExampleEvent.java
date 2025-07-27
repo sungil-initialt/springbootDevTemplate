@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @ToString(callSuper = true)
 @SuperBuilder
-public class MyCustomEvent1 extends SptBaseEvent {
+public class MyExampleEvent extends SptBaseEvent {
     private String extraField;
 }

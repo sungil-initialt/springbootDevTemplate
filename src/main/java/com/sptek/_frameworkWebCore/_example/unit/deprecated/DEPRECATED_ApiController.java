@@ -11,7 +11,7 @@ import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.event.publisher.SptEventPublisher;
 import com.sptek._frameworkWebCore.support.OutboundSupport;
 import com.sptek._frameworkWebCore.support.DEPRECATED_RestTemplateSupport;
-import com.sptek._projectCommon.event.event.MyCustomEvent1;
+import com.sptek._projectCommon.event.event.MyExampleEvent;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,7 +57,7 @@ public class DEPRECATED_ApiController {
 
     @GetMapping("/0/example/exampleEvent")
     public Object exampleEvent() {
-        sptEventPublisher.publishEvent(MyCustomEvent1.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
+        sptEventPublisher.publishEvent(MyExampleEvent.builder().eventMessage("exampleEvent 도착!").extraField("추가정보").build());
         return "published exampleEvent ";
     }
 

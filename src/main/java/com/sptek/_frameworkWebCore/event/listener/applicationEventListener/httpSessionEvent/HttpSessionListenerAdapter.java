@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.event.listener.applicationEventListener;
+package com.sptek._frameworkWebCore.event.listener.applicationEventListener.httpSessionEvent;
 
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
