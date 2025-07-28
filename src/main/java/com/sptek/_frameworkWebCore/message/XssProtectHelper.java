@@ -17,15 +17,15 @@ public class XssProtectHelper extends CharacterEscapes {
         asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['\"'] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
+        asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
+
+        /*
+        // 추가 적용 고려 가능
         asciiEscapes['('] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['#'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['/'] = CharacterEscapes.ESCAPE_CUSTOM;
-
-        // 추가 적용 고려 가능
-        /*
         asciiEscapes['='] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['+'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes[';'] = CharacterEscapes.ESCAPE_CUSTOM;

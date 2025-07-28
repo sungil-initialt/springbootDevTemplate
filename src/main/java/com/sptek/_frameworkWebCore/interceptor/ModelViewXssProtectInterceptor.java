@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class) //HasAnnotationOnMain 설정 으로 처리 하려다 성능을 고려 하여 controller Annotation 적용 으로 변경함
+//@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class) //HasAnnotationOnMain 설정 으로 처리 하려다 성능 및 원본 수정등의 상황을 고려 하여 controller Annotation 적용 으로 변경함
 @Slf4j
 @Component
 

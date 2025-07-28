@@ -1,5 +1,7 @@
 package com.sptek._frameworkWebCore.schedule.scheduler;
 
+import com.sptek._frameworkWebCore.annotation.Enable_HttpClientMonitoringLog_At_Main;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.SptFwUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -9,9 +11,7 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.pool.PoolStats;
 import org.apache.hc.core5.util.TimeValue;
-import org.jetbrains.annotations.Async;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
@@ -21,17 +21,16 @@ import java.util.concurrent.ScheduledFuture;
 @Slf4j
 @Component
 
-public class PoolingHttpClientConnectionManagerMonitoringScheduler implements SmartLifecycle {
-    // todo: Scheduler 시작과 종료에 대해 여러 방법을 이용할 수 있다.
-    // 가장 안정적인 방법은 SmartLifecycle IF 구성을 통해 스케줄러의 안정적인 시작과 종료를 보장 할 수 있게 할 수 있다.
-    // @PostConstruct 와 @PreDestroy 를 통해 시작과 종료를 처리할 수 있으나 처리 로직에 제 3의 Bean 을 사용 한다면 보장 받을 수 없다.(다른 빈이 생성 이전 이거나 이미 종료 되었을 수 있음)
-    // @EventListener 를 통해 contextRefreshedEvent 에서 처리 할수도 있다
+public class PoolingHttpClientConnectionManagerMonitoringScheduler {
+    // todo: Scheduler 시작과 종료에 대해 여러 방법을 이용할 수 있다. (케이스에 적합하게 선택하여 처리할 것)
+    // @PostConstruct 와 @PreDestroy 를 통해 처리할 수 있으나 처리 로직에 제 3의 Bean 을 @Lookup 이나 ApplicationContext로 가져와 사용하는 경우 해당 빈의 생존을 보장 받을 수 없다.(생성자나 @Autowired 를 통해 주입된 빈은 보장됨)
+    // contextRefreshedEvent는 SmartLifecycle를 포함하는 모든 빈이 생성된 이후 발생되며 contextClosedEvent는 SmartLifecycle를 포함하는 모든 빈이 살아 있을때 먼저 발생된다.(그러나 Listener 를 따로 구현해야하는 번거러움이 있다)
+    // SmartLifecycle IF 구성을 통해 컴포너트의 생명주기를 더 정교하게 조정할 수 있다 (모든 일반 빈들이 생성된 이후 생성하며 모든 빈들이 destroy 전에 destroy 할수 있고 동기/비동기로 처리가능)
 
     private final ThreadPoolTaskScheduler threadPoolTaskSchedulerForOutboundSupportMonitoring;
     private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
     private final int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
-    private ScheduledFuture<?> scheduledFuture;
-    private volatile boolean isRunning = false;
+    private ScheduledFuture<?> scheduledFuture = null;
 
     // todo: @Qualifier 로 특정 빈을 주입 받을때는 @RequiredArgsConstructor 가 정상동작 하지 않을 수 있음으로 직접 생성자 구현 할것
     public PoolingHttpClientConnectionManagerMonitoringScheduler(
@@ -41,42 +40,18 @@ public class PoolingHttpClientConnectionManagerMonitoringScheduler implements Sm
         this.poolingHttpClientConnectionManager = poolingHttpClientConnectionManager;
     }
 
-    @Override
-    // todo: spring 이 start() 호출전 isAutoStartup() 을 확인하여 true 일 star() 해준다.
-    // 이미 다른 일반 Bean 은 로딩된 상태 이기 때문에 isAutoStartup() 내부 로직 구현을 통해 동적 실행을 구성 할 수 있다.
-    public boolean isAutoStartup() {
-        return true;
-    }
-
-    @Override
-    // todo: // SmartLifecycle 구성 Bean들 간 phase가 낮을수록 먼저 start 되고 나중에 stop 됨
-    public int getPhase() {
-        return 0;
-    }
-
-    @Override
-    public void start() {
+    @PostConstruct
+    public void postConstruct() {
+        if (scheduledFuture != null) return;
         scheduledFuture = threadPoolTaskSchedulerForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
-        isRunning = true;
     }
 
-    @Override
-    // spring 이 호출해 주는 실제 stop
-    public void stop(Runnable callback) {
-        stop(); // 실제 종료처리가 메소드, callback.run(); 과 순서 변경기 비동기적 종료 처리 가능(그럴경우 다른 bean의 상태를 보장 받을 수 없음)
-        callback.run(); // 반드시 호출되어야 Spring context 가 정상 종료됨
-    }
-
-    @Override
-    public void stop() {
-        if (scheduledFuture != null) scheduledFuture.cancel(false); // 현재 작업이 끝나길 기다리고 중단
+    // Spring 이 종료되며 해당 빈을 제거하기 전에 호출됨
+    @PreDestroy
+    public void preDestroy() {
+        if (scheduledFuture == null) return;
+        scheduledFuture.cancel(false); // 현재 작업이 끝나길 기다리고 중단
         threadPoolTaskSchedulerForOutboundSupportMonitoring.shutdown();
-        isRunning = false;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return isRunning;
     }
 
     // 실제 스케줄 내용
@@ -119,14 +94,16 @@ public class PoolingHttpClientConnectionManagerMonitoringScheduler implements Sm
             logBuilder.append(String.format("Leased: %d, Available: %d, Pending: %d\n"
                     , afterStats.getLeased(), afterStats.getAvailable(), afterStats.getPending()));
 
-            log.info(SptFwUtil.convertSystemNotice(this.getClass().getSimpleName(), "PoolingHttpClientMonitoring", logBuilder.toString()));
+            // PoolingHttpClientMonitoring 상태 정보 로깅
+            if (MainClassAnnotationRegister.hasAnnotation(Enable_HttpClientMonitoringLog_At_Main.class)) {
+                log.info(SptFwUtil.convertSystemNotice(this.getClass().getSimpleName(), "PoolingHttpClientMonitoring", logBuilder.toString()));
+            }
         } catch (Exception e) {
             log.warn("Error while monitoring HttpClient Connection Pool", e);
         }
     }
 
-    private String getRouteKey(HttpRoute route) {
-        // 단순 로깅요 보조 함수
+    private String getRouteKey(HttpRoute route) { //로깅 보조 함수
         HttpHost targetHost = route.getTargetHost();
         return String.format("%s://%s:%d",
                 targetHost.getSchemeName(),

@@ -23,13 +23,14 @@ public class XssApiController {
     @GetMapping("/01/example/xss/xssProtect")
     @Operation(summary = "01. parameter의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
     public Object XssProtectGet(@Parameter(name = "originParameter", description = "스크립트 요소를 포함한 요청 파람") @RequestParam String originParameter) {
+        // 실제 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
         return originParameter;
     }
 
     @PostMapping("/02/example/xss/xssProtect")
     @Operation(summary = "02. body의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
-    //post Req에 대한 xss 처리 결과 확인
     public Object XssProtectPost(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
+        // 실제 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
         return originBody;
     }
 }
