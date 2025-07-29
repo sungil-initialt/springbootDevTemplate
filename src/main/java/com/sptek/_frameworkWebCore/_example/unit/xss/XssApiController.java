@@ -2,13 +2,17 @@ package com.sptek._frameworkWebCore._example.unit.xss;
 
 import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore.annotation.Enable_XssProtectForApi_At_ControllerMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,17 +24,18 @@ import org.springframework.web.bind.annotation.*;
 
 public class XssApiController {
 
-    @GetMapping("/01/example/xss/xssProtect")
-    @Operation(summary = "01. parameter의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
-    public Object XssProtectGet(@Parameter(name = "originParameter", description = "스크립트 요소를 포함한 요청 파람") @RequestParam String originParameter) {
-        // 실제 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
-        return originParameter;
+    @PostMapping("/01/example/xss/xssProtectOff")
+    @Operation(summary = "02. XssProtect 어노테이션 미적용", description = "")
+    public Object xssProtectOff(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
+        //@Enable_XssProtectForApi_At_Main 가 적용된 경우 @Enable_XssProtectForApi_At_ControllerMethod 가 없어도 일괄 XssProtect 적용됨
+        return originBody;
     }
 
-    @PostMapping("/02/example/xss/xssProtect")
-    @Operation(summary = "02. body의 스크립트 요소를 HTML entity encoding 처리하여 controller로 자동 바인딩", description = "")
-    public Object XssProtectPost(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
-        // 실제 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
+    @PostMapping("/02/example/xss/xssProtectOn")
+    @Enable_XssProtectForApi_At_ControllerMethod
+    @Operation(summary = "02. XssProtect 어노테이션 적용 (원본을 받아 응답시에 Escape 처리함)", description = "")
+    public Object xssProtectOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
+        // 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
         return originBody;
     }
 }

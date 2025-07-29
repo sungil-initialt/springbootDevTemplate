@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore._example.unit.xss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com.sptek._frameworkWebCore.annotation.Enable_XssProtectorForView_At_ControllerMethod;
+import com.sptek._frameworkWebCore.annotation.Enable_XssProtectForView_At_ControllerMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +39,11 @@ public class XssViewController {
 
     // 어노테이션을 통해 Xss 자동 처리 됨,
     // 동일한 결과를 리턴하는 메소드라도 활용에 따라.. 예를 들어 게시글 수정의 경우는 원문을 내려줘야 escape된 내용으로 저장되는 오류를 피할 수 있음 (어노테이션 없게 구성)
-    @Enable_XssProtectorForView_At_ControllerMethod
+    @Enable_XssProtectForView_At_ControllerMethod
     @GetMapping("/xss/xssProtectOn")
     public String xssProtectForViewModelOn(Model model) throws JsonProcessingException {
         model.addAttribute("result", makeTestMap());
-        //model.addAttribute("xxxx", makeTestMap());  여럿 모델 처리 가능
+        //model.addAttribute("xxxx", makeTestMap());  여러 모델 동시 처리도 가능
         return htmlBasePath + "simpleModelView";
     }
 

@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Enable_XssProtectorForView_At_ControllerMethod {
+public @interface Enable_XssProtectForApi_At_ControllerMethod {
 }

@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.interceptor.config;
 
 
-import com.sptek._frameworkWebCore.interceptor.ModelViewXssProtectInterceptor;
+import com.sptek._frameworkWebCore.interceptor.ViewXssProtectInterceptor;
 import com.sptek._frameworkWebCore.interceptor.UvCheckLogInterceptor;
 import com.sptek._frameworkWebCore.interceptor.ViewErrorLogSupportInterceptor;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
@@ -15,15 +15,15 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
 
     private final UvCheckLogInterceptor uvCheckLogInterceptor;
     private final ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor;
-    private final ModelViewXssProtectInterceptor modelViewXssProtectInterceptor;
+    private final ViewXssProtectInterceptor viewXssProtectInterceptor;
 
     //조건에 따라 Interceptor 들이 Bean 으로 등독 될수도 안 될수도 있는 상황이 있기 때문에 @Nullable 을 사용한 생성자 를 직접 구현 하였음
     public InterceptorGlobalConfig(@Nullable UvCheckLogInterceptor uvCheckLogInterceptor
             , @Nullable ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor
-            , @Nullable ModelViewXssProtectInterceptor modelViewXssProtectInterceptor) {
+            , @Nullable ViewXssProtectInterceptor viewXssProtectInterceptor) {
         this.uvCheckLogInterceptor = uvCheckLogInterceptor;
         this.viewErrorLogSupportInterceptor = viewErrorLogSupportInterceptor;
-        this.modelViewXssProtectInterceptor = modelViewXssProtectInterceptor;
+        this.viewXssProtectInterceptor = viewXssProtectInterceptor;
     }
 
     @Override
@@ -44,8 +44,8 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
                     .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
         }
 
-        if(modelViewXssProtectInterceptor != null) {
-            interceptorRegistry.addInterceptor(this.modelViewXssProtectInterceptor).addPathPatterns("/**")
+        if(viewXssProtectInterceptor != null) {
+            interceptorRegistry.addInterceptor(this.viewXssProtectInterceptor).addPathPatterns("/**")
                     .excludePathPatterns("/api/**")
                     .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
                     .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());

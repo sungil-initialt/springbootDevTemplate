@@ -1,68 +1,46 @@
-package com.sptek._frameworkWebCore.interceptor;
+package com.sptek._frameworkWebCore.support;
 
-import com.sptek._frameworkWebCore.annotation.Enable_XssProtectorForView_At_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@HasAnnotationOnMain_InBean(TestAnnotation_InAll.class) //HasAnnotationOnMain 설정 으로 처리 하려다 성능 및 원본 수정등의 상황을 고려 하여 controller Annotation 적용 으로 변경함
 @Slf4j
 @Component
 
-public class ModelViewXssProtectInterceptor implements HandlerInterceptor {
+public class XssEscapeSupport {
 
-    @Override
-    public void postHandle(
-            @NotNull HttpServletRequest request,
-            @NotNull HttpServletResponse response,
-            @NotNull Object handler,
-            ModelAndView modelAndView
-    ) {
-        if (handler instanceof HandlerMethod handlerMethod && modelAndView != null) {
-            if (handlerMethod.hasMethodAnnotation(Enable_XssProtectorForView_At_ControllerMethod.class)) {
-                log.debug("ModelView Xss Protector On");
-                Map<String, Object> model = modelAndView.getModel();
-                model.replaceAll((key, value) -> escapeIfNeeded(value));
-            }
-        }
-    }
+    public Object escape(Object value) {
+        if (value == null) return null;
 
-    private Object escapeIfNeeded(Object value) {
         if (value instanceof String str) {
             return StringEscapeUtils.escapeHtml4(str);
         }
 
         if (value instanceof List<?> list) {
-            return list.stream().map(this::escapeIfNeeded).collect(Collectors.toList());
+            return list.stream().map(this::escape).collect(Collectors.toList());
         }
 
         if (value instanceof Set<?> set) {
-            return set.stream().map(this::escapeIfNeeded).collect(Collectors.toSet());
+            return set.stream().map(this::escape).collect(Collectors.toSet());
         }
 
         if (value instanceof Map<?, ?> map) {
             return map.entrySet().stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            e -> escapeIfNeeded(e.getValue()),
+                            e -> escape(e.getValue()),
                             (a, b) -> b,
                             LinkedHashMap::new
                     ));
         }
 
         if (value instanceof Object[] array) {
-            return Arrays.stream(array).map(this::escapeIfNeeded).toArray();
+            return Arrays.stream(array).map(this::escape).toArray();
         }
 
         if (isMyDtoObject(value)) {
@@ -86,7 +64,7 @@ public class ModelViewXssProtectInterceptor implements HandlerInterceptor {
                 if (fieldValue instanceof String str) {
                     field.set(dto, StringEscapeUtils.escapeHtml4(str));
                 } else if (fieldValue instanceof List<?> || fieldValue instanceof Map<?, ?> || isMyDtoObject(fieldValue)) {
-                    field.set(dto, escapeIfNeeded(fieldValue));
+                    field.set(dto, escape(fieldValue));
                 }
             } catch (Exception e) {
                 log.warn("Xss Protecting Fail - class: {}, field: {}", dto.getClass().getName(), field.getName(), e);

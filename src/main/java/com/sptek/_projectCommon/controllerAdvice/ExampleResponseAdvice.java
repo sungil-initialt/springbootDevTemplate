@@ -17,7 +17,7 @@ public class ExampleResponseAdvice implements ResponseBodyAdvice<Object> {
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         // 컨트롤러 클래스 타입 가져오기
         Class<?> containingClass = returnType.getContainingClass();
-        boolean isController = containingClass.isAnnotationPresent(org.springframework.stereotype.Controller.class);
+        boolean isController = containingClass.isAnnotationPresent(org.springframework.stereotype.Controller.class); //RestController는 제외됨
         //boolean hasCustomAnnotation = containingClass.isAnnotationPresent(XX.class); //구분을 위해 추가한 어노테이션
 
         // 두 조건이 모두 만족해야 동작

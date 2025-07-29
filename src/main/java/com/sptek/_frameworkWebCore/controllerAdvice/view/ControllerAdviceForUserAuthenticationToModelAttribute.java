@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class ControllerAdviceForUserAuthenticationToModelAttribute {
 
     @ModelAttribute
+    //Controller, RestController 모두 에서 동작함(RestController에서는 제외하는게 맞을수 있으나.. Controller  클레스에서 Rest 기능을 구현하는 경우도 있음으로 이렇게 처리함)
     public void addModelAttributes(Model model) throws Exception {
         model.addAttribute("isLogin", AuthenticationUtil.isRealLogin());
 
