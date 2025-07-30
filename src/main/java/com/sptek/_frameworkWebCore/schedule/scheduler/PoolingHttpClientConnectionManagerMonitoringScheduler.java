@@ -96,7 +96,8 @@ public class PoolingHttpClientConnectionManagerMonitoringScheduler {
 
             // PoolingHttpClientMonitoring 상태 정보 로깅
             if (MainClassAnnotationRegister.hasAnnotation(Enable_HttpClientMonitoringLog_At_Main.class)) {
-                log.info(SptFwUtil.convertSystemNotice(this.getClass().getSimpleName(), "PoolingHttpClientMonitoring", logBuilder.toString()));
+                String tagName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpClientMonitoringLog_At_Main.class).get("value"));
+                log.info(SptFwUtil.convertSystemNotice(tagName, "PoolingHttpClientMonitoring", logBuilder.toString()));
             }
         } catch (Exception e) {
             log.warn("Error while monitoring HttpClient Connection Pool", e);

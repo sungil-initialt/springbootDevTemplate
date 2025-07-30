@@ -90,7 +90,8 @@ public class OutboundSupport {
                     responseBody : %s
                     """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
-            log.info(SptFwUtil.convertSystemNotice(uriComponents.getHost(), "Outbound Support Information", logContent));
+            String tagName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportLog_At_Main.class).get("value"));
+            log.info(SptFwUtil.convertSystemNotice(tagName, "Outbound Support Information", logContent));
         }
 
         // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함

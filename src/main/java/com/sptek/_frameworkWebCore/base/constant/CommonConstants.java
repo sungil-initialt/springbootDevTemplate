@@ -9,12 +9,13 @@ public class CommonConstants {
     public static final String FRAMEWORK_WEBCORE_PACKAGE_NAME = "com.sptek._frameworkWebCore.";
 
     // Logging
+    public static final String SYSTEM_NOTICE_TAG = "↓ SYSTEM_NOTICE_TAG :";
     public static final String REQ_PROPERTY_FOR_LOGGING_TIMESTAMP = "REQ_PROPERTY_FOR_LOGGING_TIMESTAMP";
     public static final String REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW = "REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW";
     public static final String REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE = "REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE";
     public static final String REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS = "REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS";
 
-    public static final String DEBUGGING_HELP_MESSAGE = "이 메시지가 로깅된 경우 sptfw 담당자에게 알려 주세요!";
+    public static final String DEBUGGING_HELP_MESSAGE = "이 메시지가 보인다면!! FW Core 담당자 에게 알려 주세요!";
     public static final String SERVER_INITIALIZATION_MARK = "FRAMEWORK INITIALIZATION NOTICE : ";
 
     // locale

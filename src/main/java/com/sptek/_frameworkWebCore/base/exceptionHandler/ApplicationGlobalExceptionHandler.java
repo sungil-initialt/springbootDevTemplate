@@ -148,7 +148,7 @@ public class ApplicationGlobalExceptionHandler {
                     exceptionMsg: %s
                     """.formatted(sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
                             , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), ex.getMessage());
-            log.info(SptFwUtil.convertSystemNotice(tagName, "Application(High-level) Error Log caught by the ApplicationGlobalExceptionHandler", logContent));
+            log.info(SptFwUtil.convertSystemNotice(tagName, "REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent));
         }
     }
 

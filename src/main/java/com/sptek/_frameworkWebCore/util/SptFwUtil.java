@@ -1,5 +1,6 @@
 package com.sptek._frameworkWebCore.util;
 
+import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -15,19 +16,19 @@ public class SptFwUtil {
     public static String convertSystemNotice(@Nullable String title, @Nullable String logContent) { return convertSystemNotice(null, title, logContent); }
     public static String convertSystemNotice(@Nullable String tagName, @Nullable String title, @Nullable String logContent) {
         //tagName 은 해당 로깅의 시작 키워드로 지정되며 로그 내용을 검색하기 위한 키워드 또는 파일로 저장하기 위한 기준으로 활용
-        tagName = StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "No Tag Name";
+        tagName = StringUtils.hasText(tagName) && !tagName.equals("null") ? tagName : "";
         title = StringUtils.hasText(title) && !title.equals("null") ? title : "No Title";
         logContent = StringUtils.hasText(logContent) && !logContent.equals("null") ? logContent : "No Log Body";
 
         return """
-            ↓ Tag Name : %s
+            %s %s
             --------------------
             SPT-FW [ **** %s **** ]
             --------------------
             %s
             --------------------
             """
-            .formatted(tagName, title, SptFwUtil.removeLastNewline(logContent));
+            .formatted(CommonConstants.SYSTEM_NOTICE_TAG, tagName, title, SptFwUtil.removeLastNewline(logContent));
     }
 
     public static String removeLastNewline(String string) {

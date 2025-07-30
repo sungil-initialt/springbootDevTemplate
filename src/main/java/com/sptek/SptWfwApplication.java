@@ -13,9 +13,9 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @Enable_ResponseOfApplicationGlobalException_At_Main
 @Enable_MdcTagging_At_Main
-@Enable_DetailLog_At_Main_Controller_ControllerMethod
-//@Enable_OutboundSupportLog_At_Main
-//@Enable_HttpClientMonitoringLog_At_Main
+@Enable_DetailLog_At_Main_Controller_ControllerMethod()
+//@Enable_OutboundSupportLog_At_Main("OutboundSupport")
+//@Enable_HttpClientMonitoringLog_At_Main("HttpClientMonitoring")
 
 @Enable_DatasourceOfH2_At_Main
 //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main

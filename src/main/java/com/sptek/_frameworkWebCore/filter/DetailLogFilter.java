@@ -88,7 +88,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     responseBody(%s): %s
                     """.formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds, response.getStatus(), responseBody);
             // todo: Annotation 이 main 과 controller 에 각각 적용 되어 있을때 controller 쪽의 tag 값으로 처리 되야 하는데 현재 그렇게 동작 하는지 확인 필요
-            log.info(SptFwUtil.convertSystemNotice(tagName ,"REQ RES Detail Log caught by the DetailLogFilter", logContent));
+            log.info(SptFwUtil.convertSystemNotice(tagName ,"REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
@@ -110,7 +110,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     """.formatted(sessionId, methodType, url, params, requestHeader, StringUtils.hasText(requestBody)? "\n" + requestBody : "", responseHeader , relatedOutbounds
                             , RequestUtil.traceRequestDuration().getStartTime(), RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec()
                             , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : "", exceptionMsg);
-            log.info(SptFwUtil.convertSystemNotice(tagName ,"REQ RES Detail Log caught by the DetailLogFilter", logContent));
+            log.info(SptFwUtil.convertSystemNotice(tagName ,"REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent));
         }
 
         // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)
