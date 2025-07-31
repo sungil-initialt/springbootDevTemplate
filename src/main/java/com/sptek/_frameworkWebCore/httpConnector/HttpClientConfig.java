@@ -60,7 +60,7 @@ public class HttpClientConfig {
     }
 
     @Bean
-    //reqConfig와 pool 관리를 내부적으로 하고 있는 RestTemplate을 @Autowired 해 사용할 수 있도록 Bean 구성함
+    //reqConfig와 pool 관리를 내부적으로 하고 있는 RestTemplate을 @Autowired 해 사용할 수 있도록 Bean 구성함 (OutboundSupport을 더 권장?)
     public RestTemplate restTemplate(CloseableHttpClient closeableHttpClient){
         HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         httpComponentsClientHttpRequestFactory.setHttpClient(closeableHttpClient);

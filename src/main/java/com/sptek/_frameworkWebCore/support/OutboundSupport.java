@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.support;
 
-import com.sptek._frameworkWebCore.annotation.Enable_OutboundSupportLog_At_Main;
+import com.sptek._frameworkWebCore.annotation.Enable_OutboundSupportDetailLog_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.commonObject.dto.HttpClientResponseDto;
@@ -74,7 +74,7 @@ public class OutboundSupport {
             , HttpClientResponseDto httpClientResponseDto) throws Exception {
 
         // Ounbound 호출 정보 로깅
-        if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportLog_At_Main.class)) {
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportDetailLog_At_Main.class)) {
             String requestBodyStr = "";
             if (requestBody != null) {
                 requestBodyStr = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, true);
@@ -90,7 +90,7 @@ public class OutboundSupport {
                     responseBody : %s
                     """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
-            String tagName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportLog_At_Main.class).get("value"));
+            String tagName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"));
             log.info(SptFwUtil.convertSystemNotice(tagName, "Outbound Support Information", logContent));
         }
 

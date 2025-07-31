@@ -9,17 +9,20 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
-@TestAnnotation_At_All("abcdef")
+@TestAnnotation_At_All("")
+
 
 @Enable_ResponseOfApplicationGlobalException_At_Main
 @Enable_MdcTagging_At_Main
-@Enable_DetailLog_At_Main_Controller_ControllerMethod()
-//@Enable_OutboundSupportLog_At_Main("OutboundSupport")
-//@Enable_HttpClientMonitoringLog_At_Main("HttpClientMonitoring")
+@Enable_DetailLog_At_Main_Controller_ControllerMethod("")
+@Enable_OutboundSupportDetailLog_At_Main("OutboundSupport")
+@Enable_HttpClientPoolStateLog_At_Main("HttpClientMonitoring")
+
 
 @Enable_DatasourceOfH2_At_Main
 //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
 @Enable_JpaHybrid_At_Main
+
 
 @Enable_ConsoleLogEnvironmentProperties_At_Main
 @Enable_CorsPolicyFilter_At_Main

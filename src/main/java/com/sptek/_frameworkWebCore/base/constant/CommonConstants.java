@@ -9,7 +9,7 @@ public class CommonConstants {
     public static final String FRAMEWORK_WEBCORE_PACKAGE_NAME = "com.sptek._frameworkWebCore.";
 
     // Logging
-    public static final String SYSTEM_NOTICE_TAG = "↓ SYSTEM_NOTICE_TAG :";
+    public static final String FW_LOG_PREFIX = "↓ FW_LOG_TAG : ";
     public static final String REQ_PROPERTY_FOR_LOGGING_TIMESTAMP = "REQ_PROPERTY_FOR_LOGGING_TIMESTAMP";
     public static final String REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW = "REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW";
     public static final String REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE = "REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE";

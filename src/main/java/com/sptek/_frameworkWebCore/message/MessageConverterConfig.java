@@ -21,12 +21,10 @@ import static org.springframework.http.MediaType.*;
 @RequiredArgsConstructor
 @Configuration
 public class MessageConverterConfig implements WebMvcConfigurer {
-    //jason->object, object->jason
-
     private final ObjectMapper objectMapper;
 
     @Bean
-    //req,res 단에서 object <-> json 처리하기 위한 MessageConverter
+    //HTTP메시지(req, res) <-> object 변환 (MessageConverter 내부에서 ObjectMapper 사용)
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(APPLICATION_JSON); //JSON 응답때 적용됨
@@ -57,5 +55,4 @@ public class MessageConverterConfig implements WebMvcConfigurer {
 
         WebMvcConfigurer.super.configureMessageConverters(converters);
     }
-
 }

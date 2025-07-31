@@ -22,7 +22,7 @@ public class TagNameBaseFileAppender extends AppenderBase<ILoggingEvent> {
     private final Map<String, RollingFileAppender<ILoggingEvent>> appenderCache = new ConcurrentHashMap<>();
     private LoggerContext context;
 
-    //-->xml 조건데로 처리되는지 확인 필요
+    //-->xml 조건데로 처리되는지 확인 필요 (TAG 폴더를 하나 더 둘까 생각중)
     @Setter private String baseLogPath = "./log/logback"; // ${base_log_path}
     @Setter private String pattern = "%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n";
     @Setter private String fileMaxSize = "10MB"; // ${default_log_max_filesize}
@@ -38,7 +38,7 @@ public class TagNameBaseFileAppender extends AppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent event) {
         String message = event.getFormattedMessage();
 
-        if (!message.startsWith(CommonConstants.SYSTEM_NOTICE_TAG)) return;
+        if (!message.startsWith(CommonConstants.FW_LOG_PREFIX)) return;
 
         String tagValue = extractTag(message);
         if (tagValue.isEmpty()) return;
@@ -49,9 +49,9 @@ public class TagNameBaseFileAppender extends AppenderBase<ILoggingEvent> {
     }
 
     private String extractTag(String message) {
-        int start = message.indexOf(CommonConstants.SYSTEM_NOTICE_TAG);
+        int start = message.indexOf(CommonConstants.FW_LOG_PREFIX);
         if (start == -1) return "";
-        start += CommonConstants.SYSTEM_NOTICE_TAG.length();
+        start += CommonConstants.FW_LOG_PREFIX.length();
 
         int end = message.indexOf("\n", start);
         if (end == -1) end = message.length();

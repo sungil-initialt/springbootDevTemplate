@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 public class SptFwUtil {
 
+    // ---> 메소드명을 변경하고.. NoConsoleLog_라고 콘솔에는 적용되지 않는 로그도 생성되도록 수정 필요
     public static String convertSystemNotice(@Nullable String title, @Nullable StringBuffer logContent) { return SptFwUtil.convertSystemNotice(title, String.valueOf(logContent));}
     public static String convertSystemNotice(@Nullable String title, @Nullable String logContent) { return convertSystemNotice(null, title, logContent); }
     public static String convertSystemNotice(@Nullable String tagName, @Nullable String title, @Nullable String logContent) {
@@ -21,14 +22,14 @@ public class SptFwUtil {
         logContent = StringUtils.hasText(logContent) && !logContent.equals("null") ? logContent : "No Log Body";
 
         return """
-            %s %s
+            %s%s
             --------------------
             SPT-FW [ **** %s **** ]
             --------------------
             %s
             --------------------
             """
-            .formatted(CommonConstants.SYSTEM_NOTICE_TAG, tagName, title, SptFwUtil.removeLastNewline(logContent));
+            .formatted(CommonConstants.FW_LOG_PREFIX, tagName, title, SptFwUtil.removeLastNewline(logContent));
     }
 
     public static String removeLastNewline(String string) {

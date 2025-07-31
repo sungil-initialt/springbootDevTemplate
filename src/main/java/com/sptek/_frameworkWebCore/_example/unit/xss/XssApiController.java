@@ -1,5 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.xss;
 
+import com.sptek._frameworkWebCore.annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.annotation.Enable_XssProtectForApi_At_ControllerMethod;
@@ -32,6 +33,7 @@ public class XssApiController {
     }
 
     @PostMapping("/02/example/xss/xssProtectOn")
+    @Enable_DetailLog_At_Main_Controller_ControllerMethod("method")
     @Enable_XssProtectForApi_At_ControllerMethod
     @Operation(summary = "02. XssProtect 어노테이션 적용 (응답 결과를 Escape 처리함)", description = "")
     public Object xssProtectOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
