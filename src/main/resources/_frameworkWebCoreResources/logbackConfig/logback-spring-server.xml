@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="60 seconds"> <!--설정갱신-->
+<configuration scan="true" scanPeriod="60 seconds"> <!--설정 갱신-->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
 
     <!--스프링 프로파일별 개별 프로퍼티 구성시 설정(필요시사용)
@@ -12,31 +12,31 @@
 
     <springProperty scope="context" name="root_log_level" source="logging.level.root"/>
 
-    <property name="base_log_path" value="/log/logback"/>
-    <property name="default_log_max_history" value="30"/>
+    <property name="default_log_base_path" value="./log/logback"/>
+    <property name="default_log_max_history" value="1"/>
     <property name="default_log_max_filesize" value="10MB"/>
-    <property name="default_log_pattern"
-              value="%highlight(%-5level) %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%clr(%logger{0}){cyan}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
+    <property name="default_log_patternForConsole" value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{sessionId}, %X{memberId}]){yellow} - %msg%n"/>
+    <property name="default_log_patternForFile" value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_pattern}</pattern>
+            <pattern>${default_log_patternForConsole}</pattern>
         </encoder>
     </appender>
 
     <!-- File Appender -->
     <appender name="service" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${base_log_path}/service/service.log</file>
+        <file>${default_log_base_path}/service/service.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_pattern}</pattern>
+            <pattern>${default_log_patternForFile}</pattern>
         </encoder>
 
         <!-- Rolling 정책 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
             <fileNamePattern>
-                ${base_log_path}/service/service.%d{yyyy-MM-dd}_%i.log
+                ${default_log_base_path}/service/service.%d{yyyy-MM-dd}_%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${default_log_max_filesize}</maxFileSize>
@@ -52,16 +52,16 @@
             <onMismatch>DENY</onMismatch>
         </filter>
 
-        <file>${base_log_path}/error/error.log</file>
+        <file>${default_log_base_path}/error/error.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_pattern}</pattern>
+            <pattern>${default_log_patternForFile}</pattern>
         </encoder>
 
         <!-- Rolling 정책 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
             <fileNamePattern>
-                ${base_log_path}/error/error.%d{yyyy-MM-dd}_%i.log
+                ${default_log_base_path}/error/error.%d{yyyy-MM-dd}_%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${default_log_max_filesize}</maxFileSize>
@@ -70,25 +70,33 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="systemStart" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="uvCheck" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForUvCheck"/>
 
-        <file>${base_log_path}/systemStart/systemStart.log</file>
+        <file>${default_log_base_path}/uvCheck/uvCheck.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_pattern}</pattern>
+            <pattern>${default_log_patternForFile}</pattern>
         </encoder>
 
         <!-- Rolling 정책 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
             <fileNamePattern>
-                ${base_log_path}/systemStart/systemStart.%d{yyyy-MM-dd}_%i.log
+                ${default_log_base_path}/uvCheck/uvCheck.%d{yyyy-MM-dd}_%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${default_log_max_filesize}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <maxHistory>${default_log_max_history}</maxHistory>
         </rollingPolicy>
+    </appender>
+
+    <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
+    <appender name="keywordBaseLog" class="com.sptek._frameworkWebCore.logging.appender.KeyWordBaseFileAppender">
+        <baseLogPath>${default_log_base_path}/keywordBaseLog</baseLogPath>
+        <pattern>${default_log_patternForFile}</pattern>
+        <fileMaxSize>${default_log_max_filesize}</fileMaxSize>
+        <maxHistory>${default_log_max_history}</maxHistory>
     </appender>
 
     <!-- root레벨 설정 -->
@@ -96,7 +104,8 @@
         <appender-ref ref="console"/>
         <appender-ref ref="service"/>
         <appender-ref ref="error"/>
-        <appender-ref ref="systemStart"/>
+        <appender-ref ref="uvCheck"/>
+        <appender-ref ref="keywordBaseLog"/>
     </root>
 
 </configuration>

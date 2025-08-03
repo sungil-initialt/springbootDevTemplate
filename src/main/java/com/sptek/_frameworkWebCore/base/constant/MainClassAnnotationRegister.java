@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore.base.constant;
 
-import com.sptek._frameworkWebCore.util.SptFwUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -16,8 +17,6 @@ import java.util.Objects;
 
 // Application main Class 에 적용된 타멧 페키지 Annotation  정보를 모두 가지고 있는 역할
 public class MainClassAnnotationRegister {
-    private static final String TARGET_ANNOTATION_PACKAGE = "com.sptek._frameworkWebCore.annotation";
-
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
     private static Map<String, Map<String, Object>> mainClassAnnotationRegister = Collections.emptyMap();
 
@@ -36,18 +35,18 @@ public class MainClassAnnotationRegister {
             Class<? extends Annotation> annotationType = annotation.annotationType();
             String annotationFullName = annotationType.getName();
 
-            if (annotationFullName.startsWith(TARGET_ANNOTATION_PACKAGE)) {
+            if (annotationFullName.startsWith(CommonConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME)) {
                 Map<String, Object> attributes = AnnotationUtils.getAnnotationAttributes(annotation, false);
                 tempMainAnnotationRegister.put(annotationFullName, attributes);
             }
         }
 
         mainClassAnnotationRegister = Collections.unmodifiableMap(tempMainAnnotationRegister);
-        log.debug(SptFwUtil.convertSystemNotice("Main Class Annotation List", mainClassAnnotationRegister.toString()));
+        log.debug(LoggingUtil.makeFwLogForm("All Registered Annotations on the project Main class", mainClassAnnotationRegister.toString()));
     }
 
     public static boolean hasAnnotation(Class<? extends Annotation> annotation) {
-         return mainClassAnnotationRegister.containsKey(annotation.getName());
+        return mainClassAnnotationRegister.containsKey(annotation.getName());
     }
 
     public static Map<String, Object> getAnnotationAttributes(Class<? extends Annotation> annotation) {

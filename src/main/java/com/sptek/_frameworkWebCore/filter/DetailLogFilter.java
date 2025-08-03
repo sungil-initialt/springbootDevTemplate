@@ -69,14 +69,14 @@ public class DetailLogFilter extends OncePerRequestFilter {
 
         // 컨트롤러에서 body 를 먼저 읽을 수 있도록 여기서 필터를 넘기고 body는 체인이 돌아 왔을때 처리 함
         filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
-        String requestBody = StringUtils.hasText(SptFwUtil.getRequestBody(contentCachingRequestWrapper)) ? "\n" + SptFwUtil.getRequestBody(contentCachingRequestWrapper) : "";
+        String requestBody = StringUtils.hasText(RequestUtil.getRequestBody(contentCachingRequestWrapper)) ? "\n" + RequestUtil.getRequestBody(contentCachingRequestWrapper) : "";
 
-        String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
+        String logFileName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
         String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
 
         if((request.getRequestURI().startsWith("/api/") || request.getRequestURI().startsWith("/systemSupportApi/")) && !request.getRequestURI().contains("/notEssential/") ) {
-            String responseBody = StringUtils.hasText(SptFwUtil.getResponseBody(contentCachingResponseWrapper)) ? "\n" + SptFwUtil.getResponseBody(contentCachingResponseWrapper) : "";
+            String responseBody = StringUtils.hasText(ResponseUtil.getResponseBody(contentCachingResponseWrapper)) ? "\n" + ResponseUtil.getResponseBody(contentCachingResponseWrapper) : "";
             String logContent = """
                     sessionId: %s
                     (%s) url: %s
@@ -88,7 +88,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     responseBody(%s): %s
                     """.formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds, response.getStatus(), responseBody);
             // todo: Annotation 이 main 과 controller 에 각각 적용 되어 있을때 controller 쪽의 tag 값으로 처리 되야 하는데 현재 그렇게 동작 하는지 확인 필요
-            log.info(SptFwUtil.convertSystemNotice(tagName ,"REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent));
+            log.info(LoggingUtil.makeFwLogForm("REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent, logFileName));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
@@ -110,7 +110,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     """.formatted(sessionId, methodType, url, params, requestHeader, StringUtils.hasText(requestBody)? "\n" + requestBody : "", responseHeader , relatedOutbounds
                             , RequestUtil.traceRequestDuration().getStartTime(), RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec()
                             , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : "", exceptionMsg);
-            log.info(SptFwUtil.convertSystemNotice(tagName ,"REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent));
+            log.info(LoggingUtil.makeFwLogForm("REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent, logFileName));
         }
 
         // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)

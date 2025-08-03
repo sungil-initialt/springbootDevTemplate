@@ -11,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -157,6 +159,17 @@ public class RequestUtil {
         String currentTime = LocalDateTime.now().toString();
         String durationMsec = String.valueOf(Duration.between(LocalDateTime.parse(startTime), LocalDateTime.parse(currentTime)).toMillis());
         return new ExcuteTimeDto(startTime, currentTime, durationMsec);
+    }
+
+    public static String getRequestBody(ContentCachingRequestWrapper requestWrapper) {
+        byte[] content = requestWrapper.getContentAsByteArray();
+        if (content.length == 0) return "";
+
+        try {
+            return new String(content, requestWrapper.getCharacterEncoding());
+        } catch (UnsupportedEncodingException e) {
+            return "Unsupported Encoding";
+        }
     }
 }
 

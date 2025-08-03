@@ -8,7 +8,7 @@ import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.RequestUtil;
-import com.sptek._frameworkWebCore.util.SptFwUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -131,7 +131,7 @@ public class ApplicationGlobalExceptionHandler {
                     (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
 
             String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
-            String tagName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
+            String logFileName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
             String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
@@ -148,7 +148,7 @@ public class ApplicationGlobalExceptionHandler {
                     exceptionMsg: %s
                     """.formatted(sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
                             , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), ex.getMessage());
-            log.info(SptFwUtil.convertSystemNotice(tagName, "REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent));
+            log.info(LoggingUtil.makeFwLogForm("REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent, logFileName));
         }
     }
 

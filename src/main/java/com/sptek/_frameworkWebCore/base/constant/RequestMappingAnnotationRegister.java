@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.base.constant;
 
-import com.sptek._frameworkWebCore.util.SptFwUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -18,14 +18,11 @@ import java.util.stream.Collectors;
 
 // Controller class 와 그 내부 method 에 적용된 타멧 페키지 Annotation 정보를 모두 가지고 있는 역할
 public class RequestMappingAnnotationRegister {
-    private static final String TARGET_ANNOTATION_PACKAGE = CommonConstants.FRAMEWORK_WEBCORE_PACKAGE_NAME + "annotation";
-
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
     private static Map<String, Map<String, Map<String, Object>>> requestAnnotationRegister = Collections.emptyMap();
-    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     //OPTIONS은 메소드가 없어도 스프링 단에서 처림됨, HEAD는 메소드가 없어도 스프링단에서 GET이 호출됨(단 body를 내리지 않는다)
-    private static final List<String> ALL_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"/*, "OPTIONS", "HEAD"*/);
+    private final List<String> ALL_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"/*, "OPTIONS", "HEAD"*/);
 
     public RequestMappingAnnotationRegister(ApplicationContext applicationContext) {
         if (!requestAnnotationRegister.isEmpty()) {
@@ -62,9 +59,9 @@ public class RequestMappingAnnotationRegister {
         });
 
         requestAnnotationRegister = Collections.unmodifiableMap(tempRequestAnnotationRegister);
-        log.debug(SptFwUtil.convertSystemNotice("Url Mapping Annotation List", requestAnnotationRegister.toString()));
-        log.info(SptFwUtil.convertSystemNotice("Except Url List (PathPatternsCondition and DirectPaths are both empty)", logBodyForPathEmpty.isEmpty() ? "No List" : logBodyForPathEmpty.toString()));
-        log.info(SptFwUtil.convertSystemNotice("Non-specific mapping Check List (it's not recommended)", logBodyForNonSpecificMapping.isEmpty() ? "No List" : logBodyForNonSpecificMapping.toString()));
+        log.debug(LoggingUtil.makeFwLogForm("All Registered Request Mappings and Annotations", requestAnnotationRegister.toString()));
+        log.info(LoggingUtil.makeFwLogForm("Handlers with No URL Pattern (Potential Mapping Error)", logBodyForPathEmpty.isEmpty() ? "No Error" : logBodyForPathEmpty.toString()));
+        log.info(LoggingUtil.makeFwLogForm("Handlers with No Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString()));
     }
 
     // 핸들러 메소드에서 어노테이션과 속성 정보를 가져옴
@@ -73,14 +70,14 @@ public class RequestMappingAnnotationRegister {
 
         // 클래스에 달린 어노테이션 처리
         for (Annotation annotation : handlerMethod.getBeanType().getAnnotations()) {
-            if (annotation.annotationType().getPackageName().startsWith(TARGET_ANNOTATION_PACKAGE)) {
+            if (annotation.annotationType().getPackageName().startsWith(CommonConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME)) {
                 annotationData.put(annotation.annotationType().getName(), extractAnnotationAttributes(annotation));
             }
         }
 
         // 메소드에 달린 어노테이션 처리 (메소드 부분을 후 처리 함으로 메소드 적용된 내용이 최종 남게 됨, 메소드 적용이 우선순위가 높음으로..)
         for (Annotation annotation : handlerMethod.getMethod().getAnnotations()) {
-            if (annotation.annotationType().getPackageName().startsWith(TARGET_ANNOTATION_PACKAGE)) {
+            if (annotation.annotationType().getPackageName().startsWith(CommonConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME)) {
                 annotationData.put(annotation.annotationType().getName(), extractAnnotationAttributes(annotation));
             }
         }
@@ -112,6 +109,7 @@ public class RequestMappingAnnotationRegister {
         if (requestAnnotationRegister.containsKey(methodAndUrl)) {
             return requestAnnotationRegister.get(methodAndUrl).containsKey(annotation.getName());
         } else {
+            AntPathMatcher pathMatcher = new AntPathMatcher();
             return requestAnnotationRegister.entrySet().stream()
                     .anyMatch(entry -> pathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()));
         }
@@ -125,6 +123,7 @@ public class RequestMappingAnnotationRegister {
         if (requestAnnotationRegister.containsKey(methodAndUrl)) {
             return requestAnnotationRegister.get(methodAndUrl).getOrDefault(annotation.getName(), Map.of());
         } else {
+            AntPathMatcher pathMatcher = new AntPathMatcher();
             return requestAnnotationRegister.entrySet().stream()
                     .filter(entry -> pathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()))
                     .findFirst()

@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.schedule.scheduler;
 
 import com.sptek._frameworkWebCore.annotation.Enable_HttpClientPoolStateLog_At_Main;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.util.SptFwUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -96,8 +96,8 @@ public class PoolingHttpClientConnectionManagerMonitoringScheduler {
 
             // PoolingHttpClientMonitoring 상태 정보 로깅
             if (MainClassAnnotationRegister.hasAnnotation(Enable_HttpClientPoolStateLog_At_Main.class)) {
-                String tagName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpClientPoolStateLog_At_Main.class).get("value"));
-                log.info(SptFwUtil.convertSystemNotice(tagName, "PoolingHttpClientMonitoring", logBuilder.toString()));
+                String logFileName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpClientPoolStateLog_At_Main.class).get("value"));
+                log.info(LoggingUtil.makeFwLogForm("PoolingHttpClientMonitoring", logBuilder.toString(), logFileName));
             }
         } catch (Exception e) {
             log.warn("Error while monitoring HttpClient Connection Pool", e);

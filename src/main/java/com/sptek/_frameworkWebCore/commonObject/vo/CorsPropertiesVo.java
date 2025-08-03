@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.commonObject.vo;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.SptFwUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class CorsPropertiesVo {
     @PostConstruct
     public void init() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
-        log.info(SptFwUtil.convertSystemNotice("CORS Policy Properties"
+        log.info(LoggingUtil.makeFwLogForm("CORS Policy Properties"
                 ,"defaultAccessControlAllowOrigin: " + accessControlAllowCredentials + "\n"
                         + "accessControlAllowOrigins: " + accessControlAllowOrigins +"\n"
                         + "accessControlAllowMethods: " + accessControlAllowMethods +"\n"

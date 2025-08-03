@@ -6,7 +6,7 @@ import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.commonObject.dto.HttpClientResponseDto;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SpringUtil;
-import com.sptek._frameworkWebCore.util.SptFwUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,8 +90,8 @@ public class OutboundSupport {
                     responseBody : %s
                     """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
-            String tagName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"));
-            log.info(SptFwUtil.convertSystemNotice(tagName, "Outbound Support Information", logContent));
+            String logFileName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"));
+            log.info(LoggingUtil.makeFwLogForm("Outbound Support Information", logContent, logFileName));
         }
 
         // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함

@@ -10,21 +10,20 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
 @TestAnnotation_At_All("")
+@Enable_GlobalEnvLogging_At_Main //민감정보 로깅
 
 
 @Enable_ResponseOfApplicationGlobalException_At_Main
 @Enable_MdcTagging_At_Main
 @Enable_DetailLog_At_Main_Controller_ControllerMethod("")
 @Enable_OutboundSupportDetailLog_At_Main("OutboundSupport")
-@Enable_HttpClientPoolStateLog_At_Main("HttpClientMonitoring")
+@Enable_HttpClientPoolStateLog_At_Main("noConsole->HttpClientMonitoring")
 
 
 @Enable_DatasourceOfH2_At_Main
 //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
 @Enable_JpaHybrid_At_Main
 
-
-@Enable_ConsoleLogEnvironmentProperties_At_Main
 @Enable_CorsPolicyFilter_At_Main
 @Enable_EncryptorJasypt_At_Main
 @Enable_ThymeleafSpringSecurityDialect_At_Main //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정

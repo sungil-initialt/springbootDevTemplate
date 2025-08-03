@@ -8,8 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -65,5 +67,17 @@ public class ResponseUtil {
 
         byte[] fileBytes = FileCopyUtils.copyToByteArray(finalFile);
         return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+    }
+
+    public static String getResponseBody(ContentCachingResponseWrapper responseWrapper) {
+        byte[] content = responseWrapper.getContentAsByteArray();
+        if (content.length == 0) return "No Content";
+        if (content.length > 3000_0) return "-> The body is too big and skipped"; // 30K
+
+        try {
+            return new String(content, responseWrapper.getCharacterEncoding());
+        } catch (UnsupportedEncodingException e) {
+            return "Unsupported Encoding";
+        }
     }
 }
