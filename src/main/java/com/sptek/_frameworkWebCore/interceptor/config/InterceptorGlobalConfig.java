@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.interceptor.config;
 
 
 import com.sptek._frameworkWebCore.interceptor.ViewXssProtectInterceptor;
-import com.sptek._frameworkWebCore.interceptor.UvCheckLogInterceptor;
+import com.sptek._frameworkWebCore.interceptor.VisitHistoryLoggingInterceptor;
 import com.sptek._frameworkWebCore.interceptor.ViewErrorLogSupportInterceptor;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +13,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorGlobalConfig implements WebMvcConfigurer {
 
-    private final UvCheckLogInterceptor uvCheckLogInterceptor;
+    private final VisitHistoryLoggingInterceptor visitHistoryLoggingInterceptor;
     private final ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor;
     private final ViewXssProtectInterceptor viewXssProtectInterceptor;
 
     //조건에 따라 Interceptor 들이 Bean 으로 등독 될수도 안 될수도 있는 상황이 있기 때문에 @Nullable 을 사용한 생성자 를 직접 구현 하였음
-    public InterceptorGlobalConfig(@Nullable UvCheckLogInterceptor uvCheckLogInterceptor
+    public InterceptorGlobalConfig(@Nullable VisitHistoryLoggingInterceptor visitHistoryLoggingInterceptor
             , @Nullable ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor
             , @Nullable ViewXssProtectInterceptor viewXssProtectInterceptor) {
-        this.uvCheckLogInterceptor = uvCheckLogInterceptor;
+        this.visitHistoryLoggingInterceptor = visitHistoryLoggingInterceptor;
         this.viewErrorLogSupportInterceptor = viewErrorLogSupportInterceptor;
         this.viewXssProtectInterceptor = viewXssProtectInterceptor;
     }
@@ -30,8 +30,8 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
 
         //필요한 interceptor 등록 (exampleInterceptor 참고)
-        if(uvCheckLogInterceptor != null) {
-            interceptorRegistry.addInterceptor(this.uvCheckLogInterceptor).addPathPatterns("/**")
+        if(visitHistoryLoggingInterceptor != null) {
+            interceptorRegistry.addInterceptor(this.visitHistoryLoggingInterceptor).addPathPatterns("/**")
                     .excludePathPatterns("/api/**")
                     .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
                     .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());

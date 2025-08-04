@@ -27,7 +27,7 @@ public class ViewErrorLogSupportInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable ModelAndView modelAndView) {
         //log.debug("postHandle called");
         //필터의 response 에서는 modelAndView 정보를 가져올 방법이 없기 때문에 이곳에서 저장해서 처리함
-        request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODELANDVIEW, modelAndView != null ? modelAndView : Collections.emptyMap());
+        request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODEL_AND_VIEW, modelAndView != null ? modelAndView : Collections.emptyMap());
     }
 
     @Override

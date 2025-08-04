@@ -39,10 +39,6 @@ public class ApplicationGlobalExceptionHandler {
     // 이 핸들러 는 CustomErrorController 를 통해 인입된 상위 레벨 에러 처리 만을 하는게 목적 이다.
     // 상위 레벨이 아닌 Controller 내부 진입 후 에러에 대해 서는 ViewGlobalExceptionHandler 와 ApiGlobalExceptionHandler 에서 처리 한다.
 
-    public ApplicationGlobalExceptionHandler() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied");
-    }
-
     // 401
     @ExceptionHandler({AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

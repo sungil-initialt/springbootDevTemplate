@@ -1,7 +1,6 @@
 package com.sptek._frameworkWebCore.base.constant;
 
 import com.sptek._frameworkWebCore.util.LoggingUtil;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -18,7 +17,7 @@ import java.util.Objects;
 // Application main Class 에 적용된 타멧 페키지 Annotation  정보를 모두 가지고 있는 역할
 public class MainClassAnnotationRegister {
     // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
-    private static Map<String, Map<String, Object>> mainClassAnnotationRegister = Collections.emptyMap();
+    public static Map<String, Map<String, Object>> mainClassAnnotationRegister = Collections.emptyMap();
 
     public MainClassAnnotationRegister(ApplicationContext applicationContext) throws Exception{
         if (!mainClassAnnotationRegister.isEmpty()) {

@@ -24,11 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class ControllerAdviceForApiXssProtect implements ResponseBodyAdvice<Object>  {
     private final XssEscapeSupport xssEscapeSupport;
 
-    @PostConstruct
-    public void init() {
-        log.debug("ControllerAdviceForApiXssProtect init");
-    }
-
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return returnType.hasMethodAnnotation(Enable_XssProtectForApi_At_ControllerMethod.class);

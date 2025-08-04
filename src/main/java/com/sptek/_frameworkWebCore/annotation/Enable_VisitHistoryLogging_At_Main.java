@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) // Annotation is retained at runtime
-public @interface Enable_UvCheckLog_At_Main {
+public @interface Enable_VisitHistoryLogging_At_Main {
+    String value() default "oncePerDay";; // all: 모든 이력, oncePerDay: 방문자별(쿠키기준) 하루 한번만 기록
 }

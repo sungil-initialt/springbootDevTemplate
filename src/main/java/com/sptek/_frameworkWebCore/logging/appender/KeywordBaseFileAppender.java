@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class KeyWordBaseFileAppender extends AppenderBase<ILoggingEvent> {
+public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
 
     private final Map<String, RollingFileAppender<ILoggingEvent>> appenderCache = new ConcurrentHashMap<>();
     private LoggerContext context;
@@ -40,15 +40,15 @@ public class KeyWordBaseFileAppender extends AppenderBase<ILoggingEvent> {
 
         if (!message.startsWith(CommonConstants.FW_LOG_PREFIX)) return;
 
-        String keyWord = extractRealKeyWord(message);
-        if (keyWord.isEmpty()) return;
+        String keyword = extractRealKeyword(message);
+        if (keyword.isEmpty()) return;
 
         RollingFileAppender<ILoggingEvent> appender =
-                appenderCache.computeIfAbsent(keyWord, this::createAppender);
+                appenderCache.computeIfAbsent(keyword, this::createAppender);
         appender.doAppend(event);
     }
 
-    private String extractRealKeyWord(String message) {
+    private String extractRealKeyword(String message) {
         int start = message.indexOf(CommonConstants.FW_LOG_PREFIX);
         if (start == -1) return "";
         start += CommonConstants.FW_LOG_PREFIX.length();
@@ -56,19 +56,19 @@ public class KeyWordBaseFileAppender extends AppenderBase<ILoggingEvent> {
         int end = message.indexOf("\n", start);
         if (end == -1) end = message.length();
 
-        String keyWord = message.substring(start, end).trim();
-        return keyWord.startsWith(CommonConstants.FW_LOG_NO_CONSOLE_MARK) ? keyWord.replaceFirst(CommonConstants.FW_LOG_NO_CONSOLE_MARK, "").trim() : keyWord;
+        String keyword = message.substring(start, end).trim();
+        return keyword.startsWith(CommonConstants.FW_LOG_NO_CONSOLE_MARK) ? keyword.replaceFirst(CommonConstants.FW_LOG_NO_CONSOLE_MARK, "").trim() : keyword;
     }
 
-    private RollingFileAppender<ILoggingEvent> createAppender(String keyWord) {
+    private RollingFileAppender<ILoggingEvent> createAppender(String keyword) {
         RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
         appender.setContext(context);
 
         try {
-            Path folderPath = Path.of(baseLogPath, "CUSTOM", keyWord);
+            Path folderPath = Path.of(baseLogPath, "CUSTOM", keyword);
             Files.createDirectories(folderPath);
 
-            String logFile = folderPath.resolve(keyWord + ".log").toString();
+            String logFile = folderPath.resolve(keyword + ".log").toString();
             appender.setFile(logFile);
 
             // Encoder
@@ -83,7 +83,7 @@ public class KeyWordBaseFileAppender extends AppenderBase<ILoggingEvent> {
             rollingPolicy.setContext(context);
             rollingPolicy.setParent(appender);
             rollingPolicy.setFileNamePattern(
-                    folderPath.resolve(keyWord + ".%d{yyyy-MM-dd}_%i.log").toString()
+                    folderPath.resolve(keyword + ".%d{yyyy-MM-dd}_%i.log").toString()
             );
 
             SizeAndTimeBasedFNATP<ILoggingEvent> triggeringPolicy = new SizeAndTimeBasedFNATP<>();
@@ -98,7 +98,7 @@ public class KeyWordBaseFileAppender extends AppenderBase<ILoggingEvent> {
             appender.start();
 
         } catch (IOException e) {
-            addError("Failed to create log appender for keyword [" + keyWord + "]", e);
+            addError("Failed to create log appender for keyword [" + keyword + "]", e);
         }
 
         return appender;

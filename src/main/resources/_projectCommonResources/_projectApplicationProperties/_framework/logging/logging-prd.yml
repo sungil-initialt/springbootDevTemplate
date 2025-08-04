@@ -17,7 +17,7 @@ logging:
       sptek._projectCommon: debug
       sptek.serviceName: debug
 
-      #DHikariPool DB 커넥션 풀
+      #HikariPool DB 커넥션 풀
       zaxxer.hikari.pool.HikariPool: debug
 
     org:

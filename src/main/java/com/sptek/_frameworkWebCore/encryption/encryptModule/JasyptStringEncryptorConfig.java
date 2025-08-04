@@ -31,7 +31,7 @@ public class JasyptStringEncryptorConfig {
         // todo: prd 운영시 반드시 환경 변수로 설정해야 함(보안이슈), 로그로 password 노출 하지 말것
         String pbePassword = environment.getProperty("jasypt.encryptor.password");
         String pbeAlgorithm = environment.getProperty("jasypt.encryptor.algorithm", "PBEWITHHMACSHA512ANDAES_256");
-        log.debug("pbePassword({}), pbeAlgorithm({})", StringUtils.hasText(pbePassword) ? pbePassword.substring(0, pbePassword.length()/2)+"..." : "", pbeAlgorithm);
+        //log.debug("pbePassword({}), pbeAlgorithm({})", StringUtils.hasText(pbePassword) ? pbePassword.substring(0, pbePassword.length()/2)+"..." : "", pbeAlgorithm);
 
         if(!StringUtils.hasText(pbePassword)) {
             log.error(">>#### Secure Notice : JASYPT_ENCRYPTOR 의 PBE_PASSWORD 설정이 필요 합니다.");

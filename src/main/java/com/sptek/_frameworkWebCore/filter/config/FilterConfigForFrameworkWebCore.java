@@ -6,12 +6,14 @@ import com.sptek._frameworkWebCore.annotation.Enable_NoFilterAndSessionForMinorR
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.filter.*;
 import com.sptek._frameworkWebCore.commonObject.vo.CorsPropertiesVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 
+@Slf4j
 @Configuration
 public class FilterConfigForFrameworkWebCore {
     // todo: 아래 필터 설정보다 Spring Security Filter Chain 이 항상 우선함
@@ -64,6 +66,7 @@ public class FilterConfigForFrameworkWebCore {
     @DependsOn({"corsPropertiesVo"})
     @Bean
     public FilterRegistrationBean<CorsPolicyFilter> corsPolicyFilter(CorsPropertiesVo corsPropertiesVo) {
+        //log.debug("corsPolicyFilter is applied.");
         FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new CorsPolicyFilter(corsPropertiesVo));
         filterRegistrationBean.addUrlPatterns("/api/*");

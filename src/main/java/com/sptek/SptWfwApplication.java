@@ -12,16 +12,13 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @TestAnnotation_At_All("")
 @Enable_GlobalEnvLogging_At_Main //민감정보 로깅
 
-
 @Enable_ResponseOfApplicationGlobalException_At_Main
 @Enable_MdcTagging_At_Main
 @Enable_DetailLog_At_Main_Controller_ControllerMethod("")
-@Enable_OutboundSupportDetailLog_At_Main("OutboundSupport")
-@Enable_HttpClientPoolStateLog_At_Main("noConsole->HttpClientMonitoring")
+@Enable_OutboundSupportDetailLog_At_Main("outbound_history")
+@Enable_HttpClientPoolStateLog_At_Main("noConsole->outbound_pool_state")
 
-
-@Enable_DatasourceOfH2_At_Main
-//@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
+@Enable_DatasourceOfH2_At_Main //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
 @Enable_JpaHybrid_At_Main
 
 @Enable_CorsPolicyFilter_At_Main
@@ -32,9 +29,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @Enable_PropertiesToModelAttribute_At_Main
 @Enable_UserAuthenticationToModelAttribute_At_Main
 
-
 @Enable_XssProtectForApi_At_Main
-@Enable_UvCheckLog_At_Main
+@Enable_VisitHistoryLogging_At_Main
 
 public class SptWfwApplication {
 	public static void main(String[] args) {
