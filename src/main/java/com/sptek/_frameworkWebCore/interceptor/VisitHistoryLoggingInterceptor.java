@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.Enable_VisitHistoryLogging_At_Main;
+import com.sptek._frameworkWebCore.annotation.Enable_VisitHistoryLog_At_Main;
 import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.CookieUtil;
@@ -19,7 +19,7 @@ import java.util.Optional;
 /*
 UV 관련 처리를 위한 인터셉터
  */
-@HasAnnotationOnMain_At_Bean(Enable_VisitHistoryLogging_At_Main.class)
+@HasAnnotationOnMain_At_Bean(Enable_VisitHistoryLog_At_Main.class)
 @Slf4j
 @Component
 

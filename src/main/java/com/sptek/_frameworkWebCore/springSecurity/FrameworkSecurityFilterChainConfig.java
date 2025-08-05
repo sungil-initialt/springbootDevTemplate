@@ -89,7 +89,7 @@ public class FrameworkSecurityFilterChainConfig {
     @Profile(value = {"local", "dev", "stg"})
     public SecurityFilterChain securityFilterChainForDevelopSupport(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/h2-console/**")
+                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/h2-console/**", "/actuator/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         //콘솔 UI 구성상 FrameOptionsConfig::disable 옵션이 필요힘(보안상 해당 경로만 적용)

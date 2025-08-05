@@ -29,14 +29,14 @@ public class LocaleLanguageViewController {
     @RequestMapping("/localeLanguage/myLocaleLanguage")
     public String i18n(Model model) throws Exception {
         ZonedDateTime zonedDateTimeForSystem = ZonedDateTime.now(ZoneId.systemDefault());
-        ZonedDateTime zonedDateTimeForUser = ZonedDateTime.now(LocaleUtil.getCurTimeZone().toZoneId());
+        ZonedDateTime zonedDateTimeForUser = ZonedDateTime.now(LocaleUtil.getCurUserTimeZone().toZoneId());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         String systemFormattedDateTime = zonedDateTimeForSystem.format(dateTimeFormatter);
         String userFormattedDateTime = zonedDateTimeForUser.format(dateTimeFormatter);
 
-        String userLanguageTag = LocaleUtil.getCurLanguageTag();
-        String userTimeZone = LocaleUtil.getCurTimeZoneName();
+        String userLanguageTag = LocaleUtil.getCurUserLanguageTag();
+        String userTimeZone = LocaleUtil.getCurUserTimeZoneName();
 
         String language = LocaleUtil.getI18nMessage("language");
         //Controller 에서 다국어 변환을 직접 하는 케이스
@@ -44,14 +44,14 @@ public class LocaleLanguageViewController {
                 , new Object[] {AuthenticationUtil.getMyName()
                         , AuthenticationUtil.getMyRoles().toString()});
 
+        model.addAttribute("systemFormattedDateTime", systemFormattedDateTime);
+        model.addAttribute("userFormattedDateTime", userFormattedDateTime);
+
         model.addAttribute("userLanguageTag", userLanguageTag);
         model.addAttribute("userTimeZone", userTimeZone);
 
         model.addAttribute("language", language);
         model.addAttribute("welcome", welcome);
-
-        model.addAttribute("systemFormattedDateTime", systemFormattedDateTime);
-        model.addAttribute("userFormattedDateTime", userFormattedDateTime);
 
         return htmlBasePath + "localeLanguage";
     }

@@ -45,7 +45,7 @@
     <p th:text="|userTime : #{userTime(${userFormattedDateTime})}|"></p>
 
     <div class="inner-div">
-        <b>Supported Locale List (queryString 적용시 CustomLocaleChangeInterceptor 에서 Cookie(name->locale, timezone) 방식으로 처림됨) </b>
+        <b>Supported Locale List (queryString 적용시 CustomLocaleChangeInterceptor 에서 Cookie(name->locale, timezone) 방식으로 처리됨 ex: ?locale=en-US&timezone=America/New_York) </b>
     </div>
     <button class="btn-normal" id="systemSupportedLocaleList">request</button>
     <script>

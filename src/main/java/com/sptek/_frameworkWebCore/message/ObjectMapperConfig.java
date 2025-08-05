@@ -8,14 +8,15 @@ import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationO
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.i18n.LocaleContextHolder;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 @Slf4j
 @Configuration
 public class ObjectMapperConfig {
     //jason->object, object->jason
+    //Locale 과 TimeZone 은 system default로 설정함 (user 별 변환이 필요시 해당 user의 locale 을 이용해서 변환된 string 값을 내리도록 할것)
 
     @Bean
     // @Enable_XssProtectForApi_At_ControllerMethod를 통해 선별적 xss 처리, 더 권장?
@@ -23,8 +24,8 @@ public class ObjectMapperConfig {
     public ObjectMapper objectMapperWithoutXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setLocale(LocaleContextHolder.getLocale());
-        objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul")); // todo : timezone 에 따른 시간정보 오류 수정 해야함
+        objectMapper.setLocale(Locale.getDefault());
+        objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper;
@@ -35,8 +36,8 @@ public class ObjectMapperConfig {
     public ObjectMapper objectMapperWithXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setLocale(LocaleContextHolder.getLocale());
-        objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul")); // todo : timezone 에 따른 시간정보 오류 수정 해야함
+        objectMapper.setLocale(Locale.getDefault());
+        objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
         objectMapper.getFactory().setCharacterEscapes(new XssProtectHelper()); //Xss 방지 적용
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

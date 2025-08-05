@@ -9,28 +9,36 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
-@TestAnnotation_At_All("")
-@Enable_GlobalEnvLogging_At_Main //민감정보 로깅
 
+// TEST and CHECK
+@TestAnnotation_At_All("")
+@Enable_GlobalEnvLog_At_Main //민감정보 로깅
+
+// EXCEPTION
 @Enable_ResponseOfApplicationGlobalException_At_Main
+
+// LOGGING
 @Enable_MdcTagging_At_Main
 @Enable_DetailLog_At_Main_Controller_ControllerMethod("")
 @Enable_OutboundSupportDetailLog_At_Main("outbound_history")
 @Enable_HttpClientPoolStateLog_At_Main("noConsole->outbound_pool_state")
+@Enable_VisitHistoryLog_At_Main
 
+// DATABASE
 @Enable_DatasourceOfH2_At_Main //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
 @Enable_JpaHybrid_At_Main
 
-@Enable_CorsPolicyFilter_At_Main
+// SECURETY
 @Enable_EncryptorJasypt_At_Main
+@Enable_CorsPolicyFilter_At_Main
+@Enable_XssProtectForApi_At_Main //Enable_XssProtectForApi_At_Main 가 적용된 경우 Enable_XssProtectForApi_At_ControllerMethod 는 동작하지 않는다.
 @Enable_ThymeleafSpringSecurityDialect_At_Main //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
+
+// UTIL
 @Enable_NoFilterAndSessionForMinorRequest_At_Main //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 @Enable_HttpCachePublicForStaticResource_At_Main
 @Enable_PropertiesToModelAttribute_At_Main
 @Enable_UserAuthenticationToModelAttribute_At_Main
-
-@Enable_XssProtectForApi_At_Main
-@Enable_VisitHistoryLogging_At_Main
 
 public class SptWfwApplication {
 	public static void main(String[] args) {
@@ -51,3 +59,4 @@ public class SptWfwApplication {
 		//app.run(args);
 	}
 }
+

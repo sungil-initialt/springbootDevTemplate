@@ -29,7 +29,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
 
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        //log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
     @Override

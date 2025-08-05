@@ -21,7 +21,7 @@ public class ExampleSmartLifecycleComponent implements SmartLifecycle {
     // todo: spring 이 start() 호출전 isAutoStartup() 을 확인하여 true 일 star() 해준다.
     // 이미 다른 일반 Bean 은 로딩된 상태 이기 때문에 isAutoStartup() 내부 로직 구현을 통해 동적 실행을 구성 할 수 있다.
     public boolean isAutoStartup() {
-        log.debug("isAutoStartup()");
+        //log.debug("isAutoStartup()");
         return true;
     }
 
@@ -29,7 +29,7 @@ public class ExampleSmartLifecycleComponent implements SmartLifecycle {
     // todo: SmartLifecycle 구성 Bean들 간 phase가 낮을수록 먼저 start 되고 나중에 stop 됨
     public int getPhase() {
         int phase = 0;
-        log.debug("getPhase(): " + phase);
+        //log.debug("getPhase(): " + phase);
         return phase;
     }
 
@@ -37,13 +37,13 @@ public class ExampleSmartLifecycleComponent implements SmartLifecycle {
     public void start() {
         // todo: 생성하며 해야 할 처리가 있다면 처리함
         isRunning = true;
-        log.debug("start(): " + isRunning);
+        //log.debug("start(): " + isRunning);
     }
 
     @Override
     // spring 이 호출해 주는 실제 stop
     public void stop(Runnable callback) {
-        log.debug("stop(Runnable callback)");
+        //log.debug("stop(Runnable callback)");
         stop(); // 실제 종료처리가 메소드, callback.run(); 과 순서 변경기 비동기적 종료 처리 가능(그럴경우 다른 bean의 상태를 보장 받을 수 없음)
         callback.run(); // 반드시 호출되어야 Spring context 가 정상 종료됨
     }
@@ -51,13 +51,13 @@ public class ExampleSmartLifecycleComponent implements SmartLifecycle {
     @Override
     public void stop() {
         // todo: 종료되며 해야 할 처리가 있다면 처리함
-        log.debug("stop()");
+        //log.debug("stop()");
         isRunning = false;
     }
 
     @Override
     public boolean isRunning() {
-        log.debug("isRunning(): " + isRunning);
+        //log.debug("isRunning(): " + isRunning);
         return isRunning;
     }
 }

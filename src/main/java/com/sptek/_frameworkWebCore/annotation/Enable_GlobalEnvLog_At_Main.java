@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Enable_GlobalEnvLogging_At_Main {
+public @interface Enable_GlobalEnvLog_At_Main {
 }

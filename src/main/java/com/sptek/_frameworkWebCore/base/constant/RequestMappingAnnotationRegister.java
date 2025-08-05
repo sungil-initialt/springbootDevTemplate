@@ -29,7 +29,7 @@ public class RequestMappingAnnotationRegister {
             return;
         }
 
-        RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean("requestMappingHandlerMapping");
         Map<String, Map<String, Map<String, Object>>> tempRequestAnnotationRegister = new HashMap<>();
         StringBuilder logBodyForPathEmpty = new StringBuilder();
         StringBuilder logBodyForNonSpecificMapping = new StringBuilder();

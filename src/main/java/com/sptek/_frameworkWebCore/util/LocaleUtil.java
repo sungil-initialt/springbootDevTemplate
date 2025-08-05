@@ -56,19 +56,19 @@ public class LocaleUtil {
         return messageSource.getMessage(code, args, Locale.forLanguageTag(langCode));
     }
 
-    public static Locale getCurLocale(){
+    public static Locale getCurUserLocale(){
         return LocaleContextHolder.getLocale();
     }
 
-    public static TimeZone getCurTimeZone(){
+    public static TimeZone getCurUserTimeZone(){
         return LocaleContextHolder.getTimeZone();
     }
 
-    public static String getCurLanguageTag(){
+    public static String getCurUserLanguageTag(){
         return LocaleContextHolder.getLocale().toLanguageTag();
     }
 
-    public static String getCurTimeZoneName(){
+    public static String getCurUserTimeZoneName(){
         return LocaleContextHolder.getTimeZone().getDisplayName();
     }
 

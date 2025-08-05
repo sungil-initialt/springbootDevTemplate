@@ -16,11 +16,12 @@ logging:
 
     com:
       #Framework
+      sptek: info
       sptek._frameworkWebCore: debug
       sptek._projectCommon: debug
-      sptek.serviceName: debug
+      sptek.projectName: debug
 
-      #HikariPool DB 커넥션 풀
+      #HikariPool DB 커넥션 풀 (풀 상태 로그를 보려면 debug)
       zaxxer.hikari.pool.HikariPool: debug
 
     org:

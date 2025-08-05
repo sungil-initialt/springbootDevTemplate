@@ -75,8 +75,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	// 개발용 DB (선택)
+	// 개발용 및 테스트 (선택)
 	runtimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 //task renameStaticFilesWithTimestamp(type: Copy) {

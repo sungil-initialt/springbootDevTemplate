@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.base.constant;
 
-import com.sptek._frameworkWebCore.annotation.Enable_GlobalEnvLogging_At_Main;
+import com.sptek._frameworkWebCore.annotation.Enable_GlobalEnvLog_At_Main;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +19,7 @@ public class SystemGlobalEnvTemporaryValue {
     //단순 로깅만 처리함 (내부 변수만 사용하여 민감 정보에 대한 GC 가 바로 이루어 지도록 처리) // todo: 보안 이슈는 없을까?
     public SystemGlobalEnvTemporaryValue(ApplicationContext applicationContext) {
         // 민감 정보를 포함하기 때문에 @Enable_GlobalEnvLogging_At_Main 가 존재하는 경우만 동작하게 처리함
-        if (MainClassAnnotationRegister.hasAnnotation(Enable_GlobalEnvLogging_At_Main.class)) {
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_GlobalEnvLog_At_Main.class)) {
             Environment environment = applicationContext.getEnvironment();
             String[] activeProfiles = environment.getActiveProfiles();
 
