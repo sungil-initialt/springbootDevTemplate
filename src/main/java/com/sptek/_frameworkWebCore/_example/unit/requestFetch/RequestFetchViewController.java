@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.requestFetch;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,7 @@ public class RequestFetchViewController {
 
     @GetMapping("/jsApiCall/requestFetch")
     public String preventDuplicateRequest() {
+        htmlBasePath = "a";
         return htmlBasePath + "requestFetch";
     }
 }

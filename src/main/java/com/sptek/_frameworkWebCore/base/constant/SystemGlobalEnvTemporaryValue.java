@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.base.constant;
 
-import com.sptek._frameworkWebCore.annotation.Enable_GlobalEnvLog_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_GlobalEnvLog_At_Main;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;

@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.sptek._frameworkWebCore._example.dto.*;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.Enable_XssProtectForView_At_ControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_XssProtectForView_At_ControllerMethod;
 import com.sptek._frameworkWebCore.support.XssEscapeSupport;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

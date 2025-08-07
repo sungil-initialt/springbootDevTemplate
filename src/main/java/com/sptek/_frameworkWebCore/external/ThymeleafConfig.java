@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.external;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ThymeleafSpringSecurityDialect_At_Main;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore._annotation.Enable_ThymeleafSpringSecurityDialect_At_Main;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;

@@ -35,6 +35,7 @@ public class SecurityUtil {
                 , "/swagger-resources/**"
                 , "/swagger-ui/**"
                 , "/swagger/**"
+                , "/actuator/**"
                 , "/webjars/**"
                 , "/error/**"
                 , "/err/**"

@@ -76,7 +76,7 @@ public class FrameworkSecurityFilterChainConfig {
     @Bean
     public SecurityFilterChain securityFilterChainForSystemSupportApi(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .securityMatcher("/systemSupportApi/**", "/error/**")
+                .securityMatcher("/systemSupportApi/**", "/error/**", "/actuator/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
@@ -89,7 +89,7 @@ public class FrameworkSecurityFilterChainConfig {
     @Profile(value = {"local", "dev", "stg"})
     public SecurityFilterChain securityFilterChainForDevelopSupport(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/h2-console/**", "/actuator/**")
+                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/h2-console/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         //콘솔 UI 구성상 FrameOptionsConfig::disable 옵션이 필요힘(보안상 해당 경로만 적용)

@@ -1,7 +1,7 @@
 package com.sptek._projectCommon.argumentResolver;
 
 import com.sptek._frameworkWebCore._example.dto.ExUserDto;
-import com.sptek._frameworkWebCore.annotation.Enable_ArgumentResolver_At_Param;
+import com.sptek._frameworkWebCore._annotation.Enable_ArgumentResolver_At_Param;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

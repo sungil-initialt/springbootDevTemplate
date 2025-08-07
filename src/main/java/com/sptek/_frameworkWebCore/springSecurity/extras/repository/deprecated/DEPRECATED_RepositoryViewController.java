@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.springSecurity.extras.repository.deprecated;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.AuthorityDto;
 import com.sptek._frameworkWebCore.util.ModelMapperUtil;

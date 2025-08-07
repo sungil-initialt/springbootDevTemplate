@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.util;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import io.swagger.v3.oas.annotations.Operation;

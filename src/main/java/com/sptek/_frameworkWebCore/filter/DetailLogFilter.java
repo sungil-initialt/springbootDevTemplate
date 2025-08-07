@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore.annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
-import com.sptek._frameworkWebCore.annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;

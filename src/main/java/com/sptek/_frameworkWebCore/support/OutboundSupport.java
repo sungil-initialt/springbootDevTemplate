@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.support;
 
-import com.sptek._frameworkWebCore.annotation.Enable_OutboundSupportDetailLog_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_OutboundSupportDetailLog_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.commonObject.dto.HttpClientResponseDto;

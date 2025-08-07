@@ -26,9 +26,9 @@ public class SwaggerOpenApiConfig {
         //default url : http://localhost:8080/swagger-ui.html
 
         Info info = new Info()
-                .title(projectInfoVo.getName())
-                .version(projectInfoVo.getVersion())
-                .description(projectInfoVo.getDescription());
+                .title(projectInfoVo.getApp().getName())
+                .version(projectInfoVo.getApp().getVersion())
+                .description(projectInfoVo.getApp().getDescription());
         return new OpenAPI().components(new Components()).info(info);
     }
 }

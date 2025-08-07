@@ -1,14 +1,18 @@
 project-info:
-  name: SPT Framework Web Core
-  version: v1.0.0
-  description : enjoy your coding life with SPT Framework Web Core
+  app:
+    name: SPT Framework Web Core
+    version: v1.0.0
+    description : enjoy your coding life with SPT Framework Web Core
 
 
 server:
   name: ${HOSTNAME:${COMPUTERNAME:unknown}}
   port: 443
   shutdown: graceful
-
+  tomcat:
+    threads:
+      max: 1 # 동시에 처리할 수 있는 최대 worker thread 수 (기본 200)
+      min-spare: 1 # 최소로 항상 유지하는 idle thread 수 (기본 10)
 
 spring:
   lifecycle:
@@ -16,11 +20,11 @@ spring:
   devtools:
     livereload.enabled: true
     restart.enabled: true
-
   config:
     import:
       #_frameworkWebCoreResources
       - optional:classpath:_autoSqlInitialize/autoSqlInitialize.yml
+      - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/actuator/actuator.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/globalError/globalError.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/h2DB/h2DB.yml
       - optional:classpath:_frameworkWebCoreResources/_frameworkApplicationProperties/jsp/jsp.yml
@@ -42,10 +46,3 @@ spring:
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/_framework/propertyForModelAttribute/propertyForModelAttribute.yml
       #_projectCommonResources(extra)
       - optional:classpath:_projectCommonResources/_projectApplicationProperties/example1/example1.yml
-  
-##actuator 관련
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"

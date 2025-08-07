@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.datasource;
 
-import com.sptek._frameworkWebCore.annotation.Enable_DatasourceOfMysqlReplicationWithJndi_At_Main;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore._annotation.Enable_DatasourceOfMysqlReplicationWithJndi_At_Main;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

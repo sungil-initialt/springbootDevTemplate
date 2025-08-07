@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.encryption.encryptModule;
 
-import com.sptek._frameworkWebCore.annotation.Enable_EncryptorJasypt_At_Main;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore._annotation.Enable_EncryptorJasypt_At_Main;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.encryption.GlobalEncryptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

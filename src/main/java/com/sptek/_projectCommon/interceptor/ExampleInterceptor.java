@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_At_All;
+import com.sptek._frameworkWebCore._annotation.TestAnnotation_At_All;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

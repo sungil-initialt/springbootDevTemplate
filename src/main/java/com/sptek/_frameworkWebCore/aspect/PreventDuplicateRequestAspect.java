@@ -22,7 +22,7 @@ public class PreventDuplicateRequestAspect {
 
     //기능의 특성상 @Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek._frameworkWebCore.annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod) || @annotation(com.sptek._frameworkWebCore.annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod))")
+            "&& (@within(com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod) || @annotation(com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod))")
     public void myPointCut() {}
 
 

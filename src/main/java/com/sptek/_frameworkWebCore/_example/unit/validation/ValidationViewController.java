@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.validation;
 
 import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;

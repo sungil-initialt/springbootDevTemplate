@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.LocaleLanguage;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import lombok.RequiredArgsConstructor;

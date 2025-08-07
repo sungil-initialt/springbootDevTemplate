@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.authentication;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.springSecurity.CustomJwtFilter;
 import com.sptek._frameworkWebCore.springSecurity.GeneralTokenProvider;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.LoginRequestDto;

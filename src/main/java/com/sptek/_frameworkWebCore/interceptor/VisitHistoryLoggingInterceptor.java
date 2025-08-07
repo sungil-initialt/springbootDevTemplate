@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.interceptor;
 
-import com.sptek._frameworkWebCore.annotation.Enable_VisitHistoryLog_At_Main;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore._annotation.Enable_VisitHistoryLog_At_Main;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;

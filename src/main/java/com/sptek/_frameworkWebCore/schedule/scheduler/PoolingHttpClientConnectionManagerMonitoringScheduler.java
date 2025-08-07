@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.schedule.scheduler;
 
-import com.sptek._frameworkWebCore.annotation.Enable_HttpClientPoolStateLog_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_HttpClientPoolStateLog_At_Main;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PostConstruct;
@@ -27,23 +27,23 @@ public class PoolingHttpClientConnectionManagerMonitoringScheduler {
     // contextRefreshedEvent는 SmartLifecycle를 포함하는 모든 빈이 생성된 이후 발생되며 contextClosedEvent는 SmartLifecycle를 포함하는 모든 빈이 살아 있을때 먼저 발생된다.(그러나 Listener 를 따로 구현해야하는 번거러움이 있다)
     // SmartLifecycle IF 구성을 통해 컴포너트의 생명주기를 더 정교하게 조정할 수 있다 (모든 일반 빈들이 생성된 이후 생성하며 모든 빈들이 destroy 전에 destroy 할수 있고 동기/비동기로 처리가능)
 
-    private final ThreadPoolTaskScheduler threadPoolTaskSchedulerForOutboundSupportMonitoring;
+    private final ThreadPoolTaskScheduler threadPoolForOutboundSupportMonitoring;
     private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
-    private final int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
+    private final int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 60;
     private ScheduledFuture<?> scheduledFuture = null;
 
     // todo: @Qualifier 로 특정 빈을 주입 받을때는 @RequiredArgsConstructor 가 정상동작 하지 않을 수 있음으로 직접 생성자 구현 할것
     public PoolingHttpClientConnectionManagerMonitoringScheduler(
-            @Qualifier("ThreadPoolTaskSchedulerForOutboundSupportMonitoring") ThreadPoolTaskScheduler schedulerForOutboundSupportMonitoring,
+            @Qualifier("threadPoolForOutboundSupportMonitoring") ThreadPoolTaskScheduler threadPoolForOutboundSupportMonitoring,
             PoolingHttpClientConnectionManager poolingHttpClientConnectionManager) {
-        this.threadPoolTaskSchedulerForOutboundSupportMonitoring = schedulerForOutboundSupportMonitoring;
+        this.threadPoolForOutboundSupportMonitoring = threadPoolForOutboundSupportMonitoring;
         this.poolingHttpClientConnectionManager = poolingHttpClientConnectionManager;
     }
 
     @PostConstruct
     public void postConstruct() {
         if (scheduledFuture != null) return;
-        scheduledFuture = threadPoolTaskSchedulerForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
+        scheduledFuture = threadPoolForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
     // Spring 이 종료되며 해당 빈을 제거하기 전에 호출됨
@@ -51,7 +51,7 @@ public class PoolingHttpClientConnectionManagerMonitoringScheduler {
     public void preDestroy() {
         if (scheduledFuture == null) return;
         scheduledFuture.cancel(false); // 현재 작업이 끝나길 기다리고 중단
-        threadPoolTaskSchedulerForOutboundSupportMonitoring.shutdown();
+        threadPoolForOutboundSupportMonitoring.shutdown();
     }
 
     // 실제 스케줄 내용

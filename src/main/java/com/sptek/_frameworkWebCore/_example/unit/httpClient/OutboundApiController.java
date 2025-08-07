@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.httpClient;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.commonObject.dto.HttpClientResponseDto;
 import com.sptek._frameworkWebCore.support.OutboundSupport;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;

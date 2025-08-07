@@ -2,10 +2,10 @@ package com.sptek._frameworkWebCore._example.unit.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sptek._frameworkWebCore._example.unit.database.DatabaseService;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
-import com.sptek._frameworkWebCore.annotation.TestAnnotation_At_All;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.TestAnnotation_At_All;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.event.publisher.SptEventPublisher;

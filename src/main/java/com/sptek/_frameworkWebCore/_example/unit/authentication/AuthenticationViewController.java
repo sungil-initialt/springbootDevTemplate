@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.authentication;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.*;
 import com.sptek._frameworkWebCore.springSecurity.extras.entity.User;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;

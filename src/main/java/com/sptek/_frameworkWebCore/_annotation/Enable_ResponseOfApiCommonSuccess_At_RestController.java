@@ -1,0 +1,12 @@
+package com.sptek._frameworkWebCore._annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Enable_ResponseOfApiCommonSuccess_At_RestController {
+    // API 성공 응답시 공통 구조를 사용
+}

@@ -1,14 +1,17 @@
 package com.sptek;
 
-import com.sptek._frameworkWebCore.annotation.*;
+import com.sptek._frameworkWebCore._annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
+// Spring
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
+@EnableAsync
 
 // TEST and CHECK
 @TestAnnotation_At_All("")
@@ -57,6 +60,7 @@ public class SptWfwApplication {
 		//SpringApplication app = new SpringApplication(SptWfwApplication.class);
 		//app.setAdditionalProfiles("dev, stg");
 		//app.run(args);
+
 	}
 }
 

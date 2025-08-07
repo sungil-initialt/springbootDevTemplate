@@ -1,7 +1,7 @@
 package com.sptek._frameworkWebCore.controllerAdvice.view;
 
-import com.sptek._frameworkWebCore.annotation.Enable_UserAuthenticationToModelAttribute_At_Main;
-import com.sptek._frameworkWebCore.annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore._annotation.Enable_UserAuthenticationToModelAttribute_At_Main;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

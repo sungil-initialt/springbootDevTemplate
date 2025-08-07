@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore._example.unit.responseError;
 
 import com.sptek._frameworkWebCore._example.dto.ValidatedDto;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import io.swagger.v3.oas.annotations.Operation;

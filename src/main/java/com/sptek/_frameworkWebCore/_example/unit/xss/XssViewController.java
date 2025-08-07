@@ -1,8 +1,8 @@
 package com.sptek._frameworkWebCore._example.unit.xss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com.sptek._frameworkWebCore.annotation.Enable_XssProtectForView_At_ControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_XssProtectForView_At_ControllerMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

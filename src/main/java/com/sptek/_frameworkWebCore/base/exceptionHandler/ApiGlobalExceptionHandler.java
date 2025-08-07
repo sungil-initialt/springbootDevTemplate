@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.base.exceptionHandler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;

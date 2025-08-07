@@ -1,10 +1,9 @@
 package com.sptek._frameworkWebCore._systemController;
 
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfApiGlobalException_At_RestController;
-import com.sptek._frameworkWebCore.annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.encryption.encryptModule.RsaEncryptor;
-import com.sptek._frameworkWebCore.commonObject.vo.ProjectInfoVo;
 import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHandlerForView;
 import com.sptek._frameworkWebCore.springSecurity.spt.RedirectHelperAfterLogin;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
@@ -17,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,15 +35,8 @@ import java.util.Base64;
 @Tag(name = "System Support API", description = "")
 
 public class SystemSupportController {
-    // todo: Req 매핑 경로에 "/notEssential/" 를 포함하면 불필요한 필터 및 로그 처리를 방지 할 수 있다.
-
-    private final ProjectInfoVo projectInfoVo;
-
-    @GetMapping("/projectInfo")
-    @Operation(summary = "프로퍼티 설정된 프로젝트 기본 정보 제공", description = "")
-    public Object projectInfo() {
-        return projectInfoVo;
-    }
+    private final InfoEndpoint infoEndpoint;
+    private final HealthEndpoint healthEndpoint;
 
     @GetMapping("/serverName")
     @Operation(summary = "시스템 환경 설정에 따른 서버 네임 제공", description = "")
@@ -50,11 +44,19 @@ public class SystemSupportController {
         return serverName;
     }
 
-    //notEssential 를 경로에 포함하여 주요 필터 및 logging 처리를 막는다.
+    @GetMapping("/projectInfo")
+    @Operation(summary = "프로퍼티 설정된 프로젝트 기본 정보 제공", description = "")
+    public Object projectInfo() {
+        // actuator 의 info 정보를 response 공통 규격으로 구성해서 전달 (/actuator/info 를 통해서 동일하게 제공)
+        return infoEndpoint.info();
+    }
+
+    // todo: notEssential 를 경로에 포함하여 주요 필터 및 logging 처리를 막는다.
     @GetMapping("/notEssential/healthCheck")
     @Operation(summary = "healthCheck 용 api 제공", description = "") //swagger
     public Object healthCheck() {
-        return "ok";
+        // actuator 의 health 정보를 response 공통 규격으로 구성해서 전달 (/actuator/health 를 통해서 동일하게 제공)
+        return healthEndpoint.health();
     }
 
     @GetMapping("/rsaPublicKeyBase64")
@@ -68,7 +70,6 @@ public class SystemSupportController {
     public Object supportedLocaleLanguage() {
         return LocaleUtil.getMajorLocales();
     }
-
 
     @GetMapping(value = "/fileByteFromStorage")
     @Operation(summary = "File 에 대한 바이트 스트림 제공 (권한 처리 포함) ", description = "") //swagger
