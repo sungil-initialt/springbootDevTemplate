@@ -21,8 +21,7 @@ public class RequestFetchViewController {
     private final String htmlBasePath = "pages/_example/unit/";
 
     @GetMapping("/jsApiCall/requestFetch")
-    public String preventDuplicateRequest() {
-        htmlBasePath = "a";
+    public String requestFetch() {
         return htmlBasePath + "requestFetch";
     }
 }

@@ -34,4 +34,11 @@ public class CommonConstants {
 
     // spring-security
     public static final String ANONYMOUS_USER = "anonymousUser";
+
+    // Thread
+    public static final int AVAILABLE_PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+    public static final int RECOMMEND_THREAD_POOL_SIZE = AVAILABLE_PROCESSOR_COUNT * 2;
+    public static final int RECOMMEND_THREAD_POOL_MAX_SIZE = AVAILABLE_PROCESSOR_COUNT * 4;
+    public static final int RECOMMEND_THREAD_QUEUE_SIZE = RECOMMEND_THREAD_POOL_MAX_SIZE * 4;
+
 }
