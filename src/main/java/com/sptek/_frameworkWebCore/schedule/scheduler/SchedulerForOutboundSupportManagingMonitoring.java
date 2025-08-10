@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.schedule.scheduler;
 
-import com.sptek._frameworkWebCore._annotation.Enable_HttpClientPoolStateLog_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_OutboundSupportPoolStateLog_At_Main;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PostConstruct;
@@ -21,7 +21,8 @@ import java.util.concurrent.ScheduledFuture;
 @Slf4j
 @Component
 
-public class SchedulerForOutboundSupportMonitoring {
+// 단순 상태 모니터링이 뿐만 아니라 관리를 포함함
+public class SchedulerForOutboundSupportManagingMonitoring {
     // todo: Scheduler 시작과 종료에 대해 여러 방법을 이용할 수 있다. (케이스에 적합하게 선택하여 처리할 것)
     // @PostConstruct 와 @PreDestroy 를 통해 처리할 수 있으나 처리 로직에 제 3의 Bean 을 @Lookup 이나 ApplicationContext로 가져와 사용하는 경우 해당 빈의 생존을 보장 받을 수 없다.(생성자나 @Autowired 를 통해 주입된 빈은 보장됨)
     // contextRefreshedEvent는 SmartLifecycle를 포함하는 모든 빈이 생성된 이후 발생되며 contextClosedEvent는 SmartLifecycle를 포함하는 모든 빈이 살아 있을때 먼저 발생된다.(그러나 Listener 를 따로 구현해야하는 번거러움이 있다)
@@ -29,11 +30,10 @@ public class SchedulerForOutboundSupportMonitoring {
 
     private final ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring;
     private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
-    private int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 60;
     private ScheduledFuture<?> scheduledFuture = null;
 
     // todo: @Qualifier 로 특정 빈을 주입 받을때는 @RequiredArgsConstructor 가 정상동작 하지 않을 수 있음으로 직접 생성자 구현 할것
-    public SchedulerForOutboundSupportMonitoring(
+    public SchedulerForOutboundSupportManagingMonitoring(
             @Qualifier("schedulerExecutorForOutboundSupportMonitoring") ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring,
             PoolingHttpClientConnectionManager poolingHttpClientConnectionManager) {
         this.schedulerExecutorForOutboundSupportMonitoring = schedulerExecutorForOutboundSupportMonitoring;
@@ -43,6 +43,7 @@ public class SchedulerForOutboundSupportMonitoring {
     @PostConstruct
     public void postConstruct() {
         if (scheduledFuture != null) return;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 60;
         scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -95,8 +96,8 @@ public class SchedulerForOutboundSupportMonitoring {
                     , afterStats.getLeased(), afterStats.getAvailable(), afterStats.getPending()));
 
             // PoolingHttpClientMonitoring 상태 정보 로깅
-            if (MainClassAnnotationRegister.hasAnnotation(Enable_HttpClientPoolStateLog_At_Main.class)) {
-                String logFileName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpClientPoolStateLog_At_Main.class).get("value"));
+            if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportPoolStateLog_At_Main.class)) {
+                String logFileName = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportPoolStateLog_At_Main.class).get("value"));
                 log.info(LoggingUtil.makeFwLogForm("scheduler For OutboundSupport Monitoring", logBuilder.toString(), logFileName));
             }
         } catch (Exception e) {

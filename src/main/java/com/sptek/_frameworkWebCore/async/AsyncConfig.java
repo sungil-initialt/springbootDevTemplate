@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore.globalConfigurer;
+package com.sptek._frameworkWebCore.async;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import org.springframework.context.annotation.Bean;

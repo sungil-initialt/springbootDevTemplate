@@ -22,9 +22,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 // LOGGING
 @Enable_MdcTagging_At_Main
-@Enable_DetailLog_At_Main_Controller_ControllerMethod("")
-@Enable_OutboundSupportDetailLog_At_Main("outbound_history")
-@Enable_HttpClientPoolStateLog_At_Main("noConsole->outbound_pool_state")
+@Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("")
+@Enable_OutboundSupportDetailLog_At_Main("")
+@Enable_OutboundSupportPoolStateLog_At_Main("")
 @Enable_VisitHistoryLog_At_Main
 
 // DATABASE
@@ -64,3 +64,14 @@ public class SptWfwApplication {
 	}
 }
 
+
+/*
+로깅 유틸의 로깅과 관련된.. 조건 다시 정리
+→ FW_LOG_TAG : httpPoolState [yewFile->httpPoolState | yesConsole]
+→ FW_LOG_TAG : httpPoolState [noFile | yesConsole]
+→ FW_LOG_TAG : httpPoolState [noFile | noConsole]
+
+각정 Pool 로깅 어노테이션 생성 및 적용
+로깅의 내용 한글화
+
+ */

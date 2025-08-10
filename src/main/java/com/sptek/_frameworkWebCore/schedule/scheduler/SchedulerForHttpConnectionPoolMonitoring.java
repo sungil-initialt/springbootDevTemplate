@@ -1,5 +1,6 @@
 package com.sptek._frameworkWebCore.schedule.scheduler;
 
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
@@ -21,18 +22,18 @@ import java.util.concurrent.ScheduledFuture;
 public class SchedulerForHttpConnectionPoolMonitoring {
     private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionPoolMonitoring;
     private TomcatWebServer  tomcatWebServer;
-    private int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
     private ScheduledFuture<?> scheduledFuture = null;
 
     public SchedulerForHttpConnectionPoolMonitoring(@Qualifier("schedulerExecutorForHttpConnectionPoolMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionPoolMonitoring) {
         this.schedulerExecutorForHttpConnectionPoolMonitoring = schedulerExecutorForHttpConnectionPoolMonitoring;
     }
 
-    @EventListener
+    @EventListener // TomcatWebServer 를 얻기 위해 ServletWebServerInitializedEvent 를 listen 하여 시작 함
     public void listen(ServletWebServerInitializedEvent servletWebServerInitializedEvent) {
         if (scheduledFuture != null) return;
-        if (servletWebServerInitializedEvent.getWebServer() instanceof TomcatWebServer tomcatWebServer) {
-            this.tomcatWebServer = tomcatWebServer;
+        if (servletWebServerInitializedEvent.getWebServer() instanceof TomcatWebServer tws) {
+            this.tomcatWebServer = tws;
+            int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
             scheduledFuture = schedulerExecutorForHttpConnectionPoolMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
         }
     }
@@ -65,19 +66,19 @@ public class SchedulerForHttpConnectionPoolMonitoring {
                         queueSize = threadPoolExecutor.getQueue().size();
                     }
 
-                    log.info("[Tomcat ThreadPool] port={}, maxThreads={}, currentThreads={}, busyThreads={}, queueSize={}",
-                            //connector.getProtocol(),
+                    String logContent = String.format("connectorProtocol=%s:%d, maxThreads=%d, currentThreads=%d, busyThreads=%d, queueSize=%d",
+                            connector.getProtocol(),
                             connector.getPort(),
                             maxThreads,
                             currentThreads,
                             busyThreads,
                             queueSize
                     );
+                    log.info(LoggingUtil.makeFwLogForm("Scheduler For HttpConnectionPool Monitoring", logContent));
                 }
             }
-
         } catch (Exception e) {
-            log.warn("Scheduler For Async Monitoring", e);
+            log.warn("Scheduler For HttpConnectionPool Monitoring", e);
         }
     }
 }

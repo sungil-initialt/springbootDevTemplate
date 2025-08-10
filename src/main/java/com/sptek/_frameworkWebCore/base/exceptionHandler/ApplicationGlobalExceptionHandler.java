@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore._annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApplicationGlobalException_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
@@ -127,7 +127,7 @@ public class ApplicationGlobalExceptionHandler {
                     (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
 
             String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
-            String logFileName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
+            String logFileName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
             String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
@@ -147,24 +147,4 @@ public class ApplicationGlobalExceptionHandler {
             log.info(LoggingUtil.makeFwLogForm("REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent, logFileName));
         }
     }
-
-
-
-// @HasAnnotationOnMainForBean 을 사용 하는 방식 으로 변경함
-//    public static class ApplicationGlobalExceptionHandlerCondition implements Condition {
-//
-//        @Override
-//        public boolean matches(ConditionContext context, @NotNull AnnotatedTypeMetadata metadata) {
-//            Environment environment = context.getEnvironment();
-//            String mainClassName = environment.getProperty("sun.java.command");
-//            //log.debug("mainClassName: {}", mainClassName);
-//
-//            try {
-//                Class<?> mainClass = Class.forName(mainClassName);
-//                return mainClass.isAnnotationPresent(EnableApplicationCommonErrorResponseForMain.class);
-//            } catch (ClassNotFoundException e) {
-//                return false;
-//            }
-//        }
-//    }
 }

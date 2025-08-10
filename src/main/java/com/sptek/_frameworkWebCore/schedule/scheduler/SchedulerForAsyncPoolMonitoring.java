@@ -20,7 +20,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class SchedulerForAsyncPoolMonitoring {
     private final ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring;
     private final TaskExecutor  threadPoolForAsync;
-    private int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
     private ScheduledFuture<?> scheduledFuture = null;
 
     public SchedulerForAsyncPoolMonitoring(
@@ -33,6 +32,7 @@ public class SchedulerForAsyncPoolMonitoring {
     @PostConstruct
     public void postConstruct() {
         if (scheduledFuture != null) return;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
         scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -50,12 +50,12 @@ public class SchedulerForAsyncPoolMonitoring {
             String logContent;
             if (threadPoolForAsync instanceof ThreadPoolTaskExecutor threadPoolTaskExecutor) {
                 ThreadPoolExecutor executor = threadPoolTaskExecutor.getThreadPoolExecutor();
-                logContent = String.format("poolSize=%d, activeCount=%d, queueSize(waiting)=%d, corePoolSize=%d, maxPoolSize=%d",
-                        executor.getPoolSize(),
-                        executor.getActiveCount(),
-                        executor.getQueue().size(),
+                logContent = String.format("최대 허용 쓰레드(maxPoolSize)=%d, 상시 대기 쓰레드(corePoolSize)=%d, 현재 동작 쓰레드(activeCount)=%d, 쓰레드 할당 대기(queueSize)=%d",
+                        executor.getMaximumPoolSize(),
                         executor.getCorePoolSize(),
-                        executor.getMaximumPoolSize());
+                        executor.getActiveCount(),
+                        executor.getQueue().size()
+                );
             } else {
                 logContent = "Not a ThreadPoolTaskExecutor instance: " + threadPoolForAsync.getClass().getName();
             }

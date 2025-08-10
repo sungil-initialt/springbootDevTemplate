@@ -17,7 +17,7 @@ public class LoggingUtil {
         content = StringUtils.hasText(content) && !content.equals("null") ? content : "No Content";
         logFileName = StringUtils.hasText(logFileName) && !logFileName.equals("null") ? logFileName : "";
 
-        // 아래 형태가 다른 코드에 영향을 줌으로 변경시 주의
+        // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return """
             %s%s
             --------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ public class LoggingUtil {
         content = StringUtils.hasText(content) && !content.equals("null") ? content : "No Content";
         logFileName = StringUtils.hasText(logFileName) && !logFileName.equals("null") ? logFileName : "";
 
-        // 아래 형태가 다른 코드에 영향을 줌으로 변경시 주의
+        // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return """
             %s%s
             %s

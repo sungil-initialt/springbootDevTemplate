@@ -18,50 +18,48 @@ import java.util.stream.Collectors;
 
 // Controller class 와 그 내부 method 에 적용된 타멧 페키지 Annotation 정보를 모두 가지고 있는 역할
 public class RequestMappingAnnotationRegister {
-    // 한 번 초기화된 후에 변경 여지가 없기 때문에 속도 측면에서 유리하고 Thread Safe 한 unmodifiableMap을 사용함 (ConcurrentHashMap을 쓰지 않은 이유)
     private static Map<String, Map<String, Map<String, Object>>> requestAnnotationRegister = Collections.emptyMap();
-
     //OPTIONS은 메소드가 없어도 스프링 단에서 처림됨, HEAD는 메소드가 없어도 스프링단에서 GET이 호출됨(단 body를 내리지 않는다)
     private final List<String> ALL_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"/*, "OPTIONS", "HEAD"*/);
 
     public RequestMappingAnnotationRegister(ApplicationContext applicationContext) {
-        if (!requestAnnotationRegister.isEmpty()) {
-            return;
+        synchronized (RequestMappingAnnotationRegister.class) {
+            if (!requestAnnotationRegister.isEmpty()) return;
+
+            RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean("requestMappingHandlerMapping");
+            Map<String, Map<String, Map<String, Object>>> tempRequestAnnotationRegister = new HashMap<>();
+            StringBuilder logBodyForPathEmpty = new StringBuilder();
+            StringBuilder logBodyForNonSpecificMapping = new StringBuilder();
+
+            requestMappingHandlerMapping.getHandlerMethods().forEach((requestMappingInfo, handlerMethod) -> {
+                Set<String> methods;
+                if (requestMappingInfo.getMethodsCondition().getMethods().isEmpty()) {
+                    methods = new HashSet<>(ALL_HTTP_METHODS);
+                    logBodyForNonSpecificMapping.append(requestMappingInfo).append("\n");
+                } else {
+                    methods = requestMappingInfo.getMethodsCondition().getMethods().stream().map(Enum::name).collect(Collectors.toSet());
+                }
+
+                Set<String> patterns = requestMappingInfo.getPathPatternsCondition() != null ?
+                        requestMappingInfo.getPathPatternsCondition().getPatternValues() :
+                        requestMappingInfo.getDirectPaths();
+
+                Map<String, Map<String, Object>> annotations = getAnnotationsWithAttributes(handlerMethod);
+
+                if (!patterns.isEmpty()) {
+                    patterns.forEach(urlPattern -> {
+                        methods.forEach(method -> tempRequestAnnotationRegister.put(method + ":" + urlPattern, annotations));
+                    });
+                } else {
+                    logBodyForPathEmpty.append(requestMappingInfo).append("\n");
+                }
+            });
+
+            requestAnnotationRegister = Map.copyOf(tempRequestAnnotationRegister);
+            log.debug(LoggingUtil.makeFwLogForm("All Registered Request Mappings and Annotations", requestAnnotationRegister.toString()));
+            log.info(LoggingUtil.makeFwLogForm("Handlers with No URL Pattern (Potential Mapping Error)", logBodyForPathEmpty.isEmpty() ? "No Error (Good)" : logBodyForPathEmpty.toString()));
+            log.info(LoggingUtil.makeFwLogForm("Handlers with No Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString()));
         }
-
-        RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean("requestMappingHandlerMapping");
-        Map<String, Map<String, Map<String, Object>>> tempRequestAnnotationRegister = new HashMap<>();
-        StringBuilder logBodyForPathEmpty = new StringBuilder();
-        StringBuilder logBodyForNonSpecificMapping = new StringBuilder();
-
-        requestMappingHandlerMapping.getHandlerMethods().forEach((requestMappingInfo, handlerMethod) -> {
-            Set<String> methods;
-            if (requestMappingInfo.getMethodsCondition().getMethods().isEmpty()) {
-                methods = new HashSet<>(ALL_HTTP_METHODS);
-                logBodyForNonSpecificMapping.append(requestMappingInfo).append("\n");
-            } else {
-                methods = requestMappingInfo.getMethodsCondition().getMethods().stream().map(Enum::name).collect(Collectors.toSet());
-            }
-
-            Set<String> patterns = requestMappingInfo.getPathPatternsCondition() != null ?
-                    requestMappingInfo.getPathPatternsCondition().getPatternValues() :
-                    requestMappingInfo.getDirectPaths();
-
-            Map<String, Map<String, Object>> annotations = getAnnotationsWithAttributes(handlerMethod);
-
-            if (!patterns.isEmpty()) {
-                patterns.forEach(urlPattern -> {
-                    methods.forEach(method -> tempRequestAnnotationRegister.put(method + ":" + urlPattern, annotations));
-                });
-            } else {
-                logBodyForPathEmpty.append(requestMappingInfo).append("\n");
-            }
-        });
-
-        requestAnnotationRegister = Collections.unmodifiableMap(tempRequestAnnotationRegister);
-        log.debug(LoggingUtil.makeFwLogForm("All Registered Request Mappings and Annotations", requestAnnotationRegister.toString()));
-        log.info(LoggingUtil.makeFwLogForm("Handlers with No URL Pattern (Potential Mapping Error)", logBodyForPathEmpty.isEmpty() ? "No Error" : logBodyForPathEmpty.toString()));
-        log.info(LoggingUtil.makeFwLogForm("Handlers with No Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString()));
     }
 
     // 핸들러 메소드에서 어노테이션과 속성 정보를 가져옴

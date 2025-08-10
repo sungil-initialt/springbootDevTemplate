@@ -7,10 +7,10 @@ public class CommonConstants {
     // project
     public static final String PROJECT_PACKAGE_NAME = "com.sptek.";
     public static final String FRAMEWORK_WEBCORE_PACKAGE_NAME = PROJECT_PACKAGE_NAME + "_frameworkWebCore.";
-    public static final String FRAMEWORK_ANNOTATION_PACKAGE_NAME = FRAMEWORK_WEBCORE_PACKAGE_NAME + "annotation";
+    public static final String FRAMEWORK_ANNOTATION_PACKAGE_NAME = FRAMEWORK_WEBCORE_PACKAGE_NAME + "_annotation";
 
     // Logging
-    public static final String FW_LOG_PREFIX = "↓ FW_LOG_TAG : ";
+    public static final String FW_LOG_PREFIX = "→ FW_LOG_TAG : ";
     public static final String FW_LOG_NO_CONSOLE_MARK = "noConsole->";
     public static final String GLOBAL_ENV_LOG_MARK = FW_LOG_NO_CONSOLE_MARK + "SYSTEM_GLOBAL_ENV";
     public static final String REQ_PROPERTY_FOR_LOGGING_TIMESTAMP = "REQ_PROPERTY_FOR_LOGGING_TIMESTAMP";

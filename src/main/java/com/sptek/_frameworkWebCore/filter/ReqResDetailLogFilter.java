@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore._annotation.Enable_DetailLog_At_Main_Controller_ControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })
 //@WebFilter(urlPatterns = "/*")
-public class DetailLogFilter extends OncePerRequestFilter {
+public class ReqResDetailLogFilter extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
 
     @PostConstruct //Bean 생성 이후 호출
@@ -40,8 +40,8 @@ public class DetailLogFilter extends OncePerRequestFilter {
         // 필터 제외 케이스
         boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)
                 && (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest());
-        boolean hasNoDetailLogAnnotation = !MainClassAnnotationRegister.hasAnnotation(Enable_DetailLog_At_Main_Controller_ControllerMethod.class)
-                && !RequestMappingAnnotationRegister.hasAnnotation(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class);
+        boolean hasNoDetailLogAnnotation = !MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
+                && !RequestMappingAnnotationRegister.hasAnnotation(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
 
         if (isMinorRequest || hasNoDetailLogAnnotation) {
             filterChain.doFilter(request, response);
@@ -71,7 +71,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
         filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
         String requestBody = StringUtils.hasText(RequestUtil.getRequestBody(contentCachingRequestWrapper)) ? "\n" + RequestUtil.getRequestBody(contentCachingRequestWrapper) : "";
 
-        String logFileName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_DetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
+        String logFileName = String.valueOf(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"));
         String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
 
@@ -88,7 +88,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     responseBody(%s): %s
                     """.formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds, response.getStatus(), responseBody);
             // todo: Annotation 이 main 과 controller 에 각각 적용 되어 있을때 controller 쪽의 tag 값으로 처리 되야 하는데 현재 그렇게 동작 하는지 확인 필요
-            log.info(LoggingUtil.makeFwLogForm("REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent, logFileName));
+            log.info(LoggingUtil.makeFwLogForm("REQ RES SUCCESS Detail Log caught by the ReqResDetailLogFilter", logContent, logFileName));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
@@ -110,7 +110,7 @@ public class DetailLogFilter extends OncePerRequestFilter {
                     """.formatted(sessionId, methodType, url, params, requestHeader, StringUtils.hasText(requestBody)? "\n" + requestBody : "", responseHeader , relatedOutbounds
                             , RequestUtil.traceRequestDuration().getStartTime(), RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec()
                             , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : "", exceptionMsg);
-            log.info(LoggingUtil.makeFwLogForm("REQ RES SUCCESS Detail Log caught by the DetailLogFilter", logContent, logFileName));
+            log.info(LoggingUtil.makeFwLogForm("REQ RES SUCCESS Detail Log caught by the ReqResDetailLogFilter", logContent, logFileName));
         }
 
         // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)

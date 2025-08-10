@@ -37,7 +37,6 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
     @Override
     protected void append(ILoggingEvent event) {
         String message = event.getFormattedMessage();
-
         if (!message.startsWith(CommonConstants.FW_LOG_PREFIX)) return;
 
         String keyword = extractRealKeyword(message);
