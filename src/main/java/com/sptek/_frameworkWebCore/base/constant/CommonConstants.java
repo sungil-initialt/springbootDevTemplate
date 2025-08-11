@@ -10,15 +10,17 @@ public class CommonConstants {
     public static final String FRAMEWORK_ANNOTATION_PACKAGE_NAME = FRAMEWORK_WEBCORE_PACKAGE_NAME + "_annotation";
 
     // Logging
-    public static final String FW_LOG_PREFIX = "→ FW_LOG_TAG : ";
-    public static final String FW_LOG_NO_CONSOLE_MARK = "noConsole->";
-    public static final String GLOBAL_ENV_LOG_MARK = FW_LOG_NO_CONSOLE_MARK + "SYSTEM_GLOBAL_ENV";
+    public static final String FW_LOG_PREFIX = "■ FW_LOG_TAG : ";
+    public static final String FW_LOG_BASE_DIR = "EXTRA";
+    public static final String FW_LOG_FILENAME_MARK = "file->";
+    public static final String FW_LOG_NO_CONSOLE_MARK = "->noConsole";
+    public static final String FW_RESOURCE_LOG_TAG = "FW_RESOURCE_LOG_TAG file->FW_START_LOG_TAG";
     public static final String REQ_PROPERTY_FOR_LOGGING_TIMESTAMP = "REQ_PROPERTY_FOR_LOGGING_TIMESTAMP";
     public static final String REQ_PROPERTY_FOR_LOGGING_MODEL_AND_VIEW = "REQ_PROPERTY_FOR_LOGGING_MODEL_AND_VIEW";
     public static final String REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE = "REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE";
     public static final String REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS = "REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS";
 
-    public static final String DEBUGGING_HELP_MESSAGE = "이 메시지가 보인다면!! FW Core 담당자 에게 알려 주세요!";
+    public static final String DEBUGGING_HELP_MESSAGE = "이 메시지가 보인다면!! FW 담당자 에게 알려 주세요!";
     public static final String SERVER_INITIALIZATION_MARK = "FRAMEWORK BEAN INITIALIZATION NOTICE : ";
 
     // locale

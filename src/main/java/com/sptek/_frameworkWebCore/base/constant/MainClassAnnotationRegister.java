@@ -5,13 +5,11 @@ import com.sptek._frameworkWebCore.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.env.Environment;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 
@@ -33,7 +31,7 @@ public class MainClassAnnotationRegister {
                 }
             }
             mainClassAnnotationRegister = Map.copyOf(temp);
-            log.debug(LoggingUtil.makeFwLogForm("All Registered Annotations on the project Main class", mainClassAnnotationRegister.toString()));
+            log.debug(LoggingUtil.makeFwLogForm("All Registered Annotations on the project Main class", mainClassAnnotationRegister.toString(), CommonConstants.FW_RESOURCE_LOG_TAG));
         }
     }
 

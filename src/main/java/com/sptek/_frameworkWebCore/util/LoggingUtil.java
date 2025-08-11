@@ -12,10 +12,10 @@ public class LoggingUtil {
         return makeFwLogForm(title, content, null);
     }
 
-    public static String makeFwLogForm(@Nullable String title, @Nullable String content, @Nullable String logFileName) {
+    public static String makeFwLogForm(@Nullable String title, @Nullable String content, @Nullable String logTag) {
         title = StringUtils.hasText(title) && !title.equals("null") ? title : "No Title";
         content = StringUtils.hasText(content) && !content.equals("null") ? content : "No Content";
-        logFileName = StringUtils.hasText(logFileName) && !logFileName.equals("null") ? logFileName : "";
+        logTag = StringUtils.hasText(logTag) && !logTag.equals("null") ? logTag : "";
 
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return """
@@ -26,19 +26,15 @@ public class LoggingUtil {
             %s
             --------------------------------------------------------------------------------
             """
-            .formatted(CommonConstants.FW_LOG_PREFIX, logFileName, title, LoggingUtil.removeLastNewline(content));
+            .formatted(CommonConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
     }
 
-    public static String makeFwLogSimpleForm(@Nullable String content, @Nullable String logFileName) {
+    public static String makeFwLogSimpleForm(@Nullable String content, @Nullable String logTag) {
         content = StringUtils.hasText(content) && !content.equals("null") ? content : "No Content";
-        logFileName = StringUtils.hasText(logFileName) && !logFileName.equals("null") ? logFileName : "";
+        logTag = StringUtils.hasText(logTag) && !logTag.equals("null") ? logTag : "";
 
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
-        return """
-            %s%s
-            %s
-            """
-            .formatted(CommonConstants.FW_LOG_PREFIX, logFileName, LoggingUtil.removeLastNewline(content));
+        return "%s%s => %s".formatted(CommonConstants.FW_LOG_PREFIX, logTag, LoggingUtil.removeLastNewline(content));
     }
 
     public static String removeLastNewline(String string) {

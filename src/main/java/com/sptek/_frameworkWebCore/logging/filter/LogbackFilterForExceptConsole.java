@@ -11,15 +11,14 @@ public class LogbackFilterForExceptConsole extends Filter<ILoggingEvent>{
     public FilterReply decide(ILoggingEvent event) {
         // todo: (중요) logback filter에서는 스프링 관련 코드, static 값, bean을 직접 참조하지 말 것! (별도의 classLoader 가 사용 되는 듯)
         // MainClassAnnotationRegister 등 static 클레스 사용 하지 말것 (서로 다른 공간에서 instance 화 되는 듯)
-        if (
-                (event.getMessage().startsWith(CommonConstants.FW_LOG_PREFIX + CommonConstants.FW_LOG_NO_CONSOLE_MARK))
-                       || (event.getMessage().startsWith(CommonConstants.VISIT_HISTORY_NEW_VISITOR_LOG) || event.getMessage().startsWith(CommonConstants.VISIT_HISTORY_EXIST_VISITOR_LOG))
-        ) {
-            //System.out.printf("LogbackFilterForExceptConsole : %s(%s)%n", event.getMessage(), "DENY");
-            return FilterReply.DENY;
-        } else {
-            //System.out.printf("LogbackFilterForExceptConsole : %s(%s)%n", event.getMessage(), "ACCEPT");
-            return FilterReply.ACCEPT;
+        // 아래 코드는 연산 최적화를 고려해 놓았음 (가능한 변경 하지 말것)
+
+        String msg = event.getFormattedMessage();
+        if (msg.startsWith(CommonConstants.FW_LOG_PREFIX)) {
+            int newlineIndex = msg.indexOf('\n');
+            String firstLine = newlineIndex >= 0 ? msg.substring(0, newlineIndex) : msg;
+            if (firstLine.contains(CommonConstants.FW_LOG_NO_CONSOLE_MARK)) return FilterReply.DENY;
         }
+        return FilterReply.ACCEPT;
     }
 }

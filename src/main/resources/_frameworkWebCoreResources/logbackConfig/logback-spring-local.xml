@@ -71,26 +71,6 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="visitHistory" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForVisitHistory"/>
-
-        <file>${default_log_base_path}/visit_history/visit_history.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_patternForFile}</pattern>
-        </encoder>
-
-        <!-- Rolling 정책 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
-            <fileNamePattern>
-                ${default_log_base_path}/visit_history/visit_history.%d{yyyy-MM-dd}_%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${default_log_max_filesize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>${default_log_max_history}</maxHistory>
-        </rollingPolicy>
-    </appender>
 
     <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
     <appender name="keywordBaseLog" class="com.sptek._frameworkWebCore.logging.appender.KeywordBaseFileAppender">
@@ -105,7 +85,6 @@
         <appender-ref ref="console"/>
         <appender-ref ref="service"/>
         <appender-ref ref="error"/>
-        <appender-ref ref="visitHistory"/>
         <appender-ref ref="keywordBaseLog"/>
     </root>
 

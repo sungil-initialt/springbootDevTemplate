@@ -8,4 +8,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Enable_GlobalEnvLog_At_Main {
+    String value() default "";
 }

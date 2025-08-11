@@ -1,5 +1,8 @@
 package com.sptek._frameworkWebCore.schedule.scheduler;
 
+import com.sptek._frameworkWebCore._annotation.Enable_AsyncMonitoring_At_Main;
+import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -16,13 +19,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @Component
+@HasAnnotationOnMain_At_Bean(Enable_AsyncMonitoring_At_Main.class)
 
-public class SchedulerForAsyncPoolMonitoring {
+public class SchedulerForAsyncMonitoring {
+    // Async Pool 을 모니터링 할뿐 @Enable_AsyncMonitoring_At_Main 가 적용되지 않아도 Async Pool 은 동작함
+    
     private final ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring;
     private final TaskExecutor  threadPoolForAsync;
     private ScheduledFuture<?> scheduledFuture = null;
 
-    public SchedulerForAsyncPoolMonitoring(
+    public SchedulerForAsyncMonitoring(
             @Qualifier("schedulerExecutorForAsyncMonitoring") ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring,
             @Qualifier("taskExecutor") TaskExecutor threadPoolForAsync) {
         this.schedulerExecutorForAsyncMonitoring = schedulerExecutorForAsyncMonitoring;
@@ -32,7 +38,7 @@ public class SchedulerForAsyncPoolMonitoring {
     @PostConstruct
     public void postConstruct() {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 6;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
         scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -59,7 +65,8 @@ public class SchedulerForAsyncPoolMonitoring {
             } else {
                 logContent = "Not a ThreadPoolTaskExecutor instance: " + threadPoolForAsync.getClass().getName();
             }
-            log.info(LoggingUtil.makeFwLogForm("Scheduler For Async Monitoring", logContent));
+            String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"));
+            log.info(LoggingUtil.makeFwLogForm("Scheduler For Async Monitoring", logContent, logTag));
 
         } catch (Exception e) {
             log.warn("Scheduler For Async Monitoring", e);

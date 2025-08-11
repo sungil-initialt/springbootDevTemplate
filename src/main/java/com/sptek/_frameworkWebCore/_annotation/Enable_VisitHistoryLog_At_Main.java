@@ -8,4 +8,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) // Annotation is retained at runtime
 public @interface Enable_VisitHistoryLog_At_Main {
+    String value() default "";
 }

@@ -10,12 +10,15 @@ import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
 import ch.qos.logback.core.util.FileSize;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+@Slf4j
 
 public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
 
@@ -36,27 +39,33 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {
-        String message = event.getFormattedMessage();
-        if (!message.startsWith(CommonConstants.FW_LOG_PREFIX)) return;
 
-        String keyword = extractRealKeyword(message);
-        if (keyword.isEmpty()) return;
+        String msg = event.getFormattedMessage();
+        if (!msg.startsWith(CommonConstants.FW_LOG_PREFIX)) return;
 
-        RollingFileAppender<ILoggingEvent> appender =
-                appenderCache.computeIfAbsent(keyword, this::createAppender);
+        int newlineIndex = msg.indexOf('\n');
+        String firstLine = newlineIndex >= 0 ? msg.substring(0, newlineIndex) : msg;
+        String fileName = extractFileName(firstLine);
+
+        //log.debug("extractFileName : {}", fileName);
+        if (fileName.isEmpty()) return;
+        RollingFileAppender<ILoggingEvent> appender = appenderCache.computeIfAbsent(fileName, this::createAppender);
         appender.doAppend(event);
     }
 
-    private String extractRealKeyword(String message) {
-        int start = message.indexOf(CommonConstants.FW_LOG_PREFIX);
-        if (start == -1) return "";
-        start += CommonConstants.FW_LOG_PREFIX.length();
+    public static String extractFileName(String text) {
+        int i = text.indexOf(CommonConstants.FW_LOG_FILENAME_MARK);
+        if (i < 0) return "";
 
-        int end = message.indexOf("\n", start);
-        if (end == -1) end = message.length();
+        int start = i + CommonConstants.FW_LOG_FILENAME_MARK.length();
+        int len = text.length();
 
-        String keyword = message.substring(start, end).trim();
-        return keyword.startsWith(CommonConstants.FW_LOG_NO_CONSOLE_MARK) ? keyword.replaceFirst(CommonConstants.FW_LOG_NO_CONSOLE_MARK, "").trim() : keyword;
+        // fileName 의 끝 위치(첫 공백 또는 문자열 끝)
+        int end = start;
+        while (end < len && text.charAt(end) != ' ') {
+            end++;
+        }
+        return text.substring(start, end);
     }
 
     private RollingFileAppender<ILoggingEvent> createAppender(String keyword) {
@@ -64,7 +73,7 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
         appender.setContext(context);
 
         try {
-            Path folderPath = Path.of(baseLogPath, "CUSTOM", keyword);
+            Path folderPath = Path.of(baseLogPath, CommonConstants.FW_LOG_BASE_DIR, keyword);
             Files.createDirectories(folderPath);
 
             String logFile = folderPath.resolve(keyword + ".log").toString();

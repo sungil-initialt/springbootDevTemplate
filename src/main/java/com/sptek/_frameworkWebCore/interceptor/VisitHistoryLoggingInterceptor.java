@@ -3,7 +3,9 @@ package com.sptek._frameworkWebCore.interceptor;
 import com.sptek._frameworkWebCore._annotation.Enable_VisitHistoryLog_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.CookieUtil;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -33,17 +35,16 @@ public class VisitHistoryLoggingInterceptor implements HandlerInterceptor{
                 .orElse(CommonConstants.VISIT_HISTORY_NEW_VISITOR_LOG);
 
         //로그를 남기는게 주 역함임으로 아래 주석 처리 하지 않도록! (console 에는 로그 처리 되지 않음)
-        log.info(visitHistoryLog);
+        String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_VisitHistoryLog_At_Main.class).get("value"));
+        log.info(LoggingUtil.makeFwLogSimpleForm(visitHistoryLog, logTag));
         
-        //if(visitHistoryLog.equals(CommonConstants.VISIT_HISTORY_NEW_VISITOR_LOG)) { // 유효 시간 기준을 바꾸는 경우가 있을 수 있음으로 조건 제거
-            //오늘 까지 유효한 쿠키로 생성 (자정 까지 남은 sec)
-            LocalDateTime now = LocalDateTime.now();
-            long remainingSecondsOfToday = Duration.between(now, now.toLocalDate().plusDays(1).atStartOfDay()).getSeconds();
+        //오늘 까지 유효한 쿠키로 생성 (자정 까지 남은 sec), 이미 쿠키가 있는 경우에도 새로 생성 (쿠키 유효기간을 변경한 경우 바로 적용되게 하기 위해)
+        LocalDateTime now = LocalDateTime.now();
+        long remainingSecondsOfToday = Duration.between(now, now.toLocalDate().plusDays(1).atStartOfDay()).getSeconds();
 
-            ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(CommonConstants.VISIT_HISTORY_COOKIE_NAME, CommonConstants.VISIT_HISTORY_COOKIE_VALE)
-                    .maxAge(remainingSecondsOfToday).path("/").sameSite("Strict");
-            CookieUtil.addResponseCookie(cookieBuilder.build());
-        //}
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(CommonConstants.VISIT_HISTORY_COOKIE_NAME, CommonConstants.VISIT_HISTORY_COOKIE_VALE)
+                .maxAge(remainingSecondsOfToday).path("/").sameSite("Strict");
+        CookieUtil.addResponseCookie(cookieBuilder.build());
 
         return true;
     }

@@ -7,41 +7,46 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-// Spring
+/* Spring */
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
 @EnableAsync
 
-// TEST and CHECK
+/* TEST and CHECK */
 @TestAnnotation_At_All("")
-@Enable_GlobalEnvLog_At_Main //민감정보 로깅
 
-// EXCEPTION
+/* EXCEPTION */
 @Enable_ResponseOfApplicationGlobalException_At_Main
 
-// LOGGING
-@Enable_MdcTagging_At_Main
-@Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("")
-@Enable_OutboundSupportDetailLog_At_Main("")
-@Enable_OutboundSupportPoolStateLog_At_Main("")
-@Enable_VisitHistoryLog_At_Main
+/* MONITORING */
+@Enable_HttpConnectionMonitoring_At_Main("file->HttpConnectionMonitoring ->noConsole")
+@Enable_AsyncMonitoring_At_Main("file->AsyncMonitoring ->noConsole")
+@Enable_OutboundSupportMonitoring_At_Main("file->OutboundSupportMonitoring ->noConsole")
 
-// DATABASE
+/* LOGGING */
+@Enable_MdcTagging_At_Main
+@Enable_VisitHistoryLog_At_Main("file->VisitHistoryLog ->noConsole")
+@Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("file->ReqResDetailLog ->noConsole")
+@Enable_OutboundSupportDetailLog_At_Main("file->OutboundSupportDetailLog ->noConsole")
+@Enable_GlobalEnvLog_At_Main("GlobalEnv file->FW_START_LOG_TAG ->noConsole")
+
+/* DATABASE */
 @Enable_DatasourceOfH2_At_Main //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
 @Enable_JpaHybrid_At_Main
 
-// SECURETY
+/* SECURETY */
 @Enable_EncryptorJasypt_At_Main
 @Enable_CorsPolicyFilter_At_Main
 @Enable_XssProtectForApi_At_Main //Enable_XssProtectForApi_At_Main 가 적용된 경우 Enable_XssProtectForApi_At_ControllerMethod 는 동작하지 않는다.
 @Enable_ThymeleafSpringSecurityDialect_At_Main //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
+@Enable_UserAuthenticationToModelAttribute_At_Main
 
-// UTIL
+/* UTIL */
 @Enable_NoFilterAndSessionForMinorRequest_At_Main //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 @Enable_HttpCachePublicForStaticResource_At_Main
 @Enable_PropertiesToModelAttribute_At_Main
-@Enable_UserAuthenticationToModelAttribute_At_Main
+
 
 public class SptWfwApplication {
 	public static void main(String[] args) {
@@ -66,12 +71,7 @@ public class SptWfwApplication {
 
 
 /*
-로깅 유틸의 로깅과 관련된.. 조건 다시 정리
-→ FW_LOG_TAG : httpPoolState [yewFile->httpPoolState | yesConsole]
-→ FW_LOG_TAG : httpPoolState [noFile | yesConsole]
-→ FW_LOG_TAG : httpPoolState [noFile | noConsole]
-
-각정 Pool 로깅 어노테이션 생성 및 적용
+메인 리지스터에 어노테이션 속상값이 없는 현상 확인 필요
 로깅의 내용 한글화
 
  */
