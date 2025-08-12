@@ -2,26 +2,20 @@ package com.sptek._frameworkWebCore.util;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 public class LoggingUtil {
 
-    public static String makeFwLogForm(@Nullable String title, @Nullable String content) {
-        return makeFwLogForm(title, content, null);
+    public static String makeFwLogForm(String title, String content) {
+        return makeFwLogForm(title, content, "");
     }
 
-    public static String makeFwLogForm(@Nullable String title, @Nullable String content, @Nullable String logTag) {
-        title = StringUtils.hasText(title) && !title.equals("null") ? title : "No Title";
-        content = StringUtils.hasText(content) && !content.equals("null") ? content : "No Content";
-        logTag = StringUtils.hasText(logTag) && !logTag.equals("null") ? logTag : "";
-
+    public static String makeFwLogForm(String title, String content, String logTag) {
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return """
             %s%s
             --------------------------------------------------------------------------------
-             [ **** %s **** ]
+            [ **** %s **** ]
             --------------------------------------------------------------------------------
             %s
             --------------------------------------------------------------------------------
@@ -29,10 +23,7 @@ public class LoggingUtil {
             .formatted(CommonConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
     }
 
-    public static String makeFwLogSimpleForm(@Nullable String content, @Nullable String logTag) {
-        content = StringUtils.hasText(content) && !content.equals("null") ? content : "No Content";
-        logTag = StringUtils.hasText(logTag) && !logTag.equals("null") ? logTag : "";
-
+    public static String makeFwLogSimpleForm(String content, String logTag) {
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return "%s%s => %s".formatted(CommonConstants.FW_LOG_PREFIX, logTag, LoggingUtil.removeLastNewline(content));
     }

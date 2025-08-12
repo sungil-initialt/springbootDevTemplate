@@ -1,6 +1,5 @@
 package com.sptek._frameworkWebCore._example.unit.xss;
 
-import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore._annotation.Enable_XssProtectForApi_At_ControllerMethod;
@@ -33,14 +32,13 @@ public class XssApiController {
     }
 
     @PostMapping("/02/example/xss/xssProtectOn")
-    @Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("method")
     @Enable_XssProtectForApi_At_ControllerMethod
     @Operation(summary = "02. XssProtect 어노테이션 적용 (응답 결과를 Escape 처리함)", description = "")
     public Object xssProtectOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
         // 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
         try {
-            Thread.sleep(10000);
-        }catch (InterruptedException e) {
+            //Thread.sleep(10000);
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return originBody;

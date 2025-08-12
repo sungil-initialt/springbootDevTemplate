@@ -32,6 +32,6 @@ public class CorsPropertiesVo {
                         + "accessControlAllowCredentials: " + accessControlAllowCredentials +"\n"
                         + "accessControlMaxAge: " + accessControlMaxAge +"\n"
                         + "accessControlAllowHeaders: " + accessControlAllowHeaders
-                , CommonConstants.FW_RESOURCE_LOG_TAG));
+                , CommonConstants.FW_START_LOG_TAG));
     }
 }

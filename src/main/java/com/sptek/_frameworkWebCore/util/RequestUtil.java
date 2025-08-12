@@ -144,7 +144,7 @@ public class RequestUtil {
 
     public static void applyRequestBody(HttpUriRequest httpUriRequest, @Nullable Object requestBody) throws Exception {
         if (requestBody == null) return;
-        String requestBodyString = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
+        String requestBodyString = requestBody instanceof String ? requestBody.toString() : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
         if (StringUtils.hasText(requestBodyString)) httpUriRequest.setEntity(new StringEntity(requestBodyString, StandardCharsets.UTF_8));
     }
 
@@ -157,7 +157,7 @@ public class RequestUtil {
         }
 
         String currentTime = LocalDateTime.now().toString();
-        String durationMsec = String.valueOf(Duration.between(LocalDateTime.parse(startTime), LocalDateTime.parse(currentTime)).toMillis());
+        String durationMsec = Objects.toString(Duration.between(LocalDateTime.parse(startTime), LocalDateTime.parse(currentTime)).toMillis(), "");
         return new ExcuteTimeDto(startTime, currentTime, durationMsec);
     }
 

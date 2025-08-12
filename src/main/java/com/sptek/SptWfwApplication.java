@@ -20,16 +20,16 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Enable_ResponseOfApplicationGlobalException_At_Main
 
 /* MONITORING */
-@Enable_HttpConnectionMonitoring_At_Main("file->HttpConnectionMonitoring ->noConsole")
-@Enable_AsyncMonitoring_At_Main("file->AsyncMonitoring ->noConsole")
-@Enable_OutboundSupportMonitoring_At_Main("file->OutboundSupportMonitoring ->noConsole")
+@Enable_HttpConnectionMonitoring_At_Main("")
+@Enable_AsyncMonitoring_At_Main("")
+@Enable_OutboundSupportMonitoring_At_Main("")
 
 /* LOGGING */
 @Enable_MdcTagging_At_Main
-@Enable_VisitHistoryLog_At_Main("file->VisitHistoryLog ->noConsole")
-@Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("file->ReqResDetailLog ->noConsole")
-@Enable_OutboundSupportDetailLog_At_Main("file->OutboundSupportDetailLog ->noConsole")
-@Enable_GlobalEnvLog_At_Main("GlobalEnv file->FW_START_LOG_TAG ->noConsole")
+@Enable_VisitHistoryLog_At_Main("")
+@Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("")
+@Enable_OutboundSupportDetailLog_At_Main("")
+@Enable_GlobalEnvLog_At_Main("GlobalEnv file->FW_START_LOG ->noConsole")
 
 /* DATABASE */
 @Enable_DatasourceOfH2_At_Main //@Enable_DatasourceOfMysqlReplication_At_Main //@Enable_DatasourceOfMysqlReplicationWithJndi_At_Main
@@ -71,7 +71,8 @@ public class SptWfwApplication {
 
 
 /*
-메인 리지스터에 어노테이션 속상값이 없는 현상 확인 필요
-로깅의 내용 한글화
+A component required a bean of type 'org.springframework.boot.web.embedded.tomcat.TomcatWebServer' that could not be found.
+
+DB 커넥션 풀 로깅
 
  */

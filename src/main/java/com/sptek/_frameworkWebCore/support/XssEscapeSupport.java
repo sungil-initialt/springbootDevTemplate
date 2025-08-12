@@ -3,6 +3,7 @@ package com.sptek._frameworkWebCore.support;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class XssEscapeSupport {
 
-    public Object escape(Object value) {
+    public @Nullable Object escape(Object value) {
         if (value == null) return null;
 
         if (value instanceof String str) {

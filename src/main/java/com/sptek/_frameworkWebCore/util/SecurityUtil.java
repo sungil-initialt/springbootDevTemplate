@@ -102,7 +102,7 @@ public class SecurityUtil {
     }
 
     public static Path getSecuredFilePathForUser() throws Exception {
-        return Path.of(SecureFilePathTypeEnum.USER.getPathName(), String.valueOf(AuthenticationUtil.getMyId()));
+        return Path.of(SecureFilePathTypeEnum.USER.getPathName(), AuthenticationUtil.getMyId().toString());
     }
 
     public static Path getSecuredFilePathForRole(Set<String> roleNames) {
@@ -120,7 +120,7 @@ public class SecurityUtil {
     public static Path getStorageRootPath(Path securedFilePath) {
         if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
         try {
-            return Path.of(String.valueOf(SpringUtil.getApplicationProperty(String.format("storage.%s.localRootPath", securedFilePath.getName(0).toString()))));
+            return Path.of(SpringUtil.getApplicationProperty(String.format("storage.%s.localRootPath", securedFilePath.getName(0).toString())).toString());
         } catch (Exception e) {
             throw new IllegalArgumentException("Unsupported SecurePathEnum value: " + securedFilePath.getName(0).toString());
         }

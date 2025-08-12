@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.schedule.scheduler;
 import com.sptek._frameworkWebCore._annotation.Enable_OutboundSupportMonitoring_At_Main;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.HttpRoute;
@@ -12,10 +11,13 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.pool.PoolStats;
 import org.apache.hc.core5.util.TimeValue;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
@@ -41,8 +43,8 @@ public class SchedulerForOutboundSupportManagingMonitoring {
         this.poolingHttpClientConnectionManager = poolingHttpClientConnectionManager;
     }
 
-    @PostConstruct
-    public void postConstruct() {
+    @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
+    public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
         scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
@@ -52,7 +54,7 @@ public class SchedulerForOutboundSupportManagingMonitoring {
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
-        scheduledFuture.cancel(false); // 현재 작업이 끝나길 기다리고 중단
+        scheduledFuture.cancel(false); // spring 종료시 진행중 작업을 cancel 하지 않고 마무리 하도록 설정
         schedulerExecutorForOutboundSupportMonitoring.shutdown();
     }
 
@@ -67,20 +69,20 @@ public class SchedulerForOutboundSupportManagingMonitoring {
             poolingHttpClientConnectionManager.closeExpired();
             PoolStats afterStats = poolingHttpClientConnectionManager.getTotalStats();
 
-            logBuilder.append(String.format("Leased(사용중): %d->%d, Available(사용가능): %d->%d, Pending(대기중): %d->%d\n"
+            logBuilder.append(String.format("사용중(Leased)=%d->%d, 사용가능(Available)=%d->%d, 대기중(Pending)=%d->%d\n"
                     , beforeStats.getLeased(), afterStats.getLeased(), beforeStats.getAvailable()
                     , afterStats.getAvailable(), beforeStats.getPending(), afterStats.getPending()));
 
             // 현재 각 Route별 상태
             for (HttpRoute route : poolingHttpClientConnectionManager.getRoutes()) {
                 PoolStats routeStats = poolingHttpClientConnectionManager.getStats(route);
-                logBuilder.append(String.format("%s => Leased: %d, Available: %d, Pending: %d\n"
+                logBuilder.append(String.format("%s => Leased=%d, Available=%d, Pending=%d\n"
                         , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
             }
 
             if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportMonitoring_At_Main.class)) {
-                String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"));
-                log.info(LoggingUtil.makeFwLogForm("scheduler For OutboundSupport Monitoring", logBuilder.toString(), logTag));
+                String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"), "");
+                log.info(LoggingUtil.makeFwLogForm("OutboundSupport Monitoring (Scheduler)", logBuilder.toString(), logTag));
             }
 
         } catch (Exception e) {

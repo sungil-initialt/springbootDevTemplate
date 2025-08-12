@@ -11,7 +11,7 @@ public class ContextClosedEventListenerForExample {
 
     @EventListener
     public void listen(ContextClosedEvent contextClosedEvent) {
-        log.debug("Event! : bye bye");
+        //log.debug("Event! : bye bye");
         //do more what you want..
     }
 }

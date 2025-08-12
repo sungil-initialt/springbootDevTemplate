@@ -51,8 +51,8 @@ public class SystemGlobalEnvTemporaryValue {
                         globalEnvironment.append(String.format("%s : %s%n", propertyName, displayValue));
                     });
 
-            String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_GlobalEnvLog_At_Main.class).get("value"));
-            log.info(LoggingUtil.makeFwLogForm("System Global Env (Notice!! : It has Confidential Details)", globalEnvironment.toString(), logTag));
+            String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_GlobalEnvLog_At_Main.class).get("value"), "");
+            log.info(LoggingUtil.makeFwLogForm("Global Environment (Notice!! : It has Confidential Details)", globalEnvironment.toString(), logTag));
         }
     }
 

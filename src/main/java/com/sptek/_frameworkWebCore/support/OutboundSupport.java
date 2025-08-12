@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /*
 closeableHttpClient을 쉽게 사용하기 위한 클레스로 Spring Bean 을 통해 주입받아 사용할 것
@@ -77,7 +78,7 @@ public class OutboundSupport {
         if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportDetailLog_At_Main.class)) {
             String requestBodyStr = "";
             if (requestBody != null) {
-                requestBodyStr = requestBody instanceof String ? String.valueOf(requestBody) : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, true);
+                requestBodyStr = requestBody instanceof String ? requestBody.toString() : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, true);
                 requestBodyStr = StringUtils.hasText(requestBodyStr) ? "\n" + requestBodyStr : "";
             }
             String logContent = """
@@ -88,10 +89,11 @@ public class OutboundSupport {
                     <--(%s)
                     responseHeader : %s
                     responseBody : %s
-                    """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
+                    """
+                    .formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
-            String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"));
-            log.info(LoggingUtil.makeFwLogForm("Outbound Support Information", logContent, logTag));
+            String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"), "");
+            log.info(LoggingUtil.makeFwLogForm("Outbound Support Detail Log", logContent, logTag));
         }
 
         // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함

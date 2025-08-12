@@ -4,16 +4,18 @@ import com.sptek._frameworkWebCore._annotation.Enable_AsyncMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -35,14 +37,13 @@ public class SchedulerForAsyncMonitoring {
         this.threadPoolForAsync = threadPoolForAsync;
     }
 
-    @PostConstruct
-    public void postConstruct() {
+    @EventListener // @PostConstruct 시점에는 MainClassAnnotationRegister 가 생성되기 전임으로  Event Listen 방식으로 변경함
+    public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
         scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
-    // Spring 이 종료되며 해당 빈을 제거하기 전에 호출됨
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
@@ -56,7 +57,7 @@ public class SchedulerForAsyncMonitoring {
             String logContent;
             if (threadPoolForAsync instanceof ThreadPoolTaskExecutor threadPoolTaskExecutor) {
                 ThreadPoolExecutor executor = threadPoolTaskExecutor.getThreadPoolExecutor();
-                logContent = String.format("최대 허용 쓰레드(maxPoolSize)=%d, 상시 대기 쓰레드(corePoolSize)=%d, 현재 동작 쓰레드(activeCount)=%d, 쓰레드 할당 대기(queueSize)=%d",
+                logContent = String.format("최대허용(maxPoolSize)=%d, 상시대기(corePoolSize)=%d, 사용중(activeCount)=%d, 할당대기(queueSize)=%d",
                         executor.getMaximumPoolSize(),
                         executor.getCorePoolSize(),
                         executor.getActiveCount(),
@@ -65,8 +66,8 @@ public class SchedulerForAsyncMonitoring {
             } else {
                 logContent = "Not a ThreadPoolTaskExecutor instance: " + threadPoolForAsync.getClass().getName();
             }
-            String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"));
-            log.info(LoggingUtil.makeFwLogForm("Scheduler For Async Monitoring", logContent, logTag));
+            String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"), "");
+            log.info(LoggingUtil.makeFwLogForm("Async Monitoring (Scheduler)", logContent, logTag));
 
         } catch (Exception e) {
             log.warn("Scheduler For Async Monitoring", e);

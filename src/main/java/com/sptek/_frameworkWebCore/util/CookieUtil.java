@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 /*
 CookieUtil 을 사용하지 않고 ResponseCookie 객체를 직접 builder 방식으로 사용하는게 가장 좋음.(익숙하지 않은사람을 위해 남김)
@@ -29,7 +26,7 @@ public class CookieUtil {
                 .maxAge(maxAge)
                 .httpOnly(isHttpOnly)
                 .secure(secure)
-                .domain(StringUtils.hasText(domain) ? domain : "")
+                .domain(Objects.toString(domain, ""))
                 .path(StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
 
         Optional.ofNullable(sameSite)
@@ -45,7 +42,7 @@ public class CookieUtil {
 
     public static void addResponseCookie(@NotNull ResponseCookie responseCookie) {
         SpringUtil.getResponse().addHeader("Set-Cookie", responseCookie.toString());
-        log.debug("addResponseCookie : {}", responseCookie);
+        //log.debug("addResponseCookie : {}", responseCookie);
     }
 
 
@@ -70,7 +67,7 @@ public class CookieUtil {
         cookie.setHttpOnly(isHttpOnly);
         cookie.setSecure(secure);
 
-        cookie.setDomain(StringUtils.hasText(domain) ? domain : "");
+        cookie.setDomain(Objects.toString(domain, ""));
         cookie.setPath(StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH);
 
         return cookie;

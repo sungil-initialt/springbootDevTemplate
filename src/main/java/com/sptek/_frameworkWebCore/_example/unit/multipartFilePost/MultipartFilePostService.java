@@ -275,7 +275,7 @@ public class MultipartFilePostService {
         Path extraFilePath = Path.of(
                 postBaseDto.getBoardName(),
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                String.valueOf(postBaseDto.getPostId())
+                postBaseDto.getPostId().toString()
         );
         return secureFilePath.resolve(extraFilePath); // File DB에 저장되는 경로
     }

@@ -11,10 +11,10 @@ public class CommonConstants {
 
     // Logging
     public static final String FW_LOG_PREFIX = "■ FW_LOG_TAG : ";
-    public static final String FW_LOG_BASE_DIR = "EXTRA";
+    public static final String FW_LOG_BASE_DIR = "_FW_LOG";
     public static final String FW_LOG_FILENAME_MARK = "file->";
     public static final String FW_LOG_NO_CONSOLE_MARK = "->noConsole";
-    public static final String FW_RESOURCE_LOG_TAG = "FW_RESOURCE_LOG_TAG file->FW_START_LOG_TAG";
+    public static final String FW_START_LOG_TAG = "FW_START_LOG file->FW_START_LOG";
     public static final String REQ_PROPERTY_FOR_LOGGING_TIMESTAMP = "REQ_PROPERTY_FOR_LOGGING_TIMESTAMP";
     public static final String REQ_PROPERTY_FOR_LOGGING_MODEL_AND_VIEW = "REQ_PROPERTY_FOR_LOGGING_MODEL_AND_VIEW";
     public static final String REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE = "REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE";

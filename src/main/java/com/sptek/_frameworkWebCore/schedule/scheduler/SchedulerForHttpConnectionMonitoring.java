@@ -11,12 +11,13 @@ import org.apache.coyote.AbstractProtocol;
 import org.apache.coyote.ProtocolHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
-import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
@@ -24,6 +25,8 @@ import java.util.concurrent.ScheduledFuture;
 @HasAnnotationOnMain_At_Bean(Enable_HttpConnectionMonitoring_At_Main.class)
 
 public class SchedulerForHttpConnectionMonitoring {
+    // todo: 현재의 SchedulerForHttpConnectionMonitoring 는 embeeded tomcat 을 사용하는 경우만 동작함
+
     private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring;
     private TomcatWebServer  tomcatWebServer;
     private ScheduledFuture<?> scheduledFuture = null;
@@ -32,17 +35,14 @@ public class SchedulerForHttpConnectionMonitoring {
         this.schedulerExecutorForHttpConnectionMonitoring = schedulerExecutorForHttpConnectionMonitoring;
     }
 
-    @EventListener // TomcatWebServer 를 얻기 위해 ServletWebServerInitializedEvent 를 listen 하여 시작 함
-    public void listen(ServletWebServerInitializedEvent servletWebServerInitializedEvent) {
+    @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
+    public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        if (servletWebServerInitializedEvent.getWebServer() instanceof TomcatWebServer tws) {
-            this.tomcatWebServer = tws;
-            int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
-            scheduledFuture = schedulerExecutorForHttpConnectionMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
-        }
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        this.tomcatWebServer = contextRefreshedEvent.getApplicationContext().getBean(TomcatWebServer.class);
+        scheduledFuture = schedulerExecutorForHttpConnectionMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
-    // Spring 이 종료되며 해당 빈을 제거하기 전에 호출됨
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
@@ -70,7 +70,7 @@ public class SchedulerForHttpConnectionMonitoring {
                         queueSize = threadPoolExecutor.getQueue().size();
                     }
 
-                    String logContent = String.format("connectorProtocol=%s:%d, maxThreads=%d, currentThreads=%d, busyThreads=%d, queueSize=%d",
+                    String logContent = String.format("%s:%d => 최대허용(maxThreads)=%d, 상시대기(currentThreads)=%d, 사용중(busyThreads)=%d, 할당대기(queueSize)=%d",
                             connector.getProtocol(),
                             connector.getPort(),
                             maxThreads,
@@ -78,8 +78,8 @@ public class SchedulerForHttpConnectionMonitoring {
                             busyThreads,
                             queueSize
                     );
-                    String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectionMonitoring_At_Main.class).get("value"));
-                    log.info(LoggingUtil.makeFwLogForm("Scheduler For HttpConnection Monitoring", logContent, logTag));
+                    String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectionMonitoring_At_Main.class).get("value"), "");
+                    log.info(LoggingUtil.makeFwLogForm("Http Connection Monitoring (Scheduler)", logContent, logTag));
                 }
             }
         } catch (Exception e) {

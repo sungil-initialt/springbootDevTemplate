@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -56,7 +57,7 @@ public class CustomErrorController implements ErrorController {
         */
 
         // todo: 에러 메시지 가 안 나오는 케이스 에 대해 좀더 확인 필요
-        int errorStatusCode = Integer.parseInt(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)));
+        int errorStatusCode = Integer.parseInt(Objects.toString(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE), "0"));
         Object errorMsgAttr = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
         String errMessage = (errorMsgAttr != null && !errorMsgAttr.toString().isBlank())
                 ? errorMsgAttr.toString()

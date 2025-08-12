@@ -16,7 +16,7 @@ server:
 
 spring:
   lifecycle:
-    timeout-per-shutdown-phase: 30s #graceful 최대 대기 시간
+    timeout-per-shutdown-phase: 60s #graceful 최대 대기 시간 (반드시 s를 붙일것)
   devtools:
     livereload.enabled: true
     restart.enabled: true

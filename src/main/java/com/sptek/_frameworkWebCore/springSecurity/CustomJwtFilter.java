@@ -6,6 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -55,7 +56,7 @@ public class CustomJwtFilter extends GenericFilterBean {
     }
 
     // Request Header에서 토큰 정보를 꺼내오기
-    private String getJwtFromRequest(HttpServletRequest request){
+    private @Nullable String getJwtFromRequest(HttpServletRequest request){
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(AUTHORIZATION_PREFIX)){
             log.debug("Bearer : " + bearerToken);

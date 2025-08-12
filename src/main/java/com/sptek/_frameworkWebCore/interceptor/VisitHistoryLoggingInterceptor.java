@@ -16,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 /*
@@ -35,7 +36,7 @@ public class VisitHistoryLoggingInterceptor implements HandlerInterceptor{
                 .orElse(CommonConstants.VISIT_HISTORY_NEW_VISITOR_LOG);
 
         //로그를 남기는게 주 역함임으로 아래 주석 처리 하지 않도록! (console 에는 로그 처리 되지 않음)
-        String logTag = String.valueOf(MainClassAnnotationRegister.getAnnotationAttributes(Enable_VisitHistoryLog_At_Main.class).get("value"));
+        String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_VisitHistoryLog_At_Main.class).get("value"), "");
         log.info(LoggingUtil.makeFwLogSimpleForm(visitHistoryLog, logTag));
         
         //오늘 까지 유효한 쿠키로 생성 (자정 까지 남은 sec), 이미 쿠키가 있는 경우에도 새로 생성 (쿠키 유효기간을 변경한 경우 바로 적용되게 하기 위해)

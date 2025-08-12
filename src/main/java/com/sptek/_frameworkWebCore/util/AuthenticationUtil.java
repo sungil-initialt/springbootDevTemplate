@@ -4,6 +4,7 @@ import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.springSecurity.extras.dto.UserDto;
 import com.sptek._frameworkWebCore.springSecurity.spt.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +37,7 @@ public class AuthenticationUtil {
     }
 
     // spring security 필터에 의해 처리된 접속자 정보(정리된 정보)
-    public static UserDto getMyUserDto() {
+    public @Nullable static UserDto getMyUserDto() {
         if (!isRealLogin()) return null;
         try {
             return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto();
@@ -46,7 +47,7 @@ public class AuthenticationUtil {
         }
     }
 
-    public static Long getMyId() {
+    public @Nullable static Long getMyId() {
         if (!isRealLogin()) return null;
         try {
             return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getId();
@@ -64,7 +65,7 @@ public class AuthenticationUtil {
         }
     }
 
-    public static String getMyEmail() {
+    public @Nullable static String getMyEmail() {
         if (!isRealLogin()) return null;
         try {
             return ((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto().getEmail();
