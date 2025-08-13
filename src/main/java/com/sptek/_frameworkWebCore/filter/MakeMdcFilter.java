@@ -35,7 +35,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
             // todo: 로그인 처리 과정 중에 로그를 남기는 경우 아직 CustomUserDetails 객체가 없는 상태일 수 있어 있어서 아래 방식으로 변경함
             // MDC.put("memberId", SecurityUtil.isRealLogin() ? SecurityUtil.getMyCustomUserDetails().getUserDto().getEmail() : "Not Logged In");
             MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName() : CommonConstants.ANONYMOUS_USER);
-            MDC.put("sessionId", request.getSession(true).getId());
+            MDC.put("sessionId", request.getSession(true).getId().substring(0, 10));
             filterChain.doFilter(request, response);
         } finally {
             // 요청이 끝난 뒤 반드시 MDC 정리

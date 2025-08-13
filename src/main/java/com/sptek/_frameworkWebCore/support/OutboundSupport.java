@@ -89,8 +89,7 @@ public class OutboundSupport {
                     <--(%s)
                     responseHeader : %s
                     responseBody : %s
-                    """
-                    .formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
+                    """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
             String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"), "");
             log.info(LoggingUtil.makeFwLogForm("Outbound Support Detail Log", logContent, logTag));

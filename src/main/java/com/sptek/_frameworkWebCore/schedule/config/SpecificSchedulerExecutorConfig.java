@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore.schedule.config;
 
 import com.sptek._frameworkWebCore._annotation.Enable_AsyncMonitoring_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_HikariDataSourceMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.Enable_HttpConnectionMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.Enable_OutboundSupportMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
@@ -33,6 +34,19 @@ public class SpecificSchedulerExecutorConfig {
         scheduler.setWaitForTasksToCompleteOnShutdown(true); // spring 종료시 진행중 작업 마무리 가능하도록 설정
         scheduler.setAwaitTerminationSeconds((int)environment.getProperty(
                 "spring.lifecycle.timeout-per-shutdown-phase", Duration.class, Duration.ofSeconds(30)).getSeconds()); // 마무리 작업 최대 보장 시간
+        return scheduler;
+    }
+
+    @HasAnnotationOnMain_At_Bean(Enable_HikariDataSourceMonitoring_At_Main.class)
+    @Bean(name = "schedulerExecutorForHikariDataSourceMonitoring")
+    public ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(1);
+        scheduler.setThreadNamePrefix("from schedulerExecutorForHikariDataSourceMonitoring-");
+        scheduler.setRemoveOnCancelPolicy(true);
+        scheduler.setWaitForTasksToCompleteOnShutdown(true);
+        scheduler.setAwaitTerminationSeconds((int)environment.getProperty(
+                "spring.lifecycle.timeout-per-shutdown-phase", Duration.class, Duration.ofSeconds(30)).getSeconds());
         return scheduler;
     }
 

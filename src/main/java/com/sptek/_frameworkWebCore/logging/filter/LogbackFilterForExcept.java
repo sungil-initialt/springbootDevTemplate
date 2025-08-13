@@ -5,7 +5,7 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 
-public class LogbackFilterForExceptConsole extends Filter<ILoggingEvent>{
+public class LogbackFilterForExcept extends Filter<ILoggingEvent>{
 
     @Override
     public FilterReply decide(ILoggingEvent event) {

@@ -20,7 +20,7 @@
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExceptConsole"/>
+        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExcept"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${default_log_patternForConsole}</pattern>
         </encoder>

@@ -23,6 +23,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Enable_HttpConnectionMonitoring_At_Main("")
 @Enable_AsyncMonitoring_At_Main("")
 @Enable_OutboundSupportMonitoring_At_Main("")
+@Enable_HikariDataSourceMonitoring_At_Main("HikariDataSourceMonitoring file->HikariDataSourceMonitoring ->noConsole")
 
 /* LOGGING */
 @Enable_MdcTagging_At_Main
@@ -73,6 +74,10 @@ public class SptWfwApplication {
 /*
 A component required a bean of type 'org.springframework.boot.web.embedded.tomcat.TomcatWebServer' that could not be found.
 
-DB 커넥션 풀 로깅
+DB 커넥션 풀 로깅 한글화
+keyword 어팬더 ai 개선 알림 사항 반영
+loggingUtil 수정개발
+키카리풀 설정 옵션/추가 수정
+log.atInfo 형태로 수정 플레이스 홀더 방식
 
  */

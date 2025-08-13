@@ -11,6 +11,7 @@ import org.apache.coyote.AbstractProtocol;
 import org.apache.coyote.ProtocolHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
+import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -28,18 +29,24 @@ public class SchedulerForHttpConnectionMonitoring {
     // todo: 현재의 SchedulerForHttpConnectionMonitoring 는 embeeded tomcat 을 사용하는 경우만 동작함
 
     private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring;
-    private TomcatWebServer  tomcatWebServer;
+    private TomcatWebServer  tomcatWebServer = null;
     private ScheduledFuture<?> scheduledFuture = null;
 
     public SchedulerForHttpConnectionMonitoring(@Qualifier("schedulerExecutorForHttpConnectionMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring) {
         this.schedulerExecutorForHttpConnectionMonitoring = schedulerExecutorForHttpConnectionMonitoring;
     }
 
+    @EventListener // TomcatWebServer 를 얻기 위해 ServletWebServerInitializedEvent 를 listen 하여 가져옴
+    public void listen(ServletWebServerInitializedEvent servletWebServerInitializedEvent) {
+        if (servletWebServerInitializedEvent.getWebServer() instanceof TomcatWebServer tws) {
+            this.tomcatWebServer = tws;
+        }
+    }
+
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
-        this.tomcatWebServer = contextRefreshedEvent.getApplicationContext().getBean(TomcatWebServer.class);
         scheduledFuture = schedulerExecutorForHttpConnectionMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -52,7 +59,6 @@ public class SchedulerForHttpConnectionMonitoring {
 
     // 실제 스케줄 내용
     public void doJobs() {
-        //---> 이부분 개선 부터 해야 함
         try {
             for (Connector connector : tomcatWebServer.getTomcat().getService().findConnectors()) {
                 ProtocolHandler protocolHandler = connector.getProtocolHandler();
