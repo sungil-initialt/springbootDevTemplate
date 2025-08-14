@@ -31,6 +31,7 @@ public class SchedulerForHttpConnectionMonitoring {
     private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring;
     private TomcatWebServer  tomcatWebServer = null;
     private ScheduledFuture<?> scheduledFuture = null;
+    private String logTag;
 
     public SchedulerForHttpConnectionMonitoring(@Qualifier("schedulerExecutorForHttpConnectionMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring) {
         this.schedulerExecutorForHttpConnectionMonitoring = schedulerExecutorForHttpConnectionMonitoring;
@@ -47,6 +48,7 @@ public class SchedulerForHttpConnectionMonitoring {
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectionMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForHttpConnectionMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -84,7 +86,6 @@ public class SchedulerForHttpConnectionMonitoring {
                             busyThreads,
                             queueSize
                     );
-                    String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectionMonitoring_At_Main.class).get("value"), "");
                     log.info(LoggingUtil.makeFwLogForm("Http Connection Monitoring (Scheduler)", logContent, logTag));
                 }
             }

@@ -35,6 +35,8 @@ public class SchedulerForOutboundSupportManagingMonitoring {
     private final ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring;
     private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
     private ScheduledFuture<?> scheduledFuture = null;
+    private boolean has_Enable_OutboundSupportMonitoring_At_Main;
+    private String logTag;
 
     public SchedulerForOutboundSupportManagingMonitoring(
             @Qualifier("schedulerExecutorForOutboundSupportMonitoring") ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring,
@@ -47,6 +49,8 @@ public class SchedulerForOutboundSupportManagingMonitoring {
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        has_Enable_OutboundSupportMonitoring_At_Main = MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportMonitoring_At_Main.class);
+        logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -80,8 +84,7 @@ public class SchedulerForOutboundSupportManagingMonitoring {
                         , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
             }
 
-            if (MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportMonitoring_At_Main.class)) {
-                String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"), "");
+            if (has_Enable_OutboundSupportMonitoring_At_Main) {
                 log.info(LoggingUtil.makeFwLogForm("OutboundSupport Monitoring (Scheduler)", logBuilder.toString(), logTag));
             }
 

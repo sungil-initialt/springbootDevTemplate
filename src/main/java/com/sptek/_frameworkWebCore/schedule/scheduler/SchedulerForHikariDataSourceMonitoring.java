@@ -3,7 +3,7 @@ package com.sptek._frameworkWebCore.schedule.scheduler;
 import com.sptek._frameworkWebCore._annotation.Enable_HikariDataSourceMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.base.exception.ExceptionHelper;
+import com.sptek._frameworkWebCore.util.ExceptionUtil;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.zaxxer.hikari.HikariConfigMXBean;
 import com.zaxxer.hikari.HikariDataSource;
@@ -30,6 +30,7 @@ public class SchedulerForHikariDataSourceMonitoring {
     private final ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring;
     private Map<String, HikariDataSource> hikariDataSources = null;
     private ScheduledFuture<?> scheduledFuture = null;
+    private String logTag;
 
     public SchedulerForHikariDataSourceMonitoring(@Qualifier("schedulerExecutorForHikariDataSourceMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring) {
         this.schedulerExecutorForHikariDataSourceMonitoring = schedulerExecutorForHikariDataSourceMonitoring;
@@ -38,8 +39,18 @@ public class SchedulerForHikariDataSourceMonitoring {
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+
         hikariDataSources = contextRefreshedEvent.getApplicationContext().getBeansOfType(HikariDataSource.class);
+        hikariDataSources.values().forEach(ds -> {
+            // 모니터링 전 한번 강제 연결을 통해 활성화 시킴
+            try (var conn = ds.getConnection()) {
+            } catch (Exception e) {
+                log.warn("Failed to pre-warm HikariDataSource: {}", ds, e);
+            }
+        });
+
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HikariDataSourceMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -58,35 +69,32 @@ public class SchedulerForHikariDataSourceMonitoring {
             HikariPoolMXBean hikariPoolMXBean = hikariDataSource.getHikariPoolMXBean();
 
             String logContent = """
-                    PoolName : %s
-                    conf MaximumPoolSize : %s
-                    conf MinimumIdle : %s
-                    conf ConnectionTimeout : %s
-                    conf IdleTimeout : %s
-                    conf MaxLifetime : %s
-                    conf ValidationTimeout : %s
+                    ** %s **
+                    config 최대허용(MaximumPoolSize)=%s
+                    config 기본상시대기(MinimumIdle)=%s
+                    config ThreadsAwaitingConnection에서 최대 대기시간(ConnectionTimeout)=%s
+                    config 유휴 커넥션 회수 시간(IdleTimeout)=%s
+                    config DB와 커넥션을 새로 연결하는 시간, DB쪽 타임아웃 보다 작게, refresh 의미, 유휴 커넥션에 적용(MaxLifetime)=%s
+                    config DB 커넥션 헬스체크 타임아웃, 시간내 응답 없으면 새로 연결(ValidationTimeout)=%s
                     
-                    real TotalConnections : %s
-                    real IdleConnections : %s
-                    real ActiveConnections : %s
-                    real ThreadsAwaitingConnection : %s
+                    status DB연결(TotalConnections)=%s
+                    status 사용중(ActiveConnections)=%s
+                    status 사용가능(IdleConnections)=%s
+                    status 할당대기(ThreadsAwaitingConnection)=%s
                     """
                     .formatted(
                             hikariDataSource.getPoolName()
-                            , ExceptionHelper.exSafe(hikariConfigMXBean::getMaximumPoolSize, -1)
-                            , ExceptionHelper.exSafe(hikariConfigMXBean::getMinimumIdle, -1)
-                            , ExceptionHelper.exSafe(hikariConfigMXBean::getConnectionTimeout, -1)
-                            , ExceptionHelper.exSafe(hikariConfigMXBean::getIdleTimeout, -1)
-                            , ExceptionHelper.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
-                            , ExceptionHelper.exSafe(hikariConfigMXBean::getValidationTimeout, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getMaximumPoolSize, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getMinimumIdle, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getConnectionTimeout, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getIdleTimeout, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getValidationTimeout, -1)
 
-
-                            , ExceptionHelper.exSafe(hikariPoolMXBean::getTotalConnections, -1)
-                            , ExceptionHelper.exSafe(hikariPoolMXBean::getIdleConnections, -1)
-                            , ExceptionHelper.exSafe(hikariPoolMXBean::getActiveConnections, -1)
-                            , ExceptionHelper.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1));
-
-            String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HikariDataSourceMonitoring_At_Main.class).get("value"), "");
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getTotalConnections, -1)
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getActiveConnections, -1)
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getIdleConnections, -1)
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1));
             log.info(LoggingUtil.makeFwLogForm("HikariDataSource Monitoring (Scheduler)", logContent, logTag));
         }
     }

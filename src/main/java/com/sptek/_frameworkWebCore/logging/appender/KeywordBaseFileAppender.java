@@ -5,8 +5,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import lombok.Setter;
@@ -23,10 +22,12 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
     private LoggerContext context;
 
     // xml 설정값이 없을 경우의 디폹트 값
+    @Setter private String encoderPattern = "%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{sessionId}, %X{memberId}] - %msg%n"; // 성능 고려 간략화
     @Setter private String baseLogPath = Path.of(".","log", "logback").toString();
-    @Setter private String pattern = "%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{sessionId}, %X{memberId}] - %msg%n"; // 성능 고려 간략화
-    @Setter private String fileMaxSize = "10MB";
-    @Setter private int maxHistory = 1;
+    @Setter private String rollingFilePattern = ".%d{yyyy-MM-dd}_%i.log";
+    @Setter private String fileMaxSize = "100MB";
+    @Setter private int maxHistory = 31;
+    @Setter private String totalSizeCap = "10GB";
 
     @Override
     public void start() {
@@ -36,7 +37,6 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent event) {
-
         String msg = event.getFormattedMessage();
         if (!msg.startsWith(CommonConstants.FW_LOG_PREFIX)) return;
 
@@ -70,36 +70,31 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
         appender.setContext(context);
 
         try {
-            Path folderPath = Path.of(baseLogPath, CommonConstants.FW_LOG_BASE_DIR, keyword);
-            Files.createDirectories(folderPath);
-
-            String logFile = folderPath.resolve(keyword + ".log").toString();
-            appender.setFile(logFile);
-
             // Encoder
             PatternLayoutEncoder encoder = new PatternLayoutEncoder();
             encoder.setContext(context);
-            encoder.setPattern(pattern);
+            encoder.setPattern(encoderPattern);
             encoder.start();
             appender.setEncoder(encoder);
 
-            // Rolling Policy (TimeBased + Size)
-            TimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new TimeBasedRollingPolicy<>();
+            // log file
+            Path folderPath = Path.of(baseLogPath, CommonConstants.FW_LOG_BASE_DIR, keyword);
+            Files.createDirectories(folderPath);
+            String logFile = folderPath.resolve(keyword + ".log").toString();
+            appender.setFile(logFile);
+
+            // Rolling Policy
+            SizeAndTimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new SizeAndTimeBasedRollingPolicy<>();
             rollingPolicy.setContext(context);
             rollingPolicy.setParent(appender);
-            rollingPolicy.setFileNamePattern(
-                    folderPath.resolve(keyword + ".%d{yyyy-MM-dd}_%i.log").toString()
-            );
-
-            SizeAndTimeBasedFNATP<ILoggingEvent> triggeringPolicy = new SizeAndTimeBasedFNATP<>();
-            triggeringPolicy.setContext(context);
-            triggeringPolicy.setMaxFileSize(FileSize.valueOf(fileMaxSize));
-            rollingPolicy.setTimeBasedFileNamingAndTriggeringPolicy(triggeringPolicy);
-
+            rollingPolicy.setFileNamePattern(folderPath.resolve(keyword + rollingFilePattern).toString());
+            rollingPolicy.setMaxFileSize(FileSize.valueOf(fileMaxSize)); // 예: "10MB"
             rollingPolicy.setMaxHistory(maxHistory);
+            rollingPolicy.setTotalSizeCap(FileSize.valueOf(totalSizeCap));
             rollingPolicy.start();
 
             appender.setRollingPolicy(rollingPolicy);
+            appender.setTriggeringPolicy(rollingPolicy);
             appender.start();
 
         } catch (IOException e) {

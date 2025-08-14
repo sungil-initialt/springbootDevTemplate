@@ -29,6 +29,7 @@ public class SchedulerForAsyncMonitoring {
     private final ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring;
     private final TaskExecutor  threadPoolForAsync;
     private ScheduledFuture<?> scheduledFuture = null;
+    private String logTag;
 
     public SchedulerForAsyncMonitoring(
             @Qualifier("schedulerExecutorForAsyncMonitoring") ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring,
@@ -41,6 +42,7 @@ public class SchedulerForAsyncMonitoring {
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
@@ -66,9 +68,7 @@ public class SchedulerForAsyncMonitoring {
             } else {
                 logContent = "Not a ThreadPoolTaskExecutor instance: " + threadPoolForAsync.getClass().getName();
             }
-            String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"), "");
             log.info(LoggingUtil.makeFwLogForm("Async Monitoring (Scheduler)", logContent, logTag));
-
         } catch (Exception e) {
             log.warn("Scheduler For Async Monitoring", e);
         }

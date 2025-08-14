@@ -2,37 +2,43 @@
 
 spring:
   datasource:
-    #write, read로 리플리케이션 구조 설정
-    write:
-      #디폴트
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
-      #동작 쿼리를 보고 싶을때
-      #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
-
-      username: stek
-      password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
-      pool-name: Hikari write Connection Pool
-      maximum-pool-size: 20
-      connectionTimeout: 30000
-      idleTimeout: 600000
-      maxLifetime: 1800000
+    #read, write 로 리플리케이션 구조 설정
     read:
       #디폴트
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbcUrl: ENC(JLRTPJAkja4JvpWgGlp9wWHAvFek/tmqFEufjNLlUoO5MlqOSFr7HwSZYJW0fBi7Bp+N6r9XqcpQCVudPBsb9Fmhoye5+W3VvNpP1cHAA0+TyFLhaPltwHDTq4MUYtSJ)
       #동작 쿼리를 보고 싶을때
       #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
-
-      username: sptek
+      userName: ENC(wIaJU8XkPiTwsfW0DDuSkRdH7v3vRD/Xq+etGeYLTPAxVzKvS51EIbapqCpgvzRG)
       password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
-      pool-name: Hikari read Connection Pool
-      maximum-pool-size: 20
-      connectionTimeout: 30000
-      idleTimeout: 600000
-      maxLifetime: 1800000
+
+      poolName: Hikari READ Connection Pool
+      maximumPoolSize: 20
+      minimumIdle: 8
+      connectionTimeout: 8_000
+      idleTimeout: 600_000
+      maxLifetime: 1800_000
+      validationTimeout: 5_000
+      readOnly: true
+
+    write:
+      #디폴트
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbcUrl: ENC(y9zahUiK0aZv+BgcGVeej2gkJB3DKdFdHxjkr5nHEyGnPut25RQct95hzzevhZcxrskOp3/fzgeTRtlYfVDxDqNz6XZXLzoZGWOe3oA7QluRs2M0D+JAPfmx63zoKt8k)
+      #동작 쿼리를 보고 싶을때
+      #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      userName: ENC(wIaJU8XkPiTwsfW0DDuSkRdH7v3vRD/Xq+etGeYLTPAxVzKvS51EIbapqCpgvzRG)
+      password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
+
+      poolName: Hikari WRITE Connection Pool
+      maximumPoolSize: 20
+      minimumIdle: 8
+      connectionTimeout: 8_000
+      idleTimeout: 600_000
+      maxLifetime: 1800_000
+      validationTimeout: 5_000
 
 # master / slave 궈리 호출 여부를 확인 하기 위한 예시 쿼리
 #SHOW VARIABLES LIKE 'log_output';

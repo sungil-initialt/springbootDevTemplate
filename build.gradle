@@ -76,7 +76,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// 개발용 및 테스트 (선택)
-	runtimeOnly 'com.h2database:h2'
+	// runtimeOnly 'com.h2database:h2' // H2 비 사용시 주석 필요
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
