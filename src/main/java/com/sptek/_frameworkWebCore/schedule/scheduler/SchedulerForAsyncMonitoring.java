@@ -68,7 +68,7 @@ public class SchedulerForAsyncMonitoring {
             } else {
                 logContent = "Not a ThreadPoolTaskExecutor instance: " + threadPoolForAsync.getClass().getName();
             }
-            log.info(LoggingUtil.makeFwLogForm("Async Monitoring (Scheduler)", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm("Async Monitoring (Scheduler)", logContent, logTag));
         } catch (Exception e) {
             log.warn("Scheduler For Async Monitoring", e);
         }

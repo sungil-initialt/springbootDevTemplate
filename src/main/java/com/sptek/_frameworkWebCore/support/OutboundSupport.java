@@ -92,7 +92,7 @@ public class OutboundSupport {
                     """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
             String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"), "");
-            log.info(LoggingUtil.makeFwLogForm("Outbound Support Detail Log", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm("Outbound Support Detail Log", logContent, logTag));
         }
 
         // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함

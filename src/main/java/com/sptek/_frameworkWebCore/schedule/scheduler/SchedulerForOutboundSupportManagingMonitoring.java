@@ -85,7 +85,7 @@ public class SchedulerForOutboundSupportManagingMonitoring {
             }
 
             if (has_Enable_OutboundSupportMonitoring_At_Main) {
-                log.info(LoggingUtil.makeFwLogForm("OutboundSupport Monitoring (Scheduler)", logBuilder.toString(), logTag));
+                log.info(LoggingUtil.makeBaseForm("OutboundSupport Monitoring (Scheduler)", logBuilder.toString(), logTag));
             }
 
         } catch (Exception e) {

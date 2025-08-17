@@ -25,7 +25,7 @@ public class CorsPropertiesVo {
     @PostConstruct
     public void init() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
-        log.info(LoggingUtil.makeFwLogForm("CORS Policy Properties"
+        log.info(LoggingUtil.makeBaseForm("CORS Policy Properties"
                 ,"defaultAccessControlAllowOrigin: " + accessControlAllowCredentials + "\n"
                         + "accessControlAllowOrigins: " + accessControlAllowOrigins +"\n"
                         + "accessControlAllowMethods: " + accessControlAllowMethods +"\n"

@@ -8,6 +8,7 @@ import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
+import com.sptek._frameworkWebCore.util.ExecutionTimer;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
@@ -15,6 +16,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.Level;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,7 +118,7 @@ public class ApplicationGlobalExceptionHandler {
     //DetailLogFilter 에 도달할 수 없기 때문에 이곳 에서 대처함.
     private void logWithCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
         log.error("Exception message : {}", ex.getMessage());
-
+        ExecutionTimer.measure("logWithCondition", () -> {
         //  ReqResLogFilter 로 진입이 불가능한 케이스가 있기 때문에 이경우 이곳에서 요약된 로그를 남긴다.(ex: security 필터 같은 경우)
         // todo: 컨트롤러나 필터를 진입할 수 없는 케이스의 에러가 발생한 경우 항상 ERROR_REQUEST_URI 가 생성 되는 것으로 보이나 지속적 으로 살펴볼 필요 있음
         if (request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null
@@ -151,7 +153,11 @@ public class ApplicationGlobalExceptionHandler {
                     ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
                     : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
 
-            log.info(LoggingUtil.makeFwLogForm("REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm("REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent, logTag));
         }
+        });
+
+
+        //LoggingUtil.makeBaseForm(log, Level.INFO, "", "title", "a={}", request.getSession().getId());
     }
 }

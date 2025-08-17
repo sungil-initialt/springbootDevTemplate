@@ -78,4 +78,5 @@ public class SptWfwApplication {
 /*
 loggingUtil 수정개발
 log.atInfo 형태로 수정 플레이스 홀더 방식
+ApplicationGlobalExceptionHandler 테스트 필요
  */

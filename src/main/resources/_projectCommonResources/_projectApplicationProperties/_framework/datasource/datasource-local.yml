@@ -8,8 +8,8 @@ spring:
       driverClassName: com.mysql.cj.jdbc.Driver
       jdbcUrl: ENC(JLRTPJAkja4JvpWgGlp9wWHAvFek/tmqFEufjNLlUoO5MlqOSFr7HwSZYJW0fBi7Bp+N6r9XqcpQCVudPBsb9Fmhoye5+W3VvNpP1cHAA0+TyFLhaPltwHDTq4MUYtSJ)
       #동작 쿼리를 보고 싶을때
-      #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      #ddriverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbcUrl: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
       userName: ENC(wIaJU8XkPiTwsfW0DDuSkRdH7v3vRD/Xq+etGeYLTPAxVzKvS51EIbapqCpgvzRG)
       password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
 
@@ -27,8 +27,8 @@ spring:
       driverClassName: com.mysql.cj.jdbc.Driver
       jdbcUrl: ENC(y9zahUiK0aZv+BgcGVeej2gkJB3DKdFdHxjkr5nHEyGnPut25RQct95hzzevhZcxrskOp3/fzgeTRtlYfVDxDqNz6XZXLzoZGWOe3oA7QluRs2M0D+JAPfmx63zoKt8k)
       #동작 쿼리를 보고 싶을때
-      #driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      #jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
+      #driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbcUrl: jdbc:log4jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC
       userName: ENC(wIaJU8XkPiTwsfW0DDuSkRdH7v3vRD/Xq+etGeYLTPAxVzKvS51EIbapqCpgvzRG)
       password: ENC(/Ylid4X1rWuhuuo+FUfo0QjXWXdPROMxoYh3JQ916zpfkotbS3rGcWQWMfKYALCc)
 

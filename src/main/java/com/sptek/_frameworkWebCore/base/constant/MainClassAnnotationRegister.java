@@ -31,7 +31,7 @@ public class MainClassAnnotationRegister {
                 }
             }
             mainClassAnnotationRegister = Map.copyOf(temp);
-            log.debug(LoggingUtil.makeFwLogForm("MainClass Annotation Register", mainClassAnnotationRegister.toString(), CommonConstants.FW_START_LOG_TAG));
+            log.debug(LoggingUtil.makeBaseForm("MainClass Annotation Register", mainClassAnnotationRegister.toString(), CommonConstants.FW_START_LOG_TAG));
         }
     }
 

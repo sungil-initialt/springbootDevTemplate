@@ -13,7 +13,7 @@ public class ContextClosedEventListenerFor {
 
     @EventListener
     public void listen(ContextClosedEvent contextClosedEvent) {
-        log.info(LoggingUtil.makeFwLogForm("Context Closed Event"
+        log.info(LoggingUtil.makeBaseForm("Context Closed Event"
                 , "Bye~ Bye~ System has been shut down successfully.", CommonConstants.FW_START_LOG_TAG));
         //log.debug("Event! : bye bye");
         //do more what you want..

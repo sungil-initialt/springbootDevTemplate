@@ -75,7 +75,7 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
                     , responseHeader
                     , response.getStatus(), StringUtils.hasText(responseBody)? "\n" + responseBody : ""
             );
-            log.info(LoggingUtil.makeFwLogForm("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
+            log.info(LoggingUtil.makeBaseForm("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
@@ -99,7 +99,7 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
                     , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : ""
                     , exceptionMsg
             );
-            log.info(LoggingUtil.makeFwLogForm("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
+            log.info(LoggingUtil.makeBaseForm("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
         }
 
         // todo: 중요!! 자신이 response를 HttpServletResponseWrapperSupport로 변환한 최초의 필터라면 response에 body를 최종 write 할 책음을 져야 한다.

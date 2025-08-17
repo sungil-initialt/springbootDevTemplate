@@ -22,8 +22,8 @@ public class DataSourceConfigForH2 {
     @Bean(name = "dataSource")
     public DataSource dataSource(
             @Value("${h2.datasource.driverClassName}") String driverClassName
-            , @Value("${h2.datasource.url}") String url
-            , @Value("${h2.datasource.username}") String username
+            , @Value("${h2.datasource.jdbcUrl}") String url
+            , @Value("${h2.datasource.userName}") String username
             , @Value("${h2.datasource.password}") String password) {
 
         HikariDataSource dataSource = new HikariDataSource();
