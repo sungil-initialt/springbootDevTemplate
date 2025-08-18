@@ -52,7 +52,7 @@ public class SystemGlobalEnvTemporaryValue {
                     });
 
             String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_GlobalEnvLog_At_Main.class).get("value"), "");
-            log.info(LoggingUtil.makeBaseForm("Global Environment (Notice!! : It has Confidential Details)", globalEnvironment.toString(), logTag));
+            log.info(LoggingUtil.makeBaseForm(logTag, "Global Environment (Notice!! : It has Confidential Details)", globalEnvironment.toString()));
         }
     }
 

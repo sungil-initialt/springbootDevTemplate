@@ -95,7 +95,7 @@ public class SchedulerForHikariDataSourceMonitoring {
                             , ExceptionUtil.exSafe(hikariPoolMXBean::getActiveConnections, -1)
                             , ExceptionUtil.exSafe(hikariPoolMXBean::getIdleConnections, -1)
                             , ExceptionUtil.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1));
-            log.info(LoggingUtil.makeBaseForm("HikariDataSource Monitoring (Scheduler)", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm(logTag, "HikariDataSource Monitoring (Scheduler)", logContent));
         }
     }
 }

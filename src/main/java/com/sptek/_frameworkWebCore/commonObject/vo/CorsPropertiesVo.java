@@ -25,13 +25,13 @@ public class CorsPropertiesVo {
     @PostConstruct
     public void init() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
-        log.info(LoggingUtil.makeBaseForm("CORS Policy Properties"
+        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "CORS Policy Properties"
                 ,"defaultAccessControlAllowOrigin: " + accessControlAllowCredentials + "\n"
                         + "accessControlAllowOrigins: " + accessControlAllowOrigins +"\n"
                         + "accessControlAllowMethods: " + accessControlAllowMethods +"\n"
                         + "accessControlAllowCredentials: " + accessControlAllowCredentials +"\n"
                         + "accessControlMaxAge: " + accessControlMaxAge +"\n"
                         + "accessControlAllowHeaders: " + accessControlAllowHeaders
-                , CommonConstants.FW_START_LOG_TAG));
+        ));
     }
 }

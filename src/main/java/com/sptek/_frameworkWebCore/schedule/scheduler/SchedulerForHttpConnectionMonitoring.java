@@ -86,7 +86,7 @@ public class SchedulerForHttpConnectionMonitoring {
                             busyThreads,
                             queueSize
                     );
-                    log.info(LoggingUtil.makeBaseForm("Http Connection Monitoring (Scheduler)", logContent, logTag));
+                    log.info(LoggingUtil.makeBaseForm(logTag, "Http Connection Monitoring (Scheduler)", logContent));
                 }
             }
         } catch (Exception e) {

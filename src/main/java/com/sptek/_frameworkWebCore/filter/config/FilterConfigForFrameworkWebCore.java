@@ -51,7 +51,7 @@ public class FilterConfigForFrameworkWebCore {
         return filterRegistrationBean;
     }
 
-    @Profile(value = { "local", "dev", "stg", "prd" })
+    @Profile(value = { "local", "dev", "stg", "prd" }) // 필터 내부에서 동작을 여부가 다시 한번 결정됨
     @Bean
     public FilterRegistrationBean<ReqResDetailLogFilter> detailLogFilterWithAnnotation() {
         FilterRegistrationBean<ReqResDetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();

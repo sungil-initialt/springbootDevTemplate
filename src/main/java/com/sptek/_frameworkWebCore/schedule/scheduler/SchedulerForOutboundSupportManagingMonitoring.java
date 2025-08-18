@@ -65,29 +65,26 @@ public class SchedulerForOutboundSupportManagingMonitoring {
     // 실제 스케줄 내용
     public void doJobs() {
         try {
-            StringBuilder logBuilder = new StringBuilder();
             PoolStats beforeStats = poolingHttpClientConnectionManager.getTotalStats();
-
             // 커넥션 정리 수행
             poolingHttpClientConnectionManager.closeIdle(TimeValue.ofSeconds(10));
             poolingHttpClientConnectionManager.closeExpired();
-            PoolStats afterStats = poolingHttpClientConnectionManager.getTotalStats();
-
-            logBuilder.append(String.format("사용중(Leased)=%d->%d, 사용가능(Available)=%d->%d, 대기중(Pending)=%d->%d\n"
-                    , beforeStats.getLeased(), afterStats.getLeased(), beforeStats.getAvailable()
-                    , afterStats.getAvailable(), beforeStats.getPending(), afterStats.getPending()));
-
-            // 현재 각 Route별 상태
-            for (HttpRoute route : poolingHttpClientConnectionManager.getRoutes()) {
-                PoolStats routeStats = poolingHttpClientConnectionManager.getStats(route);
-                logBuilder.append(String.format("%s => Leased=%d, Available=%d, Pending=%d\n"
-                        , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
-            }
 
             if (has_Enable_OutboundSupportMonitoring_At_Main) {
-                log.info(LoggingUtil.makeBaseForm("OutboundSupport Monitoring (Scheduler)", logBuilder.toString(), logTag));
-            }
+                PoolStats afterStats = poolingHttpClientConnectionManager.getTotalStats();
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(String.format("사용중(Leased)=%d->%d, 사용가능(Available)=%d->%d, 대기중(Pending)=%d->%d\n"
+                        , beforeStats.getLeased(), afterStats.getLeased(), beforeStats.getAvailable()
+                        , afterStats.getAvailable(), beforeStats.getPending(), afterStats.getPending()));
 
+                // 현재 각 Route별 상태
+                for (HttpRoute route : poolingHttpClientConnectionManager.getRoutes()) {
+                    PoolStats routeStats = poolingHttpClientConnectionManager.getStats(route);
+                    stringBuilder.append(String.format("%s => Leased=%d, Available=%d, Pending=%d\n"
+                            , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
+                }
+                log.info(LoggingUtil.makeBaseForm(logTag, "OutboundSupport Monitoring (Scheduler)", stringBuilder.toString()));
+            }
         } catch (Exception e) {
             log.warn("Error while monitoring HttpClient Connection Pool", e);
         }

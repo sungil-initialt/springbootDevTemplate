@@ -9,18 +9,17 @@ import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.ExecutionTimer;
-import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
+import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -118,12 +117,13 @@ public class ApplicationGlobalExceptionHandler {
     //DetailLogFilter 에 도달할 수 없기 때문에 이곳 에서 대처함.
     private void logWithCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
         log.error("Exception message : {}", ex.getMessage());
-        ExecutionTimer.measure("logWithCondition", () -> {
+
+
         //  ReqResLogFilter 로 진입이 불가능한 케이스가 있기 때문에 이경우 이곳에서 요약된 로그를 남긴다.(ex: security 필터 같은 경우)
         // todo: 컨트롤러나 필터를 진입할 수 없는 케이스의 에러가 발생한 경우 항상 ERROR_REQUEST_URI 가 생성 되는 것으로 보이나 지속적 으로 살펴볼 필요 있음
-        if (request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null
-                // || ex instanceof xxxException // todo: 관련 다른 케이스가 확인 되면 추가 필요
-        ) {
+        // todo: 관련 다른 케이스가 확인 되면 추가 필요
+        if (request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null /* || ex instanceof xxxException */ ) {
+            ExecutionTimer.measure("logWithCondition->stringFormat", () -> {
             String sessionId = request.getSession().getId();
             String methodType = RequestUtil.getRequestMethodType(request);
             String url = RequestUtil.getRequestDomain(request) +
@@ -153,11 +153,46 @@ public class ApplicationGlobalExceptionHandler {
                     ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
                     : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
 
-            log.info(LoggingUtil.makeBaseForm("REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent, logTag));
+            log.error(LoggingUtil.makeBaseForm(logTag, "REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent));
+            });
+
+// ---------- placeHolder 방식을 사용하는 LoggingUtil.logBaseForm 과 성능 비교를 해본 코드!
+//            ExecutionTimer.measure("logWithCondition->placeHolder", () -> {
+//                Supplier<String> sessionId = ()-> request.getSession().getId();
+//                Supplier<String> methodType = ()-> RequestUtil.getRequestMethodType(request);
+//                Supplier<String>  url = ()-> RequestUtil.getRequestDomain(request) +
+//                        Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI)).orElse(request.getRequestURI()) +
+//                        (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
+//
+//                Supplier<String> requestHeader = ()-> TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
+//                Supplier<String> relatedOutbounds = ()-> Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
+//                Supplier<String> params = ()-> TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
+//
+//                String bodyTemplate = """
+//                    sessionId: {}
+//                    ({}) url: {}
+//                    header: {}
+//                    params: {}
+//                    responseStatus: {}
+//                    relatedOutbounds: {}
+//                    requestTime: {}
+//                    responseTime: {}
+//                    durationMsec: {}
+//                    exceptionMsg: {}
+//                    """;
+//                //.formatted(sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
+//                //        , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), ex.getMessage());
+//
+//                // main 과 controller 쪽 양쪽에 적용되어 있는 경우 controller 쪽 annotation 이 우선함 (controller 전체와 controller 메소드 양쪽에 적용되는 경우는 RequestMappingAnnotationRegister 가 메소드쪽 정보를 가지고 있음)
+//                String logTag = ExecutionTimer.measure("RequestMappingAnnotationRegister", ()-> StringUtils.hasText(Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""))
+//                        ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
+//                        : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""));
+//                Supplier<String> exMessage = ex::getMessage;
+//
+//                LoggingUtil.logBaseForm(log, Level.ERROR, logTag, "REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", bodyTemplate
+//                        , sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
+//                                , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), exMessage);
+//            });
         }
-        });
-
-
-        //LoggingUtil.makeBaseForm(log, Level.INFO, "", "title", "a={}", request.getSession().getId());
     }
 }

@@ -1,12 +1,14 @@
 package com.sptek._frameworkWebCore.support;
 
 import com.sptek._frameworkWebCore._annotation.Enable_OutboundSupportDetailLog_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
+import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.commonObject.dto.HttpClientResponseDto;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._frameworkWebCore.util.SpringUtil;
-import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,19 +94,22 @@ public class OutboundSupport {
                     """.formatted(outboundId, httpMethod.name(), uriComponents.toString(), httpHeaders.toString(), requestBodyStr
                             , httpClientResponseDto.code(), httpClientResponseDto.headers().toString(), httpClientResponseDto.body());
             String logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportDetailLog_At_Main.class).get("value"), "");
-            log.info(LoggingUtil.makeBaseForm("Outbound Support Detail Log", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm(logTag, "Outbound Support Detail Log", logContent));
         }
 
         // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함
-        try {
-            List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS);
-            if (relatedOutbounds == null) {
-                relatedOutbounds = new ArrayList<>();
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
+                || RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)) {
+            try {
+                List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS);
+                if (relatedOutbounds == null) {
+                    relatedOutbounds = new ArrayList<>();
+                }
+                relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
+                SpringUtil.getRequest().setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
+            } catch (Exception e) {
+                log.debug("Not logging related outbound information.");
             }
-            relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
-            SpringUtil.getRequest().setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
-        } catch (Exception e) {
-            log.debug("Not logging related outbound information.");
         }
     }
 

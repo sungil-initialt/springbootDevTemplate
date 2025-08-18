@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 
-// todo: 해당 동작은 기본적 으로 링크를 클릭 하여 접속 되는 경우 동작 하며 browser 에 주소를 직접 일력 하는 방식 에서는 동작 하지 않음.
+// todo: 해당 동작은 기본적으로 링크를 클릭 하여 접속 되는 경우 동작 하며 browser 에 주소를 직접 일력 하는 방식 에서는 동작 하지 않음.
 public class RedirectHelperAfterLogin {
 
     private final static String LOGIN_SUCCESS_REDIRECT_URL = "LOGIN_SUCCESS_REDIRECT_URL";
@@ -62,7 +62,7 @@ public class RedirectHelperAfterLogin {
             log.debug("came into the login by click the login button.");
         }
 
-        //referer 를 로그인 성공시 redirect url 설정 (단 로그인 페이지에서 로그인 실패 또는 logout 등 이유로.. referer 가 되면 안되는 케이스 는 제외)
+        //referer 를 로그인 성공시 redirect url로 설정 (단 로그인 페이지에서 로그인 실패 또는 logout 등 이유로.. referer 가 되면 안되는 케이스 는 제외)
         String finalRefererPath = refererPath;
         if (RedirectHelperAfterLogin.NOT_REDIRECT_URLS.stream().noneMatch(url -> url.equals(finalRefererPath))) {
             request.getSession().setAttribute(LOGIN_SUCCESS_REDIRECT_URL, redirectParam);

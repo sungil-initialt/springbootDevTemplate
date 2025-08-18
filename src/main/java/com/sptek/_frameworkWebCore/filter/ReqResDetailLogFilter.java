@@ -38,7 +38,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
         //log.debug("DetailLogFilterWithAnnotation start");
 
-        // 필터 제외 케이스
+        // 필터 동작 여부 (제외 케이스)
         boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)
                 && (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest());
         boolean hasNoDetailLogAnnotation = !MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
@@ -49,7 +49,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 필터 적용 케이스 (Request와 Response를 ContentCachingWrapper로 래핑)
+        // 필터 적용 (Request와 Response를 ContentCachingWrapper로 래핑)
         ContentCachingRequestWrapper contentCachingRequestWrapper = request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper)request : new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper contentCachingResponseWrapper;
         boolean amIContentCachingResponseWrapperOwner = false;
@@ -92,7 +92,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
                     relatedOutbounds: %s
                     responseBody(%s): %s
                     """.formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds, response.getStatus(), responseBody);
-            log.info(LoggingUtil.makeBaseForm("Req Res Success Detail Log caught by the ReqResDetailLogFilter", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm(logTag, "Req Res Success Detail Log caught by the ReqResDetailLogFilter", logContent));
 
         } else {
             String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
@@ -113,7 +113,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
                     """.formatted(sessionId, methodType, url, params, requestHeader, StringUtils.hasText(requestBody)? "\n" + requestBody : "", responseHeader , relatedOutbounds
                             , RequestUtil.traceRequestDuration().getStartTime(), RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec()
                             , response.getStatus(), StringUtils.hasText(responseModelAndView)? "\n" + responseModelAndView : "", exceptionMsg);
-            log.info(LoggingUtil.makeBaseForm("Req Res Success Detail Log caught by the ReqResDetailLogFilter", logContent, logTag));
+            log.info(LoggingUtil.makeBaseForm(logTag, "Req Res Success Detail Log caught by the ReqResDetailLogFilter", logContent));
         }
 
         // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)

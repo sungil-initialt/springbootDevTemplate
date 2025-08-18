@@ -9,13 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ContextClosedEventListenerFor {
+public class ContextClosedEventListenerForByeMarking {
 
     @EventListener
     public void listen(ContextClosedEvent contextClosedEvent) {
-        log.info(LoggingUtil.makeBaseForm("Context Closed Event"
-                , "Bye~ Bye~ System has been shut down successfully.", CommonConstants.FW_START_LOG_TAG));
-        //log.debug("Event! : bye bye");
+        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "Context Closed Event", "Bye~ Bye~ System has been shut down successfully."));
         //do more what you want..
     }
 }

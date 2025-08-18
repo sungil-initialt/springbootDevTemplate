@@ -37,7 +37,6 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
         request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());
         filterChain.doFilter(request, response);
     }

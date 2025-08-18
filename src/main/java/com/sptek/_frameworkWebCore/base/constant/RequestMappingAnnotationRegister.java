@@ -56,9 +56,9 @@ public class RequestMappingAnnotationRegister {
             });
 
             requestAnnotationRegister = Map.copyOf(tempRequestAnnotationRegister);
-            log.debug(LoggingUtil.makeBaseForm("RequestMapping Annotation Register", requestAnnotationRegister.toString(), CommonConstants.FW_START_LOG_TAG));
-            log.info(LoggingUtil.makeBaseForm("No URL Pattern (Potential Mapping Error)", logBodyForPathEmpty.isEmpty() ? "No Error (Good)" : logBodyForPathEmpty.toString(), CommonConstants.FW_START_LOG_TAG));
-            log.info(LoggingUtil.makeBaseForm("Not Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString(), CommonConstants.FW_START_LOG_TAG));
+            log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "RequestMapping Annotation Register", requestAnnotationRegister.toString()));
+            log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "No URL Pattern (Potential Mapping Error)", logBodyForPathEmpty.isEmpty() ? "No Error (Good)" : logBodyForPathEmpty.toString()));
+            log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "Not Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString()));
         }
     }
 
