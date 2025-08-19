@@ -12,20 +12,20 @@
 
     <springProperty scope="context" name="root_log_level" source="logging.level.root"/> <!--logging-xxx.yml 파일에 선언됨-->
 
-    <property name="default_log_patternForConsole"      value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{sessionId}, %X{memberId}]){yellow} - %msg%n"/>
-    <property name="default_log_patternForFile"         value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
-    <property name="keyword_log_patternForFile"         value="%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
     <property name="default_log_base_path"              value="./log/logback"/>
     <property name="default_log_rolling_file_pattern"   value=".%d{yyyy-MM-dd}_%i.log"/> <!-- 압축은 .log.gz -->
     <property name="default_log_max_history"            value="1"/>
     <property name="default_log_max_filesize"           value="100MB"/>
     <property name="default_log_total_filesizeCap"      value="10GB"/>
+    <property name="default_log_pattern"                value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
+    <property name="color_log_pattern"                  value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{sessionId}, %X{memberId}]){yellow} - %msg%n"/>
+    <property name="keyword_log_pattern"                value="%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExcept"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_patternForConsole}</pattern>
+            <pattern>${color_log_pattern}</pattern> <!--서버 적용 시는 default_log_pattern 을 권장-->
         </encoder>
     </appender>
 
@@ -37,7 +37,7 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_patternForFile}</pattern>
+            <pattern>${default_log_pattern}</pattern>
         </encoder>
         <file>${default_log_base_path}/error/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -54,7 +54,7 @@
         </filter>
         <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExcept"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${default_log_patternForFile}</pattern>
+            <pattern>${default_log_pattern}</pattern>
         </encoder>
         <file>${default_log_base_path}/service/service.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -67,7 +67,7 @@
 
     <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
     <appender name="keywordBaseLog" class="com.sptek._frameworkWebCore.logging.appender.KeywordBaseFileAppender">
-        <encoderPattern>${keyword_log_patternForFile}</encoderPattern>
+        <encoderPattern>${keyword_log_pattern}</encoderPattern>
         <baseLogPath>${default_log_base_path}</baseLogPath>
         <rollingFilePattern>${default_log_rolling_file_pattern}</rollingFilePattern>
         <fileMaxSize>${default_log_max_filesize}</fileMaxSize>

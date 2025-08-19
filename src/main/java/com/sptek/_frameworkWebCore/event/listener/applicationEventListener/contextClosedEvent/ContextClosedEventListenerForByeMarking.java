@@ -13,7 +13,7 @@ public class ContextClosedEventListenerForByeMarking {
 
     @EventListener
     public void listen(ContextClosedEvent contextClosedEvent) {
-        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "Context Closed Event", "Bye~ Bye~ System has been shut down successfully."));
+        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "Context Closed Event", "Bye~ Bye~ Application has been shut down successfully."));
         //do more what you want..
     }
 }

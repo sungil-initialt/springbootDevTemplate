@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.schedule.scheduler;
 
-import com.sptek._frameworkWebCore._annotation.Enable_HttpConnectionMonitoring_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_HttpConnectorWorkerMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
@@ -23,18 +23,18 @@ import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
 @Component
-@HasAnnotationOnMain_At_Bean(Enable_HttpConnectionMonitoring_At_Main.class)
+@HasAnnotationOnMain_At_Bean(Enable_HttpConnectorWorkerMonitoring_At_Main.class)
 
-public class SchedulerForHttpConnectionMonitoring {
-    // todo: 현재의 SchedulerForHttpConnectionMonitoring 는 embeeded tomcat 을 사용하는 경우만 동작함
+public class SchedulerForHttpConnectorWorkerMonitoring {
+    // todo: 현재의 SchedulerForHttpConnectorWorkerMonitoring 는 embeeded tomcat 을 사용하는 경우만 동작함
 
-    private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring;
+    private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring;
     private TomcatWebServer  tomcatWebServer = null;
     private ScheduledFuture<?> scheduledFuture = null;
     private String logTag;
 
-    public SchedulerForHttpConnectionMonitoring(@Qualifier("schedulerExecutorForHttpConnectionMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring) {
-        this.schedulerExecutorForHttpConnectionMonitoring = schedulerExecutorForHttpConnectionMonitoring;
+    public SchedulerForHttpConnectorWorkerMonitoring(@Qualifier("schedulerExecutorForHttpConnectorWorkerMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring) {
+        this.schedulerExecutorForHttpConnectorWorkerMonitoring = schedulerExecutorForHttpConnectorWorkerMonitoring;
     }
 
     @EventListener // TomcatWebServer 를 얻기 위해 ServletWebServerInitializedEvent 를 listen 하여 가져옴
@@ -48,15 +48,15 @@ public class SchedulerForHttpConnectionMonitoring {
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
-        logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectionMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForHttpConnectionMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
+        logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectorWorkerMonitoring_At_Main.class).get("value"), "");
+        scheduledFuture = schedulerExecutorForHttpConnectorWorkerMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }
 
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
         scheduledFuture.cancel(false); // 현재 작업이 끝나길 기다리고 중단
-        schedulerExecutorForHttpConnectionMonitoring.shutdown();
+        schedulerExecutorForHttpConnectorWorkerMonitoring.shutdown();
     }
 
     // 실제 스케줄 내용
@@ -86,11 +86,11 @@ public class SchedulerForHttpConnectionMonitoring {
                             busyThreads,
                             queueSize
                     );
-                    log.info(LoggingUtil.makeBaseForm(logTag, "Http Connection Monitoring (Scheduler)", logContent));
+                    log.info(LoggingUtil.makeBaseForm(logTag, "Http Connector Worker Monitoring (Scheduler)", logContent));
                 }
             }
         } catch (Exception e) {
-            log.warn("Scheduler For HttpConnection Monitoring", e);
+            log.warn("Scheduler For Http Connector Worker Monitoring", e);
         }
     }
 }

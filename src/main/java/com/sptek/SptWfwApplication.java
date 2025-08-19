@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Enable_ResponseOfApplicationGlobalException_At_Main
 
 /* MONITORING */
-@Enable_HttpConnectionMonitoring_At_Main("")
+@Enable_HttpConnectorWorkerMonitoring_At_Main("")
 @Enable_AsyncMonitoring_At_Main("")
 @Enable_OutboundSupportMonitoring_At_Main("")
 @Enable_HikariDataSourceMonitoring_At_Main("")
@@ -51,6 +51,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Enable_NoFilterAndSessionForMinorRequest_At_Main //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 @Enable_HttpCachePublicForStaticResource_At_Main
 @Enable_PropertiesToModelAttribute_At_Main
+@Enable_ExecutionTimer_At_Main
+
 
 
 public class SptWfwApplication {
@@ -70,7 +72,6 @@ public class SptWfwApplication {
 		//SpringApplication app = new SpringApplication(SptWfwApplication.class);
 		//app.setAdditionalProfiles("dev, stg");
 		//app.run(args);
-
 	}
 }
 

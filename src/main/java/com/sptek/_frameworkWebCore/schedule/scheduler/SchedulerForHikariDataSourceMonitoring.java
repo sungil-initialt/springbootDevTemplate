@@ -69,32 +69,24 @@ public class SchedulerForHikariDataSourceMonitoring {
             HikariPoolMXBean hikariPoolMXBean = hikariDataSource.getHikariPoolMXBean();
 
             String logContent = """
-                    ** %s **
-                    config 최대허용(MaximumPoolSize)=%s
-                    config 기본상시대기(MinimumIdle)=%s
-                    config ThreadsAwaitingConnection에서 최대 대기시간(ConnectionTimeout)=%s
-                    config 유휴 커넥션 회수 시간(IdleTimeout)=%s
-                    config DB와 커넥션을 새로 연결하는 시간, DB쪽 타임아웃 보다 작게, refresh 의미, 유휴 커넥션에 적용(MaxLifetime)=%s
-                    config DB 커넥션 헬스체크 타임아웃, 시간내 응답 없으면 새로 연결(ValidationTimeout)=%s
-                    
-                    status DB연결(TotalConnections)=%s
-                    status 사용중(ActiveConnections)=%s
-                    status 사용가능(IdleConnections)=%s
-                    status 할당대기(ThreadsAwaitingConnection)=%s
-                    """
+                   %s => DB연결(TotalConnections)=%s, 사용중(ActiveConnections)=%s, 사용가능(IdleConnections)=%s, 할당대기(ThreadsAwaitingConnection)=%s
+                   [CONFIG] 최대허용(MaximumPoolSize)=%s, 상시대기(MinimumIdle)=%s, ThreadsAwaitingConnection 에서 최대 대기시간(ConnectionTimeout)=%s, 유휴 커넥션 회수 시간(IdleTimeout)=%s DB와 커넥션을 새로 연결하는 시간, DB쪽 타임아웃 보다 작게, refresh 의미 (MaxLifetime)=%s, DB 커넥션 헬스체크 타임아웃, 시간내 응답 없으면 새로 연결(ValidationTimeout)=%s
+                   """
                     .formatted(
                             hikariDataSource.getPoolName()
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getTotalConnections, -1)
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getActiveConnections, -1)
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getIdleConnections, -1)
+                            , ExceptionUtil.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1)
+
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getMaximumPoolSize, -1)
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getMinimumIdle, -1)
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getConnectionTimeout, -1)
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getIdleTimeout, -1)
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getValidationTimeout, -1)
+                            , ExceptionUtil.exSafe(hikariConfigMXBean::getValidationTimeout, -1));
 
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getTotalConnections, -1)
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getActiveConnections, -1)
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getIdleConnections, -1)
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1));
+
             log.info(LoggingUtil.makeBaseForm(logTag, "HikariDataSource Monitoring (Scheduler)", logContent));
         }
     }

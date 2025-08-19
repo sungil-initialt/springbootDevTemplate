@@ -2,7 +2,7 @@ package com.sptek._frameworkWebCore.schedule.config;
 
 import com.sptek._frameworkWebCore._annotation.Enable_AsyncMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.Enable_HikariDataSourceMonitoring_At_Main;
-import com.sptek._frameworkWebCore._annotation.Enable_HttpConnectionMonitoring_At_Main;
+import com.sptek._frameworkWebCore._annotation.Enable_HttpConnectorWorkerMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.Enable_OutboundSupportMonitoring_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +24,12 @@ public class SpecificSchedulerExecutorConfig {
 
     final private Environment environment;
 
-    @HasAnnotationOnMain_At_Bean(Enable_HttpConnectionMonitoring_At_Main.class)
-    @Bean(name = "schedulerExecutorForHttpConnectionMonitoring")
-    public ThreadPoolTaskScheduler schedulerExecutorForHttpConnectionMonitoring() {
+    @HasAnnotationOnMain_At_Bean(Enable_HttpConnectorWorkerMonitoring_At_Main.class)
+    @Bean(name = "schedulerExecutorForHttpConnectorWorkerMonitoring")
+    public ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(1); // 다른 Task에 영향을 받지 않도록 전용 Thread로 동작(전용 Thread의 pool은 1개로 처리)
-        scheduler.setThreadNamePrefix("from schedulerExecutorForHttpConnectionMonitoring-");
+        scheduler.setThreadNamePrefix("from schedulerExecutorForHttpConnectorWorkerMonitoring-");
         scheduler.setRemoveOnCancelPolicy(true); //true = 스케줄 작업이 cancel() 시 대기큐 바로 삭제
         scheduler.setWaitForTasksToCompleteOnShutdown(true); // spring 종료시 진행중 작업 마무리 가능하도록 설정
         scheduler.setAwaitTerminationSeconds((int)environment.getProperty(

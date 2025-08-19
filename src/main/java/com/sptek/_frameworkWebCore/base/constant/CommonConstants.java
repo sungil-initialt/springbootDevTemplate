@@ -10,7 +10,7 @@ public class CommonConstants {
     public static final String FRAMEWORK_ANNOTATION_PACKAGE_NAME = FRAMEWORK_WEBCORE_PACKAGE_NAME + "_annotation";
 
     // Logging
-    public static final String FW_LOG_PREFIX = "■ FW_LOG_TAG : ";
+    public static final String FW_LOG_PREFIX = "■ FW_LOG : ";
     public static final String FW_LOG_BASE_DIR = "_FW_LOG";
     public static final String FW_LOG_FILENAME_MARK = "file->";
     public static final String FW_LOG_NO_CONSOLE_MARK = "->noConsole";

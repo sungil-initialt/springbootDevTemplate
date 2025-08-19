@@ -4,15 +4,14 @@ project-info:
     version: v1.0.0
     description : enjoy your coding life with SPT Framework Web Core
 
-
 server:
   name: ${HOSTNAME:${COMPUTERNAME:unknown}}
   port: 443
   shutdown: graceful
   tomcat:
     threads:
-      max: 1 # 동시에 처리할 수 있는 최대 worker thread 수 (기본 200)
-      min-spare: 1 # 최소로 항상 유지하는 idle thread 수 (기본 10)
+      max: 1 # 동시에 처리할 수 있는 서블릿 디스패처 최대 worker thread 수 (기본 200)
+      min-spare: 1 # 최소로 항상 유지하는 서블릿 디스패처 최대 worker thread 수 (기본 10)
 
 spring:
   lifecycle:
