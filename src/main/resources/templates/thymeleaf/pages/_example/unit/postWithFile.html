@@ -40,9 +40,9 @@
     <input class="input-normal" type="file"  id="files" style="width: 250px;" multiple>
     <br><br>
 
-    <button class="btn-normal" type="button" id="uploadFiles">Upload Files</button>
+    <button class="btn-normal" type="button" id="submitWithFiles">submit</button>
     <script>
-      document.getElementById('uploadFiles').addEventListener('click', async function() {
+      document.getElementById('submitWithFiles').addEventListener('click', async function() {
         const formData = new FormData();
         const title = document.getElementById("title").value;
         const content = document.getElementById("content").value;

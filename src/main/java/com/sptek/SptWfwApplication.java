@@ -22,14 +22,14 @@ import org.springframework.scheduling.annotation.EnableAsync;
 /* MONITORING */
 @Enable_HttpConnectorWorkerMonitoring_At_Main("")
 @Enable_AsyncMonitoring_At_Main("")
-@Enable_OutboundSupportMonitoring_At_Main("")
-@Enable_HikariDataSourceMonitoring_At_Main("")
+@Enable_OutboundSupportMonitoring_At_Main("->noConsole")
+@Enable_HikariDataSourceMonitoring_At_Main("->noConsole")
 
 /* LOGGING */
 @Enable_MdcTagging_At_Main
-@Enable_VisitHistoryLog_At_Main("")
+@Enable_VisitHistoryLog_At_Main("->noConsole")
 @Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("")
-@Enable_OutboundSupportDetailLog_At_Main("")
+@Enable_OutboundSupportDetailLog_At_Main("->noConsole")
 @Enable_GlobalEnvLog_At_Main("GlobalEnv file->FW_START_LOG ->noConsole")
 
 /* DATABASE */

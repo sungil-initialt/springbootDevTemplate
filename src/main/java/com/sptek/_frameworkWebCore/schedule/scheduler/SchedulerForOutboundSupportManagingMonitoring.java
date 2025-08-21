@@ -48,7 +48,7 @@ public class SchedulerForOutboundSupportManagingMonitoring {
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         has_Enable_OutboundSupportMonitoring_At_Main = MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportMonitoring_At_Main.class);
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));

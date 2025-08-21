@@ -42,14 +42,15 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
 
         int newlineIndex = msg.indexOf('\n');
         String firstLine = newlineIndex >= 0 ? msg.substring(0, newlineIndex) : msg;
-        String fileName = extractFileName(firstLine);
+        String appenderKeyword = extractFileName(firstLine);
 
         //ystem.out.println("extractFileName : " + fileName);
-        if (fileName.isEmpty()) return;
-        RollingFileAppender<ILoggingEvent> appender = appenderCache.computeIfAbsent(fileName, this::createAppender);
+        if (appenderKeyword.isEmpty()) return;
+        RollingFileAppender<ILoggingEvent> appender = appenderCache.computeIfAbsent(appenderKeyword, this::createAppender);
         appender.doAppend(event);
     }
 
+    // fileName 을 키워드로 사용하는 케이스
     public static String extractFileName(String text) {
         int i = text.indexOf(CommonConstants.FW_LOG_FILENAME_MARK);
         if (i < 0) return "";
@@ -100,7 +101,6 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
         } catch (IOException e) {
             addError("Failed to create log appender for keyword [" + keyword + "]", e);
         }
-
         return appender;
     }
 }

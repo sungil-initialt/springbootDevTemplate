@@ -47,7 +47,7 @@ public class SchedulerForHttpConnectorWorkerMonitoring {
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectorWorkerMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForHttpConnectorWorkerMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }

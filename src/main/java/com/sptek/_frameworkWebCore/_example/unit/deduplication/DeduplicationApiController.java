@@ -25,11 +25,9 @@ public class DeduplicationApiController {
     @Operation(summary = "01. 동일 요청이 빠르게 연속 요청 되는 것을 방지", description = "")
     public Object duplicatedRequest() throws Exception {
         //log.debug("AOP order : ??");
-        String result = "prevent duplicateRequest test ok";
         Thread.sleep(3000L);
-        return result;
+        return "prevent duplicateRequest test ok";
     }
-
 }
 
 

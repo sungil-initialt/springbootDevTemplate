@@ -41,7 +41,7 @@ public class SchedulerForAsyncMonitoring {
     @EventListener // @PostConstruct 시점에는 MainClassAnnotationRegister 가 생성되기 전임으로  Event Listen 방식으로 변경함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }

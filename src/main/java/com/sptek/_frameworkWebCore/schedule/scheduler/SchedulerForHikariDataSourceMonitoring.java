@@ -49,7 +49,7 @@ public class SchedulerForHikariDataSourceMonitoring {
             }
         });
 
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 10;
+        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HikariDataSourceMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
     }

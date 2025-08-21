@@ -27,11 +27,11 @@
 <body>
 <div class="base-div">
   <div class="inner-div">
-    <b>JS Fetch 사용</b>
+    <b>Client Fetch (js 코드) 사용 예시</b>
   </div>
 
   <div>
-    <label class="label-normal">async fetch request with All opts</label> <button class="btn-normal" id="request0">request</button>
+    <label class="label-normal">fetch request with All opts (async), 모든 옵션 사용의 예시</label> <button class="btn-normal" id="request0">request</button>
     <script>
       document.getElementById('request0').addEventListener('click', async function() {
         try {
@@ -65,21 +65,25 @@
   <br>
 
   <div>
-    <label class="label-normal">async fetch GET multy request:</label> <button class="btn-normal" id="request1">Promise All</button>
+    <label class="label-normal">fetch multy request At once (async), 여러 요청을 동시에 실행 (모두 응답을 받아야 리턴)</label> <button class="btn-normal" id="request1">request</button>
     <script>
       document.getElementById('request1').addEventListener('click', async function() {
         try {
-          // 두 요청을 동시에 실행
-          const [data1, data2] = await Promise.all([
-            requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+
+
+          // 요청을 동시에 실행 (모두 응답을 받아야 리턴)
+          const [data1, data2, data3] = await Promise.all([
+            requestFetch('/93/example/async/justSleep3', {
             }),
-            requestFetch('/systemSupportApi/serverName', {
-              baseUrl: apiBaseUrl.replace("/api", "")
-            })
+            requestFetch('/91/example/async/justSleep1', {
+            }),
+            requestFetch('/92/example/async/justSleep2', {
+            }),
           ]);
 
           console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
           console.log('response 2:', typeof data2 === 'string' ? data2 : JSON.stringify(data2, null, 2));
+          console.log('response 3:', typeof data3 === 'string' ? data3 : JSON.stringify(data3, null, 2));
         } catch (error) {
           console.error("Error in requestFetch:", error);
         }
