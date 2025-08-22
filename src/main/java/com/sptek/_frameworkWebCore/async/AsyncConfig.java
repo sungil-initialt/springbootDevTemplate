@@ -1,11 +1,15 @@
 package com.sptek._frameworkWebCore.async;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Configuration
 @EnableAsync
@@ -21,7 +25,30 @@ public class AsyncConfig {
         threadPoolTaskExecutor.setMaxPoolSize(CommonConstants.RECOMMEND_THREAD_POOL_MAX_SIZE); // 최대 쓰레드 수
         threadPoolTaskExecutor.setQueueCapacity(CommonConstants.RECOMMEND_THREAD_QUEUE_SIZE); // 대기 큐 크기
         threadPoolTaskExecutor.setThreadNamePrefix("from threadPoolForAsync-");
+        threadPoolTaskExecutor.setTaskDecorator(new RequestContextTaskDecorator()); // 중요! 하위 쓰레드 내에서도 RequestContextHolder 를 사용할 수 있도록
         threadPoolTaskExecutor.initialize();
         return threadPoolTaskExecutor;
+    }
+
+    public class RequestContextTaskDecorator implements TaskDecorator {
+        @Override
+        public Runnable decorate(Runnable delegate) {
+            // 호출 시점(요청 스레드)의 컨텍스트 캡처
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            var mdc = MDC.getCopyOfContextMap();
+
+            return () -> {
+                try {
+                    // 백그라운드 스레드에 컨텍스트 주입
+                    RequestContextHolder.setRequestAttributes(requestAttributes);
+                    if (mdc != null) MDC.setContextMap(mdc);
+                    delegate.run();
+                } finally {
+                    // 누수 방지
+                    RequestContextHolder.resetRequestAttributes();
+                    MDC.clear();
+                }
+            };
+        }
     }
 }

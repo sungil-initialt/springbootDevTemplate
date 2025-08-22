@@ -43,4 +43,9 @@ public class MakeMdcFilter extends OncePerRequestFilter {
             //log.debug("MakeMdcFilter clear");
         }
     }
+
+    @Override
+    protected boolean shouldNotFilterAsyncDispatch() {
+        return false;
+    }
 }

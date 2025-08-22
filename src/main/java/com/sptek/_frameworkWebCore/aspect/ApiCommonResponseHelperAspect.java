@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Aspect
 @Component
@@ -22,12 +24,19 @@ public class ApiCommonResponseHelperAspect {
     @Around("myPointCut()")
     public Object wrapWithResponseEntity(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
-        // 반환값이 이미 ResponseEntity라면 수정 없이 그대로 반환
+
         if (result instanceof ResponseEntity) {
+            // 이미 ResponseEntity라면 수정 없이 그대로 반환
             return result;
+
+        } else if (result instanceof CompletableFuture<?> completableFuture) {
+            // CompletableFuture 이면 ApiCommonSuccessResponseDto -> ResponseEntity -> CompletableFuture로 래핑
+            return completableFuture.thenApply(obj -> ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(obj)));
+
+        } else {
+            // 반환값을 ResponseEntity<ApiCommonSuccessResponseDto<?>> 형태로 래핑
+            return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
         }
-        // 반환값을 ResponseEntity<ApiCommonSuccessResponseDto<?>> 형태로 래핑
-        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
     }
 
     @Before("myPointCut()")

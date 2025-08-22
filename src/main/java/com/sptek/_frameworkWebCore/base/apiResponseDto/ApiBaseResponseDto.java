@@ -12,10 +12,8 @@ public class ApiBaseResponseDto {
 
     public void makeTimestamp() {
         ExcuteTimeDto excuteTimeDto = RequestUtil.traceRequestDuration();
-        if (excuteTimeDto != null) {
-            this.requestTime = excuteTimeDto.getStartTime();
-            this.responseTime = excuteTimeDto.getCurrentTime();
-            this.durationMsec = excuteTimeDto.getDurationMsec();
-        }
+        this.requestTime = excuteTimeDto.getStartTime();
+        this.responseTime = excuteTimeDto.getCurrentTime();
+        this.durationMsec = excuteTimeDto.getDurationMsec();
     }
 }

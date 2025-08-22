@@ -1,9 +1,12 @@
 package com.sptek._frameworkWebCore._example.unit.async;
 
+import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,4 +25,10 @@ public class AsyncService {
         log.info("justSleep5sWithAsync done.");
     }
 
+    @Async
+    public CompletableFuture<ExUserDto> getUserAsync() throws Exception {
+        Thread.sleep(5_000L);
+        ExUserDto exUserDto = ExUserDto.builder().id("sungilry").name("이성일").type(ExUserDto.UserType.manager).build();
+        return CompletableFuture.completedFuture(exUserDto);
+    }
 }

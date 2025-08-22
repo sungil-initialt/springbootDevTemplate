@@ -37,6 +37,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new NoSessionFilterForMinorRequest());
         filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }
@@ -47,6 +48,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<MakeRequestTimestampFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeRequestTimestampFilter());
         filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }
@@ -57,6 +59,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<ReqResDetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ReqResDetailLogFilter());
         filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }
@@ -70,6 +73,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new CorsPolicyFilter(corsPropertiesVo));
         filterRegistrationBean.addUrlPatterns("/api/*");
+        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }

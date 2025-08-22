@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -30,13 +32,19 @@ public class AsyncApiController {
     }
 
     @GetMapping(value = "/02/example/async/case2")
-    @Operation(summary = "02. 요청을 받아 바로 응답, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 실행 결과는 확인 하지 않음", description = "")
+    @Operation(summary = "02. 요청을 받아 바로 응답, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 실행 결과는 리턴 하지 않음", description = "")
     public Object case2() throws Exception {
         asyncService.justSleep5sWithAsync();
         return "ok";
     }
 
-
+    @GetMapping(value = "/03/example/async/case3")
+    @Operation(summary = "03. 요청을 받아 바로 응답, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
+    public Object case3()  throws Exception {
+        return asyncService.getUserAsync()
+                .orTimeout(10, TimeUnit.SECONDS)
+                .exceptionally(ex -> {throw new RuntimeException(ex);});
+    }
 
     // for just Test ---------------------------------------------------------------------------------------------------
     @GetMapping(value = "/91/example/async/justSleep1")

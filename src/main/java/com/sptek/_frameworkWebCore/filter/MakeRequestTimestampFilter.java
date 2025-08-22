@@ -40,4 +40,9 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
         request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());
         filterChain.doFilter(request, response);
     }
+
+    @Override
+    protected boolean shouldNotFilterAsyncDispatch() {
+        return false;
+    }
 }

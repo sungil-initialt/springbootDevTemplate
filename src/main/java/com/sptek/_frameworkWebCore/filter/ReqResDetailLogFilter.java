@@ -43,11 +43,12 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
                 && (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest());
         boolean hasNoDetailLogAnnotation = !MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
                 && !RequestMappingAnnotationRegister.hasAnnotation(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
-
         if (isMinorRequest || hasNoDetailLogAnnotation) {
             filterChain.doFilter(request, response);
             return;
         }
+        //log.debug("before Req is instanceof ContentCachingRequestWrapper : {}", request instanceof ContentCachingRequestWrapper ? "yes" : "no");
+        //log.debug("before Res is instanceof ContentCachingResponseWrapper : {}", response instanceof ContentCachingResponseWrapper ? "yes" : "no");
 
         // 필터 적용 (Request와 Response를 ContentCachingWrapper로 래핑)
         ContentCachingRequestWrapper contentCachingRequestWrapper = request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper)request : new ContentCachingRequestWrapper(request);
@@ -61,17 +62,17 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
             amIContentCachingResponseWrapperOwner = true;
         }
 
+
+        // todo: 컨트롤러에서 body 를 먼저 읽을 수 있도록 여기서 필터를 넘기고 body는 체인이 돌아 왔을때 처리 함
+        filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
+        
         // 다른 필터나 controller 쪽에서 변형 될수 있음 으로 필터 체인 전에 처리
         String sessionId = contentCachingRequestWrapper.getSession().getId();
         String methodType = RequestUtil.getRequestMethodType(contentCachingRequestWrapper);
         String url = RequestUtil.getRequestUrlQuery(contentCachingRequestWrapper);
         String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(contentCachingRequestWrapper, "|"));
         String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(contentCachingRequestWrapper));
-
-        // 컨트롤러에서 body 를 먼저 읽을 수 있도록 여기서 필터를 넘기고 body는 체인이 돌아 왔을때 처리 함
-        filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
         String requestBody = StringUtils.hasText(RequestUtil.getRequestBody(contentCachingRequestWrapper)) ? "\n" + RequestUtil.getRequestBody(contentCachingRequestWrapper) : "";
-
         String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
 
@@ -118,7 +119,15 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
 
         // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)
         if (amIContentCachingResponseWrapperOwner) {
-            contentCachingResponseWrapper.copyBodyToResponse();
+            if (!request.isAsyncStarted() || isAsyncDispatch(request)) { // 일반 또는 재디스패치일 경우
+                contentCachingResponseWrapper.copyBodyToResponse();
+                log.debug("contentCachingResponseWrapper.copyBodyToResponse");
+            }
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilterAsyncDispatch() {
+        return false;
     }
 }

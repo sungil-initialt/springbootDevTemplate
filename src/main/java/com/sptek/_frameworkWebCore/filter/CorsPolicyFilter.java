@@ -36,6 +36,8 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+        //log.debug("before Req is instanceof ContentCachingRequestWrapper : {}", request instanceof ContentCachingRequestWrapper ? "yes" : "no");
+        //log.debug("before Res is instanceof ContentCachingResponseWrapper : {}", response instanceof ContentCachingResponseWrapper ? "yes" : "no");
         //log.debug("CorsPolicyFilter start");
 
         // todo: NotEssentialRequest 에 대해 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
@@ -80,6 +82,11 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
             //log.debug("CORS : it's not CORS check request.");
             filterChain.doFilter(request, response); // 다른 요청은 그대로 통과
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilterAsyncDispatch() {
+        return false;
     }
 }
 
