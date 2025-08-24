@@ -18,11 +18,11 @@ import java.io.IOException;
 //@Profile(value = { "xxx" })
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE)
-@WebFilter(urlPatterns = "/*", asyncSupported = true) //ant 표현식 사용 불가 ex: /**
+//@WebFilter(urlPatterns = "/*", asyncSupported = true) //ant 표현식 사용 불가 ex: /**
 public class ExampleFilter extends OncePerRequestFilter {
 
     public ExampleFilter() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        log.info("{} is Applied.", this.getClass().getSimpleName());
     }
 
     @Override

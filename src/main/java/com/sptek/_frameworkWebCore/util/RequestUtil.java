@@ -161,12 +161,11 @@ public class RequestUtil {
         return new ExcuteTimeDto(startTime, currentTime, durationMsec);
     }
 
-    public static String getRequestBody(ContentCachingRequestWrapper requestWrapper) {
-        byte[] content = requestWrapper.getContentAsByteArray();
+    public static String getRequestBody(ContentCachingRequestWrapper contentCachingRequestWrapper) {
+        byte[] content = contentCachingRequestWrapper.getContentAsByteArray();
         if (content.length == 0) return "";
-
         try {
-            return new String(content, requestWrapper.getCharacterEncoding());
+            return new String(content, contentCachingRequestWrapper.getCharacterEncoding());
         } catch (UnsupportedEncodingException e) {
             return "Unsupported Encoding";
         }

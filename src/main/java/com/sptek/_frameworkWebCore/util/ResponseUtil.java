@@ -69,13 +69,12 @@ public class ResponseUtil {
         return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
 
-    public static String getResponseBody(ContentCachingResponseWrapper responseWrapper) {
-        byte[] content = responseWrapper.getContentAsByteArray();
-        if (content.length == 0) return "No Content";
-        if (content.length > 3000_0) return "-> The body is too big and skipped"; // 30K
-
+    public static String getResponseBody(ContentCachingResponseWrapper contentCachingResponseWrapper) {
+        byte[] content = contentCachingResponseWrapper.getContentAsByteArray();
+        if (content.length == 0) return "No Body";
+        if (content.length > 30_000) return "-> The body is too big and skipped"; // 30K
         try {
-            return new String(content, responseWrapper.getCharacterEncoding());
+            return new String(content, contentCachingResponseWrapper.getCharacterEncoding());
         } catch (UnsupportedEncodingException e) {
             return "Unsupported Encoding";
         }

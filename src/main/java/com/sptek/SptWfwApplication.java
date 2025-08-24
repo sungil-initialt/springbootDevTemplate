@@ -77,6 +77,7 @@ public class SptWfwApplication {
 
 
 /*
-ReqResDetailLogFilter 에서 CompletableFuture 방식일때 클라이언트로 응답이 가지 않는 문제 해결 필요
+
+ReqResDetailLogFilter 에서 CompletableFuture 방식일때 클라이언트로 응답이 가지 않는 문제 해결 필요 -->ReqResDetailLogFilter 67라인
 ApplicationGlobalExceptionHandler 테스트 필요
  */
