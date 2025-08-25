@@ -16,13 +16,20 @@ import java.util.concurrent.CompletableFuture;
 // fw 의 api Controller 가 object 타입으로 넘긴 결과를 ApiCommonSuccessResponseDto 형태로 변형하고, ResponseEntity 를 구성해 전송 하도록 처리.
 public class ApiCommonResponseHelperAspect {
     @Pointcut(
-            "@within(org.springframework.web.bind.annotation.RestController)" + "&& (@within(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController) " +
-                    "|| @annotation(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController))"
+            "@within(org.springframework.web.bind.annotation.RestController) && " +
+                    "(@within(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController) || " +
+                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController))"
     )
     public void myPointCut() {}
 
+    @Pointcut(
+            "@within(org.springframework.web.bind.annotation.RestController) && " +
+                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_CompletableFutureAsync_At_ServiceMethod)"
+    )
+    public void myPointCut2() {}
+
     @Around("myPointCut()")
-    public Object wrapWithResponseEntity(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object myPointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
         if (result instanceof ResponseEntity) {
@@ -39,13 +46,20 @@ public class ApiCommonResponseHelperAspect {
         }
     }
 
+    @Around("myPointCut2()")
+    public Object myPointCut2Around(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        Object result = joinPoint.proceed();
+        return CompletableFuture.completedFuture(ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result)));
+    }
+
     @Before("myPointCut()")
-    public void before(JoinPoint joinPoint) {
+    public void myPointCutBefore(JoinPoint joinPoint) {
         //to do what you need.
     }
 
     @After("myPointCut()")
-    public void after(JoinPoint joinPoint) {
+    public void myPointCutAfter(JoinPoint joinPoint) {
         //to do what you need.
     }
 }

@@ -15,19 +15,30 @@ import java.util.concurrent.CompletableFuture;
 public class AsyncService {
 
     public void justSleep5s() throws Exception {
-        Thread.sleep(5_000L);
+        Thread.sleep(6_000L);
         log.info("justSleep5s done.");
     }
 
     @Async
     public void justSleep5sWithAsync() throws Exception {
-        Thread.sleep(5_000L);
+        Thread.sleep(6_000L);
         log.info("justSleep5sWithAsync done.");
+    }
+
+    public ExUserDto getUser() throws Exception {
+        Thread.sleep(6_000L);
+        return ExUserDto.builder().id("sungilry").name("이성일").type(ExUserDto.UserType.manager).build();
+    }
+
+    public CompletableFuture<ExUserDto> getCompletableFutureUser() throws Exception {
+        Thread.sleep(6_000L);
+        ExUserDto exUserDto = ExUserDto.builder().id("sungilry").name("이성일").type(ExUserDto.UserType.manager).build();
+        return CompletableFuture.completedFuture(exUserDto);
     }
 
     @Async
     public CompletableFuture<ExUserDto> getUserAsync() throws Exception {
-        Thread.sleep(5_000L);
+        Thread.sleep(6_000L);
         ExUserDto exUserDto = ExUserDto.builder().id("sungilry").name("이성일").type(ExUserDto.UserType.manager).build();
         return CompletableFuture.completedFuture(exUserDto);
     }

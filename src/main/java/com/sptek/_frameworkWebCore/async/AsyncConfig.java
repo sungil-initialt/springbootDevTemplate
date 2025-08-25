@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore.async;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +31,10 @@ public class AsyncConfig {
         return threadPoolTaskExecutor;
     }
 
+    // 하위 쓰레드에서도 RequestContextHolder 를 유지하기 위한 처리
     public class RequestContextTaskDecorator implements TaskDecorator {
         @Override
-        public Runnable decorate(Runnable delegate) {
+        public @NotNull Runnable decorate(Runnable runnable) {
             // 호출 시점(요청 스레드)의 컨텍스트 캡처
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
             var mdc = MDC.getCopyOfContextMap();
@@ -42,7 +44,7 @@ public class AsyncConfig {
                     // 백그라운드 스레드에 컨텍스트 주입
                     RequestContextHolder.setRequestAttributes(requestAttributes);
                     if (mdc != null) MDC.setContextMap(mdc);
-                    delegate.run();
+                    runnable.run();
                 } finally {
                     // 누수 방지
                     RequestContextHolder.resetRequestAttributes();

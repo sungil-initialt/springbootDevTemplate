@@ -101,12 +101,12 @@ public class OutboundSupport {
         if (MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
                 || RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)) {
             try {
-                List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS);
+                List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS);
                 if (relatedOutbounds == null) {
                     relatedOutbounds = new ArrayList<>();
                 }
                 relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
-                SpringUtil.getRequest().setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
+                SpringUtil.getRequest().setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
             } catch (Exception e) {
                 log.debug("Not logging related outbound information.");
             }

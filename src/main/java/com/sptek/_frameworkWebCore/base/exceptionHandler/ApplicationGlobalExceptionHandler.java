@@ -108,7 +108,7 @@ public class ApplicationGlobalExceptionHandler {
 
         } else {
             //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
             return viewName;
             //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
         }
@@ -131,7 +131,7 @@ public class ApplicationGlobalExceptionHandler {
                     (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
 
             String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
-            String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
+            String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
             String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
 
             String logContent = """

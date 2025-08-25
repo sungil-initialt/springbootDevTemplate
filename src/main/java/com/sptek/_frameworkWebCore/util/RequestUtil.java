@@ -150,7 +150,7 @@ public class RequestUtil {
 
     public static ExcuteTimeDto traceRequestDuration() {
         String startTime = Optional.ofNullable(SpringUtil.getRequest()
-                        .getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
+                        .getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
 
         if (!StringUtils.hasText(startTime)) {
             return new ExcuteTimeDto("fail to trace.", LocalDateTime.now().toString(), "fail to trace.");

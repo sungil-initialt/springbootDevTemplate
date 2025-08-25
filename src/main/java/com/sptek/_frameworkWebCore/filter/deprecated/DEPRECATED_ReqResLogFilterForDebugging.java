@@ -78,8 +78,8 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
             log.info(LoggingUtil.makeBaseForm("Request-Response Information caught by the ReqResLogFilterForDebugging", logBody));
 
         } else {
-            String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
-            String responseModelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_MODEL_AND_VIEW)).map(Object::toString).orElse("");
+            String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("No Exception");
+            String responseModelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW)).map(Object::toString).orElse("");
 
             String logBody = String.format(
                       "session : %s\n"

@@ -61,6 +61,7 @@ dependencies {
 
 	// 내부 core 유틸
 	implementation 'org.apache.httpcomponents.core5:httpcore5:5.2.1'
+	implementation 'org.openjdk.jol:jol-core:0.17'
 
 	// Lombok
 	implementation 'org.projectlombok:lombok:1.18.26'

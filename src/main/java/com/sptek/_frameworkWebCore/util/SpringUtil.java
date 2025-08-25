@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openjdk.jol.info.ClassLayout;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.boot.SpringBootConfiguration;
@@ -120,5 +121,10 @@ public class SpringUtil implements ApplicationContextAware {
         // todo: 일부 JVM 환경 에서 동작 하지 않을 수도 있음
         Environment environment = Objects.requireNonNull(applicationContext).getEnvironment();
         return environment.getProperty(key);
+    }
+
+    public static String getInstanceMemoryInfo(Object object) {
+        // implementation 'org.openjdk.jol:jol-core:0.17' 사용
+        return object.getClass().getSimpleName() + " instance memory info\n" + ClassLayout.parseInstance(object).toPrintable();
     }
 }
