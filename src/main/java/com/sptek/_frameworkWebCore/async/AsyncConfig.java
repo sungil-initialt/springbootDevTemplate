@@ -1,8 +1,10 @@
 package com.sptek._frameworkWebCore.async;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskDecorator;
@@ -11,9 +13,16 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableAsync
+@RequiredArgsConstructor
+
 public class AsyncConfig {
 
     @Bean(name = "taskExecutor") // name값 변경 하지 말것!
@@ -31,7 +40,7 @@ public class AsyncConfig {
         return threadPoolTaskExecutor;
     }
 
-    // 하위 쓰레드에서도 RequestContextHolder 를 유지하기 위한 처리
+    // 하위 쓰레드에서도 RequestContextHolder 를 유지하기 위한 설정 처리
     public class RequestContextTaskDecorator implements TaskDecorator {
         @Override
         public @NotNull Runnable decorate(Runnable runnable) {
@@ -52,5 +61,26 @@ public class AsyncConfig {
                 }
             };
         }
+    }
+
+    @Bean
+    public BeanPostProcessor prioritizeMyHandler(ControllerReturnValueHandlerForAsync controllerReturnValueHandlerForAsync) {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) {
+                if (bean instanceof RequestMappingHandlerAdapter adapter) {
+                    List<HandlerMethodReturnValueHandler> existing = adapter.getReturnValueHandlers();
+                    if (existing == null) return bean;
+
+                    List<HandlerMethodReturnValueHandler> reordered = new ArrayList<>(existing);
+                    // 중복 방지
+                    reordered.removeIf(h -> h.getClass() == controllerReturnValueHandlerForAsync.getClass());
+                    // 맨 앞에 삽입
+                    reordered.add(0, controllerReturnValueHandlerForAsync);
+                    adapter.setReturnValueHandlers(reordered);
+                }
+                return bean;
+            }
+        };
     }
 }

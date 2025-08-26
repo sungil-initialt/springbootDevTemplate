@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore._example.unit.async;
 
-import com.sptek._frameworkWebCore._annotation.Enable_CompletableFutureAsync_At_ServiceMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import com.sptek._frameworkWebCore._example.dto.ExUserDto;
@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,27 +41,29 @@ public class AsyncApiController {
         return "ok";
     }
 
-    @Enable_CompletableFutureAsync_At_ServiceMethod
+
+    @Enable_AsyncResponse_At_RestControllerMethod
     @GetMapping(value = "/03/example/async/case3")
     @Operation(summary = "03. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
-    public CompletableFuture<?> case3()  throws Exception {
+    public Object case3()  throws Exception {
         return asyncService.getUser();
     }
 
-    @Async
+
     @GetMapping(value = "/04/example/async/case4-2")
     @Operation(summary = "04. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
     public CompletableFuture<ExUserDto> case42()  throws Exception {
-        return asyncService.getCompletableFutureUser()
-                .orTimeout(10, TimeUnit.SECONDS)
+        return asyncService.getUserAsync()
+                .orTimeout(12, TimeUnit.SECONDS)
                 .exceptionally(ex -> {throw new RuntimeException(ex);});
     }
 
+    //@Async
     @GetMapping(value = "/04/example/async/case4")
     @Operation(summary = "04. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
     public Object case4()  throws Exception {
         return asyncService.getCompletableFutureUser()
-                .orTimeout(10, TimeUnit.SECONDS)
+                .orTimeout(12, TimeUnit.SECONDS)
                 .exceptionally(ex -> {throw new RuntimeException(ex);});
     }
 

@@ -1,65 +1,84 @@
 package com.sptek._frameworkWebCore.aspect;
 
+import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
+import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
+import com.sptek._frameworkWebCore.util.SpringUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 @Slf4j
 @Aspect
+@RequiredArgsConstructor
 @Component
 // fw 의 api Controller 가 object 타입으로 넘긴 결과를 ApiCommonSuccessResponseDto 형태로 변형하고, ResponseEntity 를 구성해 전송 하도록 처리.
 public class ApiCommonResponseHelperAspect {
+    @Qualifier("taskExecutor")
+    private final TaskExecutor taskExecutor;
+
     @Pointcut(
             "@within(org.springframework.web.bind.annotation.RestController) && " +
                     "(@within(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController) || " +
                     "@annotation(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController))"
     )
-    public void myPointCut() {}
+    public void myPointCut1() {}
 
-    @Pointcut(
-            "@within(org.springframework.web.bind.annotation.RestController) && " +
-                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_CompletableFutureAsync_At_ServiceMethod)"
-    )
-    public void myPointCut2() {}
+    @Around("myPointCut1()")
+    public Object myPointCut1Around(ProceedingJoinPoint joinPoint) throws Throwable {
+        if (RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncResponse_At_RestControllerMethod.class)) {
 
-    @Around("myPointCut()")
-    public Object myPointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = joinPoint.proceed();
 
-        if (result instanceof ResponseEntity) {
-            // 이미 ResponseEntity라면 수정 없이 그대로 반환
-            return result;
+            return CompletableFuture.supplyAsync(() -> {
+                Object target = joinPoint.getTarget();
+                Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+                // 프록시일 수 있으니 실제 구현 메서드로 보정
+                method = org.springframework.aop.support.AopUtils.getMostSpecificMethod(method, target.getClass());
+                Object[] args = joinPoint.getArgs();
 
-        } else if (result instanceof CompletableFuture<?> completableFuture) {
-            // CompletableFuture 이면 ApiCommonSuccessResponseDto -> ResponseEntity -> CompletableFuture로 래핑
-            return completableFuture.thenApply(obj -> ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(obj)));
+                try {
+                    Object value = org.springframework.util.ReflectionUtils.invokeMethod(method, target, args);
+                    return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(value));
+                } catch (Throwable t) {
+                    throw new CompletionException(t);
+                }
+            }, taskExecutor);
 
         } else {
-            // 반환값을 ResponseEntity<ApiCommonSuccessResponseDto<?>> 형태로 래핑
-            return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
+            Object result = joinPoint.proceed();
+            if (result instanceof HttpEntity) { //ResponseEntity 포함
+                // 이미 HttpEntity 또는 ResponseEntity 라면 수정 없이 그대로 반환
+                return result;
+
+            } else if (result instanceof CompletableFuture<?> completableFuture) {
+                // 직접 CompletableFuture 로 만들어 넘긴 경우 ApiCommonSuccessResponseDto -> ResponseEntity -> CompletableFuture로 래핑
+                return completableFuture.thenApply(obj -> ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(obj)));
+
+            } else {
+                return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
+            }
         }
     }
 
-    @Around("myPointCut2()")
-    public Object myPointCut2Around(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        Object result = joinPoint.proceed();
-        return CompletableFuture.completedFuture(ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result)));
-    }
-
-    @Before("myPointCut()")
-    public void myPointCutBefore(JoinPoint joinPoint) {
+    @Before("myPointCut1()")
+    public void myPointCut1Before(JoinPoint joinPoint) {
         //to do what you need.
     }
 
-    @After("myPointCut()")
-    public void myPointCutAfter(JoinPoint joinPoint) {
+    @After("myPointCut1()")
+    public void myPointCut1After(JoinPoint joinPoint) {
         //to do what you need.
     }
 }

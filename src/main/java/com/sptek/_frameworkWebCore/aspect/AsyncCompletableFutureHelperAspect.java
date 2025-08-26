@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public class AsyncCompletableFutureHelperAspect {
     @Pointcut(
             "@within(org.springframework.stereotype.Service) && " +
-                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_CompletableFutureAsync_At_ServiceMethod)"
+                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod)"
     )
     public void myPointCut() {}
 
