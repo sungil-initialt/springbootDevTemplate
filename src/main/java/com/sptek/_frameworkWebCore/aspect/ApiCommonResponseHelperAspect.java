@@ -4,11 +4,11 @@ import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestContr
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.SpringUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
@@ -22,25 +22,28 @@ import java.util.concurrent.CompletionException;
 
 @Slf4j
 @Aspect
-@RequiredArgsConstructor
 @Component
-// fw 의 api Controller 가 object 타입으로 넘긴 결과를 ApiCommonSuccessResponseDto 형태로 변형하고, ResponseEntity 를 구성해 전송 하도록 처리.
+// fw 의 api Controller 가 object 타입으로 넘긴 결과를 ApiCommonSuccessResponseDto 형태로 변형하고, ResponseEntity 를 구성해 전송 하도록 처리. (CompletableFuture 처리 추가)
 public class ApiCommonResponseHelperAspect {
-    @Qualifier("taskExecutor")
     private final TaskExecutor taskExecutor;
+
+    // Bean name 으로 명확히 찾기 위해 생성자 직접 구성
+    public ApiCommonResponseHelperAspect(@Qualifier("taskExecutor") TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
 
     @Pointcut(
             "@within(org.springframework.web.bind.annotation.RestController) && " +
-                    "(@within(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController) || " +
-                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController))"
+                    "(" +
+                    "@within(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController) || " +
+                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController)" +
+                    ")"
     )
-    public void myPointCut1() {}
+    public void pointCut() {}
 
-    @Around("myPointCut1()")
-    public Object myPointCut1Around(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("pointCut()")
+    public Object pointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
         if (RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncResponse_At_RestControllerMethod.class)) {
-
-
             return CompletableFuture.supplyAsync(() -> {
                 Object target = joinPoint.getTarget();
                 Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
@@ -61,24 +64,12 @@ public class ApiCommonResponseHelperAspect {
             if (result instanceof HttpEntity) { //ResponseEntity 포함
                 // 이미 HttpEntity 또는 ResponseEntity 라면 수정 없이 그대로 반환
                 return result;
-
             } else if (result instanceof CompletableFuture<?> completableFuture) {
                 // 직접 CompletableFuture 로 만들어 넘긴 경우 ApiCommonSuccessResponseDto -> ResponseEntity -> CompletableFuture로 래핑
                 return completableFuture.thenApply(obj -> ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(obj)));
-
             } else {
                 return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
             }
         }
-    }
-
-    @Before("myPointCut1()")
-    public void myPointCut1Before(JoinPoint joinPoint) {
-        //to do what you need.
-    }
-
-    @After("myPointCut1()")
-    public void myPointCut1After(JoinPoint joinPoint) {
-        //to do what you need.
     }
 }

@@ -13,6 +13,8 @@ import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 //@Profile(value = { "local", "dev", "stg" }) //todo : 상용적용은 고민해 볼것(성능?)
@@ -33,13 +35,21 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         try {
             // todo: 멤버 계정 사용과 관련한 보안 이슈 체크 필요
             // todo: 로그인 처리 과정 중에 로그를 남기는 경우 아직 CustomUserDetails 객체가 없는 상태일 수 있어 있어서 아래 방식으로 변경함
-            // MDC.put("memberId", SecurityUtil.isRealLogin() ? SecurityUtil.getMyCustomUserDetails().getUserDto().getEmail() : "Not Logged In");
-            MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName() : CommonConstants.ANONYMOUS_USER);
-            MDC.put("sessionId", request.getSession(true).getId().substring(0, 10));
+            MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName().substring(0,4) + "**" : CommonConstants.ANONYMOUS_USER);
+            MDC.put("sessionId", request.getSession(true).getId().substring(0, 8) + "**");
+
+            // API 호출 흐름을 trace 하기 위한 값
+            String correlationId = request.getHeader("Correlation-Id");
+            if (correlationId == null) {
+                correlationId = Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID), UUID.randomUUID().toString());
+                request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID, correlationId);
+                response.setHeader("Correlation-Id", correlationId);
+            }
+            MDC.put("correlationId", correlationId);
+
             filterChain.doFilter(request, response);
         } finally {
-            // 요청이 끝난 뒤 반드시 MDC 정리
-            MDC.clear();
+            MDC.clear(); // 요청이 끝난 뒤 반드시 MDC 정리
             //log.debug("MakeMdcFilter clear");
         }
     }

@@ -33,7 +33,7 @@ public class SchedulerForAsyncMonitoring {
 
     public SchedulerForAsyncMonitoring(
             @Qualifier("schedulerExecutorForAsyncMonitoring") ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring,
-            @Qualifier("taskExecutor") TaskExecutor threadPoolForAsync) {
+            @Qualifier("realTaskExecutor") TaskExecutor threadPoolForAsync) {
         this.schedulerExecutorForAsyncMonitoring = schedulerExecutorForAsyncMonitoring;
         this.threadPoolForAsync = threadPoolForAsync;
     }

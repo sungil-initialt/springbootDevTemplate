@@ -78,6 +78,8 @@ public class SptWfwApplication {
 
 /*
 
-ReqResDetailLogFilter 에서 CompletableFuture 방식일때 클라이언트로 응답이 가지 않는 문제 해결 필요 -->ReqResDetailLogFilter 67라인
+PreventDuplicateRequestAspect 가 async 응답일때 안되는 문제
+async 내부 에러 throw가 잘되는지..
+
 ApplicationGlobalExceptionHandler 테스트 필요
  */

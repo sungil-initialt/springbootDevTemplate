@@ -1,12 +1,13 @@
 package com.sptek._frameworkWebCore.aspect;
 
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import com.sptek._frameworkWebCore.util.SpringUtil;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,16 +22,18 @@ public class PreventDuplicateRequestAspect {
     private final long DEDUPLICATION_EXTRA_MS = 1000L; //해당 메소드 처리가 종료되면 남은 초기 시간과 관계 없이 새로운 시간으로 중복 처리 방어함 (종료가 되었더라도 1초 정도는 중복 방어함)
 
     //기능의 특성상 @Controller 에는 적용이 어려워 보임, @RestController 에만 적용하는 것으로 처리
-    @Pointcut("@within(org.springframework.web.bind.annotation.RestController) " +
-            "&& (@within(com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod) || @annotation(com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod))")
-    public void myPointCut() {}
+    @Pointcut(
+            "@within(org.springframework.web.bind.annotation.RestController) && " +
+                    "(" +
+                    "@within(com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod) || " +
+                    "@annotation(com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod)" +
+                    ")"
+    )
+    public void pointCut() {}
 
-
-    @Around("myPointCut()")
-    public Object duplicateRequestCheck(ProceedingJoinPoint joinPoint) throws Throwable {
-        //log.debug("AOP order : 1");
+    @Around("pointCut()")
+    public Object pointAround(ProceedingJoinPoint joinPoint) throws Throwable {
         //log.debug("sessionAttributeAll : {}", ReqResUtil.getSessionAttributesAll(true));
-
 
         // GET 요청을 제외 하고 싶을때
         //HttpServletRequest currentRequest = SpringUtil.getRequest();
@@ -39,7 +42,7 @@ public class PreventDuplicateRequestAspect {
         //    return joinPoint.proceed();
         //}
 
-        // 해당 메소드의 서명값으로 식별자로 사용할 수 있다 (동일 메소드의 경우 항상 동일 값)
+        // 해당 메소드의 서명값, 식별자로 사용할 수 있다 (동일 메소드의 경우 항상 동일 값)
         String requestedMethodSignature = joinPoint.getSignature().toLongString();
 
         if(isDuplicationCase(requestedMethodSignature)) {
@@ -49,39 +52,20 @@ public class PreventDuplicateRequestAspect {
                 //todo: 처리 영역은 만들어 놓았지만.. 화면이 있는 @Controller 에는 적용이 어려울 듯
                 return "";
             }
-
         } else {
             try {
-                //log.debug("AOP order : 2");
-                return joinPoint.proceed(); // --> @Before --> origin caller --> @After 순으로 진행됨
+                return joinPoint.proceed();
 
             } finally {  //exception 상황에서도 반드시 expire Ms 업데이트 필요
                 long newExpireMs = System.currentTimeMillis() + DEDUPLICATION_EXTRA_MS;
                 SpringUtil.getRequest().getSession(true).setAttribute(requestedMethodSignature, newExpireMs);
-                log.debug("my request is done, set new expiryTime ({})", newExpireMs);
             }
         }
     }
 
-
-    @Before("myPointCut()")
-    public void beforeRequest(JoinPoint joinPoint) {
-        //log.debug("AOP order : 3");
-        //to do what you need.
-    }
-
-
-    @After("myPointCut()")
-    public void afterRequest(JoinPoint joinPoint) {
-        //log.debug("AOP order : 5 (order 4 is caller method)");
-        //to do what you need.
-    }
-
-
     private Object handleDuplicationForRestController() throws ServiceException {
         throw new ServiceException(ServiceErrorCodeEnum.DUPLICATION_REQUEST_ERROR);
     }
-
 
     // 좀더 쓰레드 세이프 하게 구성 하기 위해서 세션 에서 requestSignature 확인과 requestSignature 셋팅을 synchronized 방식 으로 수정함
     private boolean isDuplicationCase(String requestSignature) {
@@ -92,10 +76,10 @@ public class PreventDuplicateRequestAspect {
             if (expiryTime == 0 || expiryTime < System.currentTimeMillis()) {
                 long newExpiryTime = System.currentTimeMillis() + DEDUPLICATION_DEFAULT_MS;
                 SpringUtil.getRequest().getSession(true).setAttribute(requestSignature, newExpiryTime);
-                log.debug("No alive request. Accepted. Set new expiryTime: {}", newExpiryTime);
+                log.debug("Accepted, it's not duplication request (expiryTime: {}).", newExpiryTime);
                 return false;
             } else {
-                log.debug("Reject request. Already in session. expiryTime: {}", expiryTime);
+                log.debug("Reject, it's duplication request (expiryTime: {}).", expiryTime);
                 return true;
             }
         }

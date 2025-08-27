@@ -41,7 +41,6 @@ public class AsyncApiController {
         return "ok";
     }
 
-
     @Enable_AsyncResponse_At_RestControllerMethod
     @GetMapping(value = "/03/example/async/case3")
     @Operation(summary = "03. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")

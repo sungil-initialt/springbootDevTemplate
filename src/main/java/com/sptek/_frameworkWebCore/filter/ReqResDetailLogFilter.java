@@ -91,7 +91,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
             requestBody = StringUtils.hasText(requestBody) ? "\n" + requestBody : "";
             String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
             String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(contentCachingResponseWrapper, "|"));
-            String isAsyncDispatch = isAsyncDispatch(request) ? ", Async Response" : "";
+            String isAsyncDispatch = isAsyncDispatch(request) ? ", Async Response" : ", Sync Response";
 
             // main 과 controller 쪽 양쪽에 적용되어 있는 경우 controller 쪽 annotation 이 우선함 (controller 전체와 controller 메소드 양쪽에 적용되는 경우는 RequestMappingAnnotationRegister 가 메소드쪽 정보를 가지고 있음)
             String logTag = StringUtils.hasText(Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""))
@@ -140,7 +140,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
                 contentCachingResponseWrapper.copyBodyToResponse();
             }
         } else {
-            log.debug("Async First Dispatch called.");
+            log.debug("First Async Dispatcher called.");
         }
     }
 

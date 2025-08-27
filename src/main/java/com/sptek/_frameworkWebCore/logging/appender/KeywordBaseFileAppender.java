@@ -22,7 +22,7 @@ public class KeywordBaseFileAppender extends AppenderBase<ILoggingEvent> {
     private LoggerContext context;
 
     // xml 설정값이 없을 경우의 디폹트 값
-    @Setter private String encoderPattern = "%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{sessionId}, %X{memberId}] - %msg%n"; // 성능 고려 간략화
+    @Setter private String encoderPattern = "%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{memberId}, %X{sessionId}, %X{correlationId}] - %msg%n"; // 성능 고려 간략화
     @Setter private String baseLogPath = Path.of(".","log", "logback").toString();
     @Setter private String rollingFilePattern = ".%d{yyyy-MM-dd}_%i.log";
     @Setter private String fileMaxSize = "100MB";

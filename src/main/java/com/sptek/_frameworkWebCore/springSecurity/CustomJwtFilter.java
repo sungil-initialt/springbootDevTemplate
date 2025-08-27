@@ -50,7 +50,7 @@ public class CustomJwtFilter extends GenericFilterBean {
             //log.debug("Authentication({}) has been saved in SecurityContextHolder, uri: {}", authentication, requestUri);
         } else {
             //jwt가 없거나 유효하지 않다도 직접 별다른 처리를 하지 않음(다른 필터에 맡김)
-            log.info("jwt is empty or fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
+            //log.debug("jwt is empty or fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
         }
         chain.doFilter(httpServletRequest,response);
     }

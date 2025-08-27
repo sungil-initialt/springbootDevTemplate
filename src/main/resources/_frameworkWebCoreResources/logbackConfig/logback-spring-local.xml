@@ -17,9 +17,9 @@
     <property name="default_log_max_history"            value="1"/>
     <property name="default_log_max_filesize"           value="100MB"/>
     <property name="default_log_total_filesizeCap"      value="10GB"/>
-    <property name="default_log_pattern"                value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
-    <property name="color_log_pattern"                  value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{sessionId}, %X{memberId}]){yellow} - %msg%n"/>
-    <property name="keyword_log_pattern"                value="%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{sessionId}, %X{memberId}] - %msg%n"/>
+    <property name="default_log_pattern"                value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{memberId}, %X{sessionId}, %X{correlationId}] - %msg%n"/>
+    <property name="color_log_pattern"                  value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{memberId}, %X{sessionId}, %X{correlationId}]){yellow} - %msg%n"/>
+    <property name="keyword_log_pattern"                value="%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{memberId}, %X{sessionId}, %X{correlationId}] - %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
