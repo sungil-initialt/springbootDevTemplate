@@ -6,22 +6,26 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
 @Slf4j
 @Aspect
-//@Component (ex 임으로 off 처리함)
+@Order(10)
+@Component
 public class ExampleAspect {
     @Pointcut(
-            "@within(org.springframework.web.bind.annotation.RestController)"
-    ) // ex 요건!
+            "@within(org.springframework.web.bind.annotation.RestController) && " +
+                    "@annotation(com.sptek._frameworkWebCore._annotation.TestAnnotation_At_All)"
+    ) // ex 요건
     public void pointCut() {}
 
     @Around("pointCut()")
     public Object pointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        // 실행 순서: 1
-        log.debug("pointCutAround");
+        log.debug("1. around star");
+
         Signature signature = joinPoint.getSignature();
         log.debug("메서드 이름: {}", signature.getName());
         log.debug("선언 타입명: {}", signature.getDeclaringTypeName());
@@ -42,22 +46,20 @@ public class ExampleAspect {
             log.debug("파라미터[{}] 값: {}", i, args[i]);
         }
 
-        // 실행 순서: 2
-        return joinPoint.proceed(); // 실행 순서: 4 (실제 method 내부)
+        Object result = joinPoint.proceed();
+        log.debug("4. around after joinPoint.proceed()");
+        return result;
     }
-
 
     @Before("pointCut()")
     public void pointCutBefore(JoinPoint joinPoint) {
-        // 실행 순서: 4
-        log.debug("pointCutBefore");
+        log.debug("2. before (다른 AOP 의 Around 시작, 해당 AOP 의 모든 처리를 다 끝내고 다시 복귀)");
         //to do what you need.
     }
 
     @After("pointCut()")
     public void pointCutAfter(JoinPoint joinPoint) {
-        // 실행 순서: 5
-        log.debug("pointCutAfter");
+        log.debug("3. after");
         //to do what you need.
     }
 }

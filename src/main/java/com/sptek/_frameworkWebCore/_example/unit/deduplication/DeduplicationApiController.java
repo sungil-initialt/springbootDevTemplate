@@ -9,7 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +28,6 @@ public class DeduplicationApiController {
     @RequestMapping(value = "/01/example/deduplication/preventDuplicateRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "01. 동일 요청이 빠르게 연속 요청 되는 것을 방지", description = "")
     public Object duplicatedRequest() throws Exception {
-        //log.debug("AOP order : ??");
         Thread.sleep(3000L);
         return "prevent duplicateRequest test ok";
     }

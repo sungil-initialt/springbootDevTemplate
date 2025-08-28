@@ -71,20 +71,19 @@ public class AsyncConfig {
                     if (mdcContextMap != null) MDC.setContextMap(mdcContextMap); else MDC.clear();
                     LocaleContextHolder.setLocale(locale);
                     DateTimeContextHolder.setDateTimeContext(dateTimeContext);
-                    // (옵션) 커스텀 ThreadLocal 주입
                     // UserContext.setCurrent(userCtx);
 
                     //Thread 내용 실행 시점
                     runnable.run();
                 } finally {
                     MDC.clear();
-                    //// 원래 값 복원 (복원 필시요 처리하면 됨)
-                    //RequestContextHolder.resetRequestAttributes();
-                    //if (prevRequestAttribute != null) RequestContextHolder.setRequestAttributes(prevRequestAttribute);
-                    //if (prevMdcContextMap != null) MDC.setContextMap(prevMdcContextMap);
-                    //LocaleContextHolder.setLocale(prevLocale);
-                    //DateTimeContextHolder.setDateTimeContext(prevDateTimeContext);
-                    //// UserContext.setCurrent(preUserContext);
+                    // 원래 값 복원 (복원 필시요 처리하면 됨)
+                    RequestContextHolder.resetRequestAttributes();
+                    if (prevRequestAttribute != null) RequestContextHolder.setRequestAttributes(prevRequestAttribute);
+                    if (prevMdcContextMap != null) MDC.setContextMap(prevMdcContextMap);
+                    LocaleContextHolder.setLocale(prevLocale);
+                    DateTimeContextHolder.setDateTimeContext(prevDateTimeContext);
+                    // UserContext.setCurrent(preUserContext);
                 }
             };
         }
