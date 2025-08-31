@@ -11,6 +11,7 @@ import com.zaxxer.hikari.HikariPoolMXBean;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -28,12 +29,19 @@ import java.util.concurrent.ScheduledFuture;
 public class SchedulerForHikariDataSourceMonitoring {
 
     private final ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring;
+    private final boolean isDuplicateLogSuppressionMode; // 동일 내용 로깅 방지
+    private final int fixedDelaySeconds;
     private Map<String, HikariDataSource> hikariDataSources = null;
     private ScheduledFuture<?> scheduledFuture = null;
     private String logTag;
+    private volatile String lastLogContent = "";
 
-    public SchedulerForHikariDataSourceMonitoring(@Qualifier("schedulerExecutorForHikariDataSourceMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring) {
+    public SchedulerForHikariDataSourceMonitoring(@Qualifier("schedulerExecutorForHikariDataSourceMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring,
+                                                  @Value("${logging.monitoring.schedulerForHikariDataSourceMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
+                                                  @Value("${logging.monitoring.schedulerForHikariDataSourceMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
         this.schedulerExecutorForHikariDataSourceMonitoring = schedulerExecutorForHikariDataSourceMonitoring;
+        this.isDuplicateLogSuppressionMode = isDuplicateLogSuppressionMode;
+        this.fixedDelaySeconds = fixedDelaySeconds;
     }
 
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
@@ -49,9 +57,8 @@ public class SchedulerForHikariDataSourceMonitoring {
             }
         });
 
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HikariDataSourceMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
+        scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
     }
 
     @PreDestroy
@@ -86,8 +93,9 @@ public class SchedulerForHikariDataSourceMonitoring {
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
                             , ExceptionUtil.exSafe(hikariConfigMXBean::getValidationTimeout, -1));
 
-
+            if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
             log.info(LoggingUtil.makeBaseForm(logTag, "HikariDataSource Monitoring (Scheduler)", logContent));
+            lastLogContent = logContent;
         }
     }
 }

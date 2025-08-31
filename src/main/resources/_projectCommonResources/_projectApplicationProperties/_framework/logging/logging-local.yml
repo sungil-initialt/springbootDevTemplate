@@ -22,7 +22,7 @@ logging:
       sptek.projectName: debug
 
       #HikariPool DB 커넥션 풀 (풀 상태 로그를 보려면 debug)
-      zaxxer.hikari.pool.HikariPool: debug
+      zaxxer.hikari.pool.HikariPool: info
 
     org:
       #Mybatis
@@ -46,4 +46,24 @@ logging:
     jdbc.resultsettable: error
 
   config: classpath:_frameworkWebCoreResources/logbackConfig/logback-spring-local.xml
+
+
+  monitoring:
+    schedulerForAsyncMonitoring:
+      fixedDelaySeconds: 1 #로깅 주기 seconds
+      duplicateLogSuppressionMode: true #이전 내용과 달라진 경우에만 로깅 처리 함
+
+    schedulerForHikariDataSourceMonitoring:
+      fixedDelaySeconds: 1
+      duplicateLogSuppressionMode: true
+
+    schedulerForHttpConnectorWorkerMonitoring:
+      fixedDelaySeconds: 1
+      duplicateLogSuppressionMode: true
+
+    schedulerForOutboundSupportManagingMonitoring:
+      fixedDelaySeconds: 1
+      duplicateLogSuppressionMode: true
+
+
 

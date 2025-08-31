@@ -20,6 +20,7 @@ public class DeduplicationViewController {
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
 
+    // API 테스트를 위한 단순 테스트 페이지 호출용
     @GetMapping("/deduplication/preventDuplicateRequest")
     public String preventDuplicateRequest() {
         return htmlBasePath + "preventDuplicationRequest";

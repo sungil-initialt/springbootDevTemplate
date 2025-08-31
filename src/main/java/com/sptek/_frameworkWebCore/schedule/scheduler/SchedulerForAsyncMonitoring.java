@@ -7,6 +7,7 @@ import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.task.TaskExecutor;
@@ -28,22 +29,29 @@ public class SchedulerForAsyncMonitoring {
     
     private final ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring;
     private final TaskExecutor  threadPoolForAsync;
+    private final boolean isDuplicateLogSuppressionMode; // 동일 내용 로깅 방지
+    private final int fixedDelaySeconds;
     private ScheduledFuture<?> scheduledFuture = null;
     private String logTag;
+    private volatile String lastLogContent = "";
+
 
     public SchedulerForAsyncMonitoring(
             @Qualifier("schedulerExecutorForAsyncMonitoring") ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring,
-            @Qualifier("realTaskExecutor") TaskExecutor threadPoolForAsync) {
+            @Qualifier("realTaskExecutor") TaskExecutor threadPoolForAsync,
+            @Value("${logging.monitoring.schedulerForAsyncMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
+            @Value("${logging.monitoring.schedulerForAsyncMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
         this.schedulerExecutorForAsyncMonitoring = schedulerExecutorForAsyncMonitoring;
         this.threadPoolForAsync = threadPoolForAsync;
+        this.isDuplicateLogSuppressionMode = isDuplicateLogSuppressionMode;
+        this.fixedDelaySeconds = fixedDelaySeconds;
     }
 
     @EventListener // @PostConstruct 시점에는 MainClassAnnotationRegister 가 생성되기 전임으로  Event Listen 방식으로 변경함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_AsyncMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
+        scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
     }
 
     @PreDestroy
@@ -68,7 +76,11 @@ public class SchedulerForAsyncMonitoring {
             } else {
                 logContent = "Not a ThreadPoolTaskExecutor instance: " + threadPoolForAsync.getClass().getName();
             }
+
+            if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
             log.info(LoggingUtil.makeBaseForm(logTag, "Async Monitoring (Scheduler)", logContent));
+            lastLogContent = logContent;
+
         } catch (Exception e) {
             log.warn("Scheduler For Async Monitoring", e);
         }

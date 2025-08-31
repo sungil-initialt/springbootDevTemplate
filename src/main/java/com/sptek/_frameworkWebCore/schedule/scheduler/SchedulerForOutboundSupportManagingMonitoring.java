@@ -11,6 +11,7 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.pool.PoolStats;
 import org.apache.hc.core5.util.TimeValue;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -34,24 +35,30 @@ public class SchedulerForOutboundSupportManagingMonitoring {
 
     private final ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring;
     private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
+    private final boolean isDuplicateLogSuppressionMode; // 동일 내용 로깅 방지
+    private final int fixedDelaySeconds;
     private ScheduledFuture<?> scheduledFuture = null;
     private boolean has_Enable_OutboundSupportMonitoring_At_Main;
     private String logTag;
+    private volatile String lastLogContent = "";
 
     public SchedulerForOutboundSupportManagingMonitoring(
             @Qualifier("schedulerExecutorForOutboundSupportMonitoring") ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring,
-            PoolingHttpClientConnectionManager poolingHttpClientConnectionManager) {
+            PoolingHttpClientConnectionManager poolingHttpClientConnectionManager,
+            @Value("${logging.monitoring.schedulerForOutboundSupportManagingMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
+            @Value("${logging.monitoring.schedulerForOutboundSupportManagingMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
         this.schedulerExecutorForOutboundSupportMonitoring = schedulerExecutorForOutboundSupportMonitoring;
         this.poolingHttpClientConnectionManager = poolingHttpClientConnectionManager;
+        this.isDuplicateLogSuppressionMode = isDuplicateLogSuppressionMode;
+        this.fixedDelaySeconds = fixedDelaySeconds;
     }
 
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        int SCHEDULE_WITH_FIXED_DELAY_SECONDS = 5;
         has_Enable_OutboundSupportMonitoring_At_Main = MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportMonitoring_At_Main.class);
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(SCHEDULE_WITH_FIXED_DELAY_SECONDS));
+        scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
     }
 
     // Spring 이 종료되며 해당 빈을 제거하기 전에 호출됨
@@ -83,7 +90,11 @@ public class SchedulerForOutboundSupportManagingMonitoring {
                     stringBuilder.append(String.format("%s => Leased=%d, Available=%d, Pending=%d\n"
                             , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
                 }
-                log.info(LoggingUtil.makeBaseForm(logTag, "OutboundSupport Monitoring (Scheduler)", stringBuilder.toString()));
+
+                String logContent = stringBuilder.toString();
+                if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
+                log.info(LoggingUtil.makeBaseForm(logTag, "OutboundSupport Monitoring (Scheduler)", logContent));
+                lastLogContent = logContent;
             }
         } catch (Exception e) {
             log.warn("Error while monitoring HttpClient Connection Pool", e);

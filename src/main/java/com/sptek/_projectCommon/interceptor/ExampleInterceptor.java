@@ -46,7 +46,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    //컨트롤러 처리후 view 렌더링 전(모델에 데이터 추가, 응답 수정 등)
+    //컨트롤러 처리후 view 렌더링 전(모델에 데이터 추가, 응답 수정 등) , RestController 에서는 딱히 사용이 애매함
     public void postHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, ModelAndView modelAndView) {
         if (handler instanceof HandlerMethod) {
             log.debug("---> 3. Interceptor postHandle");
@@ -55,7 +55,7 @@ public class ExampleInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    //View가 렌더링되고 요청이 완료된 후 (주요 자원 정리, 예외 처리 로깅 등)
+    //컨트롤러 처리후 View가 렌더링되고 요청이 완료된 후 (주요 자원 정리, 예외 처리 로깅 등), RestController 에서는 JSON 응답 flush 후
     public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) {
         if (handler instanceof HandlerMethod) {
             log.debug("---> 4. Interceptor afterCompletion \n\n");
