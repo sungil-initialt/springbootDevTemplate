@@ -1,66 +1,79 @@
 package com.sptek._frameworkWebCore._example.unit.async;
 
-import com.sptek._frameworkWebCore._example.dto.ExUserDto;
-import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.AuthenticationUtil;
-import lombok.RequiredArgsConstructor;
+import com.sptek._frameworkWebCore.util.ExecutionTimer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 
 public class AsyncService {
+    // sptTaskExecutor 를 사용 해야만 하위 쓰레드 내에서도 ThreadLocal 기반의 중요 context(mdc, request, locale, dateTime) 를 사용할 수 있음
     private final TaskExecutor taskExecutor;
-    public AsyncService(@Qualifier("taskExecutor") TaskExecutor taskExecutor) {
+    public AsyncService(@Qualifier("sptTaskExecutor") TaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
     }
 
-    public void voidLongJob() throws Exception {
-        Thread.sleep(6_000L);
+    // 리턴 없는 일반 메소드
+    public void voidJob() {
+        ExecutionTimer.sleep(10_000L);
+        log.debug("voidJob done");
     }
 
-    @Async // todo: 리턴 void 일 경우 @Async 사용이 가능하며, 별도 쓰레드를 통해 백그라운에서 처리 된다.
-    public void voidLongJobWithAsync() throws Exception {
-        Thread.sleep(6_000L);
+    // 리턴이 없는 경우 @Async 탈부착 가능 (*** 비추천: 같은 클레스에서 호출하는 self-invocation 불가)
+    @Async("sptTaskExecutor")
+    public void voidJobWithAsync() {
+        ExecutionTimer.sleep(10_000L);
+        log.debug("voidJobWithAsync done");
     }
 
-    //@Async // todo: 일반 object 를 리턴하는 경우 @Async 를 사용할 수 없음
-    public TestDto returnLongJob() throws Exception {
-        Thread.sleep(6_000L);
-        return new TestDto("sungilry", 20);
+    // 리턴 타입이 Future 타입이 아님으로 @Async 탈부착 불가
+    public TestDto returnJob() {
+        ExecutionTimer.sleep(10_000L);
+        return new TestDto("returnJob", "success");
     }
 
-    @Async // todo: 리턴 객체를 CompletableFuture 로 랩핑하여 리턴하는 경우는 @Async 사용이 가능하며 별도 쓰레드에서 처리 된다.
-    public CompletableFuture<TestDto> returnLongJobWithAsync() throws Exception {
-        Thread.sleep(6_000L);
-        return CompletableFuture.completedFuture(new TestDto("sungilry", 20));
+    // 리턴 타입이 Future 타입 임으로 @Async 탈부착 가능 (***비추천: 같은 클레스에서 호출하는 self-invocation 불가 및 @Async 탈부착에 따라 리턴 타입이 변경 필요)
+    @Async("sptTaskExecutor")
+    public CompletableFuture<TestDto> returnJobWithAsync() {
+        ExecutionTimer.sleep(10_000L);
+        return CompletableFuture.completedFuture(new TestDto("returnJobWithAsync", "success"));
     }
 
-    public TestDto returnLongJobWithTaskExecutor() throws Exception {
-        // Service 일부 작업을 별도 쓰레드에서 비동기 백그라운 처리가 필요할때
+    // 추천 Async 처리 및 병렬 작업 예시
+    public List<TestDto> recommendAsyncJoin() throws Exception {
+        // 1. taskExecutor 를 통해 Sync 메소드를(void) Async 형태로 호출
+        taskExecutor.execute(this::voidJob);
+
+        // 2. taskExecutor 를 통해 작업을(void) Async 로 직접 구현
         taskExecutor.execute(() -> {
-            try {
-                TestDto result = returnLongJob();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            ExecutionTimer.sleep(10_000L);
+            log.debug("self working(void) done");
         });
 
-        //해당 메소드에 @Async 가 적용되어 있음으로 알아서 별도 비동기로 동작함
-        voidLongJobWithAsync();
+        // 3. CompletableFuture 와 taskExecutor 를 통해 Sync(return) 메소드를 Async 형태로 호출
+        var result1 = CompletableFuture.supplyAsync(this::returnJob, taskExecutor);
 
-        // 일부는 동기적으로 처리
-        return new TestDto("sungilry", 20);
+        // 4. CompletableFuture 와 taskExecutor 를 작업을(return) Async 로 직접 구현
+        var result2 = CompletableFuture.supplyAsync(() -> {
+            ExecutionTimer.sleep(10_000L);
+            return new TestDto("self working(return)", "success");
+        }, taskExecutor);
+
+        // Async 리턴 값 조합 처리
+        var testDtos = new ArrayList<TestDto>();
+        testDtos.add(result1.get());
+        testDtos.add(result2.get());
+        return testDtos;
     }
 
-
     // Test 임시 DTO
-    public record TestDto (String Name, int Age) {}
+    public record TestDto (String whoReturn, String returnValue) {}
 }

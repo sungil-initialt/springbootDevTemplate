@@ -82,8 +82,9 @@ public class SptWfwApplication {
 재고 수량 안맞는 문제 롹으로 해결 방안
 async 내부 에러 throw가 잘되는지..
 async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록
-비동기 예시 만들기
-
+기타 context 가 하위 쓰레드에서 잘 처리 되는지..
+SSE
+logging 예시
 
 ApplicationGlobalExceptionHandler 테스트 필요
  */

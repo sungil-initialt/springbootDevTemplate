@@ -38,7 +38,7 @@ public class SchedulerForAsyncMonitoring {
 
     public SchedulerForAsyncMonitoring(
             @Qualifier("schedulerExecutorForAsyncMonitoring") ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring,
-            @Qualifier("realTaskExecutor") TaskExecutor threadPoolForAsync,
+            @Qualifier("baseTaskExecutor") TaskExecutor threadPoolForAsync,
             @Value("${logging.monitoring.schedulerForAsyncMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
             @Value("${logging.monitoring.schedulerForAsyncMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
         this.schedulerExecutorForAsyncMonitoring = schedulerExecutorForAsyncMonitoring;
@@ -78,11 +78,11 @@ public class SchedulerForAsyncMonitoring {
             }
 
             if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
-            log.info(LoggingUtil.makeBaseForm(logTag, "Async Monitoring (Scheduler)", logContent));
+            log.info(LoggingUtil.makeBaseForm(logTag, "SPT Async Monitoring (Scheduler)", logContent));
             lastLogContent = logContent;
 
         } catch (Exception e) {
-            log.warn("Scheduler For Async Monitoring", e);
+            log.warn("Scheduler For SPT Async Monitoring", e);
         }
     }
 }

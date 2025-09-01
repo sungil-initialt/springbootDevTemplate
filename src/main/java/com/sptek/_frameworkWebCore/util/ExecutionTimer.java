@@ -48,4 +48,13 @@ public class ExecutionTimer {
             return supplier.get();
         }
     }
+
+    // Thread.sleep() 의 대용 (ex 처리 래핑)
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }

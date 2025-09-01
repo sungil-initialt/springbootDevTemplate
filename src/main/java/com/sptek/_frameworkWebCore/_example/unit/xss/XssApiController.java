@@ -36,7 +36,6 @@ public class XssApiController {
     @Operation(summary = "02. XssProtect 어노테이션 적용 (응답 결과를 Escape 처리함)", description = "")
     public Object xssProtectOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody){
         // 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
-        //ExceptionHelper.exSafe(()->Thread.sleep(10000));
         return originBody;
     }
 }

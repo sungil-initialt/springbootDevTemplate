@@ -29,8 +29,8 @@ import java.util.List;
 public class AsyncConfig {
 
     // 쓰레드 작업에 할용하기 위한 쓰레드 풀 생성
-    @Bean(name = "realTaskExecutor") // name값 변경 하지 말것!
-    public ThreadPoolTaskExecutor realTaskExecutor() {
+    @Bean(name = "baseTaskExecutor") // name값 변경 하지 말것!
+    public ThreadPoolTaskExecutor baseTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(CommonConstants.RECOMMEND_THREAD_POOL_SIZE); // 기본 쓰레드 수
         threadPoolTaskExecutor.setMaxPoolSize(CommonConstants.RECOMMEND_THREAD_POOL_MAX_SIZE); // 최대 쓰레드 수
@@ -41,11 +41,11 @@ public class AsyncConfig {
         return threadPoolTaskExecutor;
     }
 
-    // realTaskExecutor 을 Spring 의 기본 쓰레드 풀로 적용하기 위해 Bean Name 을 기본값 으로 적용
-    @Bean(name = "taskExecutor")
-    public TaskExecutor taskExecutor(@Qualifier("realTaskExecutor") ThreadPoolTaskExecutor realTaskExecutor) {
+    // baseTaskExecutor 을 Spring 의 기본 쓰레드 풀로 적용하기 위해 Bean Name 을 기본값 으로 적용
+    @Bean(name = "sptTaskExecutor")
+    public TaskExecutor taskExecutor(@Qualifier("baseTaskExecutor") ThreadPoolTaskExecutor baseTaskExecutor) {
         // 하위 쓰레드에 SecurityContext 를 전파하기 위한 처리
-        return new DelegatingSecurityContextTaskExecutor(realTaskExecutor);
+        return new DelegatingSecurityContextTaskExecutor(baseTaskExecutor);
     }
 
     // todo: 중요! 하위 쓰레드 내에서도 ThreadLocal 기반의 중요 context 를 사용할 수 있도록 Decorator 설정

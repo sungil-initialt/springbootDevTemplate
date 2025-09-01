@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore._example.unit.async;
 import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
-import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,72 +23,49 @@ import java.util.concurrent.TimeUnit;
 public class AsyncApiController {
     private final AsyncService asyncService;
 
-    @GetMapping(value = "/01/example/async/case1")
-    @Operation(summary = "01. Async 하지 않은 5s 작업, 응답 대기, Sever worker Thread 홀딩", description = "")
-    public Object case11() throws Exception {
-        asyncService.justSleep5s();
-        return "ok";
+    @GetMapping(value = "/01/example/async/voidJob")
+    @Operation(summary = "01. 동기: 응답 대기-> Worker 홀딩-> 서비스 동기 처리(return 없음)-> 응답-> Worker 반환", description = "")
+    public Object voidJob() throws Exception {
+        asyncService.voidJob();
+        return "success";
     }
 
-    @GetMapping(value = "/02/example/async/case2")
-    @Operation(summary = "02. 요청을 받아 바로 응답, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 실행 결과는 리턴 하지 않음", description = "")
-    public Object case2() throws Exception {
-        asyncService.justSleep5sWithAsync();
-        return "ok";
+    @GetMapping(value = "/02/example/async/voidJobWithAsync")
+    @Operation(summary = "02. 비동기: 바로 응답-> Worker 반환-> 서비스 비동기 처리(return 없음)", description = "")
+    public Object voidJobWithAsync() throws Exception {
+        asyncService.voidJobWithAsync();
+        return "success";
+    }
+
+    @GetMapping(value = "/03/example/async/returnJob")
+    @Operation(summary = "03. 동기: 응답 대기-> Worker 홀딩-> 서비스 동기 처리(return 있음)-> 응답-> Worker 반환", description = "")
+    public Object returnJob() throws Exception {
+        return asyncService.returnJob();
+    }
+
+    @GetMapping(value = "/04/example/async/returnJobWithAsync")
+    @Operation(summary = "04. 비동기: 응답 대기-> Worker 홀딩-> 서비스 비동기 처리(return 있음)-> 응답-> Worker 반환", description = "")
+    public Object returnJobWithAsync()  throws Exception {
+        return asyncService.returnJobWithAsync();
+    }
+
+    @GetMapping(value = "/05/example/async/recommendAsyncJoin")
+    @Operation(summary = "05. 비동기: 응답 대기-> Worker 홀딩-> 서비스 비동기 병렬 처리(return join)-> 응답-> Worker 반환", description = "")
+    public Object recommendAsyncJoin()  throws Exception {
+        return asyncService.recommendAsyncJoin();
     }
 
     @Enable_AsyncResponse_At_RestControllerMethod
-    @GetMapping(value = "/03/example/async/case3")
-    @Operation(summary = "03. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
-    public Object case3()  throws Exception {
-        return asyncService.getUser();
+    @GetMapping(value = "/06/example/async/returnJobWithAsyncResponse")
+    @Operation(summary = "06. 비동기: 응답 대기-> Worker 반환-> 서비스 비동기 처리(return 있음)-> Worker 재할당 및 응답-> Worker 반환", description = "")
+    public Object returnJobWithAsyncResponse() throws Exception {
+        return asyncService.returnJob();
     }
 
-
-    @GetMapping(value = "/04/example/async/case4-2")
-    @Operation(summary = "04. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
-    public CompletableFuture<ExUserDto> case42()  throws Exception {
-        return asyncService.getUserAsync()
-                .orTimeout(12, TimeUnit.SECONDS)
-                .exceptionally(ex -> {throw new RuntimeException(ex);});
-    }
-
-    //@Async
-    @GetMapping(value = "/04/example/async/case4")
-    @Operation(summary = "04. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
-    public Object case4()  throws Exception {
-        return asyncService.getCompletableFutureUser()
-                .orTimeout(12, TimeUnit.SECONDS)
-                .exceptionally(ex -> {throw new RuntimeException(ex);});
-    }
-
-    @GetMapping(value = "/05/example/async/case5")
-    @Operation(summary = "05. 요청을 받아 바로 응답 안함, Sever worker Thread Release, 실제 동작은 새 Thread로 실행, 처리 후 응답", description = "")
-    public Object case5()  throws Exception {
-        return asyncService.getUserAsync()
-                .orTimeout(10, TimeUnit.SECONDS)
-                .exceptionally(ex -> {throw new RuntimeException(ex);});
-    }
-
-    // for just Test ---------------------------------------------------------------------------------------------------
-    @GetMapping(value = "/91/example/async/justSleep1")
-    @Operation(summary = "91. 1초 sleep 후 응답", description = "")
-    public Object justSleep1() throws Exception {
-        Thread.sleep(1000L);
-        return "justSleep 1s ok";
-    }
-
-    @GetMapping(value = "/92/example/async/justSleep2")
-    @Operation(summary = "92. 2초 sleep 후 응답", description = "")
-    public Object justSleep2() throws Exception {
-        Thread.sleep(2000L);
-        return "justSleep 2s ok";
-    }
-
-    @GetMapping(value = "/93/example/async/justSleep3")
-    @Operation(summary = "93. 3초 sleep 후 응답", description = "")
-    public Object justSleep3() throws Exception {
-        Thread.sleep(3000L);
-        return "justSleep 3s ok";
+    @Enable_AsyncResponse_At_RestControllerMethod
+    @GetMapping(value = "/07/example/async/recommendAsyncJoinWithAsyncResponse")
+    @Operation(summary = "07. 비동기: 응답 대기-> Worker 반환-> 서비스 비동기 병렬 처리(return join)-> Worker 재할당 및 응답-> Worker 반환", description = "")
+    public Object recommendAsyncJoinWithAsyncResponse()  throws Exception {
+        return asyncService.recommendAsyncJoin();
     }
 }

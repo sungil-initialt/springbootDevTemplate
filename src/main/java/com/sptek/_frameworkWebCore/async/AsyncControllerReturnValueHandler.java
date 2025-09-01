@@ -19,6 +19,7 @@ import java.util.concurrent.CompletionException;
 @Component
 public class AsyncControllerReturnValueHandler implements HandlerMethodReturnValueHandler {
 
+    // 핸들러 적용 조건
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
         var method = returnType.getMethod();
@@ -29,6 +30,9 @@ public class AsyncControllerReturnValueHandler implements HandlerMethodReturnVal
 
     @Override
     public void handleReturnValue(Object returnInstance, MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest) throws Exception {
+        // return Instance 의 타입을 보고 컨트롤러 이후 프로세싱을 타입에 따라 강제?로 태운다. (spring 본연의 플로우는 컨트럴로 리턴 시그니쳐를 보고 결정됨)
+        
+        // AsyncResponse 적용 케이스
         if (returnInstance instanceof CompletableFuture<?> completableFuture) {
             DeferredResult<Object> deferredResult = new DeferredResult<>();
             completableFuture.whenComplete((result, ex) -> {
@@ -44,12 +48,12 @@ public class AsyncControllerReturnValueHandler implements HandlerMethodReturnVal
             return;
         }
 
+        // --- 추가적으로 고려 하고 있는 것 들 (해당 케이스를 현재는 구현하지 않았음)
         if (returnInstance instanceof Callable<?> callable) {
             modelAndViewContainer.setRequestHandled(false);
             WebAsyncUtils.getAsyncManager(nativeWebRequest).startCallableProcessing(new WebAsyncTask<>(callable), modelAndViewContainer);
             return;
         }
-
         if (returnInstance instanceof DeferredResult<?> deferredResult) {
             modelAndViewContainer.setRequestHandled(false);
             WebAsyncUtils.getAsyncManager(nativeWebRequest).startDeferredResultProcessing(deferredResult, modelAndViewContainer);

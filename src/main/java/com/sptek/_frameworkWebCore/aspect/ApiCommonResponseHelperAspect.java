@@ -5,9 +5,10 @@ import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseD
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
@@ -35,7 +36,7 @@ import java.util.concurrent.CompletionException;
 public class ApiCommonResponseHelperAspect {
     private final TaskExecutor taskExecutor;
     // Bean name 으로 명확히 찾기 위해 생성자 직접 구성
-    public ApiCommonResponseHelperAspect(@Qualifier("taskExecutor") TaskExecutor taskExecutor) {
+    public ApiCommonResponseHelperAspect(@Qualifier("sptTaskExecutor") TaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
     }
 
@@ -50,9 +51,9 @@ public class ApiCommonResponseHelperAspect {
 
     @Around("pointCut()")
     public Object pointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.debug("1. around start");
-
         if (RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncResponse_At_RestControllerMethod.class)) {
+            // AsyncResponse 적용시 컨트롤러 작업을 Async 로 처리하고 리턴 값을 CompletableFuture 로 한번더 래핑 해준다.
+            // 최종 리턴 인스턴스 타입 : CompletableFuture(ResponseEntity(ApiCommonSuccessResponseDto(result)))
             return CompletableFuture.supplyAsync(() -> {
                 Object target = joinPoint.getTarget();
                 Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
@@ -63,36 +64,32 @@ public class ApiCommonResponseHelperAspect {
                 try {
                     //Object result = joinPoint.proceed(); // 쓰레드 내부에서 이렇게 처리할수 없음
                     Object result = org.springframework.util.ReflectionUtils.invokeMethod(method, target, args);
-                    return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
-                } catch (Throwable t) {
-                    throw new CompletionException(t);
+                    if (result instanceof CompletableFuture<?> completableFuture) {
+                        // 최종 return 때 CompletableFuture 래핑을 하기 때문에 이 시점에서는 제거
+                        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(((CompletableFuture)result).get()));
+                    } else {
+                        return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
+                    }
+                } catch (Throwable throwable) {
+                    throw new CompletionException(throwable);
                 }
             }, taskExecutor);
 
         } else {
             Object result = joinPoint.proceed();
-            log.debug("4. around after joinPoint.proceed()");
             if (result instanceof HttpEntity) { //ResponseEntity 포함
                 // 이미 HttpEntity 또는 ResponseEntity 라면 수정 없이 그대로 반환
                 return result;
             } else if (result instanceof CompletableFuture<?> completableFuture) {
-                // 직접 CompletableFuture 로 만들어 넘긴 경우 ApiCommonSuccessResponseDto -> ResponseEntity -> CompletableFuture로 래핑
-                return completableFuture.thenApply(obj -> ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(obj)));
+                // todo: 두 리턴 중 어떤 방식이 더 좋을까?
+                // 일반 object 방식으로 취급되어 처리
+                return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(((CompletableFuture)result).get()));
+                // CompletableFuture(ResponseEntity(ApiCommonSuccessResponseDto(result))) 로 변형 (Async Response 를 붙인것과 동일 처리됨)
+                // return completableFuture.thenApply(obj -> ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(obj)));
+
             } else {
                 return ResponseEntity.ok(new ApiCommonSuccessResponseDto<>(result));
             }
         }
-    }
-
-    @Before("pointCut()")
-    public void pointCutBefore(JoinPoint joinPoint) {
-        log.debug("2. before (다른 AOP 의 Around 시작, 해당 AOP 의 모든 처리를 다 끝내고 다시 복귀)");
-        //to do what you need.
-    }
-
-    @After("pointCut()")
-    public void pointCutAfter(JoinPoint joinPoint) {
-        log.debug("3. after");
-        //to do what you need.
     }
 }
