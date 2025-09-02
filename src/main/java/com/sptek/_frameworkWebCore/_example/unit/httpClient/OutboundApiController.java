@@ -40,7 +40,7 @@ import java.util.Map;
 public class OutboundApiController {
     private final OutboundSupport outboundSupport;
     String apiTestUrl = "https://jsonplaceholder.typicode.com";
-    MyTestDto apiTestDto = new MyTestDto(0, "my title!", "my content!", null);
+    OutboundDto outboundDto = new OutboundDto(0, "my title!", "my content!", null);
 
     @GetMapping("/01/example/outbound/closeableHttpClientGet")
     @Operation(summary = "01. closeableHttpClient Get without Pool", description = "")
@@ -73,12 +73,12 @@ public class OutboundApiController {
             request.addHeader("X-TEST_KEY", "X-TEST_VALUE");
             request.setEntity(new StringEntity(
                     // object -> json
-                    TypeConvertUtil.objectToJsonWithoutRootName(apiTestDto, false)
+                    TypeConvertUtil.objectToJsonWithoutRootName(outboundDto, false)
                     , ContentType.APPLICATION_JSON));
 
             try (CloseableHttpResponse closeableHttpResponse = httpClient.execute(request)) {
                 if (closeableHttpResponse.getCode() < 200 || closeableHttpResponse.getCode() >= 300) return "http client request failed. (result code: " + closeableHttpResponse.getCode() + ")";
-                return TypeConvertUtil.jsonToClass(EntityUtils.toString(closeableHttpResponse.getEntity(), StandardCharsets.UTF_8), MyTestDto.class);
+                return TypeConvertUtil.jsonToClass(EntityUtils.toString(closeableHttpResponse.getEntity(), StandardCharsets.UTF_8), OutboundDto.class);
             }
         }
     }
@@ -106,9 +106,9 @@ public class OutboundApiController {
                 .build();
 
         HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.POST, uriComponents, httpHeaders, apiTestDto);
+        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.POST, uriComponents, httpHeaders, outboundDto);
         if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300)  return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), MyTestDto.class);
+        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), OutboundDto.class);
     }
 
     @GetMapping("/05/example/outbound/outboundSupportPut")
@@ -121,9 +121,9 @@ public class OutboundApiController {
                 .buildAndExpand(Map.of("id", 1));
 
         HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.PUT, uriComponents, httpHeaders, apiTestDto);
+        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.PUT, uriComponents, httpHeaders, outboundDto);
         if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), MyTestDto.class);
+        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), OutboundDto.class);
     }
 
     @GetMapping("/06/example/outbound/outboundSupportDelete")
@@ -138,11 +138,11 @@ public class OutboundApiController {
         HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
         HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.DELETE, uriComponents, httpHeaders);
         if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), MyTestDto.class);
+        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), OutboundDto.class);
     }
 
     // api Test Dto
-    private record MyTestDto(int id, String title, String content, String extraField) {}
+    private record OutboundDto(int id, String title, String content, String extraField) {}
 }
 
 

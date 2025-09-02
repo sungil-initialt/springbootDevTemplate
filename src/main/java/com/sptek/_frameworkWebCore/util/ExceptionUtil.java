@@ -2,6 +2,10 @@ package com.sptek._frameworkWebCore.util;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+
 @Slf4j
 public class ExceptionUtil {
     @FunctionalInterface
@@ -32,4 +36,16 @@ public class ExceptionUtil {
         }
     }
 
+    // 래핑된 ex 를 받아 실제 ex를 찾아 준다. (Async 내부 ex 의 경우 ex가 래핑되는 케이스가 있음)
+    public static Throwable getRealException(Throwable t) {
+        if (t == null) return null;
+        while (t instanceof CompletionException || t instanceof ExecutionException || t instanceof UndeclaredThrowableException) {
+            Throwable cause = t.getCause();
+            if (cause == null || cause == t) {
+                return t;
+            }
+            t = cause;
+        }
+        return t;
+    }
 }

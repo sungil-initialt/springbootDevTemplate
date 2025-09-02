@@ -1,6 +1,8 @@
 package com.sptek._frameworkWebCore._example.unit.async;
 
-import com.sptek._frameworkWebCore.util.ExecutionTimer;
+import com.sptek._frameworkWebCore.base.exception.ServiceException;
+import com.sptek._frameworkWebCore.util.Timer;
+import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
@@ -22,58 +24,55 @@ public class AsyncService {
     }
 
     // 리턴 없는 일반 메소드
-    public void voidJob() {
-        ExecutionTimer.sleep(10_000L);
-        log.debug("voidJob done");
-    }
-
-    // 리턴이 없는 경우 @Async 탈부착 가능 (*** 비추천: 같은 클레스에서 호출하는 self-invocation 불가)
-    @Async("sptTaskExecutor")
-    public void voidJobWithAsync() {
-        ExecutionTimer.sleep(10_000L);
-        log.debug("voidJobWithAsync done");
+    public void noReturnJob() {
+        Timer.sleep(10_000L);
+        if(true) throw new RuntimeException("returnObjectJob RuntimeException");
+        log.debug("noReturnJob done");
     }
 
     // 리턴 타입이 Future 타입이 아님으로 @Async 탈부착 불가
-    public TestDto returnJob() {
-        ExecutionTimer.sleep(10_000L);
-        return new TestDto("returnJob", "success");
+    public AsyncDto returnObjectJob() {
+        Timer.sleep(10_000L);
+        if(false) throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "처리할 작업이 없습니다");
+        return new AsyncDto("returnObjectJob", "success");
     }
 
-    // 리턴 타입이 Future 타입 임으로 @Async 탈부착 가능 (***비추천: 같은 클레스에서 호출하는 self-invocation 불가 및 @Async 탈부착에 따라 리턴 타입이 변경 필요)
+    // 리턴이 없는 경우 @Async 탈부착 가능 (*** 비추천: 같은 클레스에서 호출하는 self-invocation 불가, EX 전파 복잡)
     @Async("sptTaskExecutor")
-    public CompletableFuture<TestDto> returnJobWithAsync() {
-        ExecutionTimer.sleep(10_000L);
-        return CompletableFuture.completedFuture(new TestDto("returnJobWithAsync", "success"));
+    public void noReturnJobWithAsync() {
+        Timer.sleep(10_000L);
+        if(false) throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "noReturnJobWithAsync ServiceException");
+        log.debug("noReturnJobWithAsync done");
+    }
+
+    // 리턴 타입이 Future 타입 임으로 @Async 탈부착 가능 (***비추천: 같은 클레스에서 호출하는 self-invocation 불가 및 @Async 탈부착에 따라 리턴 타입이 변경 필요, EX 전파 복잡)
+    @Async("sptTaskExecutor")
+    public CompletableFuture<AsyncDto> returnObjectJobWithAsync() {
+        Timer.sleep(10_000L);
+        if(false) throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "처리할 작업이 없습니다.");
+        return CompletableFuture.completedFuture(new AsyncDto("returnObjectJobWithAsync", "success"));
     }
 
     // 추천 Async 처리 및 병렬 작업 예시
-    public List<TestDto> recommendAsyncJoin() throws Exception {
-        // 1. taskExecutor 를 통해 Sync 메소드를(void) Async 형태로 호출
-        taskExecutor.execute(this::voidJob);
+    public List<AsyncDto> recommendAsyncJoin() throws Exception {
+        // CompletableFuture 와 taskExecutor 를 통해 Sync(return) 메소드를 Async 형태로 호출
+        var noReturnJob = CompletableFuture.runAsync(this::noReturnJob, taskExecutor);
+        var returnObjectJob = CompletableFuture.supplyAsync(this::returnObjectJob, taskExecutor);
+        var composeJob = CompletableFuture.supplyAsync(() -> {
+            Timer.sleep(10_000L);
+            if(false) throw new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, "처리할 작업이 없습니다.");
+            return new AsyncDto("composeJob", "success");}, taskExecutor).whenComplete((r, e) -> {/*후처리*/});
 
-        // 2. taskExecutor 를 통해 작업을(void) Async 로 직접 구현
-        taskExecutor.execute(() -> {
-            ExecutionTimer.sleep(10_000L);
-            log.debug("self working(void) done");
-        });
-
-        // 3. CompletableFuture 와 taskExecutor 를 통해 Sync(return) 메소드를 Async 형태로 호출
-        var result1 = CompletableFuture.supplyAsync(this::returnJob, taskExecutor);
-
-        // 4. CompletableFuture 와 taskExecutor 를 작업을(return) Async 로 직접 구현
-        var result2 = CompletableFuture.supplyAsync(() -> {
-            ExecutionTimer.sleep(10_000L);
-            return new TestDto("self working(return)", "success");
-        }, taskExecutor);
+        // Async Exception 체크가 되려면 join 또는 get 이 반드시 필요 (리턴이 없어도 필요)
+        noReturnJob.join();
 
         // Async 리턴 값 조합 처리
-        var testDtos = new ArrayList<TestDto>();
-        testDtos.add(result1.get());
-        testDtos.add(result2.get());
-        return testDtos;
+        var asyncDtos = new ArrayList<AsyncDto>();
+        asyncDtos.add(returnObjectJob.get());
+        asyncDtos.add(composeJob.get());
+        return asyncDtos;
     }
 
     // Test 임시 DTO
-    public record TestDto (String whoReturn, String returnValue) {}
+    public record AsyncDto (String whoReturn, String returnValue) {}
 }

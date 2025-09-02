@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Enable_AsyncResponse_At_RestControllerMethod {
+public @interface Enable_AsyncController_At_RestControllerMethod {
 }

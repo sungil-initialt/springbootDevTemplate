@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.aspect;
 
-import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_AsyncController_At_RestControllerMethod;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonSuccessResponseDto;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.SpringUtil;
@@ -51,7 +51,7 @@ public class ApiCommonResponseHelperAspect {
 
     @Around("pointCut()")
     public Object pointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        if (RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncResponse_At_RestControllerMethod.class)) {
+        if (RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncController_At_RestControllerMethod.class)) {
             // AsyncResponse 적용시 컨트롤러 작업을 Async 로 처리하고 리턴 값을 CompletableFuture 로 한번더 래핑 해준다.
             // 최종 리턴 인스턴스 타입 : CompletableFuture(ResponseEntity(ApiCommonSuccessResponseDto(result)))
             return CompletableFuture.supplyAsync(() -> {

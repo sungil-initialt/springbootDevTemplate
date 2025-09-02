@@ -1,6 +1,6 @@
 package com.sptek._frameworkWebCore.async;
 
-import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_AsyncController_At_RestControllerMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class AsyncControllerReturnValueHandler implements HandlerMethodReturnVal
     public boolean supportsReturnType(MethodParameter returnType) {
         var method = returnType.getMethod();
         return method != null
-                && method.isAnnotationPresent(Enable_AsyncResponse_At_RestControllerMethod.class)
+                && method.isAnnotationPresent(Enable_AsyncController_At_RestControllerMethod.class)
                 && returnType.getParameterType() == Object.class;
     }
 

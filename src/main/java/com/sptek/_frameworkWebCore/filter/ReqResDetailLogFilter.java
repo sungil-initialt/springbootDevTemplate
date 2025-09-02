@@ -28,7 +28,7 @@ import java.util.Optional;
 public class ReqResDetailLogFilter extends OncePerRequestFilter {
     // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
 
-    @PostConstruct //Bean 생성 이후 호출
+    @PostConstruct
     public void init() {
         //log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }

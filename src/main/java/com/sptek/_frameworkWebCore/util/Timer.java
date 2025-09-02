@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.function.Supplier;
 
 @Slf4j
-public class ExecutionTimer {
-    private ExecutionTimer() {}
+public class Timer {
+    private Timer() {}
     private static volatile Boolean has_Enable_ExecutionTimer_At_Main = null;
 
     // 좀더 정확한 시간 측정을 위해 어노테이션 여부도 캐싱하여 사용함

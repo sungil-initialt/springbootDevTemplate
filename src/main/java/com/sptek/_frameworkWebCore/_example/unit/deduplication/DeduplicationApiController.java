@@ -1,10 +1,9 @@
 package com.sptek._frameworkWebCore._example.unit.deduplication;
 
-import com.sptek._frameworkWebCore._annotation.Enable_AsyncResponse_At_RestControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
-import com.sptek._frameworkWebCore.util.ExecutionTimer;
+import com.sptek._frameworkWebCore.util.Timer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class DeduplicationApiController {
     @RequestMapping(value = "/01/example/deduplication/preventDuplicateRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "01. 동일 요청이 빠르게 연속 요청 되는 것을 방지", description = "")
     public Object duplicatedRequest() {
-        ExecutionTimer.sleep(3000L);
+        Timer.sleep(3000L);
         return "prevent duplicateRequest test ok";
     }
 }
