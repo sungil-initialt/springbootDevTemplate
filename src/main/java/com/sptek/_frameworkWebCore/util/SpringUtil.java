@@ -3,6 +3,7 @@ package com.sptek._frameworkWebCore.util;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 // todo: 해당 유틸은 Spring Component 로 선언된 클레스임을 알고 주의 해서 코드 수정 및 사용 할것
 // todo: RequestContextHolder 를 어디서든 사용하기 위해서는 new org.springframework.web.filter.RequestContextFilter 순서를 최대한 높일것
 public class SpringUtil implements ApplicationContextAware {

@@ -44,11 +44,11 @@ Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 #### 10. 로그인 API (인증 토큰)
-POST {{api-server}}/10/example/authentication/login
+POST {{api-server}}/10/example/authentication/loginxx
 Content-Type: application/json
 
 {
-  "username": "sungilry3@naver.com",
+  "username": "sungilry1@naver.com",
   "password": "1q2w3e4r5t!Q"
 }
 > {%

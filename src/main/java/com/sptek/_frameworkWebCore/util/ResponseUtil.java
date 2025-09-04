@@ -71,12 +71,12 @@ public class ResponseUtil {
 
     public static String getResponseBody(ContentCachingResponseWrapper contentCachingResponseWrapper) {
         byte[] content = contentCachingResponseWrapper.getContentAsByteArray();
-        if (content.length == 0) return "No Body";
-        if (content.length > 30_000) return "-> The body is too big and skipped"; // 30K
+        if (content.length == 0) return "";
+        if (content.length > 30_000) return "N/A (The body is too big and skipped it.)"; // 그냥 적당이 잡은 수치임(필요시변경)
         try {
-            return new String(content, contentCachingResponseWrapper.getCharacterEncoding());
+            return "\n" + new String(content, contentCachingResponseWrapper.getCharacterEncoding());
         } catch (UnsupportedEncodingException e) {
-            return "Unsupported Encoding";
+            return "N/A (Unsupported Encoding)";
         }
     }
 }

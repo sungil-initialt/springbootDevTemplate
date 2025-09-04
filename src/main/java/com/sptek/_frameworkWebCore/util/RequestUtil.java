@@ -153,7 +153,7 @@ public class RequestUtil {
                         .getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
 
         if (!StringUtils.hasText(startTime)) {
-            return new ExcuteTimeDto("fail to trace.", LocalDateTime.now().toString(), "fail to trace.");
+            return new ExcuteTimeDto("N/A", LocalDateTime.now().toString(), "N/A");
         }
 
         String currentTime = LocalDateTime.now().toString();
@@ -165,9 +165,9 @@ public class RequestUtil {
         byte[] content = contentCachingRequestWrapper.getContentAsByteArray();
         if (content.length == 0) return "";
         try {
-            return new String(content, contentCachingRequestWrapper.getCharacterEncoding());
+            return "\n" + new String(content, contentCachingRequestWrapper.getCharacterEncoding());
         } catch (UnsupportedEncodingException e) {
-            return "Unsupported Encoding";
+            return "N/A (Unsupported Encoding)";
         }
     }
 }

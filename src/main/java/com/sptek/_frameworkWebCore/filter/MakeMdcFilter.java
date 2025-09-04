@@ -38,7 +38,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
             MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName().substring(0,4) + "**" : CommonConstants.ANONYMOUS_USER);
             MDC.put("sessionId", request.getSession(true).getId().substring(0, 8) + "**");
 
-            // API 호출 흐름을 trace 하기 위한 값
+            // 분산 시스템에서 API 호출 흐름을 trace 하기 위한 값으로 추후 사용을 위해 적용함
             String correlationId = request.getHeader("Correlation-Id");
             if (correlationId == null) {
                 correlationId = Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID), UUID.randomUUID().toString());

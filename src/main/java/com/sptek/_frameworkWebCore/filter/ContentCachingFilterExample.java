@@ -1,13 +1,6 @@
 package com.sptek._frameworkWebCore.filter;
 
-import com.sptek._frameworkWebCore._annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
-import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
-import com.sptek._frameworkWebCore.util.LoggingUtil;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,30 +14,10 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import java.io.IOException;
 
 @Slf4j
-//@Profile(value = { "local", "dev", "stg", "prd" })
-//@WebFilter(urlPatterns = "/*")
-public class ReqResDetailLogFilter extends OncePerRequestFilter {
-    // todo: 어노테이션 속성값을 통해 파일 저장하는 기능 추가 (속성값을 로그 맨 앞 프리픽스로 만들어야 함)
-
-    @PostConstruct
-    public void init() {
-        //log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
-    }
+public abstract class ContentCachingFilterExample extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
-
-        // 필터 동작 여부 (제외 케이스)
-        boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)
-                && (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest());
-        boolean hasNoDetailLogAnnotation = !MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
-                && !RequestMappingAnnotationRegister.hasAnnotation(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
-        if (isMinorRequest || hasNoDetailLogAnnotation) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         // 필터 적용 전 (Request와 Response를 ContentCachingWrapper로 래핑)
         ContentCachingRequestWrapper contentCachingRequestWrapper;
         ContentCachingResponseWrapper contentCachingResponseWrapper;
@@ -72,11 +45,10 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
             contentCachingResponseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_RESPONSE));
         }
 
-        // Wrapper 형태로 체인을 넘긴다.
+        // do what you want.**********************
         filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
-        if (!isAsyncStarted(request) || isAsyncDispatch(request)) {
-            // todo: 중요! Async 디스패치의 첫번째 호출일때는 로깅하지 않음
-            LoggingUtil.reqResDetailLogging(log, contentCachingRequestWrapper, contentCachingResponseWrapper, "Req Res Detail Log From " + this.getClass().getSimpleName());
+        if (!isAsyncStarted(request) || isAsyncDispatch(request)) { // todo: 중요! Async 디스패치의 첫번째 호출을 제외
+            // do what you want.**********************
 
             // todo: 중요! contentCachingResponseWrapper 을 자신이 직접 생성 했다면 필터 체인 이후 response body 복사 (필수)
             if (amIContentCachingResponseWrapperOwner) {

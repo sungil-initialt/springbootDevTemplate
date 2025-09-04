@@ -66,6 +66,7 @@ public class FilterConfigForFrameworkWebCore {
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
     }
 
@@ -77,6 +78,7 @@ public class FilterConfigForFrameworkWebCore {
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
     }
 

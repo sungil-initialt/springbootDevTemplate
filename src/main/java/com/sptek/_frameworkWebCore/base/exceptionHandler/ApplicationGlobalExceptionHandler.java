@@ -1,17 +1,11 @@
 package com.sptek._frameworkWebCore.base.exceptionHandler;
 
-import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApplicationGlobalException_At_Main;
 import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
-import com.sptek._frameworkWebCore.util.Timer;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
-import com.sptek._frameworkWebCore.util.RequestUtil;
-import com.sptek._frameworkWebCore.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,15 +14,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.util.StringUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.Objects;
 import java.util.Optional;
 
 //@Profile(value = { "notused" })
@@ -42,12 +35,11 @@ public class ApplicationGlobalExceptionHandler {
     // 이 핸들러 는 CustomErrorController 를 통해 인입된 상위 레벨 에러 처리 만을 하는게 목적 이다.
     // 상위 레벨이 아닌 Controller 내부 진입 후 에러에 대해 서는 ViewGlobalExceptionHandler 와 ApiGlobalExceptionHandler 에서 처리 한다.
 
-    // 401
+    // 401 (실제로 spring에서 401은 발생이 안된고 403으로 발생됨)
     @ExceptionHandler({AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
+    public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // todo : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
-        logWithCondition(ex, request, response, HttpStatus.FORBIDDEN);
         return handleError(request, response, ex, CommonErrorCodeEnum.FORBIDDEN_ERROR, "error/commonAuthenticationError");
     }
 
@@ -55,18 +47,16 @@ public class ApplicationGlobalExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     //controller 에서 hasRole 이든 hasAuthority 든 AccessDeniedException 이 발생됨 (hasRole인 경우는 401 같지는 403이 나옴)
-    public Object handleAccessDeniedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
+    public Object handleAccessDeniedException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // todo : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
-        logWithCondition(ex, request, response, HttpStatus.FORBIDDEN);
         return handleError(request, response, ex, CommonErrorCodeEnum.FORBIDDEN_ERROR, "error/commonAuthenticationError");
     }
 
     // 404
-    @ExceptionHandler({ResponseStatusException.class}) // todo : 적절한 에러 클레스를 없어서 ResponseStatusException 로 우선 처림함(명확성 이 떨어짐)..
+    @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     //요청에 대한 url 매핑 자체가 없기 때문에 ApplicationGlobalExceptionHandler 로 들어옴
-    public Object handleNoResourceFoundException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        logWithCondition(ex, request, response, HttpStatus.NOT_FOUND);
+    public Object handleNoResourceFoundException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return handleError(request, response, ex, CommonErrorCodeEnum.NOT_FOUND_ERROR, "error/commonNotfoundError");
     }
 
@@ -74,29 +64,26 @@ public class ApplicationGlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     // 지원하지 않는 request Metho(GET, POST, PUT, DELETE...)로 요청 했을때
-    public Object handleHttpRequestMethodNotSupportedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        logWithCondition(ex, request, response, HttpStatus.METHOD_NOT_ALLOWED);
+    public Object handleHttpRequestMethodNotSupportedException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return handleError(request, response, ex, CommonErrorCodeEnum.METHOD_NOT_ALLOWED, "error/commonMethodNotSupportError");
     }
 
     // todo: 413, 실제로 413은 이곳 으로 도달 하지 못함(원인 확인 필요)
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    public Object handleMaxUploadSizeExceededException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        logWithCondition(ex, request, response, HttpStatus.PAYLOAD_TOO_LARGE);
+    public Object handleMaxUploadSizeExceededException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return handleError(request, response, ex, CommonErrorCodeEnum.PAYLOAD_EXCEEDED_ERROR, "error/commonInternalError");
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(ResponseStatusException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Object handleUnexpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        logWithCondition(ex, request, response, HttpStatus.INTERNAL_SERVER_ERROR);
+    public Object responseStatusException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return handleError(request, response, ex, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, "error/commonInternalError");
     }
 
 
-    //view 와 api 요청을 구분 하여 최종 처리 함
-    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) {
+    //view 와 api 요청을 구분 하여 최종 처리 함 (이곳에서 처리되는 경우는 ReqResDeailLogFilter 로 진입이 불가능한 케이스임으로 여기로 로그를 처리함)
+    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) throws Exception{
         String requestUri = request.getRequestURI();
         String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
                 .map(Object::toString)
@@ -104,94 +91,17 @@ public class ApplicationGlobalExceptionHandler {
 
         if (requestUri.startsWith("/api/") || requestUri.startsWith("/systemSupportApi/") || errorRequestUri.startsWith("/api/") || errorRequestUri.startsWith("/systemSupportApi/")) {
             ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ex.getMessage());
+
+            LoggingUtil.reqResDetailLogging(log, request, response, apiCommonErrorResponseDto, "Req Res Detail Log From " + this.getClass().getSimpleName());
             return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
 
         } else {
             //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
             request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
+            LoggingUtil.reqResDetailLogging(log, request, response, "Req Res Detail Log From " + this.getClass().getSimpleName());
             return viewName;
             //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
         }
     }
 
-    //DetailLogFilter 에 도달할 수 없기 때문에 이곳 에서 대처함.
-    private void logWithCondition(Exception ex, HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus) {
-        log.error("Exception occurred", ex);
-
-        //  ReqResLogFilter 로 진입이 불가능한 케이스가 있기 때문에 이경우 이곳에서 요약된 로그를 남긴다.(ex: security 필터 같은 경우)
-        // todo: 컨트롤러나 필터를 진입할 수 없는 케이스의 에러가 발생한 경우 항상 ERROR_REQUEST_URI 가 생성 되는 것으로 보이나 지속적 으로 살펴볼 필요 있음
-        // todo: 관련 다른 케이스가 확인 되면 추가 필요
-        if (request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null /* || ex instanceof xxxException */ ) {
-            Timer.measure("logWithCondition->stringFormat", () -> {
-            String sessionId = request.getSession().getId();
-            String methodType = RequestUtil.getRequestMethodType(request);
-            String url = RequestUtil.getRequestDomain(request) +
-                    Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI)).orElse(request.getRequestURI()) +
-                    (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
-
-            String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
-            String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
-            String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
-
-            String logContent = """
-                    sessionId: %s
-                    (%s) url: %s
-                    header: %s
-                    params: %s
-                    responseStatus: %s
-                    relatedOutbounds: %s
-                    requestTime: %s
-                    responseTime: %s
-                    durationMsec: %s
-                    exceptionMsg: %s
-                    """.formatted(sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
-                            , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), ex.getMessage());
-
-            // main 과 controller 쪽 양쪽에 적용되어 있는 경우 controller 쪽 annotation 이 우선함 (controller 전체와 controller 메소드 양쪽에 적용되는 경우는 RequestMappingAnnotationRegister 가 메소드쪽 정보를 가지고 있음)
-            String logTag = StringUtils.hasText(Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""))
-                    ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
-                    : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
-
-            log.error(LoggingUtil.makeBaseForm(logTag, "REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", logContent));
-            });
-
-// ---------- placeHolder 방식을 사용하는 LoggingUtil.logBaseForm 과 성능 비교를 해본 코드!
-//            ExecutionTimer.measure("logWithCondition->placeHolder", () -> {
-//                Supplier<String> sessionId = ()-> request.getSession().getId();
-//                Supplier<String> methodType = ()-> RequestUtil.getRequestMethodType(request);
-//                Supplier<String>  url = ()-> RequestUtil.getRequestDomain(request) +
-//                        Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI)).orElse(request.getRequestURI()) +
-//                        (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "");
-//
-//                Supplier<String> requestHeader = ()-> TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
-//                Supplier<String> relatedOutbounds = ()-> Optional.ofNullable(request.getAttribute(CommonConstants.REQ_PROPERTY_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
-//                Supplier<String> params = ()-> TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
-//
-//                String bodyTemplate = """
-//                    sessionId: {}
-//                    ({}) url: {}
-//                    header: {}
-//                    params: {}
-//                    responseStatus: {}
-//                    relatedOutbounds: {}
-//                    requestTime: {}
-//                    responseTime: {}
-//                    durationMsec: {}
-//                    exceptionMsg: {}
-//                    """;
-//                //.formatted(sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
-//                //        , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), ex.getMessage());
-//
-//                // main 과 controller 쪽 양쪽에 적용되어 있는 경우 controller 쪽 annotation 이 우선함 (controller 전체와 controller 메소드 양쪽에 적용되는 경우는 RequestMappingAnnotationRegister 가 메소드쪽 정보를 가지고 있음)
-//                String logTag = ExecutionTimer.measure("RequestMappingAnnotationRegister", ()-> StringUtils.hasText(Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""))
-//                        ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
-//                        : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""));
-//                Supplier<String> exMessage = ex::getMessage;
-//
-//                LoggingUtil.logBaseForm(log, Level.ERROR, logTag, "REQ RES ERROR Detail Log caught by the ApplicationGlobalExceptionHandler", bodyTemplate
-//                        , sessionId, methodType, url, requestHeader, params, httpStatus, relatedOutbounds, RequestUtil.traceRequestDuration().getStartTime()
-//                                , RequestUtil.traceRequestDuration().getCurrentTime(), RequestUtil.traceRequestDuration().getDurationMsec(), exMessage);
-//            });
-        }
-    }
 }

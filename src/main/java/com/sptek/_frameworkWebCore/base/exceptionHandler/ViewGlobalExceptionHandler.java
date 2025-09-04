@@ -3,13 +3,14 @@ package com.sptek._frameworkWebCore.base.exceptionHandler;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
+import com.sptek._frameworkWebCore.util.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,7 +29,6 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST) //api 쪽의 ServiceException 경우 상황에 맞게 HttpStatus 를 내리나.. view 에서는 큰 의미가 없어 하나도 통일
     //개발자 가 의도적 으로 생성한 Exception 는 ServiceException 로 생성 하며 해당 핸들러 에서 처리 됨
     public Object handleServiceException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        log.error("ServiceException message : {}", ex.getMessage());
         return handleError(request, ex, "error/commonServiceError");
     }
 
@@ -36,7 +36,6 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     //기타 모든 에러를 하나로 처리함 (view 에러 에서는 특별히 공통 에러 페이지 외 구분할 필요가 없기 때문에 한번에 처리함, 에러 종류별 구분된 에러 페이지가 필요하면 추가해 나갈 것)
     public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        log.error("AuthenticationException message : {}", ex.getMessage());
         return handleError(request, ex, "error/commonAuthenticationError");
     }
 
@@ -44,16 +43,13 @@ public class ViewGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     //기타 모든 에러를 하나로 처리함 (view 에러 에서는 특별히 공통 에러 페이지 외 구분할 필요가 없기 때문에 한번에 처리함, 에러 종류별 구분된 에러 페이지가 필요하면 추가해 나갈 것)
     public Object handleUnexpectedException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        log.error("Exception message : {}", ex.getMessage());
         return handleError(request, ex, "error/commonInternalError");
     }
 
-
-
     private Object handleError(HttpServletRequest request, Exception ex, String viewName) {
+        Throwable t = LoggingUtil.exLoggingAndReturnThrowable(log, ex);
         //view 요청 에서 발생한 에러의 경우 이후에 구체적 으로 어떤 에러가 발생 했는지 정확히 알수 없기 때문에 저장 해서 사용함.
-        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
-
+        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, t.getMessage());
         return viewName;
         //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
     }

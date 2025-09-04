@@ -22,7 +22,7 @@ public class LocaleUtil {
     private static final MessageSource messageSource;
     private static List<LocaleDto> localeDtos = null;
 
-    //클레스 처음으로 사용될때 한번 실행됨, static final 상수 초기화에 사용, 생성자 보다 먼저 실행됨
+    //static final 상수 초기화에 사용, 생성자 보다 먼저 실행됨
     static {
         messageSource = SpringUtil.getSpringBean(MessageSource.class);
     }

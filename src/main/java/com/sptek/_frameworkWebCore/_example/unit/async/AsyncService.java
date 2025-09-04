@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.async;
 
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
+import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.Timer;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,12 @@ public class AsyncService {
     // 리턴 없는 일반 메소드
     public void noReturnJob() {
         Timer.sleep(10_000L);
-        if(true) throw new RuntimeException("returnObjectJob RuntimeException");
+        if(false) throw new RuntimeException("returnObjectJob RuntimeException");
         log.debug("noReturnJob done");
+
+        String userLanguageTag = LocaleUtil.getCurUserLanguageTag();
+        String userTimeZone = LocaleUtil.getCurUserTimeZoneName();
+        log.debug("userLanguageTag: {}, userTimeZone: {}", userLanguageTag, userTimeZone);
     }
 
     // 리턴 타입이 Future 타입이 아님으로 @Async 탈부착 불가

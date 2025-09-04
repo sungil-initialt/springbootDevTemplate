@@ -21,6 +21,11 @@ logging:
       sptek._projectCommon: debug
       sptek.projectName: debug
 
+      # ExceptionHandler 에서 error trace를 찍을지 여부 (찍기위해서는 debug 설정)
+      sptek._frameworkWebCore.base.ApplicationGlobalExceptionHandler: debug
+      sptek._frameworkWebCore.base.ViewGlobalExceptionHandler: debug
+      sptek._frameworkWebCore.base.ApiGlobalExceptionHandler: debug
+
       #HikariPool DB 커넥션 풀 (풀 상태 로그를 보려면 debug)
       zaxxer.hikari.pool.HikariPool: info
 
@@ -45,9 +50,6 @@ logging:
     jdbc.resultset: error
     jdbc.resultsettable: error
 
-  config: classpath:_frameworkWebCoreResources/logbackConfig/logback-spring-local.xml
-
-
   monitoring:
     schedulerForAsyncMonitoring:
       fixedDelaySeconds: 1 #로깅 주기 seconds
@@ -65,5 +67,5 @@ logging:
       fixedDelaySeconds: 1
       duplicateLogSuppressionMode: true
 
-
+  config: classpath:_frameworkWebCoreResources/logbackConfig/logback-spring-local.xml
 

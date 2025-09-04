@@ -1,13 +1,30 @@
 package com.sptek._frameworkWebCore.util;
 
+import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
+import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
+import com.sptek._frameworkWebCore.base.exception.ServiceException;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 import org.slf4j.spi.LoggingEventBuilder;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 public class LoggingUtil {
+
     public static String makeSimpleForm(String content) {
         return makeSimpleForm("", content);
     }
@@ -24,14 +41,14 @@ public class LoggingUtil {
     public static String makeBaseForm(String logTag, String title, String content) {
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return """
-            %s%s
-            --------------------------------------------------------------------------------
-            [ **** %s **** ]
-            --------------------------------------------------------------------------------
-            %s
-            --------------------------------------------------------------------------------
-            """
-            .formatted(CommonConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
+                %s%s
+                --------------------------------------------------------------------------------
+                [ **** %s **** ]
+                --------------------------------------------------------------------------------
+                %s
+                --------------------------------------------------------------------------------
+                """
+                .formatted(CommonConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
     }
 
     public static String removeLastNewline(String string) {
@@ -84,4 +101,72 @@ public class LoggingUtil {
         }
         loggingEventBuilder.log();
     }
+
+    public static void exLogging(Logger logger, Exception ex) {
+        exLoggingAndReturnThrowable(logger, ex);
+    }
+
+    public static Throwable exLoggingAndReturnThrowable(Logger logger, Exception ex) {
+        Throwable t = ExceptionUtil.getRealException(ex);
+        String tag = t instanceof ServiceException ? "ServiceException occurred {}" : "Exception occurred {}";
+        logger.error(tag, t.getMessage());
+        logger.debug("Debugging Trace", ex);
+        return t;
+    }
+
+    public static void reqResDetailLogging(Logger logger, HttpServletRequest request, HttpServletResponse response, String title) throws IOException {
+        reqResDetailLogging(logger, request, response, null, title);
+    }
+
+    public static void reqResDetailLogging(Logger logger, HttpServletRequest request, HttpServletResponse response, @Nullable Object responseBodyDto, String title) throws IOException {
+        if (!logger.isEnabledForLevel(Level.INFO)) return;
+
+        // main 과 controller 쪽 양쪽에 적용되어 있는 경우 controller 쪽 annotation 이 우선함 (controller 전체와 controller 메소드 양쪽에 적용되는 경우는 RequestMappingAnnotationRegister 가 메소드쪽 정보를 가지고 있음)
+        String logTag = StringUtils.hasText(Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""))
+                ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
+                : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
+
+        String sessionId = request.getSession().getId();
+        String methodType = RequestUtil.getRequestMethodType(request);
+        String url = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null ? RequestUtil.getRequestDomain(request) + (String) request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) : RequestUtil.getRequestUrlQuery(request);
+        String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));
+        String requestHeader = TypeConvertUtil.strMapToString(RequestUtil.getRequestHeaderMap(request, "|"));
+        String requestBody = request instanceof ContentCachingRequestWrapper contentCachingRequestWrapper ? RequestUtil.getRequestBody(contentCachingRequestWrapper) : "";
+
+        String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(response, "|"));
+        String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
+        String requestTime = RequestUtil.traceRequestDuration().getStartTime();
+        String responseTime = RequestUtil.traceRequestDuration().getCurrentTime();
+        String durationMsec = RequestUtil.traceRequestDuration().getDurationMsec();
+        String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
+        int responseStatus = response.getStatus();
+        String isAsyncDispatch = request.getDispatcherType() == DispatcherType.ASYNC ? "Async Response" : "Sync Response";
+
+        String responseBody = "";
+        if (responseBodyDto != null) responseBody = TypeConvertUtil.objectToJsonWithRootName(responseBodyDto, true);
+        else if (response instanceof ContentCachingResponseWrapper contentCachingResponseWrapper) ResponseUtil.getResponseBody(contentCachingResponseWrapper);
+
+        String modelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW)).map(Object::toString).orElse("");
+
+        String logContent = """
+                sessionId: %s
+                (%s) url: %s
+                params: %s
+                requestHeader: %s
+                requestBody: %s
+                responseHeader: %s
+                relatedOutbounds: %s
+                requestTime: %s
+                responseTime: %s
+                durationMsec: %s
+                exceptionMsg: %s
+                responseStatus: %s, %s
+                modelAndView: %s
+                responseBody: %s
+                """
+                .formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds
+                        , requestTime, responseTime, durationMsec, exceptionMsg, responseStatus, isAsyncDispatch, modelAndView, responseBody);
+        log.info(LoggingUtil.makeBaseForm(logTag, title, logContent));
+    }
 }
+

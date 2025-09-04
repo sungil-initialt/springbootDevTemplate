@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class TypeConvertUtil {
+    private static final ObjectMapper objectMapper = new ObjectMapper();   --> 빈으로 변경 필요
+
     public static String strMapToString(Map<String, String> originMap){
         return originMap.entrySet()
                 .stream()
@@ -46,8 +48,6 @@ public class TypeConvertUtil {
             return "{}";
 
         } else {
-            ObjectMapper objectMapper = new ObjectMapper();
-
             if (prettyPrintOption) {
                 return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
             } else {
@@ -57,7 +57,6 @@ public class TypeConvertUtil {
     }
 
     public static String objectToJsonWithRootName(Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
 
@@ -69,8 +68,6 @@ public class TypeConvertUtil {
     }
 
     public static void objectToJasonWithOutputStream(OutputStream outputStream, Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
         if (prettyPrintOption) {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, object);
         } else {
