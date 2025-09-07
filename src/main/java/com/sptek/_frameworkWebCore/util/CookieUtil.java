@@ -61,8 +61,8 @@ public class CookieUtil {
         addCookie(createCookie(name, value, maxAge, isHttpOnly, secure, domain, path));
     }
 
-    public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAge, @NotNull boolean isHttpOnly, @NotNull boolean secure, String domain, String path) {
-        Cookie cookie = createCookie(name, value, maxAge);
+    public static @NotNull Cookie createCookie(@NotNull String name, @NotNull String value, @NotNull Integer maxAgeSec, @NotNull boolean isHttpOnly, @NotNull boolean secure, String domain, String path) {
+        Cookie cookie = createCookie(name, value, maxAgeSec);
 
         cookie.setHttpOnly(isHttpOnly);
         cookie.setSecure(secure);

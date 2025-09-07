@@ -77,6 +77,7 @@ public class SptWfwApplication {
 
 
 /*
+ㅌㅏ임존 쿠키가 /view 경로에만 생김
 로케일 스레드에서 나오는거
 재고 수량 안맞는 문제 롹으로 해결 방안
 async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록
