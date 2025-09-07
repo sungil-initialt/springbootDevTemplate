@@ -1,5 +1,6 @@
 package com.sptek._frameworkWebCore.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class TypeConvertUtil {
-    private static final ObjectMapper objectMapper = new ObjectMapper();   --> 빈으로 변경 필요
+    private static ObjectMapper objectMapperWithRootName = null; //
 
     public static String strMapToString(Map<String, String> originMap){
         return originMap.entrySet()
@@ -49,29 +50,34 @@ public class TypeConvertUtil {
 
         } else {
             if (prettyPrintOption) {
-                return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+                return SpringUtil.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
             } else {
-                return objectMapper.writeValueAsString(object);
+                return SpringUtil.getObjectMapper().writeValueAsString(object);
             }
         }
     }
 
     public static String objectToJsonWithRootName(Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
-        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        // config 변경 (쓰레드 세이프하지 않음)이 필요함으로 빈이 아닌 별도 생성하여 사용
+        if (objectMapperWithRootName == null) {
+            objectMapperWithRootName = new ObjectMapper();
+            objectMapperWithRootName.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            objectMapperWithRootName.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+            objectMapperWithRootName.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        }
 
         if (prettyPrintOption) {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+            return objectMapperWithRootName.writerWithDefaultPrettyPrinter().writeValueAsString(object);
         } else {
-            return objectMapper.writeValueAsString(object);
+            return objectMapperWithRootName.writeValueAsString(object);
         }
     }
 
     public static void objectToJasonWithOutputStream(OutputStream outputStream, Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
         if (prettyPrintOption) {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, object);
+            SpringUtil.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(outputStream, object);
         } else {
-            objectMapper.writeValue(outputStream, object);
+            SpringUtil.getObjectMapper().writeValue(outputStream, object);
         }
     }
 

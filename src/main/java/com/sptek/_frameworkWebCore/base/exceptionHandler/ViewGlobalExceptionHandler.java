@@ -19,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 //@Profile(value = { "notused" })
 @Slf4j
+// todo: (중요) Enable_ResponseOfViewGlobalException_At_ViewController 가 적용된 클레스만 처리 (View)
 @ControllerAdvice(annotations = Enable_ResponseOfViewGlobalException_At_ViewController.class)
 @ConditionalOnProperty(name = "server.error.ignoreCustomErrorViewForDebug", havingValue = "false", matchIfMissing = false)
 

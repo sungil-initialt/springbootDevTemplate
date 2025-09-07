@@ -2,6 +2,7 @@ package com.sptek._frameworkWebCore.util;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.commonObject.dto.ExcuteTimeDto;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -169,6 +170,14 @@ public class RequestUtil {
         } catch (UnsupportedEncodingException e) {
             return "N/A (Unsupported Encoding)";
         }
+    }
+
+    public static boolean isApiRequest(@NotNull HttpServletRequest request) {
+        String requestUri = request.getRequestURI();
+        String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
+                .map(Object::toString)
+                .orElse("");
+        return  (requestUri.startsWith("/api/") || requestUri.startsWith("/systemSupportApi/") || errorRequestUri.startsWith("/api/") || errorRequestUri.startsWith("/systemSupportApi/"));
     }
 }
 

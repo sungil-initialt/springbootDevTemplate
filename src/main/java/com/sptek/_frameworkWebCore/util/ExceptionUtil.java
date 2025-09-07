@@ -39,6 +39,8 @@ public class ExceptionUtil {
     // 래핑된 ex 를 받아 실제 ex를 찾아 준다. (Async 내부 ex 의 경우 ex가 래핑되는 케이스가 있음)
     public static Throwable getRealException(Throwable t) {
         if (t == null) return null;
+
+        // 아래 EX 는 래핑된 경우가 많음
         while (t instanceof CompletionException || t instanceof ExecutionException || t instanceof UndeclaredThrowableException) {
             Throwable cause = t.getCause();
             if (cause == null || cause == t) {
@@ -48,6 +50,4 @@ public class ExceptionUtil {
         }
         return t;
     }
-
-
 }

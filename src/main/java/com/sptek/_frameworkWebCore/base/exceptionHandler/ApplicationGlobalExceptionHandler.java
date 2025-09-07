@@ -5,7 +5,9 @@ import com.sptek._frameworkWebCore._annotation.annotationCondition.HasAnnotation
 import com.sptek._frameworkWebCore.base.apiResponseDto.ApiCommonErrorResponseDto;
 import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
+import com.sptek._frameworkWebCore.util.ExceptionUtil;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
+import com.sptek._frameworkWebCore.util.RequestUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +31,7 @@ import java.util.Optional;
 
 @Slf4j
 @HasAnnotationOnMain_At_Bean(Enable_ResponseOfApplicationGlobalException_At_Main.class)
+// todo: (중요) CustomErrorController 전용 처리 (API/VEW 모두 가능)
 @ControllerAdvice(assignableTypes = {CustomErrorController.class})
 
 public class ApplicationGlobalExceptionHandler {
@@ -81,27 +84,20 @@ public class ApplicationGlobalExceptionHandler {
         return handleError(request, response, ex, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, "error/commonInternalError");
     }
 
-
     //view 와 api 요청을 구분 하여 최종 처리 함 (이곳에서 처리되는 경우는 ReqResDeailLogFilter 로 진입이 불가능한 케이스임으로 여기로 로그를 처리함)
-    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) throws Exception{
-        String requestUri = request.getRequestURI();
-        String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
-                .map(Object::toString)
-                .orElse("");
+    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) throws Exception {
+        LoggingUtil.exLoggingAndReturnThrowable(log, ex);
 
-        if (requestUri.startsWith("/api/") || requestUri.startsWith("/systemSupportApi/") || errorRequestUri.startsWith("/api/") || errorRequestUri.startsWith("/systemSupportApi/")) {
-            ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ex.getMessage());
-
+        if (RequestUtil.isApiRequest(request)) {
+            ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ExceptionUtil.getRealException(ex).getMessage());
             LoggingUtil.reqResDetailLogging(log, request, response, apiCommonErrorResponseDto, "Req Res Detail Log From " + this.getClass().getSimpleName());
             return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
-
         } else {
             //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
+            request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ExceptionUtil.getRealException(ex).getMessage());
             LoggingUtil.reqResDetailLogging(log, request, response, "Req Res Detail Log From " + this.getClass().getSimpleName());
             return viewName;
             //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
         }
     }
-
 }

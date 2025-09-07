@@ -108,9 +108,13 @@ public class LoggingUtil {
 
     public static Throwable exLoggingAndReturnThrowable(Logger logger, Exception ex) {
         Throwable t = ExceptionUtil.getRealException(ex);
-        String tag = t instanceof ServiceException ? "ServiceException occurred {}" : "Exception occurred {}";
-        logger.error(tag, t.getMessage());
-        logger.debug("Debugging Trace", ex);
+        String tag = t instanceof ServiceException ? "ServiceException occurred" : "Exception occurred";
+
+        if (logger.isDebugEnabled()) {
+            logger.error("{}: {}", tag, t.getMessage(), t);
+        } else {
+            logger.error("{}: {}", tag, t.getMessage());
+        }
         return t;
     }
 
@@ -138,13 +142,14 @@ public class LoggingUtil {
         String requestTime = RequestUtil.traceRequestDuration().getStartTime();
         String responseTime = RequestUtil.traceRequestDuration().getCurrentTime();
         String durationMsec = RequestUtil.traceRequestDuration().getDurationMsec();
-        String exceptionMsg = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
+        String exceptionMsgForView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
         int responseStatus = response.getStatus();
         String isAsyncDispatch = request.getDispatcherType() == DispatcherType.ASYNC ? "Async Response" : "Sync Response";
 
+        // View 요청의 경우 Response body는 html 페이지임으로 제외 함
         String responseBody = "";
-        if (responseBodyDto != null) responseBody = TypeConvertUtil.objectToJsonWithRootName(responseBodyDto, true);
-        else if (response instanceof ContentCachingResponseWrapper contentCachingResponseWrapper) ResponseUtil.getResponseBody(contentCachingResponseWrapper);
+        if (responseBodyDto != null) responseBody = TypeConvertUtil.objectToJsonWithoutRootName(responseBodyDto, true);
+        else if (response instanceof ContentCachingResponseWrapper contentCachingResponseWrapper && RequestUtil.isApiRequest(request)) responseBody = ResponseUtil.getResponseBody(contentCachingResponseWrapper);
 
         String modelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW)).map(Object::toString).orElse("");
 
@@ -157,15 +162,15 @@ public class LoggingUtil {
                 responseHeader: %s
                 relatedOutbounds: %s
                 requestTime: %s
-                responseTime: %s
-                durationMsec: %s
-                exceptionMsg: %s
+                responseTime(real): %s
+                durationMsec(real): %s
+                exceptionMsg(view): %s
                 responseStatus: %s, %s
-                modelAndView: %s
+                modelAndView(view): %s
                 responseBody: %s
                 """
                 .formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds
-                        , requestTime, responseTime, durationMsec, exceptionMsg, responseStatus, isAsyncDispatch, modelAndView, responseBody);
+                        , requestTime, responseTime, durationMsec, exceptionMsgForView, responseStatus, isAsyncDispatch, modelAndView, responseBody);
         log.info(LoggingUtil.makeBaseForm(logTag, title, logContent));
     }
 }

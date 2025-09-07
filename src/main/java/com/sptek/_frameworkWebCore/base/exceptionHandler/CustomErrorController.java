@@ -30,7 +30,6 @@ public class CustomErrorController implements ErrorController {
     //Controller 외부 영역 에서 발생한 에러(필터 쪽이나.. 기타 등등)를 직접 처리 하기 위해 ErrorController 상속 받아 구현 함 (정확히는 controller 에 별도 에러 핸들러 가 없다면 그때는 모두 이곳 으로 진입)
     //해당 Controller 가 없다면 스프링 이 내부 디폴트 로직에 따라 "/error" 리소내 errcode.html 로 자동 매핑 해준다.
 
-    //private final ObjectMapper objectMapper;
     @RequestMapping("/error") //프로퍼티 내 server.error.path 와 동일한 값으로 설정
     public Object handleError(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         // 발생한 에러를 직접 찾아 throw 할수도 있지만..  ex가 비어 들어오는 경우가 있음

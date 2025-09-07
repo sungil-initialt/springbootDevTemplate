@@ -36,12 +36,8 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        //log.debug("before Req is instanceof ContentCachingRequestWrapper : {}", request instanceof ContentCachingRequestWrapper ? "yes" : "no");
-        //log.debug("before Res is instanceof ContentCachingResponseWrapper : {}", response instanceof ContentCachingResponseWrapper ? "yes" : "no");
-        //log.debug("CorsPolicyFilter start");
-
-        // todo: NotEssentialRequest 에 대해 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
         if (MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)) {
+            // todo: NotEssentialRequest 에 대해 필터 제외 케이스 를 적용하는게 맞을까? 보안 협의가 필요
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;
@@ -54,8 +50,6 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
                 .map(request::getHeader)
                 .orElse("NoOrigin");
 
-        //log.debug("CORS request Orign: {}", origin);
-
         // 브라우저는 요청 형태에 따라 다양한 CORS 정책을 사용함
         // ex: GET 일때는 Option 요청을 보내지 않고 본래 요청에 Origin 만 넣어서 보냄, POST 등 중요한? 요청의 경우 Option 을 먼저 보내고 안전 한지 확인 후 본래 요청 에도 Origin 을 넣어 보냄)
         if (!origin.equalsIgnoreCase("NoOrigin")) {
@@ -63,14 +57,11 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
                     ? origin
                     : corsPropertiesVo.getDefaultAccessControlAllowOrigin();
 
-            //log.debug("CORS allowed Origin: {}", allowOrigin);
-
             response.setHeader("Access-Control-Allow-Origin", allowOrigin);
             response.setHeader("Access-Control-Allow-Methods", corsPropertiesVo.getAccessControlAllowMethods());
             response.setHeader("Access-Control-Allow-Headers", corsPropertiesVo.getAccessControlAllowHeaders());
             response.setHeader("Access-Control-Allow-Credentials", corsPropertiesVo.getAccessControlAllowCredentials());
             response.setHeader("Access-Control-Max-Age", corsPropertiesVo.getAccessControlMaxAge());
-
             log.debug(origin.equals(allowOrigin) ? "CORS policy validation passed." : "CORS policy validation denied.");
         }
 
@@ -79,7 +70,6 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_OK);
 
         } else {
-            //log.debug("CORS : it's not CORS check request.");
             filterChain.doFilter(request, response); // 다른 요청은 그대로 통과
         }
     }

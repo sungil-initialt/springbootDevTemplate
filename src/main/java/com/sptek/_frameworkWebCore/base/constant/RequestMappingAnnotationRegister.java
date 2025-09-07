@@ -21,6 +21,7 @@ public class RequestMappingAnnotationRegister {
     private static Map<String, Map<String, Map<String, Object>>> requestAnnotationRegister = Collections.emptyMap();
     //OPTIONS은 메소드가 없어도 스프링 단에서 처림됨, HEAD는 메소드가 없어도 스프링단에서 GET이 호출됨(단 body를 내리지 않는다)
     private final List<String> ALL_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"/*, "OPTIONS", "HEAD"*/);
+    private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     public RequestMappingAnnotationRegister(ApplicationContext applicationContext) {
         synchronized (RequestMappingAnnotationRegister.class) {
@@ -107,9 +108,9 @@ public class RequestMappingAnnotationRegister {
         if (requestAnnotationRegister.containsKey(methodAndUrl)) {
             return requestAnnotationRegister.get(methodAndUrl).containsKey(annotation.getName());
         } else {
-            AntPathMatcher pathMatcher = new AntPathMatcher();
+            // request된 url과 완벽히 일치하지 않을 경우 패턴 형식의 결과 일수 있음으로 패턴 매칭을 진행 함 (ex: 요청 /user/sungilry 가 /user/{id} 의 매핑 일수 있음으로)
             return requestAnnotationRegister.entrySet().stream()
-                    .anyMatch(entry -> pathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()));
+                    .anyMatch(entry -> antPathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()));
         }
     }
 
@@ -121,12 +122,30 @@ public class RequestMappingAnnotationRegister {
         if (requestAnnotationRegister.containsKey(methodAndUrl)) {
             return requestAnnotationRegister.get(methodAndUrl).getOrDefault(annotation.getName(), Map.of());
         } else {
-            AntPathMatcher pathMatcher = new AntPathMatcher();
             return requestAnnotationRegister.entrySet().stream()
-                    .filter(entry -> pathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()))
+                    .filter(entry -> antPathMatcher.match(entry.getKey(), methodAndUrl) && entry.getValue().containsKey(annotation.getName()))
                     .findFirst()
                     .map(entry -> entry.getValue().getOrDefault(annotation.getName(), Map.of()))
                     .orElse(Map.of());
         }
+    }
+
+    // 매핑 자체가 없는 404, 405 인지 확인 할 수 있음
+    public static boolean hasRequestMapping(HttpServletRequest request) {
+        return hasRequestMapping(request.getMethod(), request.getRequestURI());
+    }
+
+    public static boolean hasRequestMapping(String httpMethod, String requestUri) {
+        String key = httpMethod + ":" + requestUri;
+        if (requestAnnotationRegister.containsKey(key)) {
+            return true;
+        }
+        // 패턴 매칭 (예: GET:/users/{id})
+        for (String patternKey : requestAnnotationRegister.keySet()) {
+            if (antPathMatcher.match(patternKey, key)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

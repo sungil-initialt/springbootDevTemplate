@@ -31,7 +31,7 @@ public class ViewErrorLogSupportInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable Exception ex) {
+    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable Exception ex) {
         //log.debug("afterCompletion called");
 
         //api 경우는 response 내용을 통해 ex 내용을 알수 있지만 view 의 경우는 알수 없기 때문에 저장하도록 함

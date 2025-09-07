@@ -30,6 +30,7 @@ Exception의 종류에 따라 에러코드와 Exception 메시지가 정해진�
 최종 Response 응답까지 처리해 준다.
  */
 @Slf4j
+// todo: (중요) Enable_ResponseOfApiGlobalException_At_RestController 가 적용된 클레스만 처리 (API)
 @RestControllerAdvice(annotations = Enable_ResponseOfApiGlobalException_At_RestController.class) // @EnableFwApiGrobalExceptionHandler 가 선언된 RestController 에서만 동작함 (정확히는  RestController 여부는 체크 안함)
 
 public class ApiGlobalExceptionHandler {
@@ -120,6 +121,7 @@ public class ApiGlobalExceptionHandler {
         final ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(ex.getServiceErrorCodeEnum(), ex.getMessage());
         return new ResponseEntity<>(apiCommonErrorResponseDto, ex.getServiceErrorCodeEnum().getHttpStatusCode());
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiCommonErrorResponseDto> handleUnExpectedException(Exception ex) {

@@ -12,7 +12,7 @@ public enum ServiceErrorCodeEnum implements BaseCode {
     //API에서 주로 활용되지만 viewController에서도 활용될수 있다. viewController에서 활용되는 경우 HttpStatus는 의미가 없음
 
     //example
-    NO_RESOURCE_ERROR(HttpStatus.NOT_FOUND, "SE404", "해당 데이터가 없습니다."),
+    NO_RESOURCE_ERROR(HttpStatus.BAD_REQUEST, "SE404", "해당 데이터가 없습니다."), //HttpStatus.NOT_FOUND 가 모호해서 변경
     ALREADY_EXIST_RESOURCE_ERROR(HttpStatus.CONFLICT, "SE409", "해당 데이터 가 이미 존재 합니다."),
     DUPLICATION_REQUEST_ERROR(HttpStatus.TOO_MANY_REQUESTS, "SE429", "Duplication Request Exception"), //동일한 request가 빠르게 연속으로 들어오는 경우 내부적으로 한번만 처리하기 위한 기능을 위해 만듬, (매우 예외적인 케이스의 에러코드임)
     PAYLOAD_TOO_LARGE_ERROR(HttpStatus.PAYLOAD_TOO_LARGE, "SE413", "Multipart File MaxUploadSizeExceeded Exception"),
