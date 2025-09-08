@@ -58,7 +58,7 @@ public class TypeConvertUtil {
     }
 
     public static String objectToJsonWithRootName(Object object, boolean prettyPrintOption) throws JsonGenerationException, JsonMappingException, IOException {
-        // config 변경 (쓰레드 세이프하지 않음)이 필요함으로 빈이 아닌 별도 생성하여 사용
+        // config 변경이 필요함으로(쓰레드 세이프하지 않음) 빈이 아닌 별도로 생성하여 사용
         if (objectMapperWithRootName == null) {
             objectMapperWithRootName = new ObjectMapper();
             objectMapperWithRootName.setSerializationInclusion(JsonInclude.Include.NON_NULL);

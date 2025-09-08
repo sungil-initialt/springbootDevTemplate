@@ -2,42 +2,32 @@ package com.sptek._frameworkWebCore.interceptor;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.CookieUtil;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws ServletException {
         // locale 처리
-        String localeParam = request.getParameter(getParamName());
-        if (localeParam != null) {
-            Locale locale = parseLocaleValue(localeParam);
-            LocaleContextHolder.setLocale(locale);
+        super.preHandle(request, response, handler);
 
-            // LocaleContextHolder 는 해당 request 에 대한 locale 정보를 갖는 반면 LocaleResolver 는 에플르케이션 레벨에서 정보를 관리함(spring 내부적으로 활용되는 부분이 있음으로 같이 셋팅)
-            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
-            if (localeResolver != null) {
-                localeResolver.setLocale(request, response, locale);
-            }
-        }
-
-        // locale 처리시 timezone 처리도 함께 함
+        // locale 처리시 LocaleContextHolder의 timezone 처리도 함께 처리하려고 custom 클레스로 만듬.
+        // DateTimeContextHolder 가 따로 있지만.. 대부분의 영역에서 DateTimeContextHolder 가 없으면 LocaleContextHolder의 timezone 을 사용함
         String timeZoneParam = request.getParameter(CommonConstants.TIMEZONE_NAME);
         if (timeZoneParam != null) {
             TimeZone timeZone = TimeZone.getTimeZone(timeZoneParam);
             LocaleContextHolder.setTimeZone(timeZone);
-            CookieUtil.createCookieAndAdd(CommonConstants.TIMEZONE_NAME, timeZoneParam, CommonConstants.LOCALE_COOKIE_MAX_AGE_SEC);
+            CookieUtil.createCookieAndAdd(CommonConstants.TIMEZONE_NAME, timeZoneParam, Duration.ofDays(CommonConstants.LOCALE_COOKIE_MAX_AGE_DAY), true, true);
 
         } else {
             List<Cookie> timeZoneCookie = CookieUtil.getCookies(CommonConstants.TIMEZONE_NAME);
@@ -46,7 +36,6 @@ public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor {
                 LocaleContextHolder.setTimeZone(timeZone);
             }
         }
-
         return true;
     }
 }

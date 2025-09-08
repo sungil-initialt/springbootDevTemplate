@@ -41,12 +41,8 @@ public class VisitHistoryLoggingInterceptor implements HandlerInterceptor{
         
         //오늘 까지 유효한 쿠키로 생성 (자정 까지 남은 sec), 이미 쿠키가 있는 경우에도 새로 생성 (쿠키 유효기간을 변경한 경우 바로 적용되게 하기 위해)
         LocalDateTime now = LocalDateTime.now();
-        long remainingSecondsOfToday = Duration.between(now, now.toLocalDate().plusDays(1).atStartOfDay()).getSeconds();
-
-        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(CommonConstants.VISIT_HISTORY_COOKIE_NAME, CommonConstants.VISIT_HISTORY_COOKIE_VALE)
-                .maxAge(remainingSecondsOfToday).path("/").sameSite("Strict");
-        CookieUtil.addResponseCookie(cookieBuilder.build());
-
+        Duration maxAge = Duration.between(now, now.toLocalDate().plusDays(1).atStartOfDay());
+        CookieUtil.createCookieAndAdd(CommonConstants.VISIT_HISTORY_COOKIE_NAME, CommonConstants.VISIT_HISTORY_COOKIE_VALE, maxAge, true, true);
         return true;
     }
 
