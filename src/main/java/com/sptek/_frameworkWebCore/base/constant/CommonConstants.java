@@ -31,9 +31,10 @@ public class CommonConstants {
 
 
     // locale
-    public static final String LOCALE_NAME = "locale";
-    public static final String TIMEZONE_NAME = "timezone";
+    public static final String LOCALE_COOKIE_NAME = "locale";
+    public static final String TIMEZONE_COOKIE_NAME = "timezone";
     public static final int LOCALE_COOKIE_MAX_AGE_DAY = 7; //사용자 가 설정한 로케일 정보 쿠키를 얼마 동안 보존할 것인지(Duration)
+    public static final int TIMEZONE_COOKIE_MAX_AGE_DAY = 7; //사용자 가 설정한 로케일 정보 쿠키를 얼마 동안 보존할 것인지(Duration)
 
     // site visit histoy
     public static final String VISIT_HISTORY_COOKIE_NAME = "VISIT_HISTORY";

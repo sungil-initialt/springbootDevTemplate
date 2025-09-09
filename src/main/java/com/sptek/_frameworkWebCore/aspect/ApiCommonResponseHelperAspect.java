@@ -62,7 +62,7 @@ public class ApiCommonResponseHelperAspect {
                 Object[] args = joinPoint.getArgs();
 
                 try {
-                    //Object result = joinPoint.proceed(); // 쓰레드 내부에서 이렇게 처리할수 없음
+                    //Object result = joinPoint.proceed(); -> 쓰레드 내부에서는 이렇게 처리할수 없어 아래 코드를 만듬
                     Object result = org.springframework.util.ReflectionUtils.invokeMethod(method, target, args);
                     if (result instanceof CompletableFuture<?> completableFuture) {
                         // 최종 return 때 CompletableFuture 래핑을 하기 때문에 이 시점에서는 제거

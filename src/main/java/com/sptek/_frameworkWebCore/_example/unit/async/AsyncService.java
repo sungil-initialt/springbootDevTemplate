@@ -3,13 +3,11 @@ package com.sptek._frameworkWebCore._example.unit.async;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
 import com.sptek._frameworkWebCore.util.Timer;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.format.datetime.standard.DateTimeContextHolder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +25,19 @@ public class AsyncService {
         this.taskExecutor = taskExecutor;
     }
 
-    // 리턴 없는 일반 메소드
+
+    //@Async()
+    //@Async("sptTaskExecutor")
     public void noReturnJob() {
         Timer.sleep(10_000L);
         if (false) throw new RuntimeException("returnObjectJob RuntimeException");
         log.debug("noReturnJob done");
 
-        // 별도 쓰레드 동작시에도 MDC, Locale, Security, DateTime 등 다양한 ContextHolder 를 그대로 이관 받음
-        String userEmail = AuthenticationUtil.getMyEmail();
+        // 별도 쓰레드로 동작시에도 MDC, Security, Locale 등 다양한 ContextHolder 를 그대로 이관 되는지 확인
+        String userName = AuthenticationUtil.getMyName();
         String userLanguageTag = LocaleUtil.getCurUserLanguageTag();
         String userTimeZone = LocaleUtil.getCurUserTimeZoneName();
-        log.debug("userLanguageTag: {}, userTimeZone: {}", userLanguageTag, userTimeZone);
+        log.debug("userName: {}, userLanguageTag: {}, userTimeZone: {}", userName, userLanguageTag, userTimeZone);
     }
 
     // 리턴 타입이 Future 타입이 아님으로 @Async 탈부착 불가

@@ -54,15 +54,13 @@ export async function requestFetch(url, options = {}) {
         body,
         query = {},
         useTimestamp = false, // true일 때 요청에 시간 스탬프 파람 추가 (동일 req 인식을 회피 하려고..)
-        timeout = 10000,    // 기본 timeout 10초
+        timeout = 600000,    // 기본 timeout
         rawResponseOpt = false, // JSON 파싱 말고 원본 응답 받고 싶을 때
         showErrorAlertOpt = true, // 에러 메시지 알림 표시 여부
         credentialsOpt = 'same-origin', //브라우저와 fetch url이 동일한 경우만
         //credentialsOpt = 'omit', //쿠키및 보안정보 항상 안보냄
         //credentialsOpt = 'include', //브라우저와 fetch url이 다르더라도 fetch url과 관련된 쿠키 및 보안정보를 보냄 (CORS 관련 Access-Control-Allow-Credentials: true 설정 필요)
-
     } = options;
-
 
     // 1. 쿼리 파라미터 붙이기
     const extendedQuery = {...query};
@@ -104,7 +102,6 @@ export async function requestFetch(url, options = {}) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     fetchOptions.signal = controller.signal;
-
 
     // 5. 실제 처리
     try {

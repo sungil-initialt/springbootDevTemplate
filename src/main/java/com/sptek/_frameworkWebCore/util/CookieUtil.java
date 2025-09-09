@@ -15,28 +15,36 @@ CookieUtil 을 사용하지 않고 ResponseCookie 객체를 직접 builder 방�
 
 @Slf4j
 public class CookieUtil {
+    private static final boolean DEFAULT_COOKIE_HTTPONLY = true;
+    private static final boolean DEFAULT_COOKIE_SECURE = false;
     private static final String DEFAULT_COOKIE_PATH = "/";
+    private static final String DEFAULT_COOKIE_SAMESITE = "Lax";
 
-    public static @NotNull ResponseCookie createCookie(@NotNull String name, @NotNull String value, @NotNull Duration maxAge, @NotNull boolean httpOnly, @NotNull boolean secure) {
-        return createCookie(name, value, maxAge, httpOnly, secure, null, null, null);
+    public static @NotNull ResponseCookie createCookie(@NotNull String name, @NotNull String value, @NotNull Duration maxAge) {
+        return createCookie(name, value, maxAge, null, null, null, null, null);
     }
 
-    public static @NotNull ResponseCookie createCookie(@NotNull String name, @NotNull String value, @NotNull Duration maxAge, @NotNull boolean httpOnly, @NotNull boolean secure, String domain, String path, String sameSite) {
+    public static @NotNull ResponseCookie createCookie(@NotNull String name, @NotNull String value, @NotNull Duration maxAge, Boolean httpOnly, Boolean secure, String domain, String path, String sameSite) {
+        if (httpOnly == null) httpOnly = DEFAULT_COOKIE_HTTPONLY;
+        if (secure == null) secure = DEFAULT_COOKIE_SECURE;
+        if (!StringUtils.hasText(path)) path = DEFAULT_COOKIE_PATH;
+        sameSite = decideSameSite(sameSite);
+
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
                 .maxAge(maxAge)
                 .httpOnly(httpOnly)
                 .secure(secure)
-                .path(StringUtils.hasText(path) ? path : DEFAULT_COOKIE_PATH)
-                .sameSite(decideSameSite(sameSite));
-        if (StringUtils.hasText(domain)) cookieBuilder.domain(domain); //domain 은 없는 경우 비포함 처러
+                .path(path)
+                .sameSite(sameSite);
+        if (StringUtils.hasText(domain)) cookieBuilder.domain(domain); //domain 은 없는 경우 완전 제외 처러
         return cookieBuilder.build();
     }
 
-    public static void createCookieAndAdd(@NotNull String name, @NotNull String value, @NotNull Duration maxAge, @NotNull boolean httpOnly, @NotNull boolean secure) {
-        addCookie(createCookie(name, value, maxAge, httpOnly, secure, null, null, null));
+    public static void createCookieAndAdd(@NotNull String name, @NotNull String value, @NotNull Duration maxAge) {
+        addCookie(createCookie(name, value, maxAge, null, null, null, null, null));
     }
 
-    public static void createCookieAndAdd(@NotNull String name, @NotNull String value, @NotNull Duration maxAge, @NotNull boolean httpOnly, @NotNull boolean secure, String domain, String path, String sameSite) {
+    public static void createCookieAndAdd(@NotNull String name, @NotNull String value, @NotNull Duration maxAge, Boolean httpOnly, Boolean secure, String domain, String path, String sameSite) {
         addCookie(createCookie(name, value, maxAge, httpOnly, secure, domain, path, sameSite));
     }
 
@@ -67,7 +75,7 @@ public class CookieUtil {
     }
 
     private static String decideSameSite(String sameSite) {
-        if (!StringUtils.hasText(sameSite)) return "Lax"; // 기본값
+        if (!StringUtils.hasText(sameSite)) return DEFAULT_COOKIE_SAMESITE; // 기본값
         String v = sameSite.trim().toLowerCase(Locale.ROOT);
         return switch (v) {
             case "lax" -> "Lax";

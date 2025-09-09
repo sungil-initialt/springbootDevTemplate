@@ -53,8 +53,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Enable_PropertiesToModelAttribute_At_Main
 @Enable_ExecutionTimer_At_Main
 
-
-
 public class SptWfwApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SptWfwApplication.class, args);
@@ -77,13 +75,13 @@ public class SptWfwApplication {
 
 
 /*
-ㅌㅏ임존 쿠키가 /view 경로에만 생김
-로케일 스레드에서 나오는거
+    둘이 동시 적용되는 케이스
+    @Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
+    @Enable_AsyncController_At_RestControllerMethod
+    
+    
 재고 수량 안맞는 문제 롹으로 해결 방안
-async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록
-기타 context 가 하위 쓰레드에서 잘 처리 되는지..
+async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록 (타임아웃 처리는 쉬울듯 한데.. 작업 인터럽터는 해줘야 할까? 안해주면 내부적으론 계속 동작)
 SSE
 logging 예시
-
-ApplicationGlobalExceptionHandler 테스트 필요
  */

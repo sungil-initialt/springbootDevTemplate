@@ -68,4 +68,26 @@ public class AsyncApiController {
     public Object recommendAsyncJoinWithAsyncController()  throws Exception {
         return asyncService.recommendAsyncJoin();
     }
+
+    //--------------- requestFetch.html 테스트 용 --------------------
+    @GetMapping(value = "/91/example/async/justSleep1")
+    @Operation(hidden = true)
+    public Object justSleep1()  throws Exception {
+        Thread.sleep(1000L);
+        return "just sleep1";
+    }
+
+    @GetMapping(value = "/92/example/async/justSleep2")
+    @Operation(hidden = true)
+    public Object justSleep2()  throws Exception {
+        Thread.sleep(2000L);
+        return "just sleep2";
+    }
+
+    @GetMapping(value = "/93/example/async/justSleep3")
+    @Operation(hidden = true)
+    public Object justSleep3()  throws Exception {
+        Thread.sleep(3000L);
+        return "just sleep3";
+    }
 }

@@ -54,34 +54,34 @@ public class AsyncConfig {
         public @NotNull Runnable decorate(Runnable runnable) {
             var requestAttributes = RequestContextHolder.getRequestAttributes();
             var mdcContextMap = MDC.getCopyOfContextMap();
-            var locale = LocaleContextHolder.getLocale();
+            var localeContext = LocaleContextHolder.getLocaleContext();
             var dateTimeContext = DateTimeContextHolder.getDateTimeContext();
             // (옵션) 커스텀 ThreadLocal 컨텍스트 캡처
             // var userContext = UserContext.getCurrentOrNull();
 
             return () -> {
-                var prevRequestAttribute = RequestContextHolder.getRequestAttributes();
+                var prevRequestAttributes = RequestContextHolder.getRequestAttributes();
                 var prevMdcContextMap = MDC.getCopyOfContextMap();
-                var prevLocale = LocaleContextHolder.getLocale();
+                var prevLocaleContext = LocaleContextHolder.getLocaleContext();
                 var prevDateTimeContext = DateTimeContextHolder.getDateTimeContext();
                 // var preUserContext = UserContext.getCurrentOrNull();
 
                 try {
                     RequestContextHolder.setRequestAttributes(requestAttributes);
                     if (mdcContextMap != null) MDC.setContextMap(mdcContextMap); else MDC.clear();
-                    LocaleContextHolder.setLocale(locale);
+                    LocaleContextHolder.setLocaleContext(localeContext);
                     DateTimeContextHolder.setDateTimeContext(dateTimeContext);
                     // UserContext.setCurrent(userCtx);
-
                     //Thread 내용 실행 시점
                     runnable.run();
+
                 } finally {
-                    MDC.clear();
                     // 원래 값 복원 (복원 필시요 처리하면 됨)
-                    RequestContextHolder.resetRequestAttributes();
-                    if (prevRequestAttribute != null) RequestContextHolder.setRequestAttributes(prevRequestAttribute);
+                    MDC.clear();
                     if (prevMdcContextMap != null) MDC.setContextMap(prevMdcContextMap);
-                    LocaleContextHolder.setLocale(prevLocale);
+                    RequestContextHolder.resetRequestAttributes();
+                    if (prevRequestAttributes != null) RequestContextHolder.setRequestAttributes(prevRequestAttributes);
+                    LocaleContextHolder.setLocaleContext(prevLocaleContext);
                     DateTimeContextHolder.setDateTimeContext(prevDateTimeContext);
                     // UserContext.setCurrent(preUserContext);
                 }
