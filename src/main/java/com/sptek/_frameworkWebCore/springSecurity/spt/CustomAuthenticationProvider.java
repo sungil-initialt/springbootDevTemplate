@@ -60,7 +60,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // Provider는 생성한 Authentication을 리턴할뿐 SecurityContextHolder에 저장하는 역할은 하지 않아야 함 (Provider가 여럿 설정된 상황일수 있으니 AuthenticationManager 에게 맞겨야함)
         // 비밀번호는 매칭 확인 후 노출을 막기 위에 변형 처리함 (필요시 넘길수도 있겠지...)
         customUserDetails.getUserDto().setPassword("[PROTECTED]");
-        //password = "[PROTECTED]"; //Authentication에 들어가는 password(credentials)은 자동 PROTECTED 처리됨
+        // password = "[PROTECTED]"; //Authentication에 들어가는 password(credentials)은 자동 PROTECTED 처리됨
+
+        // 리턴된 결과는 Spring Security filter 에 의해 자동으로 SecurityContextHolder.getContext().setAuthentication() 으로 설정되며
+        // session 과도 자동으로 연결되어 sessionId 가 넘어오는 경우 자동으로  setAuthentication 가 이루어짐 (session destroy 시 authentication도 자동 소멸)
         return new UsernamePasswordAuthenticationToken(customUserDetails, password, customUserDetails.getAuthorities());
     }
 

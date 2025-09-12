@@ -1,7 +1,7 @@
 package com.sptek._projectCommon.argumentResolver;
 
-import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import com.sptek._frameworkWebCore._annotation.Enable_ArgumentResolver_At_Param;
+import com.sptek._frameworkWebCore._example.dto.ExUserDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class ExampleArgumentResolverForExUserDto implements HandlerMethodArgumentResolver {
@@ -33,33 +32,21 @@ public class ExampleArgumentResolverForExUserDto implements HandlerMethodArgumen
 
     @Override
     //MethodParameter, modelAndViewContainer, nativeWebRequest, webDataBinderFactory 을 응용 해서 더 많은 곳에 활용 가능.
-    public Object resolveArgument(@NotNull MethodParameter methodParameter
+    public Object resolveArgument(
+            @NotNull MethodParameter methodParameter
             , ModelAndViewContainer modelAndViewContainer
             , NativeWebRequest nativeWebRequest
             , WebDataBinderFactory webDataBinderFactory) throws IOException {
 
-        ExUserDto exUserDto;
-        String id = Optional.ofNullable(nativeWebRequest.getParameter("id")).map(String::toString).orElse("anonymous");
+        String id = nativeWebRequest.getParameter("id");
+        String name = nativeWebRequest.getParameter("name");
+        String type = nativeWebRequest.getParameter("type");
 
-//        if(id.equals("anonymous")) {
-//            String body = nativeWebRequest.getNativeRequest(HttpServletRequest.class).getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-//            id = new ObjectMapper().readValue(body, ExUserDto.class).getId();
-//        }
-
-        if(id.equals("sungilry")) {
-            exUserDto = ExUserDto.builder()
-                    .id(id)
-                    .name("SPT " + id + " 님으로 변경 했어요!")
-                    .type(ExUserDto.UserType.admin)
-                    .build();
-        } else {
-            exUserDto = ExUserDto.builder()
-                    .id(id)
-                    .name(id + " 님")
-                    .type(ExUserDto.UserType.anonymous)
-                    .build();
-        }
-
-        return exUserDto;
+        return ExUserDto.builder()
+                .id(id)
+                .name(name)
+                .type(ExUserDto.UserType.valueOf(type))
+                .displayName(String.format("%s 님 (%s/%s) 안녕 하세요!", name, id, type))
+                .build();
     }
 }

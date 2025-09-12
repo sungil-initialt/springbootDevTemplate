@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore._example.unit.async;
 
 import com.sptek._frameworkWebCore._annotation.Enable_AsyncController_At_RestControllerMethod;
+import com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +63,7 @@ public class AsyncApiController {
         return asyncService.recommendAsyncJoin();
     }
 
+    @Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
     @Enable_AsyncController_At_RestControllerMethod
     @GetMapping(value = "/07/example/async/recommendAsyncJoinWithAsyncController")
     @Operation(summary = "07. 비동기: 응답 대기-> Worker 반환-> 서비스 비동기 병렬 처리(return join)-> Worker 재할당 및 응답-> Worker 반환", description = "")

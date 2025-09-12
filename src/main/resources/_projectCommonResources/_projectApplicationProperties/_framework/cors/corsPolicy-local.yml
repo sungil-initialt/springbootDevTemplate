@@ -2,11 +2,13 @@
 cors:
   options:
     #클라이언트가 보낸 origin 값이 accessControlAllowOrigin 에 포함되어 있지 않은 경우 어떤 orging 값을 보낼지의 설정임 (*로 보내면 모두 허용, 허용하지 않을려면 그냥 자신의 대표 url로 보냄)
-    defaultAccessControlAllowOrigin: "*"
+    defaultAccessControlAllowOrigin: "*" #allowCredentials: true 로 바꾸면 *는 불가.
     #defaultAccessControlAllowOrigin: "https://localhost"
     #defaultAccessControlAllowOrigin: "https://back.localhost"
+    #defaultAccessControlAllowOrigin: "https://hello.com"
 
     #내가 허용할 url목록(공백 없이 ,로 구분, 80, 443 port가 아닌 경우 명시)
+    #accessControlAllowOrigins: "https://hello.com"
     accessControlAllowOrigins: "https://localhost, https://back.localhost, https://front.localhost, https://spt.com"
 
     #클라이언트가 option 메소드로 확인을 요청할때 알려주는 요소들

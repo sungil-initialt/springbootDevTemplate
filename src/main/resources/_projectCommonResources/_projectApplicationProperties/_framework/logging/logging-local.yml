@@ -22,9 +22,9 @@ logging:
       sptek.projectName: debug
 
       # ExceptionHandler(application, api, view) 에서 error trace를 찍을지 여부 (찍기위해서는 debug 설정)
-      sptek._frameworkWebCore.base.exceptionHandler.ApplicationGlobalExceptionHandler: info
-      sptek._frameworkWebCore.base.exceptionHandler.ViewGlobalExceptionHandler: info
-      sptek._frameworkWebCore.base.exceptionHandler.ApiGlobalExceptionHandler: info
+      sptek._frameworkWebCore.base.exceptionHandler.ApplicationGlobalExceptionHandler: debug
+      sptek._frameworkWebCore.base.exceptionHandler.ViewGlobalExceptionHandler: debug
+      sptek._frameworkWebCore.base.exceptionHandler.ApiGlobalExceptionHandler: debug
 
       #HikariPool DB 커넥션 풀 (풀 상태 로그를 보려면 debug)
       zaxxer.hikari.pool.HikariPool: info

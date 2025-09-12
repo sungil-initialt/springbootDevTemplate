@@ -76,7 +76,25 @@
         }
       });
     </script>
-  </div><br>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request3">request</button>
+    <script>
+      document.getElementById('request3').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/07/example/async/recommendAsyncJoinWithAsyncController', {
+            useTimestamp: true,
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
 
 </div>
 

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Enable_ResponseOfApiCommonSuccess_At_RestController
 @Enable_ResponseOfApiGlobalException_At_RestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
-@Tag(name = "Authentication", description = "")
+@Tag(name = "Authentication (authentication.http 을 통해 추가 테스트 가능)", description = "")
 
 public class AuthenticationApiController {
 
@@ -69,7 +69,7 @@ public class AuthenticationApiController {
     }
 
     @RequestMapping(value = "/07/example/postLogin/authentication/needAuth", method = {RequestMethod.GET, RequestMethod.POST})
-    @Operation(summary = "07. POST 요청은 로그인 필요함", description = "") //swagger
+    @Operation(summary = "07. 메소드 별 권한 제한 (POST 요청은 로그인 필요)", description = "") //swagger
     public Object needAnyAuthWhenPost() {
         return "you need Auth (Any) when you request with POST";
     }
@@ -88,7 +88,7 @@ public class AuthenticationApiController {
 
     // 보안상 반드시 Post 로 구성할 것
     @PostMapping("/10/example/authentication/login")
-    @Operation(summary = "10. 로그인 API (인증 토큰)", description = "") //swagger
+    @Operation(summary = "10. 로그인 처리 API (인증 토큰 반환)", description = "") //swagger
     public Object signin(@RequestBody @Valid LoginRequestDto loginRequestDto, HttpServletResponse response) {
         // RequestBody 에서 id, pw 항목을 선정하여 UsernamePasswordAuthenticationToken 를 만들어 낸후
         // authenticationManager의 절차를 통해 Authentication을 생성하고 SecurityContextHolder 에 직접 저장하고 (form UI 방식의 경우는 직접 저장하지 않음)

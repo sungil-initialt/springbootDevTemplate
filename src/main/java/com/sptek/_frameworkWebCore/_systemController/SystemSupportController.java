@@ -98,7 +98,7 @@ public class SystemSupportController {
         }
 
         //@GetMapping({"/login", "/signup"}) // todo: 왜 signup을 추가했지?
-        // 공통 기능 으로 보아 이곳에 작성
+        // 공통 기능 으로 분류하여 이곳에 작성
         @GetMapping({"/view/login"})
         public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
             model.addAttribute(CustomAuthenticationSuccessHandlerForView.LOGIN_SUCCESS_TARGETURL_PARAMETER, RedirectHelperAfterLogin.getRedirectUrlAfterLogging(request, response));

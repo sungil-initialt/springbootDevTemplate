@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,7 +48,10 @@ public class FrameworkSecurityFilterChainConfig {
                 .securityMatcher("/", "/view/index", "/view/login", "/view/loginProcess", "/view/logout")
 
                 // CSRF를 비활성화할 경로 지정
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/**")) // todo: 테스트 를 편하게 하기 위해 모든 경로 에서 dsrf 토큰을 무시 하도록 임시 처리
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/**") // todo: 테스트 를 편하게 하기 위해 모든 경로 에서 dsrf 토큰을 무시 하도록 임시 처리
+                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                )
 
                 // .httpBasic(Customizer.withDefaults()) //얼럿창형
                 // .formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
@@ -114,6 +118,7 @@ public class FrameworkSecurityFilterChainConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/view/example/**") // todo: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시하도록 임시 처리
                         .ignoringRequestMatchers("/view/example/noCsrfToken/**")
+                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository()) // 세션과 동일 ttl 이 적용됨 (그럼에도 내가 요청한 폼인지를 확인하는 목적에는 부합됨)
                 )
 
                 // todo: session 과 관련된 전반적인 부분을 확인해야함!!!
