@@ -73,15 +73,15 @@ public class SptWfwApplication {
 	}
 }
 
-
 /*
-    둘이 동시 적용되는 케이스
-    @Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
-    @Enable_AsyncController_At_RestControllerMethod
-    
-    
-재고 수량 안맞는 문제 롹으로 해결 방안
-async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록 (타임아웃 처리는 쉬울듯 한데.. 작업 인터럽터는 해줘야 할까? 안해주면 내부적으론 계속 동작)
-SSE
-logging 예시
- */
+체크:
+아래 둘이 동시 적용되는 케이스에서 문제가 없는지 확인 필요
+-@Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
+-@Enable_AsyncController_At_RestControllerMethod
+
+todo:
+-재고 수량 안맞는 문제 롹으로 해결 방안
+-async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록 (타임아웃 처리는 쉬울듯 한데.. 작업 인터럽터는 해줘야 할까? 안해주면 내부적으론 계속 동작)
+-SSE
+-logging 예시
+*/
