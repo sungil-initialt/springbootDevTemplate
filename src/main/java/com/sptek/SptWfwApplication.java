@@ -74,7 +74,7 @@ public class SptWfwApplication {
 }
 
 /*
-체크:
+체크사항:
 아래 둘이 동시 적용되는 케이스에서 문제가 없는지 확인 필요
 -@Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
 -@Enable_AsyncController_At_RestControllerMethod
