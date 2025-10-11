@@ -74,7 +74,7 @@ public class SptWfwApplication{
 }
 
 /*
-체크사항:
+to check:
 아래 둘이 동시 적용되는 케이스에서 문제가 없는지 확인 필요
 -@Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
 -@Enable_AsyncController_At_RestControllerMethod
@@ -84,26 +84,4 @@ todo:
 -async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록 (타임아웃 처리는 쉬울듯 한데.. 작업 인터럽터는 해줘야 할까? 안해주면 내부적으론 계속 동작)
 -SSE
 -logging 예시
--87 데브 수정
 */
-//89 -1
-//90 -1
-//****
-// 90 데브 수정,,
-// 91 추가
-//92 서버 수정
-//93 로컬 수정
-//94 재수정
-//95 수정
-//96 로컬 수정
-//97 추가
-//98 서버 수정
-//99 서버 잿 수정
-//100 서버 수정
-//101 로컬 수정
-
-//--
-// 서버내용 추가 수정
-//--
-
-//로컬 라스트 추가
