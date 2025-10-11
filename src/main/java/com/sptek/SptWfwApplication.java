@@ -53,7 +53,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Enable_PropertiesToModelAttribute_At_Main
 @Enable_ExecutionTimer_At_Main
 
-public class SptWfwApplication {
+public class SptWfwApplication{
 	public static void main(String[] args) {
 		SpringApplication.run(SptWfwApplication.class, args);
 
